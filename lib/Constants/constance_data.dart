@@ -1,4 +1,5 @@
 import 'package:awesome_icons/awesome_icons.dart';
+import 'package:ebook/Model/review.dart';
 
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,18 @@ class ConstanceData {
     Category('Horror', FontAwesomeIcons.skullCrossbones),
     Category('Love', FontAwesomeIcons.heart),
     Category('All', FontAwesomeIcons.boxes),
+  ];
+
+  static const pages = [
+    'Account Information',
+    'FAQs & Support',
+    'Audio Player Settings',
+    'Language Preference',
+    'Downloads',
+    'Notification Settings',
+    'Privacy',
+    'Invite Friends',
+    'Open Source Licenses',
   ];
 
   static const banner = [
@@ -55,7 +68,7 @@ class ConstanceData {
         3),
   ];
 
-  static final critics=[
+  static final critics = [
     Book(
         'Lord of the rings',
         'CJlewis',
@@ -78,11 +91,41 @@ class ConstanceData {
         4.1),
   ];
 
+  static final category = ['All', 'Love', 'Horror', 'Motivation'];
+
   static const primaryIcon = 'assets/images/ebook.png';
   static const humanImage = 'assets/images/user.png';
+  static const emptyImage = 'assets/images/shelves.png';
   static const searchIcon = FontAwesomeIcons.search;
   static const homeIcon = FontAwesomeIcons.home;
   static const libraryIcon = FontAwesomeIcons.book;
   static const storeIcon = FontAwesomeIcons.shoppingCart;
   static const moreIcon = FontAwesomeIcons.hamburger;
+
+  static final reviews=[
+    Review(
+      'Dek','Great books', 4.5,
+    ),
+    Review(
+      'Dek1','Great books1', 4.1,
+    ),
+    Review(
+      'Dek2','Great books2', 4.3,
+    ),
+    Review(
+      'Dek4','Great books6', 4.6,
+    ),
+  ];
+
+  static const categories=[
+    'Motivation',
+    'Novel',
+    'Love',
+    'Children',
+    // 'More ->'
+  ];
+
+  static const testing="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+      " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
+      " when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 }

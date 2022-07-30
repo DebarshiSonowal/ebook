@@ -1,22 +1,13 @@
-import 'package:ebook/UI/Components/empty_widget.dart';
+import 'package:ebook/Constants/constance_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import '../../../Constants/constance_data.dart';
 
-class Librarypage extends StatefulWidget {
-  const Librarypage({Key? key}) : super(key: key);
+class EmptyWidget extends StatelessWidget {
+  const EmptyWidget({Key? key}) : super(key: key);
 
-  @override
-  State<Librarypage> createState() => _LibrarypageState();
-}
-
-class _LibrarypageState extends State<Librarypage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: ConstanceData.primaryColor,
-      height: double.infinity,
-      width: double.infinity,
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

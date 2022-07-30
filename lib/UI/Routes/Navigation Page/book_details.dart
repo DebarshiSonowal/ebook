@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Model/reading_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
@@ -45,12 +50,42 @@ class _BookDetailsState extends State<BookDetails>
     ),
   ];
   int selectedTheme = 0;
+  double brightness = 0.0;
 
-  double sliderVal=0;
+  bool toggle = false;
+  double sliderVal = 0;
 
   @override
   void initState() {
     super.initState();
+    // initPlatformBrightness();
+    Future.delayed(Duration.zero, () async {
+      brightness = await systemBrightness;
+      Navigation.instance.navigate(
+          '/readingDialog');
+    });
+    Future.delayed(Duration(seconds:2),(){
+      Navigation.instance.goBack();
+    });
+  }
+
+  Future<double> get systemBrightness async {
+    try {
+      return await ScreenBrightness().system;
+    } catch (e) {
+      print(e);
+      throw 'Failed to get system brightness';
+    }
+  }
+
+  Future<void> setBrightness(double brightness) async {
+    try {
+      await ScreenBrightness().setScreenBrightness(brightness);
+      print('success');
+    } catch (e) {
+      print(e);
+      throw 'Failed to set brightness';
+    }
   }
 
   @override
@@ -67,7 +102,15 @@ class _BookDetailsState extends State<BookDetails>
         backgroundColor: getBackGroundColor(),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    // initPlatformBrightness();
+                    return buildAlertDialog();
+                  },
+                );
+              },
               icon: const Icon(
                 Icons.font_download,
               )),
@@ -96,6 +139,7 @@ class _BookDetailsState extends State<BookDetails>
                 onPageChanged: (index) => setState(() {
                   currentIndex = index;
                   background = multiImageProvider[index];
+                  sliderVal = index.toDouble();
                 }),
                 physics: const ClampingScrollPhysics(),
                 itemCount: multiImageProvider.length,
@@ -135,7 +179,7 @@ class _BookDetailsState extends State<BookDetails>
             ),
             GestureDetector(
               onTap: () {
-                print('dads');
+                // print('dads');
                 showCupertinoModalBottomSheet(
                   enableDrag: true,
                   // expand: true,
@@ -146,37 +190,131 @@ class _BookDetailsState extends State<BookDetails>
                   closeProgressThreshold: 10,
                   context: Navigation.instance.navigatorKey.currentContext ??
                       context,
-                  builder: (context) =>  Material(
+                  builder: (context) => Material(
                     color: getBodyColor(),
-                    child: Container(
-                      height: 40.h,
-                      width: double.infinity,
-
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 20.h,
-                            width: double.infinity,
-                            color: Colors.black,
-                          ),
-                          Container(
-                            height: 20.h,
-                            width: double.infinity,
-                            color: Colors.grey.shade900,
-                            child: Slider(
-                              activeColor: Colors.blue,
-                              inactiveColor: Colors.white,
-                              onChanged: (double value) {
-                                setState((){
-                                  sliderVal=value;
-                                });
-                              },
-                              value: sliderVal,
+                    child: StatefulBuilder(builder: (context, update) {
+                      return SizedBox(
+                        height: 30.h,
+                        width: double.infinity,
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 15.h,
+                              width: double.infinity,
+                              color: Colors.black,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Enjoying your free preview?",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        ?.copyWith(color: getTextColor()),
+                                  ),
+                                  Text(
+                                    "Keep reading with a free trial",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        ?.copyWith(color: getTextColor()),
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 4.5.h,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20.0),
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            Navigation.instance.navigate('/bookInfo');
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.blue),
+                                          ),
+                                          child: Text(
+                                            'Start Trial',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5
+                                                ?.copyWith(
+                                                  fontSize: 3.h,
+                                                  color: Colors.black,
+                                                ),
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
+                            Container(
+                              height: 15.h,
+                              width: double.infinity,
+                              color: Colors.grey.shade900,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Slider(
+                                    min: 0,
+                                    max: double.parse(
+                                        multiImageProvider.length.toString()),
+                                    activeColor: Colors.blue,
+                                    inactiveColor: Colors.white,
+                                    onChanged: (double value) {
+                                      update(() {
+                                        setState(() {
+                                          sliderVal = value;
+                                          background =
+                                              multiImageProvider[value.toInt()];
+                                        });
+                                      });
+                                    },
+                                    value: sliderVal,
+                                  ),
+                                  SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(
+                                                fontSize: 2.h,
+                                                // color: Colors.black,
+                                              ),
+                                        ),
+                                        Text(
+                                          'page ${sliderVal.toInt()+1} of ${multiImageProvider.length}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(
+                                                fontSize: 2.h,
+                                                // color: Colors.black,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
                   ),
                 );
               },
@@ -189,6 +327,107 @@ class _BookDetailsState extends State<BookDetails>
           ],
         ),
       ),
+    );
+  }
+
+  AlertDialog buildAlertDialog() {
+    return AlertDialog(
+      // title: Text('Welcome'),
+      content: StatefulBuilder(builder: (context, _) {
+        return SizedBox(
+          height: 20.h,
+          width: 50.w,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Theme",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(color: getTextColor()),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              SizedBox(
+                height: 4.h,
+                width: 50.w,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: themes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var data = themes[index];
+                    return GestureDetector(
+                      onTap: () {
+                        _(() {
+                          setState(() {
+                            selectedTheme = index;
+                          });
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: data.color1,
+                            border: Border.all(
+                                color: selectedTheme == index
+                                    ? Colors.blue
+                                    : data.color1!)),
+                        height: 5.h,
+                        width: 10.w,
+                        child: Center(
+                          child: Text(
+                            'Aa',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                ?.copyWith(color: data.color2),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: 3.w,
+                    );
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              Text(
+                "Brightness",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(color: getTextColor()),
+              ),
+              Slider(
+                  value: brightness,
+                  onChanged: (value) {
+                    _(() {
+                      setState(() {
+                        brightness = value;
+                        FlutterScreenWake.setBrightness(brightness);
+                      });
+                      // setBrightness(value);
+                    });
+
+                    if (brightness == 0) {
+                      toggle = true;
+                    } else {
+                      toggle = false;
+                    }
+                  }),
+              SizedBox(
+                height: 1.h,
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 

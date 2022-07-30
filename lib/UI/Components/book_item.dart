@@ -31,7 +31,7 @@ class BookItem extends StatelessWidget {
           closeProgressThreshold: 10,
           context: Navigation.instance.navigatorKey.currentContext ?? context,
           builder: (context) => Container(
-            padding: const EdgeInsets.only(top: 30),
+            padding: const EdgeInsets.only(top: 20),
             height: 80.h,
             child: Stack(
               alignment: Alignment.topCenter,
@@ -153,9 +153,7 @@ class BookItem extends StatelessWidget {
                                 height: 4.5.h,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigation.instance.navigate(
-                                          '/bookDetails',
-                                          args: index);
+                                      Navigation.instance.navigate('/bookInfo',args: index);
                                     },
                                     style: ButtonStyle(
                                       backgroundColor:
@@ -179,7 +177,9 @@ class BookItem extends StatelessWidget {
                                 height: 4.5.h,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigation.instance.navigate('/main');
+                                      Navigation.instance.navigate(
+                                          '/bookDetails',
+                                          args: index);
                                     },
                                     style: ButtonStyle(
                                       backgroundColor:
@@ -197,7 +197,7 @@ class BookItem extends StatelessWidget {
                                           ),
                                     )),
                               ),
-                              SizedBox(height: 1.h),
+                              SizedBox(height: 2.h),
                             ],
                           ),
                         ),

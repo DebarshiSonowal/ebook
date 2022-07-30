@@ -1,4 +1,6 @@
 import 'package:ebook/UI/Routes/Auth/registration_page.dart';
+import 'package:ebook/UI/Routes/Navigation%20Page/account_page.dart';
+import 'package:ebook/UI/Routes/Navigation%20Page/book_info.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +9,8 @@ import '../UI/Routes/Auth/login_otp_verify.dart';
 import '../UI/Routes/Auth/login_page.dart';
 import '../UI/Routes/Auth/registration_otp_verify.dart';
 import '../UI/Routes/Navigation Page/book_details.dart';
+import '../UI/Routes/Navigation Page/category_page.dart';
+import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -28,11 +32,24 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/bookDetails':
       return FadeTransitionPageRouteBuilder(
           page: BookDetails(settings.arguments as int));
+    case '/bookInfo':
+      return FadeTransitionPageRouteBuilder(
+          page: BookInfo(settings.arguments as int));
+    case '/categories':
+      return FadeTransitionPageRouteBuilder(page: CategoryPage());
+
+    case '/accountDetails':
+      return FadeTransitionPageRouteBuilder(page: AccountPage());
+
     // case '/verificationProcess':
     //   return FadeTransitionPageRouteBuilder(page: VerificationProcessPage());
 
     case '/loadingDialog':
       return FadeTransitionPageRouteBuilder(page: LoadingDialog());
+    case '/writerInfo':
+      return FadeTransitionPageRouteBuilder(page: WriterInfo(settings.arguments as int));
+    case '/readingDialog':
+      return FadeTransitionPageRouteBuilder(page: ReadingDialog());
 
     //Main
     case '/main':

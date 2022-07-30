@@ -84,7 +84,6 @@ class _HomePageState extends State<HomePage> {
         ),
         IconButton(
           onPressed: () {
-
             showSearch(
               context: context,
               delegate: SearchPage<Book>(
@@ -124,20 +123,25 @@ class _HomePageState extends State<HomePage> {
         const Spacer(
           flex: 1,
         ),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Badge(
-            position: BadgePosition.bottomEnd(),
-            badgeColor: Colors.white,
-            badgeContent: const Icon(
-              ConstanceData.moreIcon,
-              color: Colors.black,
-              size: 10,
-            ),
-            child: const CircleAvatar(
-              // radius: 25, // Image radius
-              backgroundImage: AssetImage(
-                ConstanceData.humanImage,
+        GestureDetector(
+          onTap: (){
+            Navigation.instance.navigate('/accountDetails');
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Badge(
+              position: BadgePosition.bottomEnd(),
+              badgeColor: Colors.white,
+              badgeContent: const Icon(
+                ConstanceData.moreIcon,
+                color: Colors.black,
+                size: 10,
+              ),
+              child: const CircleAvatar(
+                // radius: 25, // Image radius
+                backgroundImage: AssetImage(
+                  ConstanceData.humanImage,
+                ),
               ),
             ),
           ),
