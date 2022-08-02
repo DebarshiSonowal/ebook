@@ -24,7 +24,7 @@ class _BookInfoState extends State<BookInfo>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          ConstanceData.bestselling[widget.index].name ?? "",
+          ConstanceData.Motivational[widget.index].name ?? "",
           style: Theme.of(context).textTheme.headline5,
         ),
         actions: [
@@ -55,7 +55,7 @@ class _BookInfoState extends State<BookInfo>
                       width: 30.w,
                       child: CachedNetworkImage(
                         imageUrl:
-                            ConstanceData.bestselling[widget.index].image ?? "",
+                        ConstanceData.Motivational[widget.index].image ?? "",
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -69,7 +69,7 @@ class _BookInfoState extends State<BookInfo>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            ConstanceData.bestselling[widget.index].name ?? "",
+                            ConstanceData.Motivational[widget.index].name ?? "",
                             style:
                                 Theme.of(context).textTheme.headline4?.copyWith(
                                       color: Colors.white,
@@ -88,7 +88,7 @@ class _BookInfoState extends State<BookInfo>
                                 width: 1.h,
                               ),
                               Text(
-                                "${ConstanceData.bestselling[widget.index].author ?? ""}",
+                                "${ConstanceData.Motivational[widget.index].author ?? ""}",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline5
@@ -360,7 +360,7 @@ class BookPublishinDetails extends StatelessWidget {
               RatingBar.builder(
                   itemSize: 5.w,
                   initialRating:
-                      ConstanceData.bestselling[widget.index].rating ?? 3,
+                  ConstanceData.Motivational[widget.index].rating ?? 3,
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: true,

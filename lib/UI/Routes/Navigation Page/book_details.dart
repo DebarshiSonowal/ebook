@@ -93,7 +93,7 @@ class _BookDetailsState extends State<BookDetails>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          ConstanceData.bestselling[widget.index].name ?? "",
+          ConstanceData.Motivational[widget.index].name ?? "",
           style: Theme.of(context)
               .textTheme
               .headline5

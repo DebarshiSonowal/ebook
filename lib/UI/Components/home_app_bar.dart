@@ -60,7 +60,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
             showSearch(
               context: context,
               delegate: SearchPage<Book>(
-                items: ConstanceData.bestselling,
+                items: ConstanceData.Motivational,
                 searchLabel: 'Search people',
                 suggestion: Center(
                   child: Text('Filter people by name, surname or age'),

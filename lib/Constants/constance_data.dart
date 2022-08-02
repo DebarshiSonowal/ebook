@@ -10,6 +10,7 @@ class ConstanceData {
   static const primaryColor = Colors.black;
   static const secondaryColor = Color(0xff0E0E0E);
   static const cardColor = Color(0xff6E10BB);
+  static const cardBookColor = Color(0xff464648);
   static const fontFamily = 'SF';
   static const primaryFont =
       'assets/fonts/assets/fonts/SF-Pro-Display-Regular.otf';
@@ -45,7 +46,7 @@ class ConstanceData {
     "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
   ];
 
-  static final bestselling = [
+  static final Motivational = [
     Book(
         'Principles of Economics',
         'Adam Smith',
@@ -68,7 +69,7 @@ class ConstanceData {
         3),
   ];
 
-  static final critics = [
+  static final Novel = [
     Book(
         'Lord of the rings',
         'CJlewis',
@@ -86,6 +87,52 @@ class ConstanceData {
         4.4),
     Book(
         'Game of Thrones',
+        'A.Singh',
+        'https://cdn.pixabay.com/photo/2018/02/21/09/35/steampunk-3169877__480.jpg',
+        4.1),
+  ];
+
+  static final Love = [
+    Book(
+        'Half Girlfriend',
+        'Chetan Bhagat',
+        'https://source.unsplash.com/user/c_v_r/1900x800',
+        4.9),
+    Book(
+        '3 mistakes of life',
+        'Chetan Bhagat',
+        'https://source.unsplash.com/user/c_v_r/100x100',
+        4.7),
+    Book(
+        'Mismatched',
+        'CJlewis',
+        'https://picsum.photos/200/300',
+        4.4),
+    Book(
+        'Asdfaf',
+        'A.Singh',
+        'https://picsum.photos/seed/picsum/200/300',
+        4.1),
+  ];
+
+  static var Children= [
+    Book(
+        'Aatiaz',
+        'CJlewis',
+        'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U',
+        4.9),
+    Book(
+        'Harrff',
+        'JKRowling',
+        'https://picsum.photos/200/300?grayscale',
+        4.7),
+    Book(
+        'ebsb',
+        'CJlewis',
+        'https://i.picsum.photos/id/405/200/300.jpg?blur=5&hmac=EhbmmQwVrdKxdSX-S54A_z7tXWne7vLO4Yx6tZdscIY',
+        4.4),
+    Book(
+        'Game fews',
         'A.Singh',
         'https://cdn.pixabay.com/photo/2018/02/21/09/35/steampunk-3169877__480.jpg',
         4.1),
@@ -128,4 +175,6 @@ class ConstanceData {
   static const testing="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
       " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
       " when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+
+
 }
