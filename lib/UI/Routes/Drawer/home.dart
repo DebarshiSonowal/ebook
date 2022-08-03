@@ -44,28 +44,28 @@ class _HomeState extends State<Home> {
               height: 1.h,
             ),
             buildBooksBar(context),
-            // const BannerHome(),
-            // SizedBox(
-            //   height: 1.h,
-            // ),
-            // const CategoryBar(),
-            // SizedBox(
-            //   height: 1.h,
-            // ),
-            // BooksSection(
-            //   title: 'Bestselling Books',
-            //   list: ConstanceData.bestselling,
-            // ),
-            // SizedBox(
-            //   height: 1.h,
-            // ),
-            // BooksSection(
-            //   title: 'Critically Acclaimed',
-            //   list: ConstanceData.critics,
-            // ),
-            // SizedBox(
-            //   height: 1.h,
-            // ),
+            // // const BannerHome(),
+            // // SizedBox(
+            // //   height: 1.h,
+            // // ),
+            // // const CategoryBar(),
+            // // SizedBox(
+            // //   height: 1.h,
+            // // ),
+            BooksSection(
+              title: 'Bestselling Books',
+              list: ConstanceData.Love,
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            BooksSection(
+              title: 'Critically Acclaimed',
+              list: ConstanceData.Novel,
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
           ],
         ),
       ),
@@ -76,143 +76,141 @@ class _HomeState extends State<Home> {
     return SizedBox(
             width: double.infinity,
             height: 19.h,
-            child: Expanded(
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: getTheList().length,
-                itemBuilder: (cont, count) {
-                  Book data = getTheList()[count];
-                  return Card(
-                    color: Colors.transparent,
-                    child: Container(
-                      height: 20.h,
-                      width: 55.w,
-                      decoration: const BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                // color: Colors.green,
-                                image: DecorationImage(
-                                  image: NetworkImage(data.image ?? ''),
-                                  fit: BoxFit.fill,
-                                ),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(10.0),
-                                  bottomLeft: Radius.circular(10.0),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              decoration: const BoxDecoration(
-                                color: ConstanceData.cardBookColor,
-                                borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(10.0),
-                                  bottomRight: Radius.circular(10.0),
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    data.name ?? '',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                          fontSize: 2.5.h,
-                                          color: Colors.white,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
-                                  Text(
-                                    data.author ?? '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline6
-                                        ?.copyWith(
-                                          fontSize: 1.5.h,
-                                          color: Colors.white,
-                                        ),
-                                  ),
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
-                                  RatingBar.builder(
-                                      itemSize: 4.w,
-                                      initialRating: data.rating ?? 3,
-                                      minRating: 1,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      // itemPadding:
-                                      //     EdgeInsets.symmetric(horizontal: 4.0),
-                                      itemBuilder: (context, _) => const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                            size: 10,
-                                          ),
-                                      onRatingUpdate: (rating) {
-                                        print(rating);
-                                      }),
-                                  SizedBox(
-                                    height: 1.h,
-                                  ),
-                                  Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(5.0),
-                                    ),
-                                    color: Colors.white,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(5),
-                                      // decoration: ,
-                                      child: Text(
-                                        'Rs. 1500',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline6
-                                            ?.copyWith(
-                                              fontSize: 1.5.h,
-                                              color: Colors.black,
-                                            ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: getTheList().length,
+              itemBuilder: (cont, count) {
+                Book data = getTheList()[count];
+                return Card(
+                  color: Colors.transparent,
+                  child: Container(
+                    height: 20.h,
+                    width: 55.w,
+                    decoration: const BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
                     ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 3.w,
-                  );
-                },
-              ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              // color: Colors.green,
+                              image: DecorationImage(
+                                image: NetworkImage(data.image ?? ''),
+                                fit: BoxFit.fill,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(10.0),
+                                bottomLeft: Radius.circular(10.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            decoration: const BoxDecoration(
+                              color: ConstanceData.cardBookColor,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10.0),
+                                bottomRight: Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  data.name ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline4
+                                      ?.copyWith(
+                                        fontSize: 2.5.h,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                Text(
+                                  data.author ?? '',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(
+                                        fontSize: 1.5.h,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                RatingBar.builder(
+                                    itemSize: 4.w,
+                                    initialRating: data.rating ?? 3,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    // itemPadding:
+                                    //     EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemBuilder: (context, _) => const Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                          size: 10,
+                                        ),
+                                    onRatingUpdate: (rating) {
+                                      print(rating);
+                                    }),
+                                SizedBox(
+                                  height: 1.h,
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(5.0),
+                                  ),
+                                  color: Colors.white,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    // decoration: ,
+                                    child: Text(
+                                      'Rs. 1500',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6
+                                          ?.copyWith(
+                                            fontSize: 1.5.h,
+                                            color: Colors.black,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(
+                  width: 3.w,
+                );
+              },
             ),
           );
   }

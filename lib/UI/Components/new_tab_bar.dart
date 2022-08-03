@@ -34,8 +34,11 @@ class NewTabBar extends StatelessWidget {
           Expanded(
             child: TabBar(
               controller: _controller,
+              indicatorColor: Colors.black,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.grey,
               tabs: [
-                Tab(icon: Text(ConstanceData.optionList[0])),
+                Tab(icon: Text(ConstanceData.optionList[0]),),
                 Tab(icon: Text(ConstanceData.optionList[1])),
                 // Tab(icon: Icon(Icons.directions_car)),
               ],
