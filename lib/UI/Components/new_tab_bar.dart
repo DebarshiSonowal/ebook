@@ -19,18 +19,7 @@ class NewTabBar extends StatelessWidget {
       width: double.infinity,
       child: Row(
         children: [
-          SizedBox(
-            width: 20.w,
-            height: 7.h,
-            child: Center(
-              child: Image.asset(
-                ConstanceData.primaryIcon,
-                height: 6.h,
-                width: 6.h,
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
+
           Expanded(
             child: TabBar(
               controller: _controller,

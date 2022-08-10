@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             // const TypeBar(),
-            NewSearchBar(),
+            // NewSearchBar(),
             SizedBox(
               height: 1.h,
             ),
@@ -165,7 +165,7 @@ class _HomeState extends State<Home> {
                                     //     EdgeInsets.symmetric(horizontal: 4.0),
                                     itemBuilder: (context, _) => const Icon(
                                           Icons.star,
-                                          color: Colors.amber,
+                                          color: Colors.white,
                                           size: 10,
                                         ),
                                     onRatingUpdate: (rating) {
@@ -243,7 +243,7 @@ class _HomeState extends State<Home> {
                         bottom: BorderSide(
                           //                    <--- top side
                           color:
-                              selected == count ? Colors.green : Colors.black,
+                              selected == count ? const Color(0xffffd400) : Colors.black,
                           width: 1,
                         ),
                       ),
@@ -255,7 +255,7 @@ class _HomeState extends State<Home> {
                         style: Theme.of(context).textTheme.headline5?.copyWith(
                               fontSize: 1.5.h,
                               color: selected == count
-                                  ? Colors.green
+                                  ? const Color(0xffffd400)
                                   : Colors.white,
                             ),
                       ),

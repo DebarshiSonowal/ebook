@@ -8,6 +8,7 @@ import '../UI/Components/loading_dialog.dart';
 import '../UI/Routes/Auth/login_otp_verify.dart';
 import '../UI/Routes/Auth/login_page.dart';
 import '../UI/Routes/Auth/registration_otp_verify.dart';
+import '../UI/Routes/Navigation Page/account_information.dart';
 import '../UI/Routes/Navigation Page/book_details.dart';
 import '../UI/Routes/Navigation Page/category_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
@@ -41,8 +42,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/accountDetails':
       return FadeTransitionPageRouteBuilder(page: AccountPage());
 
-    // case '/verificationProcess':
-    //   return FadeTransitionPageRouteBuilder(page: VerificationProcessPage());
+    case '/accountInformation':
+      return FadeTransitionPageRouteBuilder(page: AccountInformation());
 
     case '/loadingDialog':
       return FadeTransitionPageRouteBuilder(page: LoadingDialog());

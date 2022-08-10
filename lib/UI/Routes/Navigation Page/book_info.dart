@@ -369,7 +369,7 @@ class BookPublishinDetails extends StatelessWidget {
                   //     EdgeInsets.symmetric(horizontal: 4.0),
                   itemBuilder: (context, _) => const Icon(
                         Icons.star,
-                        color: Colors.amber,
+                        color: Colors.white,
                         size: 10,
                       ),
                   onRatingUpdate: (rating) {

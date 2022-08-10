@@ -35,33 +35,33 @@ class BooksSection extends StatelessWidget {
                         color: Colors.white,
                       ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    children: [
-                      Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.only(
-                                // topRight: Radius.circular(40.0),
-                                // bottomRight: Radius.circular(40.0),
-                                topLeft: Radius.circular(40.0),
-                                bottomLeft: Radius.circular(40.0)),
-                          ),
-                          padding: const EdgeInsets.only(
-                              left: 4, right: 4, top: 4, bottom: 4),
-                          child: Text('All')),
-                      Container(
-                          padding: const EdgeInsets.only(
-                              right: 4, top: 4, bottom: 4),
-                          child: Text('Paid')),
-                      Container(
-                          padding: const EdgeInsets.only(
-                              right: 4, top: 4, bottom: 4),
-                          child: Text('Free')),
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   child: Row(
+                //     children: [
+                //       Container(
+                //           decoration: const BoxDecoration(
+                //             color: Colors.blue,
+                //             borderRadius: BorderRadius.only(
+                //                 // topRight: Radius.circular(40.0),
+                //                 // bottomRight: Radius.circular(40.0),
+                //                 topLeft: Radius.circular(40.0),
+                //                 bottomLeft: Radius.circular(40.0)),
+                //           ),
+                //           padding: const EdgeInsets.only(
+                //               left: 4, right: 4, top: 4, bottom: 4),
+                //           child: Text('All')),
+                //       Container(
+                //           padding: const EdgeInsets.only(
+                //               right: 4, top: 4, bottom: 4),
+                //           child: Text('Paid')),
+                //       Container(
+                //           padding: const EdgeInsets.only(
+                //               right: 4, top: 4, bottom: 4),
+                //           child: Text('Free')),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

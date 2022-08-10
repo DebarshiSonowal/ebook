@@ -11,9 +11,11 @@ import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
+import '../../../Model/book.dart';
 
 class BookDetails extends StatefulWidget {
   final int index;
@@ -61,10 +63,9 @@ class _BookDetailsState extends State<BookDetails>
     // initPlatformBrightness();
     Future.delayed(Duration.zero, () async {
       brightness = await systemBrightness;
-      Navigation.instance.navigate(
-          '/readingDialog');
+      Navigation.instance.navigate('/readingDialog');
     });
-    Future.delayed(Duration(seconds:2),(){
+    Future.delayed(Duration(seconds: 2), () {
       Navigation.instance.goBack();
     });
   }
@@ -102,23 +103,140 @@ class _BookDetailsState extends State<BookDetails>
         backgroundColor: getBackGroundColor(),
         actions: [
           IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    // initPlatformBrightness();
-                    return buildAlertDialog();
-                  },
-                );
-              },
-              icon: const Icon(
-                Icons.font_download,
-              )),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                FontAwesomeIcons.hamburger,
-              )),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  // initPlatformBrightness();
+                  return buildAlertDialog();
+                },
+              );
+            },
+            icon: const Icon(
+              Icons.font_download,
+            ),
+          ),
+          PopupMenuButton<int>(
+            onSelected: (item) => handleClick(item),
+            itemBuilder: (context) => [
+              PopupMenuItem<int>(
+                value: 0,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.add),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Text(
+                      'Create a Bookmark',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value: 1,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.bookmark),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Text(
+                      'Save for later',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(Icons.download),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Text(
+                      'Download',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value:3,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.book),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Text(
+                      'Table of Contents',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value:4,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.share),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Text(
+                      'Share',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              PopupMenuItem<int>(
+                value:4,
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.info),
+                    SizedBox(
+                      width: 5.w,
+                    ),
+                    Text(
+                      'About Book',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          // IconButton(
+          //   onPressed: () {
+          //
+          //   },
+          //   icon: const Icon(
+          //     FontAwesomeIcons.hamburger,
+          //   ),
+          // ),
         ],
       ),
       body: Container(
@@ -230,7 +348,8 @@ class _BookDetailsState extends State<BookDetails>
                                           horizontal: 20.0),
                                       child: ElevatedButton(
                                           onPressed: () {
-                                            Navigation.instance.navigate('/bookInfo');
+                                            Navigation.instance
+                                                .navigate('/bookInfo');
                                           },
                                           style: ButtonStyle(
                                             backgroundColor:
@@ -259,22 +378,64 @@ class _BookDetailsState extends State<BookDetails>
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Slider(
-                                    min: 0,
-                                    max: double.parse(
-                                        multiImageProvider.length.toString()),
-                                    activeColor: Colors.blue,
-                                    inactiveColor: Colors.white,
-                                    onChanged: (double value) {
-                                      update(() {
-                                        setState(() {
-                                          sliderVal = value;
-                                          background =
-                                              multiImageProvider[value.toInt()];
-                                        });
-                                      });
-                                    },
-                                    value: sliderVal,
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Slider(
+                                          min: 0,
+                                          max: double.parse(multiImageProvider
+                                              .length
+                                              .toString()),
+                                          activeColor: Colors.blue,
+                                          inactiveColor: Colors.white,
+                                          onChanged: (double value) {
+                                            update(() {
+                                              setState(() {
+                                                sliderVal = value;
+                                                background = multiImageProvider[
+                                                    value.toInt()];
+                                              });
+                                            });
+                                          },
+                                          value: sliderVal,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          showSearch(
+                                            context: context,
+                                            delegate: SearchPage<Book>(
+                                              items: ConstanceData.Motivational,
+                                              searchLabel: 'Search people',
+                                              suggestion: const Center(
+                                                child: Text(
+                                                    'Filter people by name, surname or age'),
+                                              ),
+                                              failure: const Center(
+                                                child:
+                                                    Text('No person found :('),
+                                              ),
+                                              filter: (current) => [
+                                                current.name,
+                                                current.author,
+                                                // person.age.toString(),
+                                              ],
+                                              builder: (book) => ListTile(
+                                                title: Text(book.name ?? ''),
+                                                subtitle:
+                                                    Text(book.author ?? ''),
+                                                trailing: CachedNetworkImage(
+                                                  imageUrl: book.image ?? '',
+                                                  height: 20,
+                                                  width: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(Icons.search),
+                                      )
+                                    ],
                                   ),
                                   SizedBox(
                                     height: 1.h,
@@ -283,7 +444,8 @@ class _BookDetailsState extends State<BookDetails>
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20.0),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
@@ -296,7 +458,7 @@ class _BookDetailsState extends State<BookDetails>
                                               ),
                                         ),
                                         Text(
-                                          'page ${sliderVal.toInt()+1} of ${multiImageProvider.length}',
+                                          'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline5
@@ -463,4 +625,6 @@ class _BookDetailsState extends State<BookDetails>
         return Theme.of(context).textTheme.headline5?.color;
     }
   }
+
+  handleClick(int item) {}
 }

@@ -15,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import '../../../Model/book.dart';
 import '../../Components/bottom_navbar.dart';
 import '../../Components/home_app_bar.dart';
+import '../../Components/new_searchbar.dart';
 import '../../Components/new_tab_bar.dart';
 import '../Drawer/home.dart';
 import '../Drawer/store.dart';
@@ -42,6 +43,7 @@ class _HomePageState extends State<HomePage>
             child: Column(
               children: [
                 NewTabBar(controller: _controller),
+                NewSearchBar(),
                 Expanded(
                   child: Consumer<DataProvider>(builder: (context, current, _) {
                     return bodyWidget(current.currentIndex,current.currentTab);

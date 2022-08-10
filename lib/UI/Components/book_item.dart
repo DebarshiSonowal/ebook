@@ -8,7 +8,9 @@ import 'package:sizer/sizer.dart';
 import '../../Model/book.dart';
 
 class BookItem extends StatelessWidget {
-  const BookItem({
+  bool selected = false;
+
+  BookItem({
     Key? key,
     required this.data,
     required this.index,
@@ -98,7 +100,7 @@ class BookItem extends StatelessWidget {
                                   //     EdgeInsets.symmetric(horizontal: 4.0),
                                   itemBuilder: (context, _) => const Icon(
                                         Icons.star,
-                                        color: Colors.amber,
+                                    color: Colors.white,
                                         size: 10,
                                       ),
                                   onRatingUpdate: (rating) {
@@ -263,7 +265,7 @@ class BookItem extends StatelessWidget {
               //     EdgeInsets.symmetric(horizontal: 4.0),
               itemBuilder: (context, _) => const Icon(
                 Icons.star,
-                color: Colors.amber,
+                color: Colors.white,
                 size: 10,
               ),
               onRatingUpdate: (rating) {
@@ -273,17 +275,28 @@ class BookItem extends StatelessWidget {
             SizedBox(
               height: 0.5.h,
             ),
-            SizedBox(
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    Icons.bookmark_border,
-                    color: Colors.grey.shade200,
-                  )
-                ],
-              ),
+            StatefulBuilder(
+              builder: (context,_) {
+                return GestureDetector(
+                  onTap: (){
+                    _((){
+                      selected = !selected;
+                    });
+                  },
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          selected?Icons.bookmark:Icons.bookmark_border,
+                          color: Colors.grey.shade200,
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
             ),
           ],
         ),

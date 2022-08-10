@@ -10,7 +10,7 @@ class ConstanceData {
   static const primaryColor = Colors.black;
   static const secondaryColor = Color(0xff0E0E0E);
   static const cardColor = Color(0xff6E10BB);
-  static const cardBookColor = Color(0xff464648);
+  static const cardBookColor = Color(0xff121212);
   static const fontFamily = 'SF';
   static const primaryFont =
       'assets/fonts/assets/fonts/SF-Pro-Display-Regular.otf';
