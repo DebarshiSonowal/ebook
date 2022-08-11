@@ -14,7 +14,8 @@ class NewTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      color: Color(0xff121212),
       height: 7.h,
       width: double.infinity,
       child: Row(
@@ -25,7 +26,7 @@ class NewTabBar extends StatelessWidget {
               controller: _controller,
               indicatorColor: Colors.black,
               labelColor: Colors.white,
-              unselectedLabelColor: Colors.grey,
+              unselectedLabelColor: Colors.grey.shade600,
               tabs: [
                 Tab(icon: Text(ConstanceData.optionList[0]),),
                 Tab(icon: Text(ConstanceData.optionList[1])),

@@ -8,7 +8,7 @@ import '../Model/category.dart';
 
 class ConstanceData {
   static const primaryColor = Colors.black;
-  static const secondaryColor = Color(0xff0E0E0E);
+  static const secondaryColor = Color(0xff0d0d0d);
   static const cardColor = Color(0xff6E10BB);
   static const cardBookColor = Color(0xff121212);
   static const fontFamily = 'SF';

@@ -19,6 +19,7 @@ class NewSearchBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       height: 7.h,
       width: double.infinity,
+      color: Color(0xff121212),
       child: Row(
         children: [
           SizedBox(
@@ -70,12 +71,12 @@ class NewSearchBar extends StatelessWidget {
                     // person.age.toString(),
                   ],
                   builder: (book) => ListTile(
-                    title: Text(book.name ?? ''),
-                    subtitle: Text(book.author ?? ''),
+                    title: Text(book.name ?? '',style: Theme.of(context).textTheme.headline5,),
+                    subtitle: Text(book.author ?? '',style: Theme.of(context).textTheme.headline6,),
                     trailing: CachedNetworkImage(
                       imageUrl: book.image ?? '',
-                      height: 20,
-                      width: 20,
+                      height: 10.h,
+                      width: 15.w,
                     ),
                   ),
                 ),

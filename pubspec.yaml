@@ -60,6 +60,10 @@ dependencies:
   screen_brightness: ^0.2.1
   lottie: ^1.4.0
   expandable_text: ^2.3.0
+  flutter_windowmanager: ^0.2.0
+  path_provider: ^2.0.11
+  local_value: ^1.1.2
+  flutter_html: ^0.11.1
 
 dev_dependencies:
   flutter_test:

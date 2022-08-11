@@ -8,6 +8,7 @@ import 'package:ebook/Model/reading_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -57,9 +58,17 @@ class _BookDetailsState extends State<BookDetails>
   bool toggle = false;
   double sliderVal = 0;
 
+
+  @override
+  void dispose() {
+    super.dispose();
+    removeScreenshotDisable();
+  }
+
   @override
   void initState() {
     super.initState();
+    setScreenshotDisable();
     // initPlatformBrightness();
     Future.delayed(Duration.zero, () async {
       brightness = await systemBrightness;
@@ -149,8 +158,8 @@ class _BookDetailsState extends State<BookDetails>
                     Text(
                       'Save for later',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: Colors.white,
-                      ),
+                            color: Colors.white,
+                          ),
                     ),
                   ],
                 ),
@@ -167,14 +176,14 @@ class _BookDetailsState extends State<BookDetails>
                     Text(
                       'Download',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: Colors.white,
-                      ),
+                            color: Colors.white,
+                          ),
                     ),
                   ],
                 ),
               ),
               PopupMenuItem<int>(
-                value:3,
+                value: 3,
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -185,14 +194,14 @@ class _BookDetailsState extends State<BookDetails>
                     Text(
                       'Table of Contents',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: Colors.white,
-                      ),
+                            color: Colors.white,
+                          ),
                     ),
                   ],
                 ),
               ),
               PopupMenuItem<int>(
-                value:4,
+                value: 4,
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -203,14 +212,14 @@ class _BookDetailsState extends State<BookDetails>
                     Text(
                       'Share',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: Colors.white,
-                      ),
+                            color: Colors.white,
+                          ),
                     ),
                   ],
                 ),
               ),
               PopupMenuItem<int>(
-                value:4,
+                value: 4,
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -221,8 +230,8 @@ class _BookDetailsState extends State<BookDetails>
                     Text(
                       'About Book',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: Colors.white,
-                      ),
+                            color: Colors.white,
+                          ),
                     ),
                   ],
                 ),
@@ -627,4 +636,11 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   handleClick(int item) {}
+
+  void setScreenshotDisable() async {
+    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+  }
+  void removeScreenshotDisable() async {
+    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+  }
 }
