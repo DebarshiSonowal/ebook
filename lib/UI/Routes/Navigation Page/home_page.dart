@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage>
                 NewSearchBar(),
                 Expanded(
                   child: Consumer<DataProvider>(builder: (context, current, _) {
-                    return bodyWidget(current.currentIndex,current.currentTab);
+                    return bodyWidget(current.currentIndex, current.currentTab);
                   }),
                 ),
               ],
@@ -64,20 +64,18 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-
-
-  Widget bodyWidget(int currentIndex,currentTab) {
-    if (currentTab==0) {
+  Widget bodyWidget(int currentIndex, currentTab) {
+    if (currentTab == 0) {
       switch (currentIndex) {
-            case 1:
-              return const Librarypage();
-            case 2:
-              return const Store();
-            case 3:
-              return const More();
-            default:
-              return const Home();
-          }
+        case 1:
+          return const Librarypage();
+        case 2:
+          return const Store();
+        case 3:
+          return const More();
+        default:
+          return const Home();
+      }
     } else {
       return Container(
         height: double.infinity,
@@ -91,7 +89,12 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _controller = TabController(
-      length: ConstanceData.optionList.length,
+      length: Provider.of<DataProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: true)
+              .formats
+              ?.length ??
+          2,
       vsync: this,
     );
     _controller?.addListener(() {
@@ -102,4 +105,3 @@ class _HomePageState extends State<HomePage>
     });
   }
 }
-

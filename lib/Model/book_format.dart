@@ -6,13 +6,14 @@ class BookFormatResponse {
   BookFormatResponse.fromJson(json) {
     status = json['success'] ?? false;
     message = json['message'] ?? "Something went wrong";
-    bookFormats = json['results'] == null || json['results'] == []
+    bookFormats = json['result'] == null
         ? []
-        : (json['results'] as List).map((e) => BookFormat.fromJson(e)).toList();
+        : (json['result'] as List).map((e) => BookFormat.fromJson(e)).toList();
   }
-  BookFormatResponse.withError(msg){
+
+  BookFormatResponse.withError(msg) {
     status = false;
-    message = msg??"Something went wrong";
+    message = msg ?? "Something went wrong";
   }
 }
 

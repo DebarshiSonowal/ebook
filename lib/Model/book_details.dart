@@ -8,6 +8,10 @@ class BookDetailsResponse{
     message = json['message']??"Something went wrong";
     details = BookDetails.fromJson(json['result']);
   }
+  BookDetailsResponse.withError(msg){
+    status = false;
+    message = msg??"Something went wrong";
+  }
 
 }
 
