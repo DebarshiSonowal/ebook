@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Components/banner_home.dart';
 import 'package:flutter/material.dart';
@@ -58,17 +59,35 @@ class _HomeState extends State<Home> {
             // // SizedBox(
             // //   height: 1.h,
             // // ),
-            BooksSection(
-              title: 'Bestselling Books',
-              list: ConstanceData.Love,
-            ),
-            SizedBox(
-              height: 1.h,
-            ),
-            BooksSection(
-              title: 'Critically Acclaimed',
-              list: ConstanceData.Novel,
-            ),
+            ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (cont, index) {
+                  return Consumer<DataProvider>(builder: (context, data, _) {
+                    return BooksSection(
+                      title: data.homeSection![data.currentTab][index].title ??
+                          'Bestselling Books',
+                      list:
+                          data.homeSection![data.currentTab][index].book ?? [],
+                    );
+                  });
+                },
+                separatorBuilder: (cont, ind) {
+                  return SizedBox(
+                    height: 1.h,
+                  );
+                },
+                itemCount: Provider.of<DataProvider>(context)
+                    .homeSection![Provider.of<DataProvider>(context).currentTab]
+                    .length),
+
+            // Consumer<DataProvider>(builder: (context, data, _) {
+            //   return BooksSection(
+            //     title: 'Critically Acclaimed',
+            //     list: data.homeSection![0],
+            //   );
+            // }),
+
             SizedBox(
               height: 1.h,
             ),
@@ -78,157 +97,164 @@ class _HomeState extends State<Home> {
     );
   }
 
-  SizedBox buildBooksBar(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 19.h,
-      child: Center(
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: getTheList().length,
-          itemBuilder: (cont, count) {
-            Book data = getTheList()[count];
-            return Card(
-              color: Colors.transparent,
-              child: Container(
-                height: 20.h,
-                width: 55.w,
-                decoration: const BoxDecoration(
-                  color: Color(0xff121212),
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 2.w, vertical: 2.h),
-                        decoration: const BoxDecoration(
-                          color: ConstanceData.cardBookColor,
-                          // color: Colors.green,
-                          // image: DecorationImage(
-                          //   image:
-                          //   fit: BoxFit.fill,
-                          // ),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            bottomLeft: Radius.circular(10.0),
+  Widget buildBooksBar(BuildContext context) {
+    return Consumer<DataProvider>(builder: (context, currentData, _) {
+      return SizedBox(
+        width: double.infinity,
+        height: 19.h,
+        child: Center(
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: filterByCategory(
+                    currentData.bannerList![currentData.currentTab],
+                    currentData)
+                .length,
+            itemBuilder: (cont, count) {
+              HomeBanner data = filterByCategory(
+                  currentData.bannerList![currentData.currentTab],
+                  currentData)[count];
+              return Card(
+                color: Colors.transparent,
+                child: Container(
+                  height: 20.h,
+                  width: 55.w,
+                  decoration: const BoxDecoration(
+                    color: Color(0xff121212),
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 2.w, vertical: 2.h),
+                          decoration: const BoxDecoration(
+                            color: ConstanceData.cardBookColor,
+                            // color: Colors.green,
+                            // image: DecorationImage(
+                            //   image:
+                            //   fit: BoxFit.fill,
+                            // ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0),
+                              bottomLeft: Radius.circular(10.0),
+                            ),
                           ),
-                        ),
-                        child: CachedNetworkImage(
-                          imageUrl: data.image ?? '',
-                          fit: BoxFit.fill,
-                          height: double.infinity,
-                          width: double.infinity,
+                          child: CachedNetworkImage(
+                            imageUrl: data.profile_pic ?? '',
+                            fit: BoxFit.fill,
+                            height: double.infinity,
+                            width: double.infinity,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 5),
-                        decoration: const BoxDecoration(
-                          color: ConstanceData.cardBookColor,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(10.0),
-                            bottomRight: Radius.circular(10.0),
+                      Expanded(
+                        flex: 4,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          decoration: const BoxDecoration(
+                            color: ConstanceData.cardBookColor,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0),
+                            ),
                           ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              data.name ?? '',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(
-                                    fontSize: 2.5.h,
-                                    color: Colors.white,
-                                  ),
-                            ),
-                            SizedBox(
-                              height: 1.h,
-                            ),
-                            Text(
-                              data.author ?? '',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline6
-                                  ?.copyWith(
-                                    fontSize: 1.5.h,
-                                    color: Colors.white,
-                                  ),
-                            ),
-                            SizedBox(
-                              height: 1.h,
-                            ),
-                            RatingBar.builder(
-                                itemSize: 4.w,
-                                initialRating: data.rating ?? 3,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                // itemPadding:
-                                //     EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (context, _) => const Icon(
-                                      Icons.star,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                data.title ?? '',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline4
+                                    ?.copyWith(
+                                      fontSize: 2.5.h,
                                       color: Colors.white,
-                                      size: 10,
                                     ),
-                                onRatingUpdate: (rating) {
-                                  print(rating);
-                                }),
-                            SizedBox(
-                              height: 1.h,
-                            ),
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0),
                               ),
-                              color: Colors.white,
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                // decoration: ,
-                                child: Text(
-                                  'Rs. 1500',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline6
-                                      ?.copyWith(
-                                        fontSize: 1.5.h,
-                                        color: Colors.black,
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Text(
+                                data.writer ?? '',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    ?.copyWith(
+                                      fontSize: 1.5.h,
+                                      color: Colors.white,
+                                    ),
+                              ),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              RatingBar.builder(
+                                  itemSize: 4.w,
+                                  initialRating: 3,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  // itemPadding:
+                                  //     EdgeInsets.symmetric(horizontal: 4.0),
+                                  itemBuilder: (context, _) => const Icon(
+                                        Icons.star,
+                                        color: Colors.white,
+                                        size: 10,
                                       ),
+                                  onRatingUpdate: (rating) {
+                                    print(rating);
+                                  }),
+                              SizedBox(
+                                height: 1.h,
+                              ),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                color: Colors.white,
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  // decoration: ,
+                                  child: Text(
+                                    'Rs. 1500',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        ?.copyWith(
+                                          fontSize: 1.5.h,
+                                          color: Colors.black,
+                                        ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return SizedBox(
-              width: 3.w,
-            );
-          },
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return SizedBox(
+                width: 3.w,
+              );
+            },
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Consumer<DataProvider> NewCategoryBar(BuildContext context) {
@@ -251,6 +277,7 @@ class _HomeState extends State<Home> {
                       setState(() {
                         selected = count;
                         debugPrint(count.toString());
+                        current.setCategory(count);
                       });
                     },
                     child: Container(
@@ -290,27 +317,27 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Navigation.instance.navigate('/categories');
-              },
-              child: Container(
-                width: 13.w,
-                height: 3.h,
-                padding: EdgeInsets.all(0.2.h),
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                child: Center(
-                  child: Text(
-                    'More ->',
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          fontSize: 1.5.h,
-                          color: Colors.white,
-                        ),
-                  ),
-                ),
-              ),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+            //     Navigation.instance.navigate('/categories');
+            //   },
+            //   child: Container(
+            //     width: 13.w,
+            //     height: 3.h,
+            //     padding: EdgeInsets.all(0.2.h),
+            //     margin: const EdgeInsets.symmetric(horizontal: 5),
+            //     child: Center(
+            //       child: Text(
+            //         'More ->',
+            //         overflow: TextOverflow.ellipsis,
+            //         style: Theme.of(context).textTheme.headline5?.copyWith(
+            //               fontSize: 1.5.h,
+            //               color: Colors.white,
+            //             ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       );
@@ -328,5 +355,13 @@ class _HomeState extends State<Home> {
       default:
         return ConstanceData.Children;
     }
+  }
+
+  filterByCategory(List<HomeBanner> list, DataProvider data) {
+    return list
+        .where((element) =>
+            element.book_category_id ==
+            data.categoryList![data.currentTab][data.currentCategory].id)
+        .toList();
   }
 }

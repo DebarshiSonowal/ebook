@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -16,7 +17,7 @@ class BookItem extends StatelessWidget {
     required this.index,
   }) : super(key: key);
 
-  final Book data;
+  final HomeBanner data;
   final int index;
 
   @override
@@ -63,7 +64,7 @@ class BookItem extends StatelessWidget {
                             children: [
                               SizedBox(height: 1.5.h),
                               Text(
-                                data.name ?? "NA",
+                                data.title ?? "NA",
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline4
@@ -80,7 +81,7 @@ class BookItem extends StatelessWidget {
                                         ?.copyWith(color: Colors.white),
                                   ),
                                   Text(
-                                    data.author ?? "NA",
+                                    data.writer ?? "NA",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline5
@@ -91,7 +92,7 @@ class BookItem extends StatelessWidget {
                               SizedBox(height: 1.h),
                               RatingBar.builder(
                                   itemSize: 6.w,
-                                  initialRating: data.rating ?? 3,
+                                  initialRating: 3,
                                   minRating: 1,
                                   direction: Axis.horizontal,
                                   allowHalfRating: true,
@@ -213,7 +214,7 @@ class BookItem extends StatelessWidget {
                   height: 25.h,
                   width: 40.w,
                   child: CachedNetworkImage(
-                    imageUrl: data.image ?? "",
+                    imageUrl: data.profile_pic ?? "",
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -234,12 +235,12 @@ class BookItem extends StatelessWidget {
               height: 15.h,
               width: double.infinity,
               child: CachedNetworkImage(
-                imageUrl: data.image ?? "",
+                imageUrl: data.profile_pic ?? "",
                 fit: BoxFit.fill,
               ),
             ),
             Text(
-              data.name ?? "",
+              data.title ?? "",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyText1,
             ),
@@ -247,7 +248,7 @@ class BookItem extends StatelessWidget {
               height: 0.5.h,
             ),
             Text(
-              data.author ?? "",
+              data.writer ?? "",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyText2,
             ),
@@ -256,7 +257,7 @@ class BookItem extends StatelessWidget {
             ),
             RatingBar.builder(
               itemSize: 4.w,
-              initialRating: data.rating ?? 3,
+              initialRating: 3,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,

@@ -11,6 +11,7 @@ class DataProvider extends ChangeNotifier {
   List<List<HomeBanner>>? bannerList=[];
   List<List<HomeSection>>? homeSection=[];
   int currentIndex = 0;
+  int currentCategory = 0;
   int currentTab = 0;
 
   setCurrentTab(int i) {
@@ -39,6 +40,10 @@ class DataProvider extends ChangeNotifier {
 
   setIndex(int i) {
     currentIndex = i;
+    notifyListeners();
+  }
+  setCategory(int i) {
+    currentCategory  = i;
     notifyListeners();
   }
 }

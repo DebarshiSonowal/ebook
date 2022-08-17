@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ebook/Model/home_banner.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -11,7 +12,7 @@ class BooksSection extends StatelessWidget {
   BooksSection({required this.title, required this.list});
 
   final String title;
-  final List<Book> list;
+  final List<HomeBanner> list;
 
   @override
   Widget build(BuildContext context) {
