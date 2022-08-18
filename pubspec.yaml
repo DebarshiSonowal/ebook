@@ -44,7 +44,7 @@ dependencies:
   sizer: ^2.0.15
   connectivity_plus: ^2.3.6
   url_launcher: ^6.1.5
-  flutter_svg: ^1.1.1+1
+  flutter_svg: ^0.23.0+1
   carousel_slider: ^4.1.1
   shimmer: ^2.0.0
   flutter_secure_storage: ^5.0.2
@@ -63,7 +63,7 @@ dependencies:
   flutter_windowmanager: ^0.2.0
   path_provider: ^2.0.11
   local_value: ^1.1.2
-  flutter_html: ^0.11.1
+  flutter_html: ^2.2.1
 
 dev_dependencies:
   flutter_test:

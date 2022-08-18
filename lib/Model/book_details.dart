@@ -1,22 +1,27 @@
-class BookDetailsResponse{
+import 'Tag.dart';
+
+class BookDetailsResponse {
   bool? status;
   String? message;
-  BookDetails? details;
+  BookDetailsModel? details;
 
-  BookDetailsResponse.fromJson(json){
-    status = json['success']??false;
-    message = json['message']??"Something went wrong";
-    details = BookDetails.fromJson(json['result']);
+  BookDetailsResponse.fromJson(json) {
+    status = json['success'] ?? false;
+    message = json['message'] ?? "Something went wrong";
+    details = BookDetailsModel.fromJson(json['result']);
   }
-  BookDetailsResponse.withError(msg){
+
+  BookDetailsResponse.withError(msg) {
     status = false;
-    message = msg??"Something went wrong";
+    message = msg ?? "Something went wrong";
   }
-
 }
 
-
-class BookDetails {
+class BookDetailsModel {
+  // "language": "English",
+  // "category": "Story",
+  // "writer": "Mr Sandeep Baruah",
+  // "publisher": "Sanjay Das",
   int? id,
       product_type_id,
       writer_id,
@@ -25,9 +30,20 @@ class BookDetails {
       publisher_id,
       user_id,
       status,
-      total_chapters;
+      total_chapters,
+      length;
 
-  String? title, code, book_format, description, profile_pic, rejected_reason;
+  String? title,
+      code,
+      book_format,
+      description,
+      profile_pic,
+      rejected_reason,
+      publisher,
+      writer,
+      category,
+      language,
+      released_date;
   double? average_rating,
       total_rating,
       base_price,
@@ -38,8 +54,12 @@ class BookDetails {
       selling_price;
   bool? is_free;
 
-  BookDetails.fromJson(json) {
+  List<Tag>? tags, awards;
+
+  BookDetailsModel.fromJson(json) {
     id = json['id'] ?? 0;
+    length =
+        json['length'] == null ? 0 : (int.parse(json['length'].toString()));
     product_type_id = json['product_type_id'] ?? 0;
     writer_id = json['writer_id'] ?? 0;
     book_category_id = json['book_category_id'] ?? 0;
@@ -48,20 +68,41 @@ class BookDetails {
     user_id = json['user_id'] ?? 0;
     status = json['status'] ?? 0;
     total_chapters = json['total_chapters'] ?? 0;
+
+    //String
     title = json['title'] ?? "";
     code = json['code'] ?? "";
     book_format = json['book_format'] ?? "";
     description = json['description'] ?? "";
     profile_pic = json['profile_pic'] ?? "";
     rejected_reason = json['rejected_reason'] ?? "";
+    publisher = json['publisher'] ?? "";
+    writer = json['writer'] ?? "";
+    category = json['category'] ?? "";
+    language = json['language'] ?? "";
+    released_date = json['released_date'] ?? "";
+
+    //List
+    tags = json['tags'] == null
+        ? []
+        : (json['tags'] as List).map((e) => Tag.fromJson(e)).toList();
+    awards = json['awards'] == null
+        ? []
+        : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
+
+    //double
     average_rating = json['average_rating'] == null
         ? 0
         : double.parse(json['average_rating']);
-    total_rating =
-        json['total_rating'] == null ? 0 : double.parse(json['total_rating']);
-    base_price =
-        json['base_price'] == null ? 0 : double.parse(json['base_price']);
-    discount = json['discount'] == null ? 0 : double.parse(json['discount']);
+    total_rating = json['total_rating'] == null
+        ? 0
+        : double.parse(json['total_rating'].toString());
+    base_price = json['base_price'] == null
+        ? 0
+        : double.parse(json['base_price'].toString());
+    discount = json['discount'] == null
+        ? 0
+        : double.parse(json['discount'].toString());
     commission_percent = json['commission_percent'] == null
         ? 0
         : double.parse(json['commission_percent']);
@@ -71,6 +112,8 @@ class BookDetails {
         json['writer_amount'] == null ? 0 : double.parse(json['writer_amount']);
     selling_price =
         json['selling_price'] == null ? 0 : double.parse(json['selling_price']);
+
+    //bool
     is_free = json['is_free'] == null
         ? false
         : json['is_free'] == 0

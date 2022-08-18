@@ -1,21 +1,13 @@
-import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:ebook/UI/Components/banner_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Constants/constance_data.dart';
-import '../../../Model/book.dart';
 import '../../Components/books_section.dart';
-import '../../Components/category_bar.dart';
-import '../../Components/new_searchbar.dart';
-import '../../Components/type_bar.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -224,7 +216,7 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.all(5),
                                   // decoration: ,
                                   child: Text(
-                                    'Rs. 1500',
+                                    'Rs. ${data.selling_price}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)

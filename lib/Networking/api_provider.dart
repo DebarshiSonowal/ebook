@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../Model/book_category.dart';
+import '../Model/book_chapter.dart';
 import '../Model/book_details.dart';
 import '../Model/book_format.dart';
 import '../Model/generic_response.dart';
@@ -126,6 +127,26 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("BookDetails response: ${e.response}");
       return BookDetailsResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<BookChapterResponse> fetchBookChapters(String id) async {
+    var url = "${baseUrl}$path/chapters/${id}";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("BookDetails response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return BookChapterResponse.fromJson(response?.data);
+      } else {
+        debugPrint("BookDetails error: ${response?.data}");
+        return BookChapterResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("BookDetails response: ${e.response}");
+      return BookChapterResponse.withError(e.message.toString());
     }
   }
 }

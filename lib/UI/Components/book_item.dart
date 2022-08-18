@@ -35,12 +35,12 @@ class BookItem extends StatelessWidget {
           context: Navigation.instance.navigatorKey.currentContext ?? context,
           builder: (context) => Container(
             padding: const EdgeInsets.only(top: 20),
-            height: 80.h,
+            // height: 80.h,
             child: Stack(
               alignment: Alignment.topCenter,
               children: [
                 SizedBox(
-                  height: 80.h,
+                  height: 85.h,
                   width: double.infinity,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +52,7 @@ class BookItem extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        flex: 4,
+                        flex: 5,
                         child: Container(
                           // height: 200,
                           // width: 200,
@@ -70,7 +70,7 @@ class BookItem extends StatelessWidget {
                                     .headline4
                                     ?.copyWith(color: Colors.white),
                               ),
-                              SizedBox(height: 1.h),
+                              SizedBox(height: 0.5.h),
                               Row(
                                 children: [
                                   Text(
@@ -90,28 +90,38 @@ class BookItem extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(height: 1.h),
-                              RatingBar.builder(
-                                  itemSize: 6.w,
-                                  initialRating: 3,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  // itemPadding:
-                                  //     EdgeInsets.symmetric(horizontal: 4.0),
-                                  itemBuilder: (context, _) => const Icon(
-                                        Icons.star,
-                                    color: Colors.white,
-                                        size: 10,
-                                      ),
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  }),
+                              Row(
+                                children: [
+                                  RatingBar.builder(
+                                      itemSize: 6.w,
+                                      initialRating: data.average_rating ?? 3,
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      // itemPadding:
+                                      //     EdgeInsets.symmetric(horizontal: 4.0),
+                                      itemBuilder: (context, _) => const Icon(
+                                            Icons.star,
+                                            color: Colors.white,
+                                            size: 10,
+                                          ),
+                                      onRatingUpdate: (rating) {
+                                        print(rating);
+                                      }),
+                                  Text(
+                                    " (${data.total_rating})",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5
+                                        ?.copyWith(color: Colors.white),
+                                  ),                                ],
+                              ),
                               SizedBox(height: 1.h),
                               Row(
                                 children: [
                                   Text(
-                                    "673 pages",
+                                    "${data.length} pages",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headline5
@@ -128,26 +138,108 @@ class BookItem extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    "English",
+                                    "${data.language}",
                                     style:
                                         Theme.of(context).textTheme.headline5,
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 2.h),
+                              SizedBox(height: 1.h),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                color: Colors.white,
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  // decoration: ,
+                                  child: Text(
+                                    'Rs. ${data.selling_price}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline6
+                                        ?.copyWith(
+                                          fontSize: 1.5.h,
+                                          color: Colors.black,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 1.h),
                               SizedBox(
                                 width: 50.w,
-                                child: TypeBar(),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 4.h,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: [
+                                            for (var i in data.tags ?? [])
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(5),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color: Colors.white),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(5)),
+                                                ),
+                                                child: Text(
+                                                  i.name ?? "",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headline5,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      // GestureDetector(
+                                      //   onTap: () {
+                                      //     Navigation.instance
+                                      //         .navigate('/categories');
+                                      //   },
+                                      //   child: Container(
+                                      //     padding: const EdgeInsets.all(5),
+                                      //     margin: const EdgeInsets.symmetric(
+                                      //         horizontal: 5),
+                                      //     decoration: BoxDecoration(
+                                      //       border:
+                                      //           Border.all(color: Colors.white),
+                                      //       borderRadius: BorderRadius.all(
+                                      //           Radius.circular(5)),
+                                      //     ),
+                                      //     child: Text(
+                                      //       'All Categories',
+                                      //       style: Theme.of(context)
+                                      //           .textTheme
+                                      //           .headline5,
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                    ],
+                                  ),
+                                ),
                               ),
                               SizedBox(height: 2.h),
-                              Text(
-                                "#1 New York Times Bestseller",
+                              data.awards!.isNotEmpty?Text(
+                                "${data.awards![0].name} Winner",
                                 style: Theme.of(context).textTheme.headline5,
-                              ),
+                              ):Container(),
                               SizedBox(height: 2.h),
                               Text(
-                                "Lorem Ipsum is simply dummy text of the printing and"
-                                " typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+                                "${data.short_description}",
+                                maxLines: 3,
+                                overflow: TextOverflow.fade,
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                               SizedBox(height: 1.h),
@@ -156,7 +248,8 @@ class BookItem extends StatelessWidget {
                                 height: 4.5.h,
                                 child: ElevatedButton(
                                     onPressed: () {
-                                      Navigation.instance.navigate('/bookInfo',args: index);
+                                      Navigation.instance
+                                          .navigate('/bookInfo', args: data.id);
                                     },
                                     style: ButtonStyle(
                                       backgroundColor:
@@ -182,7 +275,7 @@ class BookItem extends StatelessWidget {
                                     onPressed: () {
                                       Navigation.instance.navigate(
                                           '/bookDetails',
-                                          args: index);
+                                          args: data.id??0);
                                     },
                                     style: ButtonStyle(
                                       backgroundColor:
@@ -215,6 +308,13 @@ class BookItem extends StatelessWidget {
                   width: 40.w,
                   child: CachedNetworkImage(
                     imageUrl: data.profile_pic ?? "",
+                    placeholder: (context, url) => Padding(
+                      padding: EdgeInsets.all(18.0),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Icon(Icons.person),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -228,6 +328,7 @@ class BookItem extends StatelessWidget {
         // height: 18.h,
         width: 27.w,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               decoration:
@@ -236,6 +337,13 @@ class BookItem extends StatelessWidget {
               width: double.infinity,
               child: CachedNetworkImage(
                 imageUrl: data.profile_pic ?? "",
+                placeholder: (context, url) => Padding(
+                  padding: EdgeInsets.all(18.0),
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: Colors.white),
+                ),
+                errorWidget: (context, url, error) =>
+                    Icon(Icons.image, color: Colors.white),
                 fit: BoxFit.fill,
               ),
             ),
@@ -257,7 +365,7 @@ class BookItem extends StatelessWidget {
             ),
             RatingBar.builder(
               itemSize: 4.w,
-              initialRating: 3,
+              initialRating: data.average_rating ?? 3,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -276,29 +384,49 @@ class BookItem extends StatelessWidget {
             SizedBox(
               height: 0.5.h,
             ),
-            StatefulBuilder(
-              builder: (context,_) {
-                return GestureDetector(
-                  onTap: (){
-                    _((){
-                      selected = !selected;
-                    });
-                  },
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(
-                          selected?Icons.bookmark:Icons.bookmark_border,
-                          color: Colors.grey.shade200,
-                        )
-                      ],
-                    ),
+            StatefulBuilder(builder: (context, _) {
+              return GestureDetector(
+                onTap: () {
+                  _(() {
+                    selected = !selected;
+                  });
+                },
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.all(0.5.w),
+                          // decoration: ,
+                          child: Text(
+                            'Rs. ${data.selling_price}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6
+                                ?.copyWith(
+                              fontSize: 9.sp,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        selected ? Icons.bookmark : Icons.bookmark_border,
+                        color: Colors.grey.shade200,
+                      )
+                    ],
                   ),
-                );
-              }
-            ),
+                ),
+              );
+            }),
           ],
         ),
       ),
