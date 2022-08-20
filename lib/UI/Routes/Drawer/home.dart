@@ -97,14 +97,17 @@ class _HomeState extends State<Home> {
         child: Center(
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: filterByCategory(
-                    currentData.bannerList![currentData.currentTab],
-                    currentData)
+            // itemCount: filterByCategory(
+            //         currentData.bannerList![currentData.currentTab],
+            //         currentData)
+            //     .length,
+            itemCount:currentData.bannerList![currentData.currentTab]
                 .length,
             itemBuilder: (cont, count) {
-              HomeBanner data = filterByCategory(
-                  currentData.bannerList![currentData.currentTab],
-                  currentData)[count];
+              // HomeBanner data = filterByCategory(
+              //     currentData.bannerList![currentData.currentTab],
+              //     currentData)[count];
+              HomeBanner data = currentData.bannerList![currentData.currentTab][count];
               return Card(
                 color: Colors.transparent,
                 child: Container(

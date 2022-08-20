@@ -1,14 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 
 import '../../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Model/book_details.dart';
+import '../../../Model/review.dart';
 import '../../../Networking/api_provider.dart';
 
 class BookInfo extends StatefulWidget {
@@ -23,6 +26,7 @@ class BookInfo extends StatefulWidget {
 class _BookInfoState extends State<BookInfo>
     with SingleTickerProviderStateMixin {
   BookDetailsModel? bookDetails;
+  List<Review> reviews = [];
 
   @override
   Widget build(BuildContext context) {
@@ -276,12 +280,58 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    Text(
-                      "Write a Review",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5
-                          ?.copyWith(color: Colors.blueAccent),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          // set to false if you want to force a rating
+                          builder: (context) => RatingDialog(
+                            initialRating: 0,
+                            // your app's name?
+                            title: Text(
+                              'Give us rating',
+                              textAlign: TextAlign.center,
+                              style:  TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            // encourage your user to leave a high rating?
+                            message: Text(
+                              'Give a review to this book',
+                              textAlign: TextAlign.center,
+                              style: TextStyle( fontSize: 15.sp,),
+                            ),
+                            // your app's logo?
+                            // image: const FlutterLogo(size: 100),
+                            submitButtonText: 'Submit',
+                            submitButtonTextStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                            ),
+                            commentHint: '',
+                            // commentHint: 'Set your custom comment hint',
+                            onCancelled: () => print('cancelled'),
+                            onSubmitted: (response) async {
+                              print(
+                                  'rating: ${response.rating}, comment: ${response.comment}');
+                              final response1 = await ApiProvider.instance
+                                  .addReview(
+                                      Add_Review(0, response.comment ?? "",
+                                          response.rating),
+                                      widget.id);
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Write a Review",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(color: Colors.blueAccent),
+                      ),
                     ),
                     SizedBox(
                       height: 1.5.h,
@@ -323,46 +373,67 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Text(
-                    //       '${ConstanceData.reviews[0].name}',
-                    //       style: Theme.of(context).textTheme.headline5?.copyWith(
-                    //         fontSize: 2.h,
-                    //         // color: Colors.grey.shade200,
-                    //       ),
-                    //     ),
-                    //     RatingBar.builder(
-                    //         itemSize: 5.w,
-                    //         initialRating:
-                    //         ConstanceData.reviews[0].rating ?? 3,
-                    //         minRating: 1,
-                    //         direction: Axis.horizontal,
-                    //         allowHalfRating: true,
-                    //         itemCount: 5,
-                    //         // itemPadding:
-                    //         //     EdgeInsets.symmetric(horizontal: 4.0),
-                    //         itemBuilder: (context, _) => const Icon(
-                    //           Icons.star,
-                    //           color: Colors.amber,
-                    //           size: 10,
-                    //         ),
-                    //         onRatingUpdate: (rating) {
-                    //           print(rating);
-                    //         }),
-                    //   ],
-                    // ),
-                    // SizedBox(
-                    //   height: 1.5.h,
-                    // ),
-                    // Text(
-                    //   '${ConstanceData.reviews[0].note}',
-                    //   style: Theme.of(context).textTheme.headline5?.copyWith(
-                    //     fontSize: 2.h,
-                    //     // color: Colors.grey.shade200,
-                    //   ),
-                    // ),
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: reviews.length,
+                        itemBuilder: (cont, index) {
+                          var data = reviews[index];
+                          return Container(
+                            width: double.infinity,
+                            // height: 20.h,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${data.subscriber}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5
+                                          ?.copyWith(
+                                            fontSize: 2.h,
+                                            // color: Colors.grey.shade200,
+                                          ),
+                                    ),
+                                    RatingBar.builder(
+                                        itemSize: 5.w,
+                                        initialRating: data.rating ?? 3,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        // itemPadding:
+                                        //     EdgeInsets.symmetric(horizontal: 4.0),
+                                        itemBuilder: (context, _) => const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                              size: 10,
+                                            ),
+                                        onRatingUpdate: (rating) {
+                                          print(rating);
+                                        }),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 1.5.h,
+                                ),
+                                Text(
+                                  '${data.content}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      ?.copyWith(
+                                        fontSize: 2.h,
+                                        // color: Colors.grey.shade200,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -394,6 +465,15 @@ class _BookInfoState extends State<BookInfo>
         await ApiProvider.instance.fetchBookDetails(widget.id.toString());
     if (response.status ?? false) {
       bookDetails = response.details;
+      if (mounted) {
+        setState(() {});
+      }
+    }
+    final response1 =
+        await ApiProvider.instance.fetchReview('3');
+    if (response1.status ?? false) {
+      reviews = response1.reviews ?? [];
+      print(reviews.length);
       if (mounted) {
         setState(() {});
       }

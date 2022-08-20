@@ -149,20 +149,20 @@ class ConstanceData {
   static const storeIcon = FontAwesomeIcons.shoppingCart;
   static const moreIcon = FontAwesomeIcons.hamburger;
 
-  static final reviews=[
-    Review(
-      'Dek','Great books', 4.5,
-    ),
-    Review(
-      'Dek1','Great books1', 4.1,
-    ),
-    Review(
-      'Dek2','Great books2', 4.3,
-    ),
-    Review(
-      'Dek4','Great books6', 4.6,
-    ),
-  ];
+  // static final reviews=[
+  //   Review(
+  //     'Dek','Great books', 4.5,
+  //   ),
+  //   Review(
+  //     'Dek1','Great books1', 4.1,
+  //   ),
+  //   Review(
+  //     'Dek2','Great books2', 4.3,
+  //   ),
+  //   Review(
+  //     'Dek4','Great books6', 4.6,
+  //   ),
+  // ];
 
   static const categories=[
     'Motivation',

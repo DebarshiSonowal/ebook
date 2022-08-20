@@ -64,6 +64,8 @@ dependencies:
   path_provider: ^2.0.11
   local_value: ^1.1.2
   flutter_html: ^2.2.1
+  rating_dialog: ^2.0.4
+  zoom_widget: ^0.2.1
 
 dev_dependencies:
   flutter_test:

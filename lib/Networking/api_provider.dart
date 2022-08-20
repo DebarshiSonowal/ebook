@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:ebook/Model/add_review.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,6 +12,7 @@ import '../Model/book_format.dart';
 import '../Model/generic_response.dart';
 import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
+import '../Model/review.dart';
 
 class ApiProvider {
   ApiProvider._();
@@ -149,4 +151,48 @@ class ApiProvider {
       return BookChapterResponse.withError(e.message.toString());
     }
   }
+
+  Future<ReviewResponse> fetchReview(String id) async {
+    var url = "${baseUrl}$path/reviews/${id}";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("Book reviews response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return ReviewResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Book reviews error: ${response?.data}");
+        return ReviewResponse.withError();
+      }
+    } on DioError catch (e) {
+      debugPrint("Book reviews response: ${e.response}");
+      return ReviewResponse.withError();
+    }
+  }
+
+  Future<GenericResponse> addReview(Add_Review review,int id) async {
+    var url = "${baseUrl}$path/reviews/${id}";
+    dio = Dio(option);
+    var data = {
+      'subscriber_id':review.subscriber_id,
+      'content':review.content,
+      'rating':review.rating,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.post(url.toString(),data: jsonEncode(data));
+      debugPrint("Book reviews response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Book reviews error: ${response?.data}");
+        return GenericResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Book reviews response: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
+
 }

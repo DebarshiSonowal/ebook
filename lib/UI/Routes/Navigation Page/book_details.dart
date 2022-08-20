@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
+import 'package:zoom_widget/zoom_widget.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Model/book.dart';
@@ -60,7 +61,8 @@ class _BookDetailsState extends State<BookDetails>
   ];
   int selectedTheme = 0;
   double brightness = 0.0;
-
+  double _scaleFactor = 1.0;
+  double _baseScaleFactor = 1.0;
   bool toggle = false;
   double sliderVal = 0;
 
@@ -110,6 +112,7 @@ class _BookDetailsState extends State<BookDetails>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: getTextColor()),
         title: Text(
           bookDetails?.title ?? "",
           style: Theme.of(context)
@@ -129,11 +132,13 @@ class _BookDetailsState extends State<BookDetails>
                 },
               );
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.font_download,
+              color: getTextColor(),
             ),
           ),
           PopupMenuButton<int>(
+            color: getTextColor(),
             onSelected: (item) => handleClick(item),
             itemBuilder: (context) => [
               PopupMenuItem<int>(
@@ -148,7 +153,7 @@ class _BookDetailsState extends State<BookDetails>
                     Text(
                       'Create a Bookmark',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: Colors.white,
+                            color: getBackGroundColor(),
                           ),
                     ),
                   ],
@@ -278,57 +283,41 @@ class _BookDetailsState extends State<BookDetails>
                     sliderVal = index.toDouble();
                   }),
                   physics: const ClampingScrollPhysics(),
-                  itemCount: chapters?.length,
+                  itemCount: chapters![0].pages?.length,
                   itemBuilder: (context, index) {
+                    var current = chapters![0].pages![index];
                     return AnimatedOpacity(
                       duration: const Duration(seconds: 2),
                       opacity: currentIndex == index ? 1.0 : 0.1,
-                      child: GestureDetector(
-                        onTap: () {
-
-                        },
-                        child: Container(
-                          // height: 70.h,
-                          decoration: BoxDecoration(
-                            color: getBodyColor(),
-                          ),
-                          child: Container(
-                            // color: Colors.black,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 5.w,
+                        ),
+                        color: getTextColor(),
+                        child: Zoom(
+                          backgroundColor: Colors.transparent,
+                          maxZoomWidth: 800,
+                          maxZoomHeight: 800,
+                          canvasColor: Colors.transparent,
+                          child: Center(
+                            // child: Text(
+                            //   current,
+                            //   style: Theme.of(context)
+                            //       .textTheme
+                            //       .headline5
+                            //       ?.copyWith(color: Colors.black),
+                            //   textScaleFactor: _scaleFactor,
+                            // ),
                             child: Html(
+                              data: current,
                               style: {
-
+                                '#': Style(
+                                  fontSize: FontSize(14.sp),
+                                  maxLines: 10,
+                                  color: getBackGroundColor(),
+                                  textOverflow: TextOverflow.ellipsis,
+                                ),
                               },
-                              data:
-                              "<p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising "
-                                  "pain was born and I will give you a complete account of the system, and expound the actual teachings"
-                                  " of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes,"
-                                  " or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue"
-                                  " pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who"
-                                  " loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally"
-                                  " circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example"
-                                  ", which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But "
-                                  "who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences"
-                                  ", or one who avoids a pain that produces no resultant pleasure?</p>\n\n<p>But I must explain to you how all"
-                                  " this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account"
-                                  " of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of"
-                                  " human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because"
-                                  " those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful."
-                                  " Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but"
-                                  " because occasionally circumstances occur in which toil and pain can procure him some great pleasure. "
-                                  "To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain"
-                                  " some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure"
-                                  " that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?</p>\n\n"
-                                  "\n\n<p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti "
-                                  "atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident,"
-                                  " similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et "
-                                  "harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est"
-                                  "eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas "
-                                  "assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum "
-                                  "necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque "
-                                  "earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur "
-                                  "aut perferendis doloribus asperiores repellat.</p>\n\n<p>At vero eos et accusamus et iusto odio dignissimos "
-                                  "ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi "
-                                  "sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>",
                             ),
                           ),
                         ),
@@ -525,7 +514,7 @@ class _BookDetailsState extends State<BookDetails>
                   );
                 },
                 child: Container(
-                  height: 30.h,
+                  height: 20.h,
                   width: double.infinity,
                   color: getBodyColor(),
                 ),
@@ -690,8 +679,7 @@ class _BookDetailsState extends State<BookDetails>
         setState(() {});
       }
     }
-    final response1 =
-        await ApiProvider.instance.fetchBookChapters('3');
+    final response1 = await ApiProvider.instance.fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters;
       if (mounted) {
