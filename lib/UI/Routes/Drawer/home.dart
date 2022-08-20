@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Constants/constance_data.dart';
+import '../../../Helper/navigator.dart';
 import '../../Components/books_section.dart';
 
 class Home extends StatefulWidget {
@@ -43,6 +44,11 @@ class _HomeState extends State<Home> {
               // color: Color(0xff121212),
             ),
             buildBooksBar(context),
+            SizedBox(
+              height: 1.h,
+              width: double.infinity,
+              // color: Color(0xff121212),
+            ),
             // // const BannerHome(),
             // // SizedBox(
             // //   height: 1.h,
@@ -112,7 +118,7 @@ class _HomeState extends State<Home> {
                 color: Colors.transparent,
                 child: Container(
                   height: 20.h,
-                  width: 55.w,
+                  width: 70.w,
                   decoration: const BoxDecoration(
                     color: Color(0xff121212),
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
@@ -138,7 +144,7 @@ class _HomeState extends State<Home> {
                           ),
                           child: CachedNetworkImage(
                             imageUrl: data.profile_pic ?? '',
-                            fit: BoxFit.fill,
+                            fit: BoxFit.contain,
                             height: double.infinity,
                             width: double.infinity,
                           ),
@@ -147,8 +153,8 @@ class _HomeState extends State<Home> {
                       Expanded(
                         flex: 4,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 2.w, vertical: 1.h),
                           decoration: const BoxDecoration(
                             color: ConstanceData.cardBookColor,
                             borderRadius: BorderRadius.only(
@@ -158,7 +164,7 @@ class _HomeState extends State<Home> {
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
                                 data.title ?? '',
@@ -166,9 +172,9 @@ class _HomeState extends State<Home> {
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline4
+                                    .headline3
                                     ?.copyWith(
-                                      fontSize: 2.5.h,
+                                      // fontSize: 2.5.h,
                                       color: Colors.white,
                                     ),
                               ),
@@ -183,7 +189,7 @@ class _HomeState extends State<Home> {
                                     .textTheme
                                     .headline6
                                     ?.copyWith(
-                                      fontSize: 1.5.h,
+                                      // fontSize: 1.5.h,
                                       color: Colors.white,
                                     ),
                               ),
@@ -224,9 +230,9 @@ class _HomeState extends State<Home> {
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline6
+                                        .headline5
                                         ?.copyWith(
-                                          fontSize: 1.5.h,
+                                          // fontSize: 1.5.h,
                                           color: Colors.black,
                                         ),
                                   ),
@@ -264,7 +270,7 @@ class _HomeState extends State<Home> {
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: current.categoryList![current.currentIndex].length,
+                itemCount: current.categoryList![current.currentIndex].length~/2,
                 itemBuilder: (cont, count) {
                   var data = current.categoryList![current.currentIndex][count];
                   return GestureDetector(
@@ -295,7 +301,7 @@ class _HomeState extends State<Home> {
                           overflow: TextOverflow.ellipsis,
                           style:
                               Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 1.5.h,
+                                    // fontSize: 1.5.h,
                                     color: selected == count
                                         ? const Color(0xffffd400)
                                         : Colors.white,
@@ -312,27 +318,27 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-            // GestureDetector(
-            //   onTap: () {
-            //     Navigation.instance.navigate('/categories');
-            //   },
-            //   child: Container(
-            //     width: 13.w,
-            //     height: 3.h,
-            //     padding: EdgeInsets.all(0.2.h),
-            //     margin: const EdgeInsets.symmetric(horizontal: 5),
-            //     child: Center(
-            //       child: Text(
-            //         'More ->',
-            //         overflow: TextOverflow.ellipsis,
-            //         style: Theme.of(context).textTheme.headline5?.copyWith(
-            //               fontSize: 1.5.h,
-            //               color: Colors.white,
-            //             ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            GestureDetector(
+              onTap: () {
+                Navigation.instance.navigate('/categories');
+              },
+              child: Container(
+                width: 13.w,
+                height: 3.h,
+                padding: EdgeInsets.all(0.2.h),
+                margin: const EdgeInsets.symmetric(horizontal: 5),
+                child: Center(
+                  child: Text(
+                    'More ->',
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          fontSize: 1.5.h,
+                          color: Colors.white,
+                        ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       );

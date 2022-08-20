@@ -46,6 +46,11 @@ class NewTabBar extends StatelessWidget {
                               .formats![count]
                               .name ??
                           "",
+                      style: Theme.of(context).textTheme.headline3?.copyWith(
+                            color: count == _controller?.index
+                                ? Colors.white
+                                : Colors.grey.shade600,
+                          ),
                     ),
                   ),
                 )),

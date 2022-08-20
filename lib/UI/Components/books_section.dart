@@ -18,10 +18,12 @@ class BooksSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: ConstanceData.secondaryColor,
-      padding: EdgeInsets.symmetric(vertical: 2),
-      height: 36.h,
+      padding: EdgeInsets.symmetric(vertical: 0.2.h,horizontal: 2.w),
+      height: 37.h,
       width: double.infinity,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             height: 9.h,
@@ -32,7 +34,7 @@ class BooksSection extends StatelessWidget {
                 Text(
                   title,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
                         color: Colors.white,
                       ),
                 ),

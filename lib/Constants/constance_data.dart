@@ -140,7 +140,7 @@ class ConstanceData {
 
   static final category = ['All', 'Love', 'Horror', 'Motivation'];
 
-  static const primaryIcon = 'assets/images/ebook.png';
+  static const primaryIcon = 'assets/images/logo.png';
   static const humanImage = 'assets/images/user.png';
   static const emptyImage = 'assets/images/shelves.png';
   static const searchIcon = FontAwesomeIcons.search;

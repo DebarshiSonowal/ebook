@@ -45,7 +45,7 @@ class NewSearchBar extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1.h),
             child: Text(
               'REGISTER AS WRITER',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.headline3,
             ),
           ),
           SizedBox(
@@ -58,7 +58,7 @@ class NewSearchBar extends StatelessWidget {
                 context: context,
                 delegate: SearchPage<Book>(
                   items: ConstanceData.Motivational,
-                  searchLabel: 'Search people',
+                  searchLabel: 'Search Books',
                   suggestion: const Center(
                     child: Text('Filter people by name, surname or age'),
                   ),

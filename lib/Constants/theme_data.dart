@@ -40,8 +40,32 @@ class AppTheme {
       headline6: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.headline6?.color,
-        fontSize: 1.h,
+        fontSize: 7.sp,
         fontWeight: FontWeight.w500,
+      ),
+      headline5: TextStyle(
+        fontFamily: ConstanceData.fontFamily,
+        color: base.headline5?.color,
+        fontSize: 10.sp,
+      ),
+      headline4: TextStyle(
+          fontFamily: ConstanceData.fontFamily,
+          color: base.headline4?.color,
+          fontSize: 11.sp),
+      headline3: TextStyle(
+        fontFamily: ConstanceData.fontFamily,
+        color: base.headline3?.color,
+        fontSize: 12.sp,
+      ),
+      headline2: TextStyle(
+        fontFamily: ConstanceData.fontFamily,
+        color: base.headline2?.color,
+        fontSize: 13.sp,
+      ),
+      headline1: TextStyle(
+        fontFamily: ConstanceData.fontFamily,
+        color: base.headline1?.color,
+        fontSize: 14.sp,
       ),
       subtitle1: TextStyle(
         fontFamily: ConstanceData.fontFamily,
@@ -57,46 +81,22 @@ class AppTheme {
       bodyText2: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.bodyText2?.color,
-        fontSize: 1.7.h,
+        fontSize: 15.sp,
       ),
       bodyText1: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.bodyText1?.color,
-        fontSize: 2.h,
+        fontSize: 16.sp,
       ),
       button: TextStyle(
           fontFamily: ConstanceData.fontFamily,
           color: base.button?.color,
-          fontSize: 10.h,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w600),
       caption: TextStyle(
           fontFamily: ConstanceData.fontFamily,
           color: base.caption?.color,
-          fontSize: 8.h),
-      headline4: TextStyle(
-          fontFamily: ConstanceData.fontFamily,
-          color: base.headline4?.color,
-          fontSize: 3.5.h),
-      headline3: TextStyle(
-        fontFamily: ConstanceData.fontFamily,
-        color: base.headline3?.color,
-        fontSize: 6.h,
-      ),
-      headline2: TextStyle(
-        fontFamily: ConstanceData.fontFamily,
-        color: base.headline2?.color,
-        fontSize: 8.h,
-      ),
-      headline1: TextStyle(
-        fontFamily: ConstanceData.fontFamily,
-        color: base.headline1?.color,
-        fontSize: 10.h,
-      ),
-      headline5: TextStyle(
-        fontFamily: ConstanceData.fontFamily,
-        color: base.headline5?.color,
-        fontSize: 2.h,
-      ),
+          fontSize: 10.sp),
       overline: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.overline?.color,

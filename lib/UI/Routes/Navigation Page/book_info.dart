@@ -34,7 +34,10 @@ class _BookInfoState extends State<BookInfo>
       appBar: AppBar(
         title: Text(
           bookDetails?.title ?? "",
-          style: Theme.of(context).textTheme.headline5,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.headline1?.copyWith(
+            color: Colors.white,
+          ),
         ),
         actions: [
           IconButton(
@@ -90,7 +93,7 @@ class _BookInfoState extends State<BookInfo>
                                   bookDetails?.title ?? "",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline4
+                                      .headline2
                                       ?.copyWith(
                                         color: Colors.white,
                                       ),
@@ -103,7 +106,7 @@ class _BookInfoState extends State<BookInfo>
                                     Text(
                                       "by",
                                       style:
-                                          Theme.of(context).textTheme.headline5,
+                                          Theme.of(context).textTheme.headline4,
                                     ),
                                     SizedBox(
                                       width: 1.h,
@@ -112,7 +115,7 @@ class _BookInfoState extends State<BookInfo>
                                       bookDetails?.writer ?? "",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5
+                                          .headline4
                                           ?.copyWith(color: Colors.blueAccent),
                                     ),
                                   ],
@@ -124,11 +127,11 @@ class _BookInfoState extends State<BookInfo>
                                   Row(
                                     children: [
                                       Text(
-                                        "Winner of ",
+                                        "# Winner of ",
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5
-                                            ?.copyWith(fontSize: 11.sp),
+                                            // ?.copyWith(fontSize: 11.sp),
                                       ),
                                       Text(
                                         i.name ?? "",
@@ -137,7 +140,8 @@ class _BookInfoState extends State<BookInfo>
                                             .headline5
                                             ?.copyWith(
                                                 color: Colors.blueAccent,
-                                                fontSize: 11.sp),
+                                                // fontSize: 11.sp,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -183,19 +187,26 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 1.5.h,
                     ),
-                    for (var i in bookDetails?.tags ?? [])
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                        ),
-                        child: Text(
-                          i.name ?? "",
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      ),
+                   SizedBox(
+                     width: double.infinity,
+                     child: Row(
+                       children: [
+                         for (var i in bookDetails?.tags ?? [])
+                           Container(
+                             padding: const EdgeInsets.all(5),
+                             margin: EdgeInsets.symmetric(horizontal: 1.w,vertical: 0.5.h),
+                             decoration: BoxDecoration(
+                               border: Border.all(color: Colors.white),
+                               borderRadius: BorderRadius.all(Radius.circular(5)),
+                             ),
+                             child: Text(
+                               i.name ?? "",
+                               style: Theme.of(context).textTheme.headline5,
+                             ),
+                           ),
+                       ],
+                     ),
+                   ),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -211,24 +222,24 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     Text(
                       'Description:',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            fontSize: 2.5.h,
-                            // color: Colors.grey.shade200,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                            // fontSize: 2.5.h,
+                            color: Colors.white,
                           ),
                     ),
                     SizedBox(
                       height: 1.h,
                     ),
-                    Text(
-                      'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            fontSize: 1.9.h,
-                            // color: Colors.grey.shade200,
-                          ),
-                    ),
-                    SizedBox(
-                      height: 1.h,
-                    ),
+                    // Text(
+                    //   'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout',
+                    //   style: Theme.of(context).textTheme.headline4?.copyWith(
+                    //         // fontSize: 1.9.h,
+                    //         // color: Colors.grey.shade200,
+                    //       ),
+                    // ),
+                    // SizedBox(
+                    //   height: 1.h,
+                    // ),
                     ExpandableText(
                       bookDetails?.description ?? "",
                       expandText: 'show more',
@@ -252,9 +263,10 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     Text(
                       'Your Rating & Review',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            fontSize: 2.5.h,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                            // fontSize: 2.5.h,
                             // color: Colors.grey.shade200,
+                        color: Colors.white,
                           ),
                     ),
                     SizedBox(
@@ -282,48 +294,7 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     GestureDetector(
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          // set to false if you want to force a rating
-                          builder: (context) => RatingDialog(
-                            initialRating: 0,
-                            // your app's name?
-                            title: Text(
-                              'Give us rating',
-                              textAlign: TextAlign.center,
-                              style:  TextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            // encourage your user to leave a high rating?
-                            message: Text(
-                              'Give a review to this book',
-                              textAlign: TextAlign.center,
-                              style: TextStyle( fontSize: 15.sp,),
-                            ),
-                            // your app's logo?
-                            // image: const FlutterLogo(size: 100),
-                            submitButtonText: 'Submit',
-                            submitButtonTextStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.sp,
-                            ),
-                            commentHint: '',
-                            // commentHint: 'Set your custom comment hint',
-                            onCancelled: () => print('cancelled'),
-                            onSubmitted: (response) async {
-                              print(
-                                  'rating: ${response.rating}, comment: ${response.comment}');
-                              final response1 = await ApiProvider.instance
-                                  .addReview(
-                                      Add_Review(0, response.comment ?? "",
-                                          response.rating),
-                                      widget.id);
-                            },
-                          ),
-                        );
+                        giveRating(context);
                       },
                       child: Text(
                         "Write a Review",
@@ -350,20 +321,22 @@ class _BookInfoState extends State<BookInfo>
                       width: double.infinity,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             'Reviews (${bookDetails?.total_rating?.toInt()})',
                             style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      fontSize: 2.5.h,
+                                Theme.of(context).textTheme.headline1?.copyWith(
+                                      // fontSize: 2.5.h,
                                       // color: Colors.grey.shade200,
+                                  color: Colors.white,
                                     ),
                           ),
                           Text(
                             'More >',
                             style:
                                 Theme.of(context).textTheme.headline5?.copyWith(
-                                      fontSize: 1.5.h,
+                                      // fontSize: 1.5.h,
                                       color: Colors.blueAccent,
                                     ),
                           ),
@@ -373,7 +346,8 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    ListView.builder(
+                    ListView.separated(
+
                       physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: reviews.length,
@@ -392,9 +366,10 @@ class _BookInfoState extends State<BookInfo>
                                       '${data.subscriber}',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5
+                                          .headline4
                                           ?.copyWith(
-                                            fontSize: 2.h,
+                                        color: Colors.white
+                                            // fontSize: 2.h,
                                             // color: Colors.grey.shade200,
                                           ),
                                     ),
@@ -426,14 +401,22 @@ class _BookInfoState extends State<BookInfo>
                                       .textTheme
                                       .headline5
                                       ?.copyWith(
-                                        fontSize: 2.h,
+                                        // fontSize: 2.h,
                                         // color: Colors.grey.shade200,
                                       ),
                                 ),
                               ],
                             ),
                           );
-                        }),
+                        }, separatorBuilder: (BuildContext context, int index) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 0.5.h),
+                          child: Divider(
+                            color: Colors.white,
+                            height: 0.1.h,
+                          ),
+                        );
+                    },),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -479,6 +462,52 @@ class _BookInfoState extends State<BookInfo>
       }
     }
   }
+
+  void giveRating(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      // set to false if you want to force a rating
+      builder: (context) => RatingDialog(
+        starSize: 4.h,
+        initialRating: 0,
+        // your app's name?
+        title: Text(
+          'Give us rating',
+          textAlign: TextAlign.center,
+          style:  TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        // encourage your user to leave a high rating?
+        message: Text(
+          'Give a review to this book',
+          textAlign: TextAlign.center,
+          style: TextStyle( fontSize: 12.sp,),
+        ),
+        // your app's logo?
+        // image: const FlutterLogo(size: 100),
+        submitButtonText: 'Submit',
+        submitButtonTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 12.sp,
+        ),
+        commentHint: '',
+        // commentHint: 'Set your custom comment hint',
+        onCancelled: () => print('cancelled'),
+        onSubmitted: (response) async {
+          print(
+              'rating: ${response.rating}, comment: ${response.comment}');
+          final response1 = await ApiProvider.instance
+              .addReview(
+              Add_Review(0, response.comment ?? "",
+                  response.rating),
+              widget.id);
+        },
+      ),
+    );
+  }
 }
 
 class BookPublishinDetails extends StatelessWidget {
@@ -502,8 +531,8 @@ class BookPublishinDetails extends StatelessWidget {
                 width: 25.w,
                 child: Text(
                   'RATINGS',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -531,7 +560,7 @@ class BookPublishinDetails extends StatelessWidget {
               Text(
                 '(${bookDetails.total_rating?.toInt()})',
                 style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
+                      // fontSize: 2.h,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -547,8 +576,8 @@ class BookPublishinDetails extends StatelessWidget {
                 width: 25.w,
                 child: Text(
                   'LENGTH',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -558,8 +587,8 @@ class BookPublishinDetails extends StatelessWidget {
               ),
               Text(
                 '${bookDetails.length} pages | ${bookDetails.total_chapters} chapters',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
+                style: Theme.of(context).textTheme.headline4?.copyWith(
+                      // fontSize: 2.h,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -575,8 +604,8 @@ class BookPublishinDetails extends StatelessWidget {
                 width: 25.w,
                 child: Text(
                   'LANGUAGE',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -586,8 +615,8 @@ class BookPublishinDetails extends StatelessWidget {
               ),
               Text(
                 '${bookDetails.language}',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
+                style: Theme.of(context).textTheme.headline4?.copyWith(
+                      // fontSize: 2.h,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -603,8 +632,8 @@ class BookPublishinDetails extends StatelessWidget {
                 width: 25.w,
                 child: Text(
                   'FORMAT',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -614,8 +643,8 @@ class BookPublishinDetails extends StatelessWidget {
               ),
               Text(
                 '${bookDetails.book_format}',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
+                style: Theme.of(context).textTheme.headline4?.copyWith(
+                      // fontSize: 2.h,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -631,8 +660,8 @@ class BookPublishinDetails extends StatelessWidget {
                 width: 25.w,
                 child: Text(
                   'PUBLISHER',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -646,8 +675,8 @@ class BookPublishinDetails extends StatelessWidget {
                 },
                 child: Text(
                   '${bookDetails.publisher}',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
                         color: Colors.blueAccent,
                       ),
                 ),
@@ -664,7 +693,7 @@ class BookPublishinDetails extends StatelessWidget {
                 width: 25.w,
                 child: Text(
                   'RELEASED',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
                         fontSize: 2.h,
                         color: Colors.grey.shade400,
                       ),
@@ -675,8 +704,8 @@ class BookPublishinDetails extends StatelessWidget {
               ),
               Text(
                 bookDetails.released_date ?? "",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
+                style: Theme.of(context).textTheme.headline4?.copyWith(
+                      // fontSize: 2.h,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -713,9 +742,9 @@ class DownloadSection extends StatelessWidget {
                 Icon(Icons.download),
                 Text(
                   'Download',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
-                        // color: Colors.blue,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        // fontSize: 2.h,
+                        color: Colors.white,
                       ),
                 ),
               ],
@@ -737,10 +766,10 @@ class DownloadSection extends StatelessWidget {
                 Icon(Icons.bookmark_border),
                 Text(
                   'Save',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
-                        // color: Colors.blue,
-                      ),
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                    // fontSize: 2.h,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
@@ -761,10 +790,10 @@ class DownloadSection extends StatelessWidget {
                 Icon(Icons.playlist_add),
                 Text(
                   'Add to List',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
-                        // color: Colors.blue,
-                      ),
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                    // fontSize: 2.h,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
@@ -797,8 +826,8 @@ class BuyButton extends StatelessWidget {
           ),
           child: Text(
             'Read Free for 30 Days',
-            style: Theme.of(context).textTheme.headline5?.copyWith(
-                  fontSize: 2.5.h,
+            style: Theme.of(context).textTheme.headline3?.copyWith(
+                  // fontSize: 1,
                   color: Colors.black,
                 ),
           )),
@@ -831,8 +860,8 @@ class ReadButton extends StatelessWidget {
         ),
         child: Text(
           'Read Preview',
-          style: Theme.of(context).textTheme.headline5?.copyWith(
-                fontSize: 2.5.h,
+          style: Theme.of(context).textTheme.headline3?.copyWith(
+                // fontSize: 2.5.h,
                 color: Colors.blue,
               ),
         ),
