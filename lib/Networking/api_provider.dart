@@ -31,6 +31,162 @@ class ApiProvider {
     // 'APP-KEY': ConstanceData.app_key
   });
 
+  Future<GenericResponse> addSubscriber(
+      fname, lname, email, mobile, dob, password) async {
+    var data = {
+      "f_name": fname,
+      "l_name": lname,
+      "email": email,
+      "mobile": mobile,
+      "date_of_birth": dob,
+      "password": password
+    };
+    var url = "${baseUrl}/subscribers";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("add Subscriber response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("add Subscriber error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("add Subscriber response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> loginSubscriber(mobile, password) async {
+    var data = {
+      "mobile ": mobile,
+      "password": password,
+    };
+    var url = "${baseUrl}/subscribers/login";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("login Subscriber response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("login Subscriber error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("login Subscriber response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> addressSubscriber(email, password) async {
+    var data = {
+      "email ": email,
+      "password": password,
+    };
+    var url = "${baseUrl}/subscribers/address";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("address Subscriber response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("address Subscriber error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("address Subscriber response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> updateAddressSubscriber(
+      old_email, new_email, password) async {
+    var data = {
+      "email ": new_email,
+      "password": password,
+    };
+    var url = "${baseUrl}/subscribers/address/${old_email}";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("updateAddress Subscriber response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("updateAddress Subscriber error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("updateAddress Subscriber response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> setPrimaryAddressSubscriber(email, password) async {
+    var data = {
+      "email ": email,
+      "password": password,
+    };
+    var url = "${baseUrl}/subscribers/address/${email}/primary";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("setPrimaryAddress Subscriber response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("setPrimaryAddress Subscriber error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("setPrimaryAddress Subscriber response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> deleteAddressSubscriber(email, password) async {
+    var data = {
+      "email ": email,
+      "password": password,
+    };
+    var url = "${baseUrl}/subscribers/address/${email}/delete";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("deleteAddress Subscriber response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("deleteAddress Subscriber error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("delete Address Subscriber response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
   Future<BookFormatResponse> fetchBookFormat() async {
     var url = "${baseUrl}${path}/formats";
     dio = Dio(option);
@@ -171,17 +327,18 @@ class ApiProvider {
     }
   }
 
-  Future<GenericResponse> addReview(Add_Review review,int id) async {
+  Future<GenericResponse> addReview(Add_Review review, int id) async {
     var url = "${baseUrl}$path/reviews/${id}";
     dio = Dio(option);
     var data = {
-      'subscriber_id':review.subscriber_id,
-      'content':review.content,
-      'rating':review.rating,
+      'subscriber_id': review.subscriber_id,
+      'content': review.content,
+      'rating': review.rating,
     };
     debugPrint(url.toString());
     try {
-      Response? response = await dio?.post(url.toString(),data: jsonEncode(data));
+      Response? response =
+          await dio?.post(url.toString(), data: jsonEncode(data));
       debugPrint("Book reviews response: ${response?.data}");
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return GenericResponse.fromJson(response?.data);
@@ -194,5 +351,4 @@ class ApiProvider {
       return GenericResponse.withError(e.message);
     }
   }
-
 }
