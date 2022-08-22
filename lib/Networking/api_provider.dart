@@ -13,6 +13,8 @@ import '../Model/generic_response.dart';
 import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
 import '../Model/login_response.dart';
+import '../Model/logout_response.dart';
+import '../Model/profile.dart';
 import '../Model/review.dart';
 
 class ApiProvider {
@@ -109,6 +111,50 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("address Subscriber response: ${e.response}");
       return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<ProfileResponse> getProfile() async {
+    var url = "${baseUrl}/subscribers/profile";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.get(
+        url,
+      );
+      debugPrint("profile response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return ProfileResponse.fromJson(response?.data);
+      } else {
+        debugPrint("profile error: ${response?.data}");
+        return ProfileResponse.withError();
+      }
+    } on DioError catch (e) {
+      debugPrint("profile response: ${e.response}");
+      return ProfileResponse.withError();
+    }
+  }
+
+  Future<LogoutResponse> logout() async {
+    var url = "${baseUrl}/subscribers/logout";
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.get(
+        url,
+      );
+      debugPrint("profile response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LogoutResponse.fromJson(response?.data);
+      } else {
+        debugPrint("profile error: ${response?.data}");
+        return LogoutResponse.withError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("profile response: ${e.response}");
+      return LogoutResponse.withError(e.message);
     }
   }
 
