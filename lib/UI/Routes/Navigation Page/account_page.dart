@@ -1,5 +1,6 @@
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -64,6 +65,9 @@ class _AccountPageState extends State<AccountPage> {
                         onTap: () {
                           if (ind == 0) {
                             Navigation.instance.navigate('/accountInformation');
+                          }else if(ind == ConstanceData.pages.length-2){
+                            Storage.instance.logout();
+                            Navigation.instance.navigate('/login');
                           }
                         },
                         title: Text(

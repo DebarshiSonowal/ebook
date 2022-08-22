@@ -86,7 +86,7 @@ class AppTheme {
       bodyText1: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.bodyText1?.color,
-        fontSize: 16.sp,
+        fontSize: 12.sp,
       ),
       button: TextStyle(
           fontFamily: ConstanceData.fontFamily,

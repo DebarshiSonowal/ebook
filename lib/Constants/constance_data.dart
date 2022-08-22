@@ -37,6 +37,7 @@ class ConstanceData {
     'Notification Settings',
     'Privacy',
     'Invite Friends',
+    'Sign out',
     'Open Source Licenses',
   ];
 

@@ -12,6 +12,7 @@ import '../Model/book_format.dart';
 import '../Model/generic_response.dart';
 import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
+import '../Model/login_response.dart';
 import '../Model/review.dart';
 
 class ApiProvider {
@@ -61,34 +62,34 @@ class ApiProvider {
     }
   }
 
-  Future<GenericResponse> loginSubscriber(mobile, password) async {
+  Future<LoginResponse> loginSubscriber(mobile, password) async {
     var data = {
-      "mobile ": mobile,
+      "mobile": mobile,
       "password": password,
     };
     var url = "${baseUrl}/subscribers/login";
     dio = Dio(option);
     debugPrint(url.toString());
+    debugPrint(data.toString());
 
     try {
       Response? response = await dio?.post(url, data: jsonEncode(data));
       debugPrint("login Subscriber response: ${response?.data}");
       if (response?.statusCode == 200 || response?.statusCode == 201) {
-        return GenericResponse.fromJson(response?.data);
+        return LoginResponse.fromJson(response?.data);
       } else {
         debugPrint("login Subscriber error: ${response?.data}");
-        return GenericResponse.withError(
-            response?.data['message'] ?? "Something went wrong");
+        return LoginResponse.withError();
       }
     } on DioError catch (e) {
       debugPrint("login Subscriber response: ${e.response}");
-      return GenericResponse.withError(e.message.toString());
+      return LoginResponse.withError();
     }
   }
 
   Future<GenericResponse> addressSubscriber(email, password) async {
     var data = {
-      "email ": email,
+      "email": email,
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address";
@@ -114,7 +115,7 @@ class ApiProvider {
   Future<GenericResponse> updateAddressSubscriber(
       old_email, new_email, password) async {
     var data = {
-      "email ": new_email,
+      "email": new_email,
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${old_email}";
@@ -139,7 +140,7 @@ class ApiProvider {
 
   Future<GenericResponse> setPrimaryAddressSubscriber(email, password) async {
     var data = {
-      "email ": email,
+      "email": email,
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${email}/primary";
@@ -164,7 +165,7 @@ class ApiProvider {
 
   Future<GenericResponse> deleteAddressSubscriber(email, password) async {
     var data = {
-      "email ": email,
+      "email": email,
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${email}/delete";

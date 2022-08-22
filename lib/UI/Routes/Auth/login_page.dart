@@ -1,6 +1,9 @@
 import 'package:awesome_icons/awesome_icons.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Networking/api_provider.dart';
+import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -13,11 +16,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
     _phoneController.dispose();
+    _passwordController.dispose();
   }
 
   @override
@@ -70,7 +75,55 @@ class _LoginPageState extends State<LoginPage> {
                         labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
-                            ?.copyWith(fontSize: 1.7.h),
+                            ?.copyWith(fontSize: 10.sp),
+                        hintStyle:
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
+                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
+                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 1.5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          gapPadding: 0.0,
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 1.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 1.5.h,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 6.5.h,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: TextField(
+                      cursorHeight:
+                          Theme.of(context).textTheme.headline5?.fontSize,
+                      autofocus: false,
+                      controller: _passwordController,
+                      cursorColor: Colors.white,
+                      style: Theme.of(context).textTheme.headline5,
+                      decoration: InputDecoration(
+                        labelText: 'Enter your password',
+                        hintText: "password",
+                        labelStyle: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(fontSize: 10.sp),
                         hintStyle:
                             Theme.of(context).textTheme.headline5?.copyWith(
                                   color: Colors.grey.shade400,
@@ -120,7 +173,15 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          Navigation.instance.navigate('/main');
+                          if (_phoneController.text.isNotEmpty&&_phoneController.text.length==10&&_passwordController.text.isNotEmpty) {
+                            Login();
+                          } else {
+                            CoolAlert.show(
+                              context: context,
+                              type: CoolAlertType.warning,
+                              text: "Enter proper credentials",
+                            );
+                          }
                         },
                         style: ButtonStyle(
                           backgroundColor:
@@ -139,46 +200,52 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 5.h,
                 ),
-                Text(
-                  "OR",
-                  style: Theme.of(context).textTheme.headline5,
+                GestureDetector(
+                  onTap: (){
+                    Navigation.instance.navigate('/signup');
+                  },
+                  child: Text(
+                    "Already have an account? Signup",
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
                 ),
                 SizedBox(
                   height: 5.h,
                 ),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(5.0),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          FontAwesomeIcons.google,
-                          color: Colors.red,
-                          size: 5.h,
-                        ),
-                      ),
-                      // Container(
-                      //   padding: EdgeInsets.all(5.0),
-                      //   decoration: const BoxDecoration(
-                      //     color: Colors.white,
-                      //     shape: BoxShape.circle,
-                      //   ),
-                      //   child: Icon(
-                      //     FontAwesomeIcons.facebook,
-                      //     color: Colors.blueAccent,
-                      //     size: 5.h,
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ),
+                // Text('Signup'),
+                // Container(
+                //   width: double.infinity,
+                //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //     children: [
+                //       Container(
+                //         padding: EdgeInsets.all(5.0),
+                //         decoration: const BoxDecoration(
+                //           color: Colors.white,
+                //           shape: BoxShape.circle,
+                //         ),
+                //         child: Icon(
+                //           FontAwesomeIcons.google,
+                //           color: Colors.red,
+                //           size: 5.h,
+                //         ),
+                //       ),
+                //       // Container(
+                //       //   padding: EdgeInsets.all(5.0),
+                //       //   decoration: const BoxDecoration(
+                //       //     color: Colors.white,
+                //       //     shape: BoxShape.circle,
+                //       //   ),
+                //       //   child: Icon(
+                //       //     FontAwesomeIcons.facebook,
+                //       //     color: Colors.blueAccent,
+                //       //     size: 5.h,
+                //       //   ),
+                //       // ),
+                //     ],
+                //   ),
+                // ),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -188,5 +255,20 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void Login() async {
+    final response = await ApiProvider.instance
+        .loginSubscriber(_phoneController.text, _passwordController.text);
+    if (response.status ?? false) {
+      Storage.instance.setUser(response.access_token ?? "");
+      Navigation.instance.navigate('/main');
+    }else{
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: "Something went wrong",
+      );
+    }
   }
 }

@@ -20,6 +20,10 @@ class Storage {
     await sharedpreferences.setBool("isOnBoarding", true);
   }
 
+  Future<void> logout() async{
+    await sharedpreferences.clear();
+  }
+
   get isLoggedIn => sharedpreferences.getBool("isLoggedIn") ?? false;
 
   get isOnBoarding => sharedpreferences.getBool("isOnBoarding") ?? false;
