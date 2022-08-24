@@ -70,12 +70,12 @@ class AppTheme {
       subtitle1: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.subtitle1?.color,
-        fontSize: 12.h,
+        fontSize: 20.sp,
       ),
       subtitle2: TextStyle(
         fontFamily: ConstanceData.fontFamily,
         color: base.subtitle2?.color,
-        fontSize: 12.h,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w500,
       ),
       bodyText2: TextStyle(

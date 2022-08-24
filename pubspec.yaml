@@ -67,6 +67,9 @@ dependencies:
   rating_dialog: ^2.0.4
   zoom_widget: ^0.2.1
   cool_alert: ^1.1.0
+  counter_button: ^1.0.1
+  date_time_picker: ^2.1.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

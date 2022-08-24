@@ -47,6 +47,7 @@ class ApiProvider {
     var url = "${baseUrl}/subscribers";
     dio = Dio(option);
     debugPrint(url.toString());
+    debugPrint(jsonEncode(data));
 
     try {
       Response? response = await dio?.post(url, data: jsonEncode(data));

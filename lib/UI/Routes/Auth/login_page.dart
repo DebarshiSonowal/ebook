@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your registered phone number',
-                        hintText: "example@gmail.com",
+                        hintText: "Mobile number",
                         labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
@@ -205,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigation.instance.navigate('/signup');
                   },
                   child: Text(
-                    "Already have an account? Signup",
+                    "Don't have an account? Signup",
                     style: Theme.of(context).textTheme.headline5,
                   ),
                 ),

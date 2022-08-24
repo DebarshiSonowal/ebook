@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:counter_button/counter_button.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Model/book_chapter.dart';
@@ -56,7 +57,11 @@ class _BookDetailsState extends State<BookDetails>
     ),
     ReadingTheme(
       Colors.black,
-      Colors.grey.shade600,
+      Colors.grey.shade300,
+    ),
+    ReadingTheme(
+      Colors.black,
+      Colors.yellow.shade100,
     ),
   ];
   int selectedTheme = 0;
@@ -67,6 +72,8 @@ class _BookDetailsState extends State<BookDetails>
   double sliderVal = 0;
 
   List<BookChapter>? chapters;
+
+  var _counterValue = 12.sp;
 
   @override
   void dispose() {
@@ -168,14 +175,17 @@ class _BookDetailsState extends State<BookDetails>
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.bookmark,  color: getBackGroundColor(),),
+                    Icon(
+                      Icons.bookmark,
+                      color: getBackGroundColor(),
+                    ),
                     SizedBox(
                       width: 5.w,
                     ),
                     Text(
                       'Save for later',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: getBackGroundColor(),
+                            color: getBackGroundColor(),
                           ),
                     ),
                   ],
@@ -186,14 +196,17 @@ class _BookDetailsState extends State<BookDetails>
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Icon(Icons.download,  color: getBackGroundColor(),),
+                    Icon(
+                      Icons.download,
+                      color: getBackGroundColor(),
+                    ),
                     SizedBox(
                       width: 5.w,
                     ),
                     Text(
                       'Download',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: getBackGroundColor(),
+                            color: getBackGroundColor(),
                           ),
                     ),
                   ],
@@ -204,14 +217,17 @@ class _BookDetailsState extends State<BookDetails>
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.book,  color: getBackGroundColor(),),
+                    Icon(
+                      Icons.book,
+                      color: getBackGroundColor(),
+                    ),
                     SizedBox(
                       width: 5.w,
                     ),
                     Text(
                       'Table of Contents',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: getBackGroundColor(),
+                            color: getBackGroundColor(),
                           ),
                     ),
                   ],
@@ -222,14 +238,17 @@ class _BookDetailsState extends State<BookDetails>
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.share,  color: getBackGroundColor(),),
+                    Icon(
+                      Icons.share,
+                      color: getBackGroundColor(),
+                    ),
                     SizedBox(
                       width: 5.w,
                     ),
                     Text(
                       'Share',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: getBackGroundColor(),
+                            color: getBackGroundColor(),
                           ),
                     ),
                   ],
@@ -240,14 +259,17 @@ class _BookDetailsState extends State<BookDetails>
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.info,  color: getBackGroundColor(),),
+                    Icon(
+                      Icons.info,
+                      color: getBackGroundColor(),
+                    ),
                     SizedBox(
                       width: 5.w,
                     ),
                     Text(
                       'About Book',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
-                        color: getBackGroundColor(),
+                            color: getBackGroundColor(),
                           ),
                     ),
                   ],
@@ -274,7 +296,7 @@ class _BookDetailsState extends State<BookDetails>
                 return Column(
                   children: [
                     SizedBox(
-                      height: 3.h,
+                      height: 1.h,
                       width: double.infinity,
                       child: Container(
                           // color: Colors.blue,
@@ -316,12 +338,13 @@ class _BookDetailsState extends State<BookDetails>
                                   // ),
                                   child: Html(
                                     data: current,
+                                    shrinkWrap:true,
                                     style: {
                                       '#': Style(
-                                        fontSize: FontSize(14.sp),
-                                        maxLines: 10,
+                                        fontSize: FontSize(_counterValue),
+                                        // maxLines: 20,
                                         color: getBackGroundColor(),
-                                        textOverflow: TextOverflow.ellipsis,
+                                        // textOverflow: TextOverflow.ellipsis,
                                       ),
                                     },
                                   ),
@@ -532,7 +555,7 @@ class _BookDetailsState extends State<BookDetails>
                         );
                       },
                       child: Container(
-                        height: 20.h,
+                        height: 5.h,
                         width: double.infinity,
                         color: getBodyColor(),
                       ),
@@ -550,9 +573,10 @@ class _BookDetailsState extends State<BookDetails>
       // title: Text('Welcome'),
       content: StatefulBuilder(builder: (context, _) {
         return SizedBox(
-          height: 20.h,
+          // height: 20.h,
           width: 50.w,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -613,6 +637,35 @@ class _BookDetailsState extends State<BookDetails>
                 height: 1.h,
               ),
               Text(
+                "Font Size",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(color: getTextColor()),
+              ),
+              SizedBox(
+                height: 0.5.h,
+              ),
+              StatefulBuilder(builder: (context, _) {
+                return CounterButton(
+                  loading: false,
+                  onChange: (int val) {
+                    _(() {
+                      setState(() {
+                        _counterValue = val.toDouble();
+                      });
+                    });
+                  },
+                  count: _counterValue.toInt(),
+                  countColor: Colors.white,
+                  buttonColor: Colors.white,
+                  progressColor: Colors.white,
+                );
+              }),
+              SizedBox(
+                height: 1.h,
+              ),
+              Text(
                 "Brightness",
                 style: Theme.of(context)
                     .textTheme
@@ -648,34 +701,34 @@ class _BookDetailsState extends State<BookDetails>
 
   getBackGroundColor() {
     switch (selectedTheme) {
-      case 0:
-        return themes[selectedTheme].color1;
-      case 1:
-        return themes[selectedTheme].color1;
+      // case 0:
+      //   return themes[selectedTheme].color1;
+      // case 1:
+      //   return themes[selectedTheme].color1;
       default:
-        return Theme.of(context).accentColor;
+        return themes[selectedTheme].color1;
     }
   }
 
   getTextColor() {
     switch (selectedTheme) {
-      case 0:
-        return themes[selectedTheme].color2;
-      case 1:
-        return themes[selectedTheme].color2;
+      // case 0:
+      //   return themes[selectedTheme].color2;
+      // case 1:
+      //   return themes[selectedTheme].color2;
       default:
-        return Theme.of(context).textTheme.headline5?.color;
+        return themes[selectedTheme].color2;
     }
   }
 
   getBodyColor() {
     switch (selectedTheme) {
-      case 0:
-        return themes[selectedTheme].color2;
-      case 1:
-        return themes[selectedTheme].color2;
+      // case 0:
+      //   return themes[selectedTheme].color2;
+      // case 1:
+      //   return themes[selectedTheme].color2;
       default:
-        return Theme.of(context).textTheme.headline5?.color;
+        return themes[selectedTheme].color2;
     }
   }
 
