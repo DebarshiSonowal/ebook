@@ -75,6 +75,12 @@ class _BookDetailsState extends State<BookDetails>
 
   var _counterValue = 12.sp;
 
+  var test = "<!DOCTYPE html>"
+      "<body>"
+      // "${current}"
+      "</body"
+      "</html>";
+
   @override
   void dispose() {
     super.dispose();
@@ -337,7 +343,11 @@ class _BookDetailsState extends State<BookDetails>
                                   //   textScaleFactor: _scaleFactor,
                                   // ),
                                   child: Html(
-                                    data: current,
+                                    data: "<!DOCTYPE html>"
+                                        "<body>"
+                                        "${current}"
+                                        "</body"
+                                        "</html>",
                                     shrinkWrap:true,
                                     style: {
                                       '#': Style(
