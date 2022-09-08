@@ -10,6 +10,7 @@ import '../UI/Routes/Auth/login_page.dart';
 import '../UI/Routes/Auth/registration_otp_verify.dart';
 import '../UI/Routes/Navigation Page/account_information.dart';
 import '../UI/Routes/Navigation Page/book_details.dart';
+import '../UI/Routes/Navigation Page/cart_page.dart';
 import '../UI/Routes/Navigation Page/category_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
@@ -51,6 +52,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: WriterInfo(settings.arguments as int));
     case '/readingDialog':
       return FadeTransitionPageRouteBuilder(page: ReadingDialog());
+      case '/cartPage':
+      return FadeTransitionPageRouteBuilder(page: CartPage());
 
     //Main
     case '/main':

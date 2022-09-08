@@ -145,6 +145,26 @@ class _BookInfoState extends State<BookInfo>
                                       ),
                                     ],
                                   ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  color: Colors.white,
+                                  child: Container(
+                                    padding: EdgeInsets.all(0.5.w),
+                                    // decoration: ,
+                                    child: Text(
+                                      'Rs. ${bookDetails?.base_price}',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style:
+                                      Theme.of(context).textTheme.headline6?.copyWith(
+                                        fontSize: 9.sp,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -816,21 +836,59 @@ class BuyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 5.h,
-      child: ElevatedButton(
-          onPressed: () {
-            // Navigation.instance.navigate('/bookInfo');
-          },
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(Colors.blue),
-          ),
-          child: Text(
-            'Read Free for 30 Days',
-            style: Theme.of(context).textTheme.headline3?.copyWith(
-                  // fontSize: 1,
+      height: 4.5.h,
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                // Navigation.instance
+                //     .navigate('/bookInfo', args: data.id);
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                MaterialStateProperty.all(Colors.blue),
+              ),
+              child: Text(
+                'Buy Now',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(
+                  fontSize: 2.h,
                   color: Colors.black,
                 ),
-          )),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 1.w,
+          ),
+          Expanded(
+            child: ElevatedButton(
+              onPressed: () {
+                // Navigation.instance
+                //     .navigate('/bookInfo', args: data.id);
+
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                MaterialStateProperty.all(Colors.blue),
+              ),
+              child: Text(
+                'Add To Cart',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(
+                  fontSize: 2.h,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

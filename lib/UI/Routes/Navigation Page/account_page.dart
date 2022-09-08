@@ -63,11 +63,14 @@ class _AccountPageState extends State<AccountPage> {
                       var data = ConstanceData.pages[ind];
                       return ListTile(
                         onTap: () {
-                          if (ind == 0) {
+                          if (ind == 1) {
                             Navigation.instance.navigate('/accountInformation');
                           }else if(ind == ConstanceData.pages.length-2){
                             Storage.instance.logout();
-                            Navigation.instance.navigate('/login');
+                            Navigation.instance.navigateAndRemoveUntil('/login');
+                          }else if(ind == 0){
+                            // Storage.instance.logout();
+                            Navigation.instance.navigate('/cartPage');
                           }
                         },
                         title: Text(

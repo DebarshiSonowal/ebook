@@ -70,6 +70,10 @@ dependencies:
   counter_button: ^1.0.1
   date_time_picker: ^2.1.0
   intl: ^0.17.0
+  flutter_widget_from_html: ^0.8.5
+  webview_flutter: ^2.8.0
+  dotted_line: ^3.1.0
+  quantity_input: ^1.0.2
 
 dev_dependencies:
   flutter_test:

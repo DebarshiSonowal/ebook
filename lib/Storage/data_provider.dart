@@ -1,6 +1,7 @@
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/home_section.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Model/book_category.dart';
 import '../Model/book_format.dart';
@@ -10,6 +11,7 @@ class DataProvider extends ChangeNotifier {
   List<List<BookCategory>>? categoryList=[];
   List<List<HomeBanner>>? bannerList=[];
   List<List<HomeSection>>? homeSection=[];
+  List<HomeBanner> cartBooks=[];
   int currentIndex = 0;
   int currentCategory = 0;
   int currentTab = 0;
@@ -17,6 +19,12 @@ class DataProvider extends ChangeNotifier {
   setCurrentTab(int i) {
     currentTab = i;
     notifyListeners();
+  }
+
+  addToCart(HomeBanner book){
+    cartBooks.add(book);
+    notifyListeners();
+    Fluttertoast.showToast(msg: "Added to Cart");
   }
 
   addCategoryList(List<BookCategory> list){

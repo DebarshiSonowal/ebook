@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:photo_view/photo_view.dart';
@@ -21,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:zoom_widget/zoom_widget.dart';
 
 import '../../../Helper/navigator.dart';
@@ -38,6 +41,7 @@ class BookDetails extends StatefulWidget {
 class _BookDetailsState extends State<BookDetails>
     with SingleTickerProviderStateMixin {
   int currentIndex = 0;
+  WebViewController? _controller;
   String background = "https://picsum.photos/id/237/200/300";
   var multiImageProvider = [
     "https://picsum.photos/id/1001/5616/3744",
@@ -64,6 +68,9 @@ class _BookDetailsState extends State<BookDetails>
       Colors.yellow.shade100,
     ),
   ];
+  var list_bg_color = ['black', 'white', 'black', 'black'];
+  var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
+
   int selectedTheme = 0;
   double brightness = 0.0;
   double _scaleFactor = 1.0;
@@ -75,11 +82,52 @@ class _BookDetailsState extends State<BookDetails>
 
   var _counterValue = 12.sp;
 
-  var test = "<!DOCTYPE html>"
-      "<body>"
-      // "${current}"
-      "</body"
-      "</html>";
+  var test = '''<p>  <img alt="\"
+  height="228"
+  src="https://tratri.in/public/storage/photos/1/91U1RolR87L.jpg"
+   style="float:right" width="150" />
+
+  But I must explain to you how all this mistaken idea of denouncing
+  pleasure and praising pain was born and I will give you a complete
+  account of the system, and expound the actual teachings of the great
+  explorer of the truth, the master-builder of human happiness. No one
+  rejects, dislikes, or avoids pleasure itself, because it is pleasure,
+  but because those who do not know how to pursue pleasure rationally encounter
+  consequences that are extremely painful. Nor again is there anyone who
+  loves or pursues or desires to obtain pain of itself, because it is pain,
+  but because occasionally circumstances occur in which toil and pain can
+  procure him some great pleasure. To take a trivial example, which of us
+  ever undertakes laborious physical exercise, except to obtain some
+  advantage from it? But who has any right to find fault with a man who
+  chooses to enjoy a pleasure that has no annoying consequences, or one
+  who avoids a pain that produces no resultant pleasure?</p>\n<br />\n
+  But I must explain to you how all this mistaken idea of denouncing
+  pleasure and praising pain was born and I will give you a complete
+  account of the system, and expound the actual teachings of the great
+  explorer of the truth, the master-builder of human happiness. No one
+  rejects, dislikes, or avoids pleasure itself, because it is pleasure,
+  but because those who do not know how to pursue pleasure rationally
+  encounter consequences that are extremely painful. Nor again is there
+  anyone who loves or pursues or desires to obtain pain of itself,
+  because it is pain, but because occasionally circumstances occur in
+  which toil and pain can procure him some great pleasure. To take a
+  trivial example, which of us ever undertakes laborious physical exercise,
+      except to obtain some advantage from it? But who has any right to find
+  fault with a man who chooses to enjoy a pleasure that has no annoying
+  consequences, or one who avoids a pain that produces no resultant pleasure?<br/>
+  <br /><br />&nbsp;","<br /><br />\nAt vero eos et accusamus
+  et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
+  deleniti atque corrupti quos dolores et quas molestias excepturi sint
+  occaecati cupiditate non provident, similique sunt in culpa qui officia
+  deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
+  rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta
+  nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
+  laceat facere possimus, omnis voluptas assumenda est, omnis dolor
+  repellendus. Temporibus autem quibusdam et aut officiis debitis aut
+  rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et
+  molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
+  delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
+  perferendis doloribus asperiores repellat.''';
 
   @override
   void dispose() {
@@ -109,6 +157,24 @@ class _BookDetailsState extends State<BookDetails>
       print(e);
       throw 'Failed to get system brightness';
     }
+  }
+
+  _loadHtmlFromAssets(test, color, bgcolor, size) async {
+    _controller?.loadUrl(Uri.dataFromString('''<!DOCTYPE html>
+ <style type="text/css">
+ body {
+  background-color: ${bgcolor};
+  color: ${color};
+  font-size: ${size}px;
+}
+
+</style> 
+<body > 
+  ${test}
+</body>
+
+</html>''', mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+        .toString());
   }
 
   Future<void> setBrightness(double brightness) async {
@@ -319,6 +385,7 @@ class _BookDetailsState extends State<BookDetails>
                         itemCount: chapters![0].pages?.length,
                         itemBuilder: (context, index) {
                           var current = chapters![0].pages![index];
+                          test = chapters![0].pages![index];
                           return AnimatedOpacity(
                             duration: const Duration(seconds: 2),
                             opacity: currentIndex == index ? 1.0 : 0.1,
@@ -330,34 +397,60 @@ class _BookDetailsState extends State<BookDetails>
                               child: Zoom(
                                 colorScrollBars: Colors.transparent,
                                 backgroundColor: Colors.transparent,
-                                maxZoomWidth: 800,
-                                maxZoomHeight: 800,
+                                maxZoomWidth: 1000,
+                                maxZoomHeight: 1000,
                                 canvasColor: Colors.transparent,
                                 child: Center(
-                                  // child: Text(
-                                  //   current,
-                                  //   style: Theme.of(context)
-                                  //       .textTheme
-                                  //       .headline5
-                                  //       ?.copyWith(color: Colors.black),
-                                  //   textScaleFactor: _scaleFactor,
-                                  // ),
-                                  child: Html(
-                                    data: "<!DOCTYPE html>"
-                                        "<body>"
-                                        "${current}"
-                                        "</body"
-                                        "</html>",
-                                    shrinkWrap:true,
-                                    style: {
-                                      '#': Style(
-                                        fontSize: FontSize(_counterValue),
-                                        // maxLines: 20,
-                                        color: getBackGroundColor(),
-                                        // textOverflow: TextOverflow.ellipsis,
-                                      ),
+                                  child: WebView(
+                                    initialUrl: 'about:blank',
+                                    onWebViewCreated:
+                                        (WebViewController webViewController) {
+                                      _controller = webViewController;
+                                      _loadHtmlFromAssets(
+                                          current,
+                                          getBackGroundColor(),
+                                          getTextColor(),
+                                          _counterValue);
                                     },
                                   ),
+                                  // child: Html(
+                                  //   data:  test,
+                                  //   // tagsList: [
+                                  //   //   'img','p','!DOCTYPE html','body'
+                                  //   // ],
+                                  //   // tagsList: ['p'],
+                                  //   shrinkWrap:true,
+                                  //   style: {
+                                  //     '#': Style(
+                                  //
+                                  //       fontSize: FontSize(_counterValue),
+                                  //       maxLines: 20,
+                                  //       color: getBackGroundColor(),
+                                  //       // textOverflow: TextOverflow.ellipsis,
+                                  //     ),
+                                  //   },
+                                  // ),
+                                  // child: HtmlWidget(
+                                  //   // current,
+                                  //   test,
+                                  //   customStylesBuilder: (element) {
+                                  //     if (element.classes.contains('img')) {
+                                  //       return {
+                                  //         'align': 'right',
+                                  //         // 'margin - left': 'auto'
+                                  //       };
+                                  //     }
+                                  //     return null;
+                                  //   },
+                                  //   renderMode: RenderMode.listView,
+                                  //   textStyle: Theme.of(context)
+                                  //       .textTheme
+                                  //       .headline1
+                                  //       ?.copyWith(
+                                  //         color: getBackGroundColor(),
+                                  //         fontSize: _counterValue,
+                                  //       ),
+                                  // ),
                                 ),
                               ),
                             ),
@@ -432,7 +525,7 @@ class _BookDetailsState extends State<BookDetails>
                                                             .all(Colors.blue),
                                                   ),
                                                   child: Text(
-                                                    'Start Trial',
+                                                    'Buy Now',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .headline5
@@ -565,7 +658,7 @@ class _BookDetailsState extends State<BookDetails>
                         );
                       },
                       child: Container(
-                        height: 5.h,
+                        height: 4.h,
                         width: double.infinity,
                         color: getBodyColor(),
                       ),
@@ -612,6 +705,8 @@ class _BookDetailsState extends State<BookDetails>
                         _(() {
                           setState(() {
                             selectedTheme = index;
+                            _loadHtmlFromAssets(test, list_bg_color[index],
+                                list_txt_color[index], _counterValue);
                           });
                         });
                       },
@@ -663,6 +758,8 @@ class _BookDetailsState extends State<BookDetails>
                     _(() {
                       setState(() {
                         _counterValue = val.toDouble();
+                        _loadHtmlFromAssets(test, getBackGroundColor(),
+                            getTextColor(), _counterValue);
                       });
                     });
                   },

@@ -56,9 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    fetchFormats();
     super.initState();
     initiateSplash();
-    fetchFormats();
+
   }
 
   void initiateSplash() {

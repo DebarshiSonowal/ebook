@@ -17,7 +17,7 @@ class ConstanceData {
   static const secondaryFont =
       'assets/fonts/assets/fonts/SF-Pro-Display-Semibold.otf';
 
-  static const splashTime = 5;
+  static const splashTime = 7;
 
   static const optionList = ['e-books', 'books'];
 
@@ -29,6 +29,7 @@ class ConstanceData {
   ];
 
   static const pages = [
+    'Cart',
     'Account Information',
     'FAQs & Support',
     'Audio Player Settings',

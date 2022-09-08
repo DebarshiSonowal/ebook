@@ -26,24 +26,22 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
-                  Expanded(
-                    child: Center(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                          itemCount: current.categoryList![current.currentIndex].length,
-                          itemBuilder: (cont, ind) {
-                            var data = current.categoryList![current.currentIndex][ind];
-                            return Container(
-                              height: 10.h,
-                              child: Center(
-                                child: Text(
-                                  data.title??"",
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
+                  Center(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                        itemCount: current.categoryList![current.currentIndex].length,
+                        itemBuilder: (cont, ind) {
+                          var data = current.categoryList![current.currentIndex][ind];
+                          return Container(
+                            height: 10.h,
+                            child: Center(
+                              child: Text(
+                                data.title??"",
+                                style: Theme.of(context).textTheme.headline5,
                               ),
-                            );
-                          }),
-                    ),
+                            ),
+                          );
+                        }),
                   ),
                   GestureDetector(
                     onTap: (){
