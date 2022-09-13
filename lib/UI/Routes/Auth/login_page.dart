@@ -258,6 +258,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void Login() async {
+    print('here');
     final response = await ApiProvider.instance
         .loginSubscriber(_phoneController.text, _passwordController.text);
     if (response.status ?? false) {

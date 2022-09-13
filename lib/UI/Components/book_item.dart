@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/home_banner.dart';
+import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -98,10 +100,31 @@ class BookItem extends StatelessWidget {
             ),
             StatefulBuilder(builder: (context, _) {
               return GestureDetector(
-                onTap: () {
+                onTap: () async {
+                  // try {
+                  //   Provider.of<DataProvider>(
+                  //           Navigation.instance.navigatorKey.currentContext ??
+                  //               context,
+                  //           listen: false)
+                  //       .addToBookmarks(data);
+                  // } catch (e) {
+                  //   print(e);
+                  // }
                   _(() {
                     selected = !selected;
                   });
+                  final reponse =
+                      await ApiProvider.instance.addBookmark(data.id ?? 0);
+                  if (reponse.status ?? false) {
+                    Fluttertoast.showToast(msg: "Bookmark added");
+                    final response = await ApiProvider.instance.fetchBookmark();
+                    if (response.status ?? false) {
+                      Provider.of<DataProvider>(
+                          Navigation.instance.navigatorKey.currentContext ?? context,
+                          listen: false)
+                          .setToBookmarks(response.items ?? []);
+                    }
+                  }
                 },
                 child: SizedBox(
                   width: double.infinity,
@@ -129,7 +152,7 @@ class BookItem extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        selected ? Icons.bookmark : Icons.bookmark_border,
+                        getSelected(context,data.id??0) ? Icons.bookmark : Icons.bookmark_border,
                         color: Colors.grey.shade200,
                       )
                     ],
@@ -421,13 +444,7 @@ class BookItem extends StatelessWidget {
                                     onPressed: () {
                                       // Navigation.instance
                                       //     .navigate('/bookInfo', args: data.id);
-                                      Provider.of<DataProvider>(
-                                              Navigation.instance.navigatorKey
-                                                      .currentContext ??
-                                                  context,
-                                              listen: false)
-                                          .addToCart(data);
-                                      Navigation.instance.goBack();
+                                      addtocart(context);
                                     },
                                     style: ButtonStyle(
                                       backgroundColor:
@@ -478,5 +495,29 @@ class BookItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void addtocart(context) async {
+    final response = await ApiProvider.instance.addToCart(data.id!, '1');
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setToCart(response.cart?.items ?? []);
+      Navigation.instance.goBack();
+    } else {
+      Navigation.instance.goBack();
+    }
+  }
+
+  getSelected(context,id) {
+    for(var i in Provider.of<DataProvider>(
+        Navigation.instance.navigatorKey.currentContext ?? context,
+        listen: false).bookmarks){
+      if(id == i.id){
+        return true;
+      }
+    }
+    return false;
   }
 }

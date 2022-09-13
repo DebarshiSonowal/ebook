@@ -56,8 +56,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    fetchFormats();
     super.initState();
+    fetchFormats();
     initiateSplash();
 
   }
@@ -84,6 +84,8 @@ class _SplashScreenState extends State<SplashScreen> {
       fetchCategory();
       fetchHomeBanner();
       fetchHomeSection();
+      fetchBookmarks();
+      fetchCupons();
     }
   }
 
@@ -133,5 +135,19 @@ class _SplashScreenState extends State<SplashScreen> {
             .addHomeSection(response.sections!);
       }
     }
+  }
+
+  void fetchBookmarks() async{
+    final response = await ApiProvider.instance.fetchBookmark();
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
+          .setToBookmarks(response.items ?? []);
+    }
+  }
+
+  void fetchCupons() async{
+
   }
 }

@@ -1,4 +1,5 @@
 import 'Tag.dart';
+import 'article.dart';
 
 class BookDetailsResponse {
   bool? status;
@@ -55,6 +56,7 @@ class BookDetailsModel {
   bool? is_free;
 
   List<Tag>? tags, awards;
+  List<Article>? articles;
 
   BookDetailsModel.fromJson(json) {
     id = json['id'] ?? 0;
@@ -89,6 +91,9 @@ class BookDetailsModel {
     awards = json['awards'] == null
         ? []
         : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
+    articles = json['articles'] == null
+        ? []
+        : (json['articles'] as List).map((e) => Article.fromJson(e)).toList();
 
     //double
     average_rating = json['average_rating'] == null

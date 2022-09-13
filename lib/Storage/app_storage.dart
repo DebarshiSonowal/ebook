@@ -28,5 +28,5 @@ class Storage {
 
   get isOnBoarding => sharedpreferences.getBool("isOnBoarding") ?? false;
 
-  get token => sharedpreferences.getString("token") ?? "";
+  get token => sharedpreferences.getString("token") ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdHJhdHJpLmluXC9hcGlcL3N1YnNjcmliZXJzXC9sb2dpbiIsImlhdCI6MTY2Mjk1OTk5NiwiZXhwIjoxNjYyOTYzNTk2LCJuYmYiOjE2NjI5NTk5OTYsImp0aSI6ImZ2MzYwZ09zNGdReVhsWWoiLCJzdWIiOjQsInBydiI6IjdhNTljY2RhNDc0MGVjOGU1ZDRmMGVhOGQyNjQ3YThiYWE3N2FjZGQifQ.2_F9m8Jw7iYj5jfDl24dU83foJxNU9tVzUUjQIvrTtE";
 }

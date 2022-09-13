@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:ebook/Model/add_review.dart';
+import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,11 +10,15 @@ import '../Model/book_category.dart';
 import '../Model/book_chapter.dart';
 import '../Model/book_details.dart';
 import '../Model/book_format.dart';
+import '../Model/bookmark.dart';
+import '../Model/cart_item.dart';
+import '../Model/discount.dart';
 import '../Model/generic_response.dart';
 import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
 import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
+import '../Model/magazine_plan.dart';
 import '../Model/profile.dart';
 import '../Model/review.dart';
 
@@ -31,6 +36,7 @@ class ApiProvider {
       BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'Authorization': 'Bearer ${Storage.instance.token}',
     // 'APP-KEY': ConstanceData.app_key
   });
 
@@ -375,6 +381,44 @@ class ApiProvider {
     }
   }
 
+  Future<BookmarkResponse> fetchBookmark() async {
+    var url = "${baseUrl}$path/bookmark/list";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("bookmark response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return BookmarkResponse.fromJson(response?.data);
+      } else {
+        debugPrint("bookmark error: ${response?.data}");
+        return BookmarkResponse.withError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("bookmark response: ${e.response}");
+      return BookmarkResponse.withError(e.message);
+    }
+  }
+
+  Future<MagazinePlanResponse> fetchMagazinePlan(String id) async {
+    var url = "${baseUrl}/magazines/plans/${id}";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("magazines plans response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return MagazinePlanResponse.fromJson(response?.data);
+      } else {
+        debugPrint("magazines plans error: ${response?.data}");
+        return MagazinePlanResponse.withError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("magazines plans response: ${e.response}");
+      return MagazinePlanResponse.withError(e.message);
+    }
+  }
+
   Future<GenericResponse> addReview(Add_Review review, int id) async {
     var url = "${baseUrl}$path/reviews/${id}";
     dio = Dio(option);
@@ -397,6 +441,141 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("Book reviews response: ${e.response}");
       return GenericResponse.withError(e.message);
+    }
+  }
+
+  Future<GenericResponse> addBookmark(int id) async {
+    var url = "${baseUrl}$path/bookmark/${id}";
+    dio = Dio(option);
+    // var data = {
+    //   'book_id': id,
+    // };
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.post(
+        url.toString(),
+      );
+      debugPrint("Bookmark response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Bookmark error: ${response?.data}");
+        return GenericResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Bookmark response: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
+
+  Future<CartResponse> addToCart(id, qty) async {
+    var url = "${baseUrl}/sales/cart/add";
+    dio = Dio(option);
+    var data = {
+      'id': id,
+      'qty': qty,
+    };
+    debugPrint(url.toString());
+    debugPrint(data.toString());
+    try {
+      Response? response =
+          await dio?.post(url.toString(), data: jsonEncode(data));
+      debugPrint("addToCart response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CartResponse.fromJson(response?.data);
+      } else {
+        debugPrint("addToCart error: ${response?.data}");
+        return CartResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("addToCart error: ${e.response}");
+      return CartResponse.withError(e.message);
+    }
+  }
+
+  Future<CartResponse> fetchCart() async {
+    var url = "${baseUrl}/sales/cart";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("Cart response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CartResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Cart error: ${response?.data}");
+        return CartResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Cart error: ${e.response}");
+      return CartResponse.withError(e.message);
+    }
+  }
+
+  Future<DiscountResponse> fetchDiscount() async {
+    var url = "${baseUrl}/discount/list";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("discount list response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return DiscountResponse.fromJson(response?.data);
+      } else {
+        debugPrint("discount list error: ${response?.data}");
+        return DiscountResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("discount list error: ${e.response}");
+      return DiscountResponse.withError(e.message);
+    }
+  }
+
+  Future<CartResponse> updateCart(int id, int qty) async {
+    var url = "${baseUrl}/sales/cart/update";
+    dio = Dio(option);
+    var data = {
+      'id': id,
+      'qty': qty,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response =
+          await dio?.post(url.toString(), data: jsonEncode(data));
+      debugPrint("updateCart response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CartResponse.fromJson(response?.data);
+      } else {
+        debugPrint("updateCart error: ${response?.data}");
+        return CartResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("updateCart error: ${e.response}");
+      return CartResponse.withError(e.message);
+    }
+  }
+
+  Future<CartResponse> deleteCart(int id) async {
+    var url = "${baseUrl}/sales/cart/delete";
+    dio = Dio(option);
+    var data = {
+      'id': id,
+      // 'qty': qty,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response =
+          await dio?.post(url.toString(), data: jsonEncode(data));
+      debugPrint("deleteCart response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CartResponse.fromJson(response?.data);
+      } else {
+        debugPrint("deleteCart error: ${response?.data}");
+        return CartResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("deleteCart error: ${e.response}");
+      return CartResponse.withError(e.message);
     }
   }
 }

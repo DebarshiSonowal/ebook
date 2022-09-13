@@ -92,7 +92,7 @@ class NewSearchBar extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigation.instance.navigate('/accountDetails');
+              // Navigation.instance.navigate('/accountDetails');
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),

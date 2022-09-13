@@ -12,6 +12,7 @@ import '../UI/Routes/Navigation Page/account_information.dart';
 import '../UI/Routes/Navigation Page/book_details.dart';
 import '../UI/Routes/Navigation Page/cart_page.dart';
 import '../UI/Routes/Navigation Page/category_page.dart';
+import '../UI/Routes/Navigation Page/coupon_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
 
@@ -48,6 +49,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
 
     case '/loadingDialog':
       return FadeTransitionPageRouteBuilder(page: LoadingDialog());
+      case '/couponPage':
+      return FadeTransitionPageRouteBuilder(page: CouponPage());
     case '/writerInfo':
       return FadeTransitionPageRouteBuilder(page: WriterInfo(settings.arguments as int));
     case '/readingDialog':

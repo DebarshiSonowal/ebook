@@ -47,7 +47,10 @@ class NewTabBar extends StatelessWidget {
                               .name ??
                           "",
                       style: Theme.of(context).textTheme.headline3?.copyWith(
-                            color: count == _controller?.index
+                            color: count == Provider.of<DataProvider>(
+                                Navigation
+                                    .instance.navigatorKey.currentContext!,
+                                listen: true).currentTab
                                 ? Colors.white
                                 : Colors.grey.shade600,
                           ),

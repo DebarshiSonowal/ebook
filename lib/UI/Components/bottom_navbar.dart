@@ -30,12 +30,15 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom > {
             color: Colors.white,
           ),
           onTap: (i) {
-            print(i);
-            Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext ??
-                    context,
-                listen: false)
-                .setIndex(i);
+            if (i!=3) {
+              Provider.of<DataProvider>(
+                              Navigation.instance.navigatorKey.currentContext ??
+                                  context,
+                              listen: false)
+                              .setIndex(i);
+            } else {
+              Navigation.instance.navigate('/accountDetails');
+            }
           },
           items: const [
             BottomNavigationBarItem(

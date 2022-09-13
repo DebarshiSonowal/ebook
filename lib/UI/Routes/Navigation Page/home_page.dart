@@ -77,11 +77,16 @@ class _HomePageState extends State<HomePage>
           return const Home();
       }
     } else {
-      return Container(
-        height: double.infinity,
-        width: double.infinity,
-        child: EmptyWidget(),
-      );
+      switch (currentIndex) {
+        case 1:
+          return const Librarypage();
+        case 2:
+          return const Store();
+        case 3:
+          return const More();
+        default:
+          return const Home();
+      }
     }
   }
 
@@ -98,10 +103,13 @@ class _HomePageState extends State<HomePage>
       vsync: this,
     );
     _controller?.addListener(() {
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
-          .setCurrentTab(_controller?.index ?? 0);
+      setState(() {
+        Provider.of<DataProvider>(
+            Navigation.instance.navigatorKey.currentContext ?? context,
+            listen: false)
+            .setCurrentTab(_controller?.index ?? 0);
+      });
+      print(_controller?.index);
     });
   }
 }

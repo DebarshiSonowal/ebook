@@ -8,9 +8,9 @@ import 'Helper/router.dart';
 import 'Storage/app_storage.dart';
 import 'Storage/data_provider.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  Storage.instance.initializeStorage();
+  await Storage.instance.initializeStorage();
   runApp(const MyApp());
 }
 
