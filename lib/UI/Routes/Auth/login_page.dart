@@ -5,7 +5,10 @@ import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import '../../../Storage/data_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -262,6 +265,7 @@ class _LoginPageState extends State<LoginPage> {
     final response = await ApiProvider.instance
         .loginSubscriber(_phoneController.text, _passwordController.text);
     if (response.status ?? false) {
+      fetchProfile();
       Storage.instance.setUser(response.access_token ?? "");
       Navigation.instance.navigate('/main');
     }else{
@@ -270,6 +274,15 @@ class _LoginPageState extends State<LoginPage> {
         type: CoolAlertType.error,
         text: "Something went wrong",
       );
+    }
+  }
+  void fetchProfile() async {
+    final response = await ApiProvider.instance.getProfile();
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
+          .setProfile(response.profile!);
     }
   }
 }

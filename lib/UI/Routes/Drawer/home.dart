@@ -113,7 +113,7 @@ class _HomeState extends State<Home> {
               // HomeBanner data = filterByCategory(
               //     currentData.bannerList![currentData.currentTab],
               //     currentData)[count];
-              HomeBanner data = currentData.bannerList![currentData.currentTab][count];
+              Book data = currentData.bannerList![currentData.currentTab][count];
               return Card(
                 color: Colors.transparent,
                 child: Container(
@@ -358,7 +358,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  filterByCategory(List<HomeBanner> list, DataProvider data) {
+  filterByCategory(List<Book> list, DataProvider data) {
     return list
         .where((element) =>
             element.book_category_id ==

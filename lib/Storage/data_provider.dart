@@ -8,17 +8,19 @@ import '../Model/book_category.dart';
 import '../Model/book_format.dart';
 import '../Model/cart_item.dart';
 import '../Model/discount.dart';
+import '../Model/profile.dart';
 
 class DataProvider extends ChangeNotifier {
   List<BookFormat>? formats = [];
   List<List<BookCategory>>? categoryList = [];
-  List<List<HomeBanner>>? bannerList = [];
+  List<List<Book>>? bannerList = [];
   List<List<HomeSection>>? homeSection = [];
-  List<HomeBanner> cartBooks = [];
+  List<Book> cartBooks =[],myBooks = [];
   List<BookmarkItem> bookmarks = [];
   List<CartItem> items = [];
   List<Discount> cupons = [];
   Cart? cartData;
+  Profile? profile;
   int currentIndex = 0;
   int currentCategory = 0;
   int currentTab = 0;
@@ -26,6 +28,16 @@ class DataProvider extends ChangeNotifier {
 
   setCurrentTab(int i) {
     currentTab = i;
+    notifyListeners();
+  }
+
+  setProfile(Profile data){
+    profile = data;
+    notifyListeners();
+  }
+
+  setMyBooks(List<Book> list){
+    myBooks = list;
     notifyListeners();
   }
 
@@ -49,7 +61,7 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addToCart(HomeBanner book) {
+  addToCart(Book book) {
     cartBooks.add(book);
     notifyListeners();
     Fluttertoast.showToast(msg: "Added to Cart");
@@ -66,7 +78,7 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addBannerList(List<HomeBanner> list) {
+  addBannerList(List<Book> list) {
     bannerList?.add(list);
     notifyListeners();
   }

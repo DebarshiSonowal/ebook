@@ -1,16 +1,19 @@
 class Discount {
   int? id, is_percent, discount_type, is_one_time_use, status;
   String? title, coupon, note, valid_from, valid_to;
+  double? value;
 
   Discount.fromJson(json) {
-    id = json['id'] ?? 0;
-    is_percent = json['is_percent'] == null ? 0 : int.parse(json['is_percent']);
+    id = json['id'] == null ? 0 : int.parse(json['id'].toString());
+    is_percent = json['is_percent'] == null ? 0 : int.parse(json['is_percent'].toString());
     discount_type =
-        json['discount_type'] == null ? 0 : int.parse(json['discount_type']);
+        json['discount_type'] == null ? 0 : int.parse(json['discount_type'].toString());
     is_one_time_use = json['is_one_time_use'] == null
         ? 0
-        : int.parse(json['is_one_time_use']);
-    status = json['status'] == null ? 0 : int.parse(json['status']);
+        : int.parse(json['is_one_time_use'].toString());
+    status = json['status'] == null ? 0 : int.parse(json['status'].toString());
+
+    value = json['value']==null?0:double.parse(json['value'].toString());
 
     //String
     title = json['title'] ?? "";
@@ -32,7 +35,7 @@ class DiscountResponse {
     cupons = json['result'] == null
         ? []
         : (json['result'] as List)
-            .map((e) => Discount.fromJson(json['result']))
+            .map((e) => Discount.fromJson(e))
             .toList();
   }
 

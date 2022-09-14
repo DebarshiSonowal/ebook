@@ -56,7 +56,7 @@ class NewSearchBar extends StatelessWidget {
             onTap: () {
               showSearch(
                 context: context,
-                delegate: SearchPage<Book>(
+                delegate: SearchPage<Book_old>(
                   items: ConstanceData.Motivational,
                   searchLabel: 'Search Books',
                   suggestion: const Center(

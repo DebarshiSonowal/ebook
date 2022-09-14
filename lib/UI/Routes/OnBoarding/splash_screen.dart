@@ -59,12 +59,12 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     fetchFormats();
     initiateSplash();
-
   }
 
   void initiateSplash() {
     Future.delayed(const Duration(seconds: ConstanceData.splashTime), () {
       if (Storage.instance.isLoggedIn) {
+        fetchProfile();
         Navigation.instance.navigateAndRemoveUntil('/main');
       } else if (Storage.instance.isOnBoarding) {
         Navigation.instance.navigateAndRemoveUntil('/main');
@@ -137,17 +137,33 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void fetchBookmarks() async{
+  void fetchBookmarks() async {
     final response = await ApiProvider.instance.fetchBookmark();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext ?? context,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
           .setToBookmarks(response.items ?? []);
     }
   }
 
-  void fetchCupons() async{
+  void fetchCupons() async {
+    final reponse = await ApiProvider.instance.fetchDiscount();
+    if (reponse.status ?? false) {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setCupons(reponse.cupons ?? []);
+    }
+  }
 
+  void fetchProfile() async {
+    final response = await ApiProvider.instance.getProfile();
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setProfile(response.profile!);
+    }
   }
 }

@@ -1,11 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:ebook/Model/cart_item.dart';
 import 'package:ebook/Model/home_banner.dart';
+import 'package:ebook/Model/razorpay_key.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quantity_input/quantity_input.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
@@ -19,8 +22,14 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  String cupon='';
+  String cupon = '';
+  final _razorpay = Razorpay();
 
+  @override
+  void dispose() {
+    _razorpay.clear(); // Removes all listeners
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,33 +67,38 @@ class _CartPageState extends State<CartPage> {
                               ),
                               child: Container(
                                 margin: EdgeInsets.symmetric(
-                                    vertical: 1.h, horizontal: 2.w),
+                                    vertical: 2.h, horizontal: 2.5.w),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Ordering for someone else?',
+                                      'Wanna save more ?',
                                       style: Theme.of(context)
                                           .textTheme
                                           .headline1
                                           ?.copyWith(color: Colors.black),
                                     ),
                                     GestureDetector(
-                                      onTap: () async{
-                                        final response = await Navigation.instance.navigate('/couponPage');
-                                        if(response != null){
+                                      onTap: () async {
+                                        final response = await Navigation
+                                            .instance
+                                            .navigate('/couponPage');
+                                        if (response != null) {
                                           setState(() {
                                             cupon = response;
                                           });
                                         }
                                       },
                                       child: Text(
-                                        'Apply Coupon',
+                                        cupon != "" ? cupon : 'Apply Coupon',
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5
-                                            ?.copyWith(color: Colors.green,
-                                        fontWeight: FontWeight.bold,),
+                                            ?.copyWith(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -200,19 +214,26 @@ class _CartPageState extends State<CartPage> {
                                             ),
                                           ),
                                           const DottedLine(),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              'Ordering for someone else?',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline2
-                                                  ?.copyWith(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                            ),
-                                          ),
+                                          // GestureDetector(
+                                          //   onTap: () {
+                                          //     removeItem(current.item_id!);
+                                          //   },
+                                          //   child: Padding(
+                                          //     padding:
+                                          //         const EdgeInsets.all(2.0),
+                                          //     child: Text(
+                                          //       'Remove',
+                                          //       style: Theme.of(context)
+                                          //           .textTheme
+                                          //           .headline4
+                                          //           ?.copyWith(
+                                          //             color: Colors.red,
+                                          //             fontWeight:
+                                          //                 FontWeight.bold,
+                                          //           ),
+                                          //     ),
+                                          //   ),
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -306,7 +327,9 @@ class _CartPageState extends State<CartPage> {
                                       ],
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        initiatePaymentProcess();
+                                      },
                                       style: ButtonStyle(
                                         backgroundColor:
                                             MaterialStateProperty.all(
@@ -350,6 +373,9 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     Future.delayed(Duration.zero, () {
       fetchCartItems();
     });
@@ -370,6 +396,95 @@ class _CartPageState extends State<CartPage> {
       Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
+    }
+  }
+
+  void initiatePaymentProcess() async {
+    Navigation.instance.navigate('/loadingDialog');
+    final response = await ApiProvider.instance.fetchRazorpay();
+    if (response.status ?? false) {
+      initateOrder(response.razorpay!);
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  void initateOrder(RazorpayKey razorpay) async {
+    final response = await ApiProvider.instance.createOrder(cupon);
+    if (response.status ?? false) {
+      startPayment(razorpay, response.order?.total);
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {}
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Do something when payment fails
+    Navigation.instance.goBack();
+    CoolAlert.show(
+      context: context,
+      type: CoolAlertType.warning,
+      text: response.message ?? "Something went wrong",
+    );
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Do something when an external wallet was selected
+  }
+
+  void startPayment(RazorpayKey razorpay, double? total) {
+    var options = {
+      'key': razorpay.api_key,
+      'amount': total! * 100,
+      'name':
+          '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
+      'description': 'Books',
+      'prefill': {
+        'contact': Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .profile
+            ?.mobile,
+        'email': Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .profile
+            ?.email
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void removeItem(int id) async {
+    Navigation.instance.navigate('/loadingDialog');
+    final response = await ApiProvider.instance.deleteCart(id);
+    if (response.status ?? false) {
+      Navigation.instance.goBack();
+      fetchCartItems();
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Enter proper credentials",
+      );
     }
   }
 }

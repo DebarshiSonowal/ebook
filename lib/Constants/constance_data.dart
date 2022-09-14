@@ -49,22 +49,22 @@ class ConstanceData {
   ];
 
   static final Motivational = [
-    Book(
+    Book_old(
         'Principles of Economics',
         'Adam Smith',
         'https://images.unsplash.com/photo-1585624882829-f92c2d4cd89d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8dGVzdGluZ3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
         4.5),
-    Book(
+    Book_old(
         'Engineering Mathematics',
         'Ambeshwar Phukan',
         'https://images.unsplash.com/photo-1596496181848-3091d4878b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHRlc3Rpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60',
         5),
-    Book(
+    Book_old(
         'Let\' Us C',
         'Unknown',
         'https://images.unsplash.com/photo-1600267204026-85c3cc8e96cd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHRlc3Rpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60',
         4),
-    Book(
+    Book_old(
         'Flutter',
         'Google',
         'https://images.unsplash.com/photo-1528845922818-cc5462be9a63?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MjB8fHRlc3Rpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60',
@@ -72,22 +72,22 @@ class ConstanceData {
   ];
 
   static final Novel = [
-    Book(
+    Book_old(
         'Lord of the rings',
         'CJlewis',
         'https://cdn.pixabay.com/photo/2019/03/01/18/32/night-4028339__340.jpg',
         4.9),
-    Book(
+    Book_old(
         'Harry Potter',
         'JKRowling',
         'https://cdn.pixabay.com/photo/2019/08/02/14/41/fantasy-4379818__340.jpg',
         4.7),
-    Book(
+    Book_old(
         'Chronicles of Narnia',
         'CJlewis',
         'https://cdn.pixabay.com/photo/2020/03/15/13/49/temple-4933682__480.jpg',
         4.4),
-    Book(
+    Book_old(
         'Game of Thrones',
         'A.Singh',
         'https://cdn.pixabay.com/photo/2018/02/21/09/35/steampunk-3169877__480.jpg',
@@ -95,22 +95,22 @@ class ConstanceData {
   ];
 
   static final Love = [
-    Book(
+    Book_old(
         'Half Girlfriend',
         'Chetan Bhagat',
         'https://source.unsplash.com/user/c_v_r/1900x800',
         4.9),
-    Book(
+    Book_old(
         '3 mistakes of life',
         'Chetan Bhagat',
         'https://source.unsplash.com/user/c_v_r/100x100',
         4.7),
-    Book(
+    Book_old(
         'Mismatched',
         'CJlewis',
         'https://picsum.photos/200/300',
         4.4),
-    Book(
+    Book_old(
         'Asdfaf',
         'A.Singh',
         'https://picsum.photos/seed/picsum/200/300',
@@ -118,22 +118,22 @@ class ConstanceData {
   ];
 
   static var Children= [
-    Book(
+    Book_old(
         'Aatiaz',
         'CJlewis',
         'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U',
         4.9),
-    Book(
+    Book_old(
         'Harrff',
         'JKRowling',
         'https://picsum.photos/200/300?grayscale',
         4.7),
-    Book(
+    Book_old(
         'ebsb',
         'CJlewis',
         'https://i.picsum.photos/id/405/200/300.jpg?blur=5&hmac=EhbmmQwVrdKxdSX-S54A_z7tXWne7vLO4Yx6tZdscIY',
         4.4),
-    Book(
+    Book_old(
         'Game fews',
         'A.Singh',
         'https://cdn.pixabay.com/photo/2018/02/21/09/35/steampunk-3169877__480.jpg',

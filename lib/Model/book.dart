@@ -1,6 +1,6 @@
-class Book{
+class Book_old{
   String? name,author,image;
   double? rating;
 
-  Book(this.name, this.author, this.image,this.rating);
+  Book_old(this.name, this.author, this.image,this.rating);
 }

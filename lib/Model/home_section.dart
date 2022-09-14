@@ -21,12 +21,12 @@ class HomeSectionResponse {
 
 class HomeSection {
   String? title;
-  List<HomeBanner>? book;
+  List<Book>? book;
 
   HomeSection.fromJson(json) {
     title = json['title'] ?? "";
     book = json['books'] == null
         ? []
-        : (json['books'] as List).map((e) => HomeBanner.fromJson(e)).toList();
+        : (json['books'] as List).map((e) => Book.fromJson(e)).toList();
   }
 }

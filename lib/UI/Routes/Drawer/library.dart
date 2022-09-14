@@ -41,7 +41,7 @@ class _LibrarypageState extends State<Librarypage>
         child: Consumer<DataProvider>(builder: (cont, data, _) {
           return GridView.builder(
               itemCount: data.libraryTab == 0
-                  ? data.cartBooks.length
+                  ? data.myBooks.length
                   : data.bookmarks.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -49,14 +49,14 @@ class _LibrarypageState extends State<Librarypage>
               ),
               itemBuilder: (context, count) {
                 var current = data.libraryTab == 0
-                    ? data.cartBooks[count]
+                    ? data.myBooks[count]
                     : data.bookmarks[count];
                 return GestureDetector(
                   onTap: () {},
                   child: Card(
                     child: CachedNetworkImage(
                       imageUrl: data.libraryTab == 0
-                          ? data.cartBooks[count].profile_pic ?? ""
+                          ? data.myBooks[count].profile_pic ?? ""
                           : data.bookmarks[count].profile_pic ?? "",
                       fit: BoxFit.fill,
                     ),
@@ -71,12 +71,18 @@ class _LibrarypageState extends State<Librarypage>
   @override
   void initState() {
     super.initState();
-    fetchData();
+
     _controller = TabController(
       length: 2,
       vsync: this,
     );
+    Future.delayed(Duration.zero, () {
+      fetchData();
+    });
     _controller?.addListener(() {
+      if (checkCondition(_controller?.index ?? 0)) {
+        fetchData();
+      }
       Provider.of<DataProvider>(
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
@@ -85,12 +91,50 @@ class _LibrarypageState extends State<Librarypage>
   }
 
   void fetchData() async {
-    final response = await ApiProvider.instance.fetchBookmark();
-    if (response.status ?? false) {
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
-          .setToBookmarks(response.items ?? []);
+    Navigation.instance.navigate('/loadingDialog');
+    if ((_controller?.index ?? 0) == 1) {
+      final response = await ApiProvider.instance.fetchBookmark();
+      if (response.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setToBookmarks(response.items ?? []);
+        Navigation.instance.goBack();
+      } else {
+        Navigation.instance.goBack();
+      }
+    } else {
+      final response1 = await ApiProvider.instance.fetchMyBooks();
+      if (response1.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setMyBooks(response1.books ?? []);
+        Navigation.instance.goBack();
+      } else {
+        Navigation.instance.goBack();
+      }
     }
   }
+
+  bool checkCondition(int i) {
+    if (i == 0 &&
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .myBooks
+            .isEmpty) {
+      return true;
+    } else if (i == 1 &&
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .bookmarks
+            .isEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+// setMyBooks
 }

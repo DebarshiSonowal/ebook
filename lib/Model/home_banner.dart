@@ -3,14 +3,14 @@ import 'Tag.dart';
 class HomeBannerResponse {
   bool? status;
   String? message;
-  List<HomeBanner>? banners;
+  List<Book>? banners;
 
   HomeBannerResponse.fromJson(json) {
     status = json['success'] ?? false;
     message = json['message'] ?? "Something went wrong";
     banners = json['result'] == null
         ? []
-        : (json['result'] as List).map((e) => HomeBanner.fromJson(e)).toList();
+        : (json['result'] as List).map((e) => Book.fromJson(e)).toList();
   }
 
   HomeBannerResponse.withError(msg) {
@@ -19,7 +19,7 @@ class HomeBannerResponse {
   }
 }
 
-class HomeBanner {
+class Book {
   int? id, book_category_id, length, total_rating;
   String? title,
       writer,
@@ -31,7 +31,7 @@ class HomeBanner {
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
 
-  HomeBanner.fromJson(json) {
+  Book.fromJson(json) {
     id = json['id'] ?? 0;
     book_category_id = json['book_category_id'] ?? 0;
     length = json['length'] == null ? 0 : int.parse(json['length'].toString());

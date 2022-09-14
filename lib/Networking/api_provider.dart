@@ -19,7 +19,10 @@ import '../Model/home_section.dart';
 import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
 import '../Model/magazine_plan.dart';
+import '../Model/my_books_response.dart';
+import '../Model/order.dart';
 import '../Model/profile.dart';
+import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
 
 class ApiProvider {
@@ -127,7 +130,7 @@ class ApiProvider {
     debugPrint(url.toString());
 
     try {
-      Response? response = await dio?.get(
+      Response? response = await dio?.post(
         url,
       );
       debugPrint("profile response: ${response?.data}");
@@ -531,6 +534,44 @@ class ApiProvider {
     }
   }
 
+  Future<MyBooksResponse> fetchMyBooks() async {
+    var url = "${baseUrl}${path}/my-list";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("my books list response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return MyBooksResponse.fromJson(response?.data);
+      } else {
+        debugPrint("my books list error: ${response?.data}");
+        return MyBooksResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("my books list error: ${e.response}");
+      return MyBooksResponse.withError(e.message);
+    }
+  }
+
+  Future<RazorpayResponse> fetchRazorpay() async {
+    var url = "${baseUrl}/payment-gateway";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("Razorpay response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return RazorpayResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Razorpay error: ${response?.data}");
+        return RazorpayResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Razorpay error: ${e.response}");
+      return RazorpayResponse.withError(e.message);
+    }
+  }
+
   Future<CartResponse> updateCart(int id, int qty) async {
     var url = "${baseUrl}/sales/cart/update";
     dio = Dio(option);
@@ -576,6 +617,36 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("deleteCart error: ${e.response}");
       return CartResponse.withError(e.message);
+    }
+  }
+
+  Future<OrderResponse> createOrder(String coupon_code) async {
+    var url = "${baseUrl}/sales/order";
+    dio = Dio(option);
+    var data = {
+      'coupon_code': coupon_code,
+      // 'qty': qty,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response;
+      if (coupon_code != null && coupon_code != "") {
+        response = await dio?.post(url.toString(), data: jsonEncode(data));
+      } else {
+        response = await dio?.post(
+          url.toString(),
+        );
+      }
+      debugPrint("order response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return OrderResponse.fromJson(response?.data);
+      } else {
+        debugPrint("order error: ${response?.data}");
+        return OrderResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("order error: ${e.response}");
+      return OrderResponse.withError(e.message);
     }
   }
 }

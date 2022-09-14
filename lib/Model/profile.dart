@@ -19,7 +19,7 @@ class Profile {
   Profile.fromJson(json) {
     id = json['id'] ?? 0;
     status = json['status'] ?? 0;
-    code = json['code'] ?? "";
+    code = (json['code'] ?? "").toString();
     f_name = json['f_name'] ?? "";
     l_name = json['l_name'] ?? "";
     mobile = json['mobile'] ?? "";

@@ -574,7 +574,7 @@ class _BookDetailsState extends State<BookDetails>
                                                 onPressed: () {
                                                   showSearch(
                                                     context: context,
-                                                    delegate: SearchPage<Book>(
+                                                    delegate: SearchPage<Book_old>(
                                                       items: ConstanceData
                                                           .Motivational,
                                                       searchLabel:

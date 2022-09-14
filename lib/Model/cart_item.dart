@@ -46,6 +46,7 @@ class Cart {
     has_change_exist = json['has_change_exist'] ?? false;
 
     //list
+    print(json['items']);
     items = json['items'] == null
         ? []
         : (json['items'] as List).map((e) => CartItem.fromJson(e)).toList();

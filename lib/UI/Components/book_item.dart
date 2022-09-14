@@ -21,7 +21,7 @@ class BookItem extends StatelessWidget {
     required this.index,
   }) : super(key: key);
 
-  final HomeBanner data;
+  final Book data;
   final int index;
 
   @override
@@ -166,7 +166,7 @@ class BookItem extends StatelessWidget {
     );
   }
 
-  void show(context, HomeBanner data) {
+  void show(context, Book data) {
     showCupertinoModalBottomSheet(
       enableDrag: true,
       // expand: true,

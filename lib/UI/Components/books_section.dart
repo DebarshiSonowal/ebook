@@ -12,7 +12,7 @@ class BooksSection extends StatelessWidget {
   BooksSection({required this.title, required this.list});
 
   final String title;
-  final List<HomeBanner> list;
+  final List<Book> list;
 
   @override
   Widget build(BuildContext context) {
