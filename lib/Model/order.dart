@@ -75,7 +75,7 @@ class Order {
       igst,
       cess,
       grand_total;
-  String? voucher_no,order_date,addresses,discount_data,subscriber_pic;
+  String? voucher_no,order_date,addresses,discount_data,subscriber_pic,order_id;
   List<OrderItem> orderItems=[];
 
   Order.fromJson(json){
@@ -103,6 +103,7 @@ class Order {
     addresses = json['addresses']??"";
     discount_data = json['discount_data']??"";
     subscriber_pic = json['subscriber_pic']??"";
+    order_id = json['order_id']??"";
 
     //list
     orderItems = json['order_list']==null?[]:(json['order_list'] as List).map((e) => OrderItem.fromJson(e)).toList();

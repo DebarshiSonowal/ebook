@@ -471,6 +471,35 @@ class ApiProvider {
     }
   }
 
+  Future<GenericResponse> verifyPayment(
+      order_id, razorpay_payment_id, amount) async {
+    var url = "${baseUrl}/sales/order/verify-payment";
+    dio = Dio(option);
+    var data = {
+      'order_id': order_id,
+      'razorpay_payment_id': razorpay_payment_id,
+      'amount': amount,
+    };
+    debugPrint(url.toString());
+    debugPrint(data.toString());
+    try {
+      Response? response = await dio?.post(
+        url.toString(),
+        data: jsonEncode(data),
+      );
+      debugPrint("Bookmark response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Bookmark error: ${response?.data}");
+        return GenericResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Bookmark response: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
+
   Future<CartResponse> addToCart(id, qty) async {
     var url = "${baseUrl}/sales/cart/add";
     dio = Dio(option);

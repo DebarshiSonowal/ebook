@@ -24,6 +24,8 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   String cupon = '';
   final _razorpay = Razorpay();
+  double tempTotal = 1.0;
+  String temp_order_id="";
 
   @override
   void dispose() {
@@ -214,26 +216,26 @@ class _CartPageState extends State<CartPage> {
                                             ),
                                           ),
                                           const DottedLine(),
-                                          // GestureDetector(
-                                          //   onTap: () {
-                                          //     removeItem(current.item_id!);
-                                          //   },
-                                          //   child: Padding(
-                                          //     padding:
-                                          //         const EdgeInsets.all(2.0),
-                                          //     child: Text(
-                                          //       'Remove',
-                                          //       style: Theme.of(context)
-                                          //           .textTheme
-                                          //           .headline4
-                                          //           ?.copyWith(
-                                          //             color: Colors.red,
-                                          //             fontWeight:
-                                          //                 FontWeight.bold,
-                                          //           ),
-                                          //     ),
-                                          //   ),
-                                          // ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              removeItem(current.item_id!);
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(2.0),
+                                              child: Text(
+                                                'Remove',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4
+                                                    ?.copyWith(
+                                                      color: Colors.red,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -417,7 +419,10 @@ class _CartPageState extends State<CartPage> {
   void initateOrder(RazorpayKey razorpay) async {
     final response = await ApiProvider.instance.createOrder(cupon);
     if (response.status ?? false) {
-      startPayment(razorpay, response.order?.total);
+      tempTotal = response.order?.total ?? 0;
+      temp_order_id = response.order?.order_id.toString()??"";
+      startPayment(razorpay, response.order?.total, response.order?.order_id,
+          response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(
@@ -428,10 +433,15 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {}
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    print(
+        'success ${response.paymentId} ${response.orderId} ${response.signature}');
+    handleSuccess(response);
+  }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
+    print('error ${response.message} ${response.code} ');
     Navigation.instance.goBack();
     CoolAlert.show(
       context: context,
@@ -444,10 +454,11 @@ class _CartPageState extends State<CartPage> {
     // Do something when an external wallet was selected
   }
 
-  void startPayment(RazorpayKey razorpay, double? total) {
+  void startPayment(RazorpayKey razorpay, double? total, id, customer_id) {
     var options = {
       'key': razorpay.api_key,
       'amount': total! * 100,
+      // 'order_id': id,
       'name':
           '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
       'description': 'Books',
@@ -462,7 +473,11 @@ class _CartPageState extends State<CartPage> {
                 listen: false)
             .profile
             ?.email
-      }
+      },
+      'note': {
+        'customer_id': customer_id,
+        'order_id': id,
+      },
     };
 
     try {
@@ -484,6 +499,27 @@ class _CartPageState extends State<CartPage> {
         context: context,
         type: CoolAlertType.warning,
         text: "Enter proper credentials",
+      );
+    }
+  }
+
+  void handleSuccess(PaymentSuccessResponse response) async {
+    final response1 = await ApiProvider.instance
+        .verifyPayment(temp_order_id, response.paymentId, tempTotal ?? 1);
+    if (response1.status ?? false) {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "Payment received Successfully",
+      );
+      fetchCartItems();
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
       );
     }
   }
