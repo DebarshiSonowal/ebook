@@ -161,6 +161,9 @@ class _BookDetailsState extends State<BookDetails>
 
   _loadHtmlFromAssets(test, color, bgcolor, size) async {
     _controller?.loadUrl(Uri.dataFromString('''<!DOCTYPE html>
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
  <style type="text/css">
  body {
   background-color: ${bgcolor};

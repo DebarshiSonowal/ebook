@@ -1,6 +1,8 @@
 import 'package:ebook/Model/bookmark.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/home_section.dart';
+import 'package:ebook/Model/order_history.dart';
+import 'package:ebook/UI/Routes/Drawer/history.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -19,6 +21,7 @@ class DataProvider extends ChangeNotifier {
   List<BookmarkItem> bookmarks = [];
   List<CartItem> items = [];
   List<Discount> cupons = [];
+  List<OrderHistory> orders=[];
   Cart? cartData;
   Profile? profile;
   int currentIndex = 0;
@@ -38,6 +41,10 @@ class DataProvider extends ChangeNotifier {
 
   setMyBooks(List<Book> list){
     myBooks = list;
+    notifyListeners();
+  }
+  setHistory(List<OrderHistory> list){
+    orders = list;
     notifyListeners();
   }
 

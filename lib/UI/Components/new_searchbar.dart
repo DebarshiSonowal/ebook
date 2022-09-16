@@ -1,6 +1,8 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:search_page/search_page.dart';
 
 import '../../Constants/constance_data.dart';
@@ -71,8 +73,14 @@ class NewSearchBar extends StatelessWidget {
                     // person.age.toString(),
                   ],
                   builder: (book) => ListTile(
-                    title: Text(book.name ?? '',style: Theme.of(context).textTheme.headline5,),
-                    subtitle: Text(book.author ?? '',style: Theme.of(context).textTheme.headline6,),
+                    title: Text(
+                      book.name ?? '',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    subtitle: Text(
+                      book.author ?? '',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                     trailing: CachedNetworkImage(
                       imageUrl: book.image ?? '',
                       height: 10.h,
@@ -90,29 +98,37 @@ class NewSearchBar extends StatelessWidget {
           SizedBox(
             width: 1.w,
           ),
-          GestureDetector(
-            onTap: () {
-              // Navigation.instance.navigate('/accountDetails');
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Badge(
-                position: BadgePosition.bottomEnd(),
-                badgeColor: Colors.white,
-                badgeContent: const Icon(
-                  ConstanceData.moreIcon,
-                  color: Colors.black,
-                  size: 10,
-                ),
-                child: const CircleAvatar(
-                  // radius: 25, // Image radius
-                  backgroundImage: AssetImage(
-                    ConstanceData.humanImage,
-                  ),
-                ),
+          Consumer<DataProvider>(builder: (context, data, _) {
+            return GestureDetector(
+              onTap: () {
+                Navigation.instance.navigate('/cartPage');
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: data.cartData?.items.isEmpty ?? true
+                    ? const Icon(
+                        ConstanceData.storeIcon,
+                        // size: 2.h
+                      )
+                    : Badge(
+                        position: BadgePosition.topEnd(),
+                        badgeColor: ConstanceData.primaryColor,
+                        badgeContent: Text(
+                          '${data.cartData?.items.length ?? ""}',
+                          style:
+                              Theme.of(context).textTheme.headline5?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        child: const Icon(
+                          ConstanceData.storeIcon,
+                          // size: 2.h
+                        ),
+                      ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );

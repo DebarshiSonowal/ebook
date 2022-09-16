@@ -29,13 +29,13 @@ class ConstanceData {
   ];
 
   static const pages = [
-    'Cart',
+    // 'Cart',
     'Account Information',
     'FAQs & Support',
-    'Audio Player Settings',
+    // 'Audio Player Settings',
     'Language Preference',
     'Downloads',
-    'Notification Settings',
+    // 'Notification Settings',
     'Privacy',
     'Invite Friends',
     'Sign out',
@@ -149,6 +149,7 @@ class ConstanceData {
   static const homeIcon = FontAwesomeIcons.home;
   static const libraryIcon = FontAwesomeIcons.book;
   static const storeIcon = FontAwesomeIcons.shoppingCart;
+  static const orderIcon = FontAwesomeIcons.history;
   static const moreIcon = FontAwesomeIcons.hamburger;
 
   // static final reviews=[

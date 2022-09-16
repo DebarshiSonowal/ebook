@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -6,14 +5,15 @@ import '../../Constants/constance_data.dart';
 import '../../Helper/navigator.dart';
 import '../../Storage/data_provider.dart';
 import 'package:sizer/sizer.dart';
-class BottomNavBarCustom extends  StatefulWidget {
-  const BottomNavBarCustom ({Key? key}) : super(key: key);
+
+class BottomNavBarCustom extends StatefulWidget {
+  const BottomNavBarCustom({Key? key}) : super(key: key);
 
   @override
-  State<BottomNavBarCustom > createState() => _BottomNavBarCustomState();
+  State<BottomNavBarCustom> createState() => _BottomNavBarCustomState();
 }
 
-class _BottomNavBarCustomState extends State<BottomNavBarCustom > {
+class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, data, _) {
@@ -30,32 +30,47 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom > {
             color: Colors.white,
           ),
           onTap: (i) {
-            if (i!=3) {
+            if (i != 4) {
               Provider.of<DataProvider>(
-                              Navigation.instance.navigatorKey.currentContext ??
-                                  context,
-                              listen: false)
-                              .setIndex(i);
+                      Navigation.instance.navigatorKey.currentContext ??
+                          context,
+                      listen: false)
+                  .setIndex(i);
+            } else if (i == 2) {
             } else {
               Navigation.instance.navigate('/accountDetails');
             }
           },
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
                 icon: Icon(ConstanceData.homeIcon),
                 label: 'Home'),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
                 icon: Icon(ConstanceData.libraryIcon),
                 label: 'Library'),
             BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: Icon(ConstanceData.storeIcon),
-                label: 'Store'),
-            BottomNavigationBarItem(
+                icon: Image.asset(
+                  ConstanceData.primaryIcon,
+                  height: 5.h,
+                  width: 5.h,
+                  fit: BoxFit.fill,
+                ),
+                label: ''),
+            const BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: Icon(ConstanceData.moreIcon),
+                icon: Icon(ConstanceData.orderIcon),
+                label: 'Orders'),
+            const BottomNavigationBarItem(
+                backgroundColor: ConstanceData.secondaryColor,
+                icon: CircleAvatar(
+                  radius: 15, // Image radius
+                  backgroundImage: AssetImage(
+                    ConstanceData.humanImage,
+                  ),
+                ),
                 label: 'More'),
           ]);
     });

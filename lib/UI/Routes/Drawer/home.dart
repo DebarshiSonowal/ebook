@@ -120,7 +120,8 @@ class _HomeState extends State<Home> {
                   height: 20.h,
                   width: 70.w,
                   decoration: const BoxDecoration(
-                    color: Color(0xff121212),
+                    color: Colors.transparent,
+                    // color: Color(0xff121212),
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   child: Row(
@@ -131,7 +132,8 @@ class _HomeState extends State<Home> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 2.w, vertical: 2.h),
                           decoration: const BoxDecoration(
-                            color: ConstanceData.cardBookColor,
+                            // color: ConstanceData.cardBookColor,
+                            color: Colors.transparent,
                             // color: Colors.green,
                             // image: DecorationImage(
                             //   image:
@@ -156,7 +158,8 @@ class _HomeState extends State<Home> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 2.w, vertical: 1.h),
                           decoration: const BoxDecoration(
-                            color: ConstanceData.cardBookColor,
+                            // color: ConstanceData.cardBookColor,
+                            color: Colors.transparent,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(10.0),
                               bottomRight: Radius.circular(10.0),

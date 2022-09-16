@@ -7,7 +7,7 @@ import 'package:ebook/Model/razorpay_key.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quantity_input/quantity_input.dart';
+// import 'package:quantity_input/quantity_input.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
 
@@ -59,8 +59,9 @@ class _CartPageState extends State<CartPage> {
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             vertical: 1.h, horizontal: 3.w),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        child: ListView(
+                          // mainAxisSize: MainAxisSize.min,
+                          shrinkWrap: true,
                           children: [
                             Card(
                               color: Colors.white,
@@ -162,7 +163,7 @@ class _CartPageState extends State<CartPage> {
                                                           ),
                                                           errorWidget: (context,
                                                                   url, error) =>
-                                                              Icon(Icons.image,
+                                                              const Icon(Icons.image,
                                                                   color: Colors
                                                                       .white),
                                                           fit: BoxFit.fill,

@@ -21,6 +21,7 @@ import '../Model/logout_response.dart';
 import '../Model/magazine_plan.dart';
 import '../Model/my_books_response.dart';
 import '../Model/order.dart';
+import '../Model/order_history.dart';
 import '../Model/profile.dart';
 import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
@@ -598,6 +599,25 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("Razorpay error: ${e.response}");
       return RazorpayResponse.withError(e.message);
+    }
+  }
+
+  Future<OrderHistoryResponse> fetchOrders() async {
+    var url = "${baseUrl}/sales/order";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("history response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return OrderHistoryResponse.fromJson(response?.data);
+      } else {
+        debugPrint("history error: ${response?.data}");
+        return OrderHistoryResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("history error: ${e.response}");
+      return OrderHistoryResponse.withError(e.message);
     }
   }
 

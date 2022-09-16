@@ -18,7 +18,7 @@ import '../../Components/home_app_bar.dart';
 import '../../Components/new_searchbar.dart';
 import '../../Components/new_tab_bar.dart';
 import '../Drawer/home.dart';
-import '../Drawer/store.dart';
+import '../Drawer/history.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -53,12 +53,12 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: Image.asset(ConstanceData.primaryIcon),
-        ),
-        floatingActionButtonLocation:
-            FloatingActionButtonLocation.miniCenterDocked,
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {},
+        //   child: Image.asset(ConstanceData.primaryIcon),
+        // ),
+        // floatingActionButtonLocation:
+        //     FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: const BottomNavBarCustom(),
       ),
     );
@@ -69,9 +69,9 @@ class _HomePageState extends State<HomePage>
       switch (currentIndex) {
         case 1:
           return const Librarypage();
-        case 2:
-          return const Store();
         case 3:
+          return const OrderHistoryPage();
+        case 4:
           return const More();
         default:
           return const Home();
@@ -80,9 +80,9 @@ class _HomePageState extends State<HomePage>
       switch (currentIndex) {
         case 1:
           return const Librarypage();
-        case 2:
-          return const Store();
         case 3:
+          return const OrderHistoryPage();
+        case 4:
           return const More();
         default:
           return const Home();

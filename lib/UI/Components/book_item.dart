@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/home_banner.dart';
@@ -120,8 +121,9 @@ class BookItem extends StatelessWidget {
                     final response = await ApiProvider.instance.fetchBookmark();
                     if (response.status ?? false) {
                       Provider.of<DataProvider>(
-                          Navigation.instance.navigatorKey.currentContext ?? context,
-                          listen: false)
+                              Navigation.instance.navigatorKey.currentContext ??
+                                  context,
+                              listen: false)
                           .setToBookmarks(response.items ?? []);
                     }
                   }
@@ -152,7 +154,9 @@ class BookItem extends StatelessWidget {
                         ),
                       ),
                       Icon(
-                        getSelected(context,data.id??0) ? Icons.bookmark : Icons.bookmark_border,
+                        getSelected(context, data.id ?? 0)
+                            ? Icons.bookmark
+                            : Icons.bookmark_border,
                         color: Colors.grey.shade200,
                       )
                     ],
@@ -504,20 +508,57 @@ class BookItem extends StatelessWidget {
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
           .setToCart(response.cart?.items ?? []);
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext!,
+          listen: false)
+          .setCartData(response.cart!);
       Navigation.instance.goBack();
+      showSuccess(context);
     } else {
       Navigation.instance.goBack();
+      showError(context);
     }
   }
 
-  getSelected(context,id) {
-    for(var i in Provider.of<DataProvider>(
-        Navigation.instance.navigatorKey.currentContext ?? context,
-        listen: false).bookmarks){
-      if(id == i.id){
+  getSelected(context, id) {
+    for (var i in Provider.of<DataProvider>(
+            Navigation.instance.navigatorKey.currentContext ?? context,
+            listen: false)
+        .bookmarks) {
+      if (id == i.id) {
         return true;
       }
     }
     return false;
   }
+
+  void showSuccess(context) {
+    var snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Added to cart',
+        message: 'The following book is added to cart',
+        contentType: ContentType.success,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+  }
+  void showError(context) {
+    var snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Failed',
+        message: 'Something went wrong',
+        contentType: ContentType.failure,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+  }
+
 }
