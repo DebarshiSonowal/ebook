@@ -120,8 +120,8 @@ class _HomeState extends State<Home> {
                   height: 20.h,
                   width: 70.w,
                   decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                    // color: Color(0xff121212),
+                    // color: Colors.transparent,
+                    color: Color(0xff121212),
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
                   ),
                   child: Row(

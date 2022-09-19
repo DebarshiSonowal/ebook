@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'home_banner.dart';
+
 class OrderItem {
   int? id, order_id, book_id, qty, tax_id, status;
   double? base_unit_price,
@@ -14,6 +18,7 @@ class OrderItem {
       cess,
       subtotal;
   String? book_format, product_data, created_at;
+  Book? book;
 
   OrderItem.fromJson(json) {
     id = json['id'] ?? 0;
@@ -58,8 +63,17 @@ class OrderItem {
 
     //string
     book_format = json['book_format'] ?? "";
-    product_data = json['product_data'] ?? "";
+    // product_data = json['product_data'] ?? "";
     created_at = json['created_at'] ?? "";
+    // print(jsonEncode(json['product_data']));
+    // print(jsonEncode(json['product_data']
+    //     .toString()
+    //     .replaceAll(RegExp(r'\\',unicode: true,dotAll: true), ' ')
+    //     .toString()));
+    book = Book.fromJson(json['product_data']);
+    //     .toString()
+    //     .replaceAll(RegExp(r'\\'), ' ')
+    //     .toString()));
   }
 }
 

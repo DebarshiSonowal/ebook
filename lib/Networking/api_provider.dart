@@ -6,6 +6,7 @@ import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../Model/apply_cupon.dart';
 import '../Model/book_category.dart';
 import '../Model/book_chapter.dart';
 import '../Model/book_details.dart';
@@ -20,6 +21,7 @@ import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
 import '../Model/magazine_plan.dart';
 import '../Model/my_books_response.dart';
+import '../Model/my_lang.dart';
 import '../Model/order.dart';
 import '../Model/order_history.dart';
 import '../Model/profile.dart';
@@ -564,6 +566,31 @@ class ApiProvider {
     }
   }
 
+  Future<ApplyCupon> applyDiscount(coupon_code, total_amount) async {
+    var url = "${baseUrl}/discount/list";
+    dio = Dio(option);
+    var data = {
+      'total_amount': total_amount,
+      'coupon_code': coupon_code,
+    };
+    debugPrint(url.toString());
+    debugPrint(jsonEncode(data));
+    try {
+      Response? response =
+          await dio?.get(url.toString(), queryParameters: data);
+      debugPrint("discount apply response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return ApplyCupon.fromJson(response?.data);
+      } else {
+        debugPrint("discount apply error: ${response?.data}");
+        return ApplyCupon.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("discount apply error: ${e.response}");
+      return ApplyCupon.withError(e.message);
+    }
+  }
+
   Future<MyBooksResponse> fetchMyBooks() async {
     var url = "${baseUrl}${path}/my-list";
     dio = Dio(option);
@@ -599,6 +626,25 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("Razorpay error: ${e.response}");
       return RazorpayResponse.withError(e.message);
+    }
+  }
+
+  Future<MyLangResponse> fetchLanguages() async {
+    var url = "${baseUrl}/languages";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("languages response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return MyLangResponse.fromJson(response?.data);
+      } else {
+        debugPrint("languages error: ${response?.data}");
+        return MyLangResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("languages error: ${e.response}");
+      return MyLangResponse.withError(e.message);
     }
   }
 

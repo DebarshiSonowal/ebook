@@ -32,8 +32,10 @@ class Book {
   List<Tag>? tags, awards;
 
   Book.fromJson(json) {
-    id = json['id'] ?? 0;
-    book_category_id = json['book_category_id'] ?? 0;
+    id = json['id'] == null ? 0 : int.parse(json['id'].toString());
+    book_category_id = json['book_category_id'] == null
+        ? 0
+        : int.parse(json['book_category_id'].toString());
     length = json['length'] == null ? 0 : int.parse(json['length'].toString());
     total_rating = json['total_rating'] ?? 0;
 

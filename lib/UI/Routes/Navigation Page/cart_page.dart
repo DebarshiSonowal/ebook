@@ -7,6 +7,7 @@ import 'package:ebook/Model/razorpay_key.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 // import 'package:quantity_input/quantity_input.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
@@ -25,7 +26,7 @@ class _CartPageState extends State<CartPage> {
   String cupon = '';
   final _razorpay = Razorpay();
   double tempTotal = 1.0;
-  String temp_order_id="";
+  String temp_order_id = "";
 
   @override
   void dispose() {
@@ -163,7 +164,8 @@ class _CartPageState extends State<CartPage> {
                                                           ),
                                                           errorWidget: (context,
                                                                   url, error) =>
-                                                              const Icon(Icons.image,
+                                                              const Icon(
+                                                                  Icons.image,
                                                                   color: Colors
                                                                       .white),
                                                           fit: BoxFit.fill,
@@ -406,7 +408,11 @@ class _CartPageState extends State<CartPage> {
     Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.fetchRazorpay();
     if (response.status ?? false) {
-      initateOrder(response.razorpay!);
+      if (cupon == null || cupon == "") {
+        initateOrder(response.razorpay!);
+      } else {
+        applyCoupon(cupon, response.razorpay!);
+      }
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(
@@ -421,7 +427,7 @@ class _CartPageState extends State<CartPage> {
     final response = await ApiProvider.instance.createOrder(cupon);
     if (response.status ?? false) {
       tempTotal = response.order?.total ?? 0;
-      temp_order_id = response.order?.order_id.toString()??"";
+      temp_order_id = response.order?.order_id.toString() ?? "";
       startPayment(razorpay, response.order?.total, response.order?.order_id,
           response.order?.subscriber_id);
     } else {
@@ -515,6 +521,30 @@ class _CartPageState extends State<CartPage> {
         text: "Payment received Successfully",
       );
       fetchCartItems();
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  void applyCoupon(String coupon, RazorpayKey razorpayKey) async {
+    final response =
+        await ApiProvider.instance.applyDiscount(coupon, tempTotal);
+    if (response.success ?? false) {
+      if (mounted) {
+        setState(() {
+          tempTotal = response.amount ?? tempTotal;
+        });
+        initateOrder(razorpayKey);
+      } else {
+        tempTotal = response.amount ?? tempTotal;
+        initateOrder(razorpayKey);
+      }
+
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(

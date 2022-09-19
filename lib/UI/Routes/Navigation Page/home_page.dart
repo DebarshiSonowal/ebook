@@ -65,9 +65,12 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget bodyWidget(int currentIndex, currentTab) {
-    if (currentTab == 0) {
+    print(currentIndex);
+    // if (currentTab == 0) {
       switch (currentIndex) {
         case 1:
+          return const Librarypage();
+        case 2:
           return const Librarypage();
         case 3:
           return const OrderHistoryPage();
@@ -76,18 +79,18 @@ class _HomePageState extends State<HomePage>
         default:
           return const Home();
       }
-    } else {
-      switch (currentIndex) {
-        case 1:
-          return const Librarypage();
-        case 3:
-          return const OrderHistoryPage();
-        case 4:
-          return const More();
-        default:
-          return const Home();
-      }
-    }
+    // } else {
+    //   switch (currentIndex) {
+    //     case 1:
+    //       return const Librarypage();
+    //     case 3:
+    //       return const OrderHistoryPage();
+    //     case 4:
+    //       return const More();
+    //     default:
+    //       return const Home();
+    //   }
+    // }
   }
 
   @override

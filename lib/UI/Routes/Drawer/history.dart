@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:flutter/material.dart';
@@ -52,16 +53,15 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Order #${current.id}',
+                                '${current.voucher_no}',
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline2
                                     ?.copyWith(
-                                      // fontSize: 2.5.h,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold
-                                    ),
+                                        // fontSize: 2.5.h,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
                               ),
                               Text(
                                 '${current.order_date}',
@@ -94,54 +94,67 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                               var data = current.orderItems[count];
                               return Card(
                                 color: Colors.grey.shade100,
-                                child: ExpansionTile(
-                                  iconColor: Colors.black,
-                                  collapsedIconColor: Colors.black,
-                                  title: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                child: Padding(
+                                  padding:  EdgeInsets.symmetric(horizontal: 4.w,vertical: 1.h),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                      Row(
                                         children: [
-                                          Text(
-                                            'Book #${data.book_id}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline2
-                                                ?.copyWith(
-                                              // fontSize: 2.5.h,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold
-                                            ),
+                                          CachedNetworkImage(
+                                            imageUrl:
+                                            data.book?.profile_pic ?? "",
+                                            height: 5.h,
                                           ),
-                                          Text(
-                                            '${data.created_at}',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline5
-                                                ?.copyWith(
-                                              // fontSize: 2.5.h,
-                                              color: Colors.black,
-                                            ),
+                                          SizedBox(
+                                            width:2.w,
                                           ),
+                                          Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${data.book?.title}',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline2
+                                                    ?.copyWith(
+                                                  // fontSize: 2.5.h,
+                                                    color: Colors.black,
+                                                    fontWeight:
+                                                    FontWeight.bold),
+                                              ),
+                                              Text(
+                                                '${data.book?.writer}',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline5
+                                                    ?.copyWith(
+                                                  // fontSize: 2.5.h,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
                                         ],
                                       ),
                                       Text(
                                         '₹${data.selling_unit_price}',
                                         overflow: TextOverflow.ellipsis,
-                                        style:
-                                        Theme.of(context).textTheme.headline3?.copyWith(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline3
+                                            ?.copyWith(
                                           // fontSize: 2.5.h,
                                           color: Colors.green,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  children: [
-
-                                  ],
                                 ),
                               );
                             },

@@ -52,7 +52,10 @@ class _LibrarypageState extends State<Librarypage>
                     ? data.myBooks[count]
                     : data.bookmarks[count];
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigation.instance.navigate('/bookDetails',
+                        args: data.myBooks[count].id ?? 0);
+                  },
                   child: Card(
                     child: CachedNetworkImage(
                       imageUrl: data.libraryTab == 0
