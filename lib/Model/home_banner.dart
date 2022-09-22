@@ -40,7 +40,7 @@ class Book {
     total_rating = json['total_rating'] ?? 0;
 
     title = json['title'] ?? "";
-    writer = json['writer'] ?? "";
+    writer = json['writer'] ?? json['contributor'] ?? "";
     book_format = json['book_format'] ?? "";
     category = json['category'] ?? "";
     profile_pic = json['profile_pic'] ?? "";

@@ -17,7 +17,7 @@ class DataProvider extends ChangeNotifier {
   List<List<BookCategory>>? categoryList = [];
   List<List<Book>>? bannerList = [];
   List<List<HomeSection>>? homeSection = [];
-  List<Book> cartBooks =[],myBooks = [];
+  List<Book> cartBooks =[],myBooks = [], search_results=[];
   List<BookmarkItem> bookmarks = [];
   List<CartItem> items = [];
   List<Discount> cupons = [];
@@ -41,6 +41,10 @@ class DataProvider extends ChangeNotifier {
 
   setMyBooks(List<Book> list){
     myBooks = list;
+    notifyListeners();
+  }
+  setSearchResult(List<Book> list){
+    search_results = list;
     notifyListeners();
   }
   setHistory(List<OrderHistory> list){

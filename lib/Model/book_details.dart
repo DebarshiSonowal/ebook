@@ -91,9 +91,9 @@ class BookDetailsModel {
     awards = json['awards'] == null
         ? []
         : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
-    articles = json['articles'] == null
+    articles = json['article_list'] == null
         ? []
-        : (json['articles'] as List).map((e) => Article.fromJson(e)).toList();
+        : (json['article_list'] as List).map((e) => Article.fromJson(e)).toList();
 
     //double
     average_rating = json['average_rating'] == null

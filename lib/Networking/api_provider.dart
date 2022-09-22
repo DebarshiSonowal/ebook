@@ -27,6 +27,7 @@ import '../Model/order_history.dart';
 import '../Model/profile.dart';
 import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
+import '../Model/search_response.dart';
 
 class ApiProvider {
   ApiProvider._();
@@ -688,6 +689,58 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("updateCart error: ${e.response}");
       return CartResponse.withError(e.message);
+    }
+  }
+
+  Future<SearchResponse> search(
+      format, category_ids, tag_ids, author_ids, title) async {
+    var url = "${baseUrl}/search/${format}";
+    dio = Dio(option);
+    var data = {
+      'format': format,
+    };
+    if (category_ids != null && category_ids != "") {
+      var temp = {
+        'category_ids': category_ids,
+      };
+      data.addEntries(temp.entries);
+    }
+    if (tag_ids == null && tag_ids != "") {
+      var temp = {
+        'tag_ids': tag_ids,
+      };
+      data.addEntries(temp.entries);
+    }
+    if (author_ids == null && author_ids != "") {
+      var temp = {
+        'author_ids': author_ids,
+      };
+      data.addEntries(temp.entries);
+    }
+    if (title == null && title != "") {
+      var temp = {
+        'title': title,
+      };
+      data.addEntries(temp.entries);
+    }
+
+    debugPrint(url.toString());
+    debugPrint(jsonEncode(data));
+    try {
+      Response? response = await dio?.get(
+        url.toString(),
+        queryParameters: data,
+      );
+      debugPrint("search response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return SearchResponse.fromJson(response?.data);
+      } else {
+        debugPrint("search error: ${response?.data}");
+        return SearchResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("search error: ${e.response}");
+      return SearchResponse.withError(e.message);
     }
   }
 

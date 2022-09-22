@@ -78,7 +78,7 @@ class _BookDetailsState extends State<BookDetails>
   bool toggle = false;
   double sliderVal = 0;
 
-  List<BookChapter> chapters=[];
+  List<BookChapter> chapters = [];
 
   var _counterValue = 12.sp;
 
@@ -369,330 +369,348 @@ class _BookDetailsState extends State<BookDetails>
         child: bookDetails == null
             ? const Center(child: CircularProgressIndicator())
             : Consumer<DataProvider>(builder: (context, data, _) {
-          return chapters.isEmpty
-              ? const Center(child: Text('Oops No Data available here'),)
-              : Column(
-            children: [
-              SizedBox(
-                height: 1.h,
-                width: double.infinity,
-                child: Container(
-                  // color: Colors.blue,
-                ),
-              ),
-              Expanded(
-                child: PageView.builder(
-                  onPageChanged: (index) => setState(() {
-                    currentIndex = index;
-                    background = multiImageProvider[index];
-                    sliderVal = index.toDouble();
-                  }),
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: chapters[0].pages?.length,
-                  itemBuilder: (context, index) {
-                    var current = chapters[0].pages![index];
-                    test = chapters[0].pages![index];
-                    return AnimatedOpacity(
-                      duration: const Duration(seconds: 2),
-                      opacity: currentIndex == index ? 1.0 : 0.1,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5.w,
-                        ),
-                        color: getTextColor(),
-                        child: Zoom(
-                          colorScrollBars: Colors.transparent,
-                          backgroundColor: Colors.transparent,
-                          maxZoomWidth: 1000,
-                          maxZoomHeight: 1000,
-                          canvasColor: Colors.transparent,
-                          child: Center(
-                            child: WebView(
-                              initialUrl: 'about:blank',
-                              onWebViewCreated: (WebViewController
-                              webViewController) {
-                                _controller = webViewController;
-                                _loadHtmlFromAssets(
-                                    current,
-                                    getBackGroundColor(),
-                                    getTextColor(),
-                                    _counterValue);
-                              },
-                            ),
-                            // child: Html(
-                            //   data:  test,
-                            //   // tagsList: [
-                            //   //   'img','p','!DOCTYPE html','body'
-                            //   // ],
-                            //   // tagsList: ['p'],
-                            //   shrinkWrap:true,
-                            //   style: {
-                            //     '#': Style(
-                            //
-                            //       fontSize: FontSize(_counterValue),
-                            //       maxLines: 20,
-                            //       color: getBackGroundColor(),
-                            //       // textOverflow: TextOverflow.ellipsis,
-                            //     ),
-                            //   },
-                            // ),
-                            // child: HtmlWidget(
-                            //   // current,
-                            //   test,
-                            //   customStylesBuilder: (element) {
-                            //     if (element.classes.contains('img')) {
-                            //       return {
-                            //         'align': 'right',
-                            //         // 'margin - left': 'auto'
-                            //       };
-                            //     }
-                            //     return null;
-                            //   },
-                            //   renderMode: RenderMode.listView,
-                            //   textStyle: Theme.of(context)
-                            //       .textTheme
-                            //       .headline1
-                            //       ?.copyWith(
-                            //         color: getBackGroundColor(),
-                            //         fontSize: _counterValue,
-                            //       ),
-                            // ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // print('dads');
-                  showCupertinoModalBottomSheet(
-                    enableDrag: true,
-                    // expand: true,
-                    elevation: 15,
-                    clipBehavior: Clip.antiAlias,
-                    backgroundColor: Theme.of(context).accentColor,
-                    topRadius: const Radius.circular(15),
-                    closeProgressThreshold: 10,
-                    context: Navigation
-                        .instance.navigatorKey.currentContext ??
-                        context,
-                    builder: (context) => Material(
-                      color: getBodyColor(),
-                      child: StatefulBuilder(
-                          builder: (context, update) {
-                            return SizedBox(
-                              height: 30.h,
-                              width: double.infinity,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 15.h,
-                                    width: double.infinity,
-                                    color: Colors.black,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Enjoying your free preview?",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(
-                                              color:
-                                              getTextColor()),
+                return chapters.isEmpty
+                    ? const Center(
+                        child: Text('Oops No Data available here'),
+                      )
+                    : bookDetails?.book_format == "magazine"
+                        ? MagazineView()
+                        : Column(
+                            children: [
+                              SizedBox(
+                                height: 1.h,
+                                width: double.infinity,
+                                child: Container(
+                                    // color: Colors.blue,
+                                    ),
+                              ),
+                              Expanded(
+                                child: PageView.builder(
+                                  onPageChanged: (index) => setState(() {
+                                    currentIndex = index;
+                                    background = multiImageProvider[index];
+                                    sliderVal = index.toDouble();
+                                  }),
+                                  physics: const ClampingScrollPhysics(),
+                                  itemCount: chapters[0].pages?.length,
+                                  itemBuilder: (context, index) {
+                                    var current = chapters[0].pages![index];
+                                    test = chapters[0].pages![index];
+                                    return AnimatedOpacity(
+                                      duration: const Duration(seconds: 2),
+                                      opacity:
+                                          currentIndex == index ? 1.0 : 0.1,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 5.w,
                                         ),
-                                        Text(
-                                          "Keep reading with a free trial",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(
-                                              color:
-                                              getTextColor()),
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: 4.5.h,
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 20.0),
-                                            child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigation.instance
-                                                      .navigate(
-                                                      '/bookInfo');
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                  MaterialStateProperty
-                                                      .all(Colors
-                                                      .blue),
-                                                ),
-                                                child: Text(
-                                                  'Buy Now',
-                                                  style:
-                                                  Theme.of(context)
-                                                      .textTheme
-                                                      .headline5
-                                                      ?.copyWith(
-                                                    fontSize:
-                                                    3.h,
-                                                    color: Colors
-                                                        .black,
-                                                  ),
-                                                )),
+                                        color: getTextColor(),
+                                        child: Zoom(
+                                          colorScrollBars: Colors.transparent,
+                                          backgroundColor: Colors.transparent,
+                                          maxZoomWidth: 1000,
+                                          maxZoomHeight: 1000,
+                                          canvasColor: Colors.transparent,
+                                          child: Center(
+                                            child: WebView(
+                                              initialUrl: 'about:blank',
+                                              onWebViewCreated:
+                                                  (WebViewController
+                                                      webViewController) {
+                                                _controller = webViewController;
+                                                _loadHtmlFromAssets(
+                                                    current,
+                                                    getBackGroundColor(),
+                                                    getTextColor(),
+                                                    _counterValue);
+                                              },
+                                            ),
+                                            // child: Html(
+                                            //   data:  test,
+                                            //   // tagsList: [
+                                            //   //   'img','p','!DOCTYPE html','body'
+                                            //   // ],
+                                            //   // tagsList: ['p'],
+                                            //   shrinkWrap:true,
+                                            //   style: {
+                                            //     '#': Style(
+                                            //
+                                            //       fontSize: FontSize(_counterValue),
+                                            //       maxLines: 20,
+                                            //       color: getBackGroundColor(),
+                                            //       // textOverflow: TextOverflow.ellipsis,
+                                            //     ),
+                                            //   },
+                                            // ),
+                                            // child: HtmlWidget(
+                                            //   // current,
+                                            //   test,
+                                            //   customStylesBuilder: (element) {
+                                            //     if (element.classes.contains('img')) {
+                                            //       return {
+                                            //         'align': 'right',
+                                            //         // 'margin - left': 'auto'
+                                            //       };
+                                            //     }
+                                            //     return null;
+                                            //   },
+                                            //   renderMode: RenderMode.listView,
+                                            //   textStyle: Theme.of(context)
+                                            //       .textTheme
+                                            //       .headline1
+                                            //       ?.copyWith(
+                                            //         color: getBackGroundColor(),
+                                            //         fontSize: _counterValue,
+                                            //       ),
+                                            // ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 15.h,
-                                    width: double.infinity,
-                                    color: Colors.grey.shade900,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Slider(
-                                                min: 0,
-                                                max: double.parse(
-                                                    multiImageProvider
-                                                        .length
-                                                        .toString()),
-                                                activeColor:
-                                                Colors.blue,
-                                                inactiveColor:
-                                                Colors.white,
-                                                onChanged:
-                                                    (double value) {
-                                                  update(() {
-                                                    setState(() {
-                                                      sliderVal = value;
-                                                      background =
-                                                      multiImageProvider[
-                                                      value
-                                                          .toInt()];
-                                                    });
-                                                  });
-                                                },
-                                                value: sliderVal,
-                                              ),
-                                            ),
-                                            IconButton(
-                                              onPressed: () {
-                                                showSearch(
-                                                  context: context,
-                                                  delegate: SearchPage<
-                                                      Book_old>(
-                                                    items: ConstanceData
-                                                        .Motivational,
-                                                    searchLabel:
-                                                    'Search people',
-                                                    suggestion:
-                                                    const Center(
-                                                      child: Text(
-                                                          'Filter people by name, surname or age'),
-                                                    ),
-                                                    failure:
-                                                    const Center(
-                                                      child: Text(
-                                                          'No person found :('),
-                                                    ),
-                                                    filter: (current) =>
-                                                    [
-                                                      current.name,
-                                                      current.author,
-                                                      // person.age.toString(),
-                                                    ],
-                                                    builder: (book) =>
-                                                        ListTile(
-                                                          title: Text(
-                                                              book.name ??
-                                                                  ''),
-                                                          subtitle: Text(
-                                                              book.author ??
-                                                                  ''),
-                                                          trailing:
-                                                          CachedNetworkImage(
-                                                            imageUrl:
-                                                            book.image ??
-                                                                '',
-                                                            height: 20,
-                                                            width: 20,
-                                                          ),
-                                                        ),
-                                                  ),
-                                                );
-                                              },
-                                              icon: Icon(Icons.search),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 1.h,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets
-                                              .symmetric(
-                                              horizontal: 20.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // print('dads');
+                                  showCupertinoModalBottomSheet(
+                                    enableDrag: true,
+                                    // expand: true,
+                                    elevation: 15,
+                                    clipBehavior: Clip.antiAlias,
+                                    backgroundColor:
+                                        Theme.of(context).accentColor,
+                                    topRadius: const Radius.circular(15),
+                                    closeProgressThreshold: 10,
+                                    context: Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    builder: (context) => Material(
+                                      color: getBodyColor(),
+                                      child: StatefulBuilder(
+                                          builder: (context, update) {
+                                        return SizedBox(
+                                          height: 30.h,
+                                          width: double.infinity,
+                                          child: Column(
                                             children: [
-                                              Text(
-                                                '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5
-                                                    ?.copyWith(
-                                                  fontSize: 2.h,
-                                                  // color: Colors.black,
+                                              Container(
+                                                height: 15.h,
+                                                width: double.infinity,
+                                                color: Colors.black,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Enjoying your free preview?",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline5
+                                                          ?.copyWith(
+                                                              color:
+                                                                  getTextColor()),
+                                                    ),
+                                                    Text(
+                                                      "Keep reading with a free trial",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline5
+                                                          ?.copyWith(
+                                                              color:
+                                                                  getTextColor()),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.h,
+                                                    ),
+                                                    SizedBox(
+                                                      width: double.infinity,
+                                                      height: 4.5.h,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal:
+                                                                    20.0),
+                                                        child: ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigation
+                                                                  .instance
+                                                                  .navigate(
+                                                                      '/bookInfo');
+                                                            },
+                                                            style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty
+                                                                      .all(Colors
+                                                                          .blue),
+                                                            ),
+                                                            child: Text(
+                                                              'Buy Now',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .headline5
+                                                                  ?.copyWith(
+                                                                    fontSize:
+                                                                        3.h,
+                                                                    color: Colors
+                                                                        .black,
+                                                                  ),
+                                                            )),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              Text(
-                                                'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline5
-                                                    ?.copyWith(
-                                                  fontSize: 2.h,
-                                                  // color: Colors.black,
+                                              Container(
+                                                height: 15.h,
+                                                width: double.infinity,
+                                                color: Colors.grey.shade900,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Slider(
+                                                            min: 0,
+                                                            max: double.parse(
+                                                                multiImageProvider
+                                                                    .length
+                                                                    .toString()),
+                                                            activeColor:
+                                                                Colors.blue,
+                                                            inactiveColor:
+                                                                Colors.white,
+                                                            onChanged:
+                                                                (double value) {
+                                                              update(() {
+                                                                setState(() {
+                                                                  sliderVal =
+                                                                      value;
+                                                                  background =
+                                                                      multiImageProvider[
+                                                                          value
+                                                                              .toInt()];
+                                                                });
+                                                              });
+                                                            },
+                                                            value: sliderVal,
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            showSearch(
+                                                              context: context,
+                                                              delegate:
+                                                                  SearchPage<
+                                                                      Book_old>(
+                                                                items: ConstanceData
+                                                                    .Motivational,
+                                                                searchLabel:
+                                                                    'Search people',
+                                                                suggestion:
+                                                                    const Center(
+                                                                  child: Text(
+                                                                      'Filter people by name, surname or age'),
+                                                                ),
+                                                                failure:
+                                                                    const Center(
+                                                                  child: Text(
+                                                                      'No person found :('),
+                                                                ),
+                                                                filter:
+                                                                    (current) =>
+                                                                        [
+                                                                  current.name,
+                                                                  current
+                                                                      .author,
+                                                                  // person.age.toString(),
+                                                                ],
+                                                                builder:
+                                                                    (book) =>
+                                                                        ListTile(
+                                                                  title: Text(
+                                                                      book.name ??
+                                                                          ''),
+                                                                  subtitle: Text(
+                                                                      book.author ??
+                                                                          ''),
+                                                                  trailing:
+                                                                      CachedNetworkImage(
+                                                                    imageUrl:
+                                                                        book.image ??
+                                                                            '',
+                                                                    height: 20,
+                                                                    width: 20,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          icon: Icon(
+                                                              Icons.search),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 1.h,
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 20.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline5
+                                                                ?.copyWith(
+                                                                  fontSize: 2.h,
+                                                                  // color: Colors.black,
+                                                                ),
+                                                          ),
+                                                          Text(
+                                                            'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline5
+                                                                ?.copyWith(
+                                                                  fontSize: 2.h,
+                                                                  // color: Colors.black,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
+                                        );
+                                      }),
                                     ),
-                                  ),
-                                ],
+                                  );
+                                },
+                                child: Container(
+                                  height: 4.h,
+                                  width: double.infinity,
+                                  color: getBodyColor(),
+                                ),
                               ),
-                            );
-                          }),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 4.h,
-                  width: double.infinity,
-                  color: getBodyColor(),
-                ),
-              ),
-            ],
-          );
-        }),
+                            ],
+                          );
+              }),
       ),
     );
   }
@@ -885,14 +903,153 @@ class _BookDetailsState extends State<BookDetails>
       }
     }
     final response1 = await ApiProvider.instance
-        // .fetchBookChapters(widget.id.toString() ?? '3');
-        .fetchBookChapters('3');
+        .fetchBookChapters(widget.id.toString() ?? '3');
+    // .fetchBookChapters('3');
     if (response1.status ?? false) {
-      chapters = response1.chapters??[];
+      chapters = response1.chapters ?? [];
       if (mounted) {
         setState(() {});
       }
     }
     Navigation.instance.goBack();
+  }
+
+  MagazineView() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.w),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 3.h,
+            ),
+            Text(
+              bookDetails?.title ?? '',
+              style: Theme.of(context)
+                  .textTheme
+                  .headline1
+                  ?.copyWith(color: Colors.black),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            Text(
+              bookDetails?.description ?? '',
+              style: Theme.of(context).textTheme.headline3?.copyWith(
+                    color: Colors.black54,
+                  ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            SizedBox(
+              width: 9.w,
+              child: Divider(
+                color: Colors.black,
+                thickness: 0.09.h,
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
+            ),
+            ListView.separated(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (cont, count) {
+                var current = bookDetails?.articles![count];
+                return Container(
+                  width: double.infinity,
+                  // height: 10.h,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.abc,
+                            color: Colors.black,
+                            size: 8.h,
+                          ),
+                          SizedBox(
+                            width: 1.w,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                current?.title ?? 'NA',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      color: Colors.black54,
+                                    ),
+                              ),
+                              Text(
+                                '1 min read',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      color: Colors.black54,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.bookmark_border,
+                            color: Colors.black54,
+                            size: 5.h,
+                          ),
+                        ],
+                      ),
+                      Text(
+                        current?.title ?? '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headline3?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                      SizedBox(
+                        height: 0.5.h,
+                      ),
+                      Text(
+                        current?.short_note ?? '',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                              color: Colors.black,
+                              // fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              separatorBuilder: (cont, count) {
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 1.h),
+                  child: Divider(
+                    color: Colors.black,
+                    thickness: 0.09.h,
+                  ),
+                );
+              },
+              itemCount: bookDetails?.articles?.length ?? 0,
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            Divider(
+              color: Colors.black,
+              thickness: 0.09.h,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
