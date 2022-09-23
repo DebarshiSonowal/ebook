@@ -228,7 +228,7 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.all(5),
                                   // decoration: ,
                                   child: Text(
-                                    'Rs. ${data.selling_price}',
+                                    'Rs. ${data.selling_price?.toStringAsFixed(2)}',
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)

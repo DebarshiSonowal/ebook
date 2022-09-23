@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Helper/navigator.dart';
@@ -95,24 +97,25 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                               return Card(
                                 color: Colors.grey.shade100,
                                 child: Padding(
-                                  padding:  EdgeInsets.symmetric(horizontal: 4.w,vertical: 1.h),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 4.w, vertical: 1.h),
                                   child: Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
                                           CachedNetworkImage(
                                             imageUrl:
-                                            data.book?.profile_pic ?? "",
+                                                data.book?.profile_pic ?? "",
                                             height: 5.h,
                                           ),
                                           SizedBox(
-                                            width:2.w,
+                                            width: 2.w,
                                           ),
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 '${data.book?.title}',
@@ -121,10 +124,10 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                                     .textTheme
                                                     .headline2
                                                     ?.copyWith(
-                                                  // fontSize: 2.5.h,
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                    FontWeight.bold),
+                                                        // fontSize: 2.5.h,
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                               ),
                                               Text(
                                                 '${data.book?.writer}',
@@ -133,13 +136,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                                     .textTheme
                                                     .headline5
                                                     ?.copyWith(
-                                                  // fontSize: 2.5.h,
-                                                  color: Colors.black,
-                                                ),
+                                                      // fontSize: 2.5.h,
+                                                      color: Colors.black,
+                                                    ),
                                               ),
                                             ],
                                           ),
-
                                         ],
                                       ),
                                       Text(
@@ -149,9 +151,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                             .textTheme
                                             .headline3
                                             ?.copyWith(
-                                          // fontSize: 2.5.h,
-                                          color: Colors.green,
-                                        ),
+                                              // fontSize: 2.5.h,
+                                              color: Colors.green,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -164,6 +166,47 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                               );
                             },
                             itemCount: current.orderItems.length),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.black),
+                          ),
+                          onPressed: () async {
+                            Navigation.instance.navigate('/loadingDialog');
+                            // await ApiProvider.instance
+                            //     .download2(current.id ?? 0);
+                            var status = await Permission.storage.status;
+                            if (status.isDenied) {
+                              if (await Permission.storage
+                                  .request()
+                                  .isGranted) {
+                                await ApiProvider.instance
+                                    .download2(current.id ?? 0);
+                              } else {
+                                CoolAlert.show(
+                                  context: context,
+                                  type: CoolAlertType.warning,
+                                  text: "We require storage permissions",
+                                );
+                              }
+                              // We didn't ask for permission yet or the permission has been denied before but not permanently.
+                            } else {
+                              await ApiProvider.instance
+                                  .download2(current.id ?? 0);
+                            }
+                          },
+                          child: Text(
+                            'Download',
+                            style:
+                                Theme.of(context).textTheme.headline5?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 14.5.sp,
+                                    ),
+                          ),
+                        ),
                       ],
                     ),
                   );

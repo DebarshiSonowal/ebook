@@ -1,11 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
+import '../Helper/navigator.dart';
 import '../Model/apply_cupon.dart';
 import '../Model/book_category.dart';
 import '../Model/book_chapter.dart';
@@ -796,5 +799,83 @@ class ApiProvider {
       debugPrint("order error: ${e.response}");
       return OrderResponse.withError(e.message);
     }
+  }
+
+  Future download2(int id) async {
+    var url = '${baseUrl}/sales/invoice/${id}';
+    Navigation.instance.goBack();
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var tempDir = "/storage/emulated/0/Download";
+    String fullPath = tempDir + "/${id}";
+    print('full path ${fullPath}');
+    try {
+      Response? response = await dio?.get(
+        url,
+        onReceiveProgress: showDownloadProgress,
+        //Received data with List<int> s
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return status! < 500;
+            }),
+      );
+      print(response?.headers);
+      File file = File(fullPath);
+      var raf = file.openSync(mode: FileMode.write);
+      // response.data is List<int> type
+      raf.writeFromSync(response?.data);
+      await raf.close();
+      Future.delayed(Duration(seconds: 2), () {
+        showCompleteDownload(fullPath);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void showDownloadProgress(received, total) async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    if (total != -1) {
+      print((received / total * 100).toStringAsFixed(0) + "%");
+      await Future<void>.delayed(const Duration(seconds: 1), () async {
+        final AndroidNotificationDetails androidPlatformChannelSpecifics =
+            AndroidNotificationDetails('progress channel', 'progress channel',
+                channelShowBadge: false,
+                importance: Importance.max,
+                priority: Priority.high,
+                onlyAlertOnce: true,
+                showProgress: true,
+                maxProgress: total,
+                progress: received);
+        final NotificationDetails platformChannelSpecifics =
+            NotificationDetails(android: androidPlatformChannelSpecifics);
+        await flutterLocalNotificationsPlugin.show(
+            0, 'Saving Invoice', 'Downloading', platformChannelSpecifics,
+            payload: 'item x');
+      });
+    }
+  }
+
+  void showCompleteDownload(fullPath) async {
+    debugPrint("Completed");
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.cancelAll().then((value) async {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+        'progress channel',
+        'progress channel',
+        channelShowBadge: false,
+        importance: Importance.max,
+        priority: Priority.high,
+        onlyAlertOnce: true,
+        showProgress: false,
+      );
+      const NotificationDetails platformChannelSpecifics =
+          NotificationDetails(android: androidPlatformChannelSpecifics);
+      await flutterLocalNotificationsPlugin.show(1, 'Invoice Downloaded',
+          'Saved Successfully', platformChannelSpecifics,
+          payload: fullPath);
+    });
   }
 }

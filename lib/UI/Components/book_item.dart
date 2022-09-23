@@ -142,7 +142,7 @@ class BookItem extends StatelessWidget {
                           padding: EdgeInsets.all(0.5.w),
                           // decoration: ,
                           child: Text(
-                            'Rs. ${data.selling_price}',
+                            'Rs. ${data.selling_price?.toStringAsFixed(2)}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style:
@@ -300,7 +300,7 @@ class BookItem extends StatelessWidget {
                               padding: const EdgeInsets.all(5),
                               // decoration: ,
                               child: Text(
-                                'Rs. ${data.selling_price}',
+                                'Rs. ${data.selling_price?.toStringAsFixed(2)}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: Theme.of(context)

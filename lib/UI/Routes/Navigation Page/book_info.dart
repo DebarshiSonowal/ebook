@@ -36,8 +36,8 @@ class _BookInfoState extends State<BookInfo>
           bookDetails?.title ?? "",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.headline1?.copyWith(
-            color: Colors.white,
-          ),
+                color: Colors.white,
+              ),
         ),
         actions: [
           IconButton(
@@ -126,22 +126,21 @@ class _BookInfoState extends State<BookInfo>
                                 for (var i in bookDetails?.awards ?? [])
                                   Row(
                                     children: [
-                                      Text(
-                                        "# Winner of ",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5
-                                            // ?.copyWith(fontSize: 11.sp),
-                                      ),
+                                      Text("# Winner of ",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                          // ?.copyWith(fontSize: 11.sp),
+                                          ),
                                       Text(
                                         i.name ?? "",
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5
                                             ?.copyWith(
-                                                color: Colors.blueAccent,
-                                                // fontSize: 11.sp,
-                                        ),
+                                              color: Colors.blueAccent,
+                                              // fontSize: 11.sp,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -154,14 +153,16 @@ class _BookInfoState extends State<BookInfo>
                                     padding: EdgeInsets.all(0.5.w),
                                     // decoration: ,
                                     child: Text(
-                                      'Rs. ${bookDetails?.base_price}',
+                                      'Rs. ${bookDetails?.base_price?.toStringAsFixed(2)}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style:
-                                      Theme.of(context).textTheme.headline6?.copyWith(
-                                        fontSize: 9.sp,
-                                        color: Colors.black,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6
+                                          ?.copyWith(
+                                            fontSize: 9.sp,
+                                            color: Colors.black,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -207,26 +208,28 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 1.5.h,
                     ),
-                   SizedBox(
-                     width: double.infinity,
-                     child: Row(
-                       children: [
-                         for (var i in bookDetails?.tags ?? [])
-                           Container(
-                             padding: const EdgeInsets.all(5),
-                             margin: EdgeInsets.symmetric(horizontal: 1.w,vertical: 0.5.h),
-                             decoration: BoxDecoration(
-                               border: Border.all(color: Colors.white),
-                               borderRadius: BorderRadius.all(Radius.circular(5)),
-                             ),
-                             child: Text(
-                               i.name ?? "",
-                               style: Theme.of(context).textTheme.headline5,
-                             ),
-                           ),
-                       ],
-                     ),
-                   ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          for (var i in bookDetails?.tags ?? [])
+                            Container(
+                              padding: const EdgeInsets.all(5),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 1.w, vertical: 0.5.h),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                              ),
+                              child: Text(
+                                i.name ?? "",
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -286,7 +289,7 @@ class _BookInfoState extends State<BookInfo>
                       style: Theme.of(context).textTheme.headline1?.copyWith(
                             // fontSize: 2.5.h,
                             // color: Colors.grey.shade200,
-                        color: Colors.white,
+                            color: Colors.white,
                           ),
                     ),
                     SizedBox(
@@ -349,7 +352,7 @@ class _BookInfoState extends State<BookInfo>
                                 Theme.of(context).textTheme.headline1?.copyWith(
                                       // fontSize: 2.5.h,
                                       // color: Colors.grey.shade200,
-                                  color: Colors.white,
+                                      color: Colors.white,
                                     ),
                           ),
                           Text(
@@ -367,68 +370,67 @@ class _BookInfoState extends State<BookInfo>
                       height: 2.h,
                     ),
                     ListView.separated(
-
                       physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: reviews.length,
-                        itemBuilder: (cont, index) {
-                          var data = reviews[index];
-                          return Container(
-                            width: double.infinity,
-                            // height: 20.h,
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '${data.subscriber}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                        color: Colors.white
+                      shrinkWrap: true,
+                      itemCount: reviews.length,
+                      itemBuilder: (cont, index) {
+                        var data = reviews[index];
+                        return Container(
+                          width: double.infinity,
+                          // height: 20.h,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${data.subscriber}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline4
+                                        ?.copyWith(color: Colors.white
                                             // fontSize: 2.h,
                                             // color: Colors.grey.shade200,
-                                          ),
-                                    ),
-                                    RatingBar.builder(
-                                        itemSize: 5.w,
-                                        initialRating: data.rating ?? 3,
-                                        minRating: 1,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5,
-                                        // itemPadding:
-                                        //     EdgeInsets.symmetric(horizontal: 4.0),
-                                        itemBuilder: (context, _) => const Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                              size: 10,
                                             ),
-                                        onRatingUpdate: (rating) {
-                                          print(rating);
-                                        }),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 1.5.h,
-                                ),
-                                Text(
-                                  '${data.content}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      ?.copyWith(
+                                  ),
+                                  RatingBar.builder(
+                                      itemSize: 5.w,
+                                      initialRating: data.rating ?? 3,
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      // itemPadding:
+                                      //     EdgeInsets.symmetric(horizontal: 4.0),
+                                      itemBuilder: (context, _) => const Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                            size: 10,
+                                          ),
+                                      onRatingUpdate: (rating) {
+                                        print(rating);
+                                      }),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 1.5.h,
+                              ),
+                              Text(
+                                '${data.content}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
                                         // fontSize: 2.h,
                                         // color: Colors.grey.shade200,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }, separatorBuilder: (BuildContext context, int index) {
+                                        ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
                         return Container(
                           margin: EdgeInsets.symmetric(vertical: 0.5.h),
                           child: Divider(
@@ -436,7 +438,8 @@ class _BookInfoState extends State<BookInfo>
                             height: 0.1.h,
                           ),
                         );
-                    },),
+                      },
+                    ),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -472,8 +475,7 @@ class _BookInfoState extends State<BookInfo>
         setState(() {});
       }
     }
-    final response1 =
-        await ApiProvider.instance.fetchReview('3');
+    final response1 = await ApiProvider.instance.fetchReview('3');
     if (response1.status ?? false) {
       reviews = response1.reviews ?? [];
       print(reviews.length);
@@ -495,7 +497,7 @@ class _BookInfoState extends State<BookInfo>
         title: Text(
           'Give us rating',
           textAlign: TextAlign.center,
-          style:  TextStyle(
+          style: TextStyle(
             fontSize: 12.sp,
             fontWeight: FontWeight.bold,
           ),
@@ -504,7 +506,9 @@ class _BookInfoState extends State<BookInfo>
         message: Text(
           'Give a review to this book',
           textAlign: TextAlign.center,
-          style: TextStyle( fontSize: 12.sp,),
+          style: TextStyle(
+            fontSize: 12.sp,
+          ),
         ),
         // your app's logo?
         // image: const FlutterLogo(size: 100),
@@ -517,12 +521,9 @@ class _BookInfoState extends State<BookInfo>
         // commentHint: 'Set your custom comment hint',
         onCancelled: () => print('cancelled'),
         onSubmitted: (response) async {
-          print(
-              'rating: ${response.rating}, comment: ${response.comment}');
-          final response1 = await ApiProvider.instance
-              .addReview(
-              Add_Review(0, response.comment ?? "",
-                  response.rating),
+          print('rating: ${response.rating}, comment: ${response.comment}');
+          final response1 = await ApiProvider.instance.addReview(
+              Add_Review(0, response.comment ?? "", response.rating),
               widget.id);
         },
       ),
@@ -787,9 +788,9 @@ class DownloadSection extends StatelessWidget {
                 Text(
                   'Save',
                   style: Theme.of(context).textTheme.headline4?.copyWith(
-                    // fontSize: 2.h,
-                    color: Colors.white,
-                  ),
+                        // fontSize: 2.h,
+                        color: Colors.white,
+                      ),
                 ),
               ],
             ),
@@ -811,9 +812,9 @@ class DownloadSection extends StatelessWidget {
                 Text(
                   'Add to List',
                   style: Theme.of(context).textTheme.headline4?.copyWith(
-                    // fontSize: 2.h,
-                    color: Colors.white,
-                  ),
+                        // fontSize: 2.h,
+                        color: Colors.white,
+                      ),
                 ),
               ],
             ),
@@ -846,18 +847,14 @@ class BuyButton extends StatelessWidget {
                 //     .navigate('/bookInfo', args: data.id);
               },
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all(Colors.blue),
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
               ),
               child: Text(
                 'Buy Now',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(
-                  fontSize: 2.h,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      fontSize: 2.h,
+                      color: Colors.black,
+                    ),
               ),
             ),
           ),
@@ -869,21 +866,16 @@ class BuyButton extends StatelessWidget {
               onPressed: () {
                 // Navigation.instance
                 //     .navigate('/bookInfo', args: data.id);
-
               },
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all(Colors.blue),
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
               ),
               child: Text(
                 'Add To Cart',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(
-                  fontSize: 2.h,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      fontSize: 2.h,
+                      color: Colors.black,
+                    ),
               ),
             ),
           ),

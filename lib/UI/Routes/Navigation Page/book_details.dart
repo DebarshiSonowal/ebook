@@ -923,22 +923,45 @@ class _BookDetailsState extends State<BookDetails>
             SizedBox(
               height: 3.h,
             ),
-            Text(
-              bookDetails?.title ?? '',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline1
-                  ?.copyWith(color: Colors.black),
-            ),
-            SizedBox(
-              height: 2.h,
-            ),
-            Text(
-              bookDetails?.description ?? '',
-              style: Theme.of(context).textTheme.headline3?.copyWith(
-                    color: Colors.black54,
-                  ),
-            ),
+           Row(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               CachedNetworkImage(
+                 imageUrl: bookDetails?.profile_pic ?? "",
+                 height: 15.h,
+                 width: 35.w,
+                 fit: BoxFit.fill,
+               ),
+               SizedBox(
+                 width: 4.w,
+               ),
+               Flexible(
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     Text(
+                       bookDetails?.title ?? '',
+                       style: Theme.of(context)
+                           .textTheme
+                           .headline1
+                           ?.copyWith(color: Colors.black),
+                     ),
+                     SizedBox(
+                       height: 2.h,
+                     ),
+                     Text(
+                       bookDetails?.description ?? '',
+                       overflow: TextOverflow.ellipsis,
+                       maxLines: 4,
+                       style: Theme.of(context).textTheme.headline5?.copyWith(
+                         color: Colors.black54,
+                       ),
+                     ),
+                   ],
+                 ),
+               )
+             ],
+           ),
             SizedBox(
               height: 2.h,
             ),
@@ -965,65 +988,77 @@ class _BookDetailsState extends State<BookDetails>
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.abc,
-                            color: Colors.black,
-                            size: 8.h,
-                          ),
+                          // CachedNetworkImage(
+                          //   imageUrl: bookDetails?.profile_pic ?? "",
+                          //   height: 4.h,
+                          //   width: 12.w,
+                          //   fit: BoxFit.fill,
+                          // ),
+                          // SizedBox(
+                          //   width: 2.w,
+                          // ),
                           SizedBox(
-                            width: 1.w,
+                            width: 50.w,
+                            child: Text(
+                              bookDetails?.title ?? '',
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  ?.copyWith(
+                                    color: Colors.black54,
+                                  ),
+                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                current?.title ?? 'NA',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(
-                                      color: Colors.black54,
-                                    ),
-                              ),
-                              Text(
-                                '1 min read',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(
-                                      color: Colors.black54,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.bookmark_border,
-                            color: Colors.black54,
-                            size: 5.h,
-                          ),
+                          // Spacer(),
+                          // Icon(
+                          //   Icons.bookmark_border,
+                          //   color: Colors.black54,
+                          //   size: 5.h,
+                          // ),
                         ],
                       ),
-                      Text(
-                        current?.title ?? '',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headline3?.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  current?.title ?? '',
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 0.5.h,
+                                ),
+                                Text(
+                                  current?.short_note ?? '',
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                                        color: Colors.black,
+                                        // fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ],
                             ),
-                      ),
-                      SizedBox(
-                        height: 0.5.h,
-                      ),
-                      Text(
-                        current?.short_note ?? '',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headline4?.copyWith(
-                              color: Colors.black,
-                              // fontWeight: FontWeight.bold,
-                            ),
+                          ),
+                          SizedBox(
+                            width: 2.w,
+                          ),
+                          CachedNetworkImage(
+                            imageUrl: current?.profile_pic ?? "",
+                            height: 10.h,
+                            width: 25.w,
+                            fit: BoxFit.fill,
+                          ),
+                        ],
                       ),
                     ],
                   ),
