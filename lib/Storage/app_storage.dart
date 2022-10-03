@@ -16,6 +16,11 @@ class Storage {
     await sharedpreferences.setBool("isLoggedIn", true);
   }
 
+  Future<void> setReadingBook(int id) async {
+    await sharedpreferences.setInt("id", id);
+  }
+
+
   Future<void> setOnBoarding() async {
     await sharedpreferences.setBool("isOnBoarding", true);
   }
@@ -25,6 +30,8 @@ class Storage {
   }
 
   get isLoggedIn => sharedpreferences.getBool("isLoggedIn") ?? false;
+
+  get readingBook => sharedpreferences.getInt("id") ?? 0;
 
   get isOnBoarding => sharedpreferences.getBool("isOnBoarding") ?? false;
 

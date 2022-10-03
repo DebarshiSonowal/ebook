@@ -1,54 +1,39 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:counter_button/counter_button.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
-import 'package:ebook/Constants/constance_data.dart';
-import 'package:ebook/Model/book_chapter.dart';
-import 'package:ebook/Model/book_details.dart';
-import 'package:ebook/Model/reading_theme.dart';
-import 'package:ebook/Networking/api_provider.dart';
-import 'package:ebook/Storage/app_storage.dart';
-import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:zoom_widget/zoom_widget.dart';
-
+import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/book.dart';
+import '../../../Model/book_chapter.dart';
+import '../../../Model/book_details.dart';
 import '../../../Model/reading_chapter.dart';
+import '../../../Model/reading_theme.dart';
+import '../../../Networking/api_provider.dart';
+import '../../../Storage/app_storage.dart';
+import '../../../Storage/data_provider.dart';
 
-class BookDetails extends StatefulWidget {
-  final int id;
+class MagazineDetailsPage extends StatefulWidget {
+  final String id;
 
-  BookDetails(this.id);
+  MagazineDetailsPage(this.id);
 
   @override
-  State<BookDetails> createState() => _BookDetailsState();
+  State<MagazineDetailsPage> createState() => _MagazineDetailsPageState();
 }
 
-class _BookDetailsState extends State<BookDetails>
+class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     with SingleTickerProviderStateMixin {
-  String title = '';
-
-  // WebViewController? _controller;
-
-  String background = "https://picsum.photos/id/237/200/300";
-
+  int currentIndex = 0;
+  List<ReadingChapter> reading = [];
   BookDetailsModel? bookDetails;
   var themes = [
     ReadingTheme(
@@ -77,7 +62,7 @@ class _BookDetailsState extends State<BookDetails>
   double sliderVal = 0;
 
   List<BookChapter> chapters = [];
-  List<ReadingChapter> reading = [];
+
   var _counterValue = 12.sp;
 
   var test = '''<p>  <img alt="\"
@@ -130,40 +115,13 @@ class _BookDetailsState extends State<BookDetails>
   @override
   void dispose() {
     super.dispose();
-
     removeScreenshotDisable();
   }
-
-  // void _scrollListener() {
-  //   // _firstAutoscrollExecuted = true;
-  //
-  //   if (_scrollController.hasClients &&
-  //       _scrollController.position.pixels ==
-  //           _scrollController.position.maxScrollExtent) {
-  //     // _shouldAutoscroll = true;
-  //     // if ((currentPage + 1) >= (chapters[currentChapter].pages?.length ?? 0)) {
-  //     //   // debugPrint(
-  //     //   //     'first one ${currentPage} ${chapters[currentChapter].pages?.length}');
-  //     //   // setState(() {
-  //     //   //   currentChapter++;
-  //     //   //   currentPage = 0;
-  //     //   // });
-  //     // }
-  //   } else {
-  //     // debugPrint(
-  //     //     'second one ${currentPage} ${chapters[currentChapter].pages?.length}');
-  //     // _shouldAutoscroll = false;
-  //     // if (currentPage == 0) {
-  //
-  //     // }
-  //   }
-  // }
 
   @override
   void initState() {
     super.initState();
 
-    // _scrollController.addListener(_scrollListener);
     fetchBookDetails();
     setScreenshotDisable();
     // initPlatformBrightness();
@@ -171,7 +129,8 @@ class _BookDetailsState extends State<BookDetails>
       brightness = await systemBrightness;
       Navigation.instance.navigate('/readingDialog');
       setState(() {
-        Storage.instance.setReadingBook(widget.id);
+        Storage.instance
+            .setReadingBook(int.parse(widget.id.toString().split(',')[0]));
       });
     });
     // Future.delayed(Duration(seconds: 2), () {
@@ -204,7 +163,7 @@ class _BookDetailsState extends State<BookDetails>
       appBar: AppBar(
         iconTheme: IconThemeData(color: getTextColor()),
         title: Text(
-          title ?? "",
+          bookDetails?.title ?? "",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
               .textTheme
@@ -447,6 +406,246 @@ class _BookDetailsState extends State<BookDetails>
     );
   }
 
+  //  GestureDetector(
+  //                 onTap: () {
+  //                   // print('dads');
+  //                   showCupertinoModalBottomSheet(
+  //                     enableDrag: true,
+  //                     // expand: true,
+  //                     elevation: 15,
+  //                     clipBehavior: Clip.antiAlias,
+  //                     backgroundColor:
+  //                     Theme.of(context).accentColor,
+  //                     topRadius: const Radius.circular(15),
+  //                     closeProgressThreshold: 10,
+  //                     context: Navigation.instance.navigatorKey
+  //                         .currentContext ??
+  //                         context,
+  //                     builder: (context) => Material(
+  //                       color: getBodyColor(),
+  //                       child: StatefulBuilder(
+  //                           builder: (context, update) {
+  //                             return SizedBox(
+  //                               height: 30.h,
+  //                               width: double.infinity,
+  //                               child: Column(
+  //                                 children: [
+  //                                   Container(
+  //                                     height: 15.h,
+  //                                     width: double.infinity,
+  //                                     color: Colors.black,
+  //                                     child: Column(
+  //                                       mainAxisAlignment:
+  //                                       MainAxisAlignment.center,
+  //                                       children: [
+  //                                         Text(
+  //                                           "Enjoying your free preview?",
+  //                                           style: Theme.of(context)
+  //                                               .textTheme
+  //                                               .headline5
+  //                                               ?.copyWith(
+  //                                             color:
+  //                                             getTextColor(),
+  //                                           ),
+  //                                         ),
+  //                                         Text(
+  //                                           "Keep reading with a free trial",
+  //                                           style: Theme.of(context)
+  //                                               .textTheme
+  //                                               .headline5
+  //                                               ?.copyWith(
+  //                                             color:
+  //                                             getTextColor(),
+  //                                           ),
+  //                                         ),
+  //                                         SizedBox(
+  //                                           height: 1.h,
+  //                                         ),
+  //                                         SizedBox(
+  //                                           width: double.infinity,
+  //                                           height: 4.5.h,
+  //                                           child: Padding(
+  //                                             padding:
+  //                                             const EdgeInsets
+  //                                                 .symmetric(
+  //                                                 horizontal:
+  //                                                 20.0),
+  //                                             child: ElevatedButton(
+  //                                                 onPressed: () {
+  //                                                   Navigation
+  //                                                       .instance
+  //                                                       .navigate(
+  //                                                       '/bookInfo');
+  //                                                 },
+  //                                                 style: ButtonStyle(
+  //                                                   backgroundColor:
+  //                                                   MaterialStateProperty
+  //                                                       .all(Colors
+  //                                                       .blue),
+  //                                                 ),
+  //                                                 child: Text(
+  //                                                   'Buy Now',
+  //                                                   style: Theme.of(
+  //                                                       context)
+  //                                                       .textTheme
+  //                                                       .headline5
+  //                                                       ?.copyWith(
+  //                                                     fontSize:
+  //                                                     3.h,
+  //                                                     color: Colors
+  //                                                         .black,
+  //                                                   ),
+  //                                                 )),
+  //                                           ),
+  //                                         ),
+  //                                       ],
+  //                                     ),
+  //                                   ),
+  //                                   Container(
+  //                                     height: 15.h,
+  //                                     width: double.infinity,
+  //                                     color: Colors.grey.shade900,
+  //                                     child: Column(
+  //                                       mainAxisAlignment:
+  //                                       MainAxisAlignment.start,
+  //                                       children: [
+  //                                         Row(
+  //                                           children: [
+  //                                             Expanded(
+  //                                               child: Slider(
+  //                                                 min: 0,
+  //                                                 max: double.parse(
+  //                                                     multiImageProvider
+  //                                                         .length
+  //                                                         .toString()),
+  //                                                 activeColor:
+  //                                                 Colors.blue,
+  //                                                 inactiveColor:
+  //                                                 Colors.white,
+  //                                                 onChanged:
+  //                                                     (double value) {
+  //                                                   update(() {
+  //                                                     setState(() {
+  //                                                       sliderVal =
+  //                                                           value;
+  //                                                       background =
+  //                                                       multiImageProvider[
+  //                                                       value
+  //                                                           .toInt()];
+  //                                                     });
+  //                                                   });
+  //                                                 },
+  //                                                 value: sliderVal,
+  //                                               ),
+  //                                             ),
+  //                                             IconButton(
+  //                                               onPressed: () {
+  //                                                 showSearch(
+  //                                                   context: context,
+  //                                                   delegate:
+  //                                                   SearchPage<
+  //                                                       Book_old>(
+  //                                                     items: ConstanceData
+  //                                                         .Motivational,
+  //                                                     searchLabel:
+  //                                                     'Search people',
+  //                                                     suggestion:
+  //                                                     const Center(
+  //                                                       child: Text(
+  //                                                           'Filter people by name, surname or age'),
+  //                                                     ),
+  //                                                     failure:
+  //                                                     const Center(
+  //                                                       child: Text(
+  //                                                           'No person found :('),
+  //                                                     ),
+  //                                                     filter:
+  //                                                         (current) =>
+  //                                                     [
+  //                                                       current.name,
+  //                                                       current
+  //                                                           .author,
+  //                                                       // person.age.toString(),
+  //                                                     ],
+  //                                                     builder:
+  //                                                         (book) =>
+  //                                                         ListTile(
+  //                                                           title: Text(
+  //                                                               book.name ??
+  //                                                                   ''),
+  //                                                           subtitle: Text(
+  //                                                               book.author ??
+  //                                                                   ''),
+  //                                                           trailing:
+  //                                                           CachedNetworkImage(
+  //                                                             imageUrl:
+  //                                                             book.image ??
+  //                                                                 '',
+  //                                                             height: 20,
+  //                                                             width: 20,
+  //                                                           ),
+  //                                                         ),
+  //                                                   ),
+  //                                                 );
+  //                                               },
+  //                                               icon: Icon(
+  //                                                   Icons.search),
+  //                                             )
+  //                                           ],
+  //                                         ),
+  //                                         SizedBox(
+  //                                           height: 1.h,
+  //                                         ),
+  //                                         Container(
+  //                                           padding: const EdgeInsets
+  //                                               .symmetric(
+  //                                               horizontal: 20.0),
+  //                                           child: Row(
+  //                                             mainAxisAlignment:
+  //                                             MainAxisAlignment
+  //                                                 .spaceBetween,
+  //                                             children: [
+  //                                               Text(
+  //                                                 '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
+  //                                                 style: Theme.of(
+  //                                                     context)
+  //                                                     .textTheme
+  //                                                     .headline5
+  //                                                     ?.copyWith(
+  //                                                   fontSize: 2.h,
+  //                                                   // color: Colors.black,
+  //                                                 ),
+  //                                               ),
+  //                                               Text(
+  //                                                 'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
+  //                                                 style: Theme.of(
+  //                                                     context)
+  //                                                     .textTheme
+  //                                                     .headline5
+  //                                                     ?.copyWith(
+  //                                                   fontSize: 2.h,
+  //                                                   // color: Colors.black,
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                         ),
+  //                                       ],
+  //                                     ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             );
+  //                           }),
+  //                     ),
+  //                   );
+  //                 },
+  //                 child: Container(
+  //                   height: 4.h,
+  //                   width: double.infinity,
+  //                   color: getBodyColor(),
+  //                 ),
+  //               ),
   AlertDialog buildAlertDialog() {
     return AlertDialog(
       // title: Text('Welcome'),
@@ -626,18 +825,16 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   void fetchBookDetails() async {
-    final response =
-        await ApiProvider.instance.fetchBookDetails(widget.id.toString());
+    final response = await ApiProvider.instance
+        .fetchBookDetails(widget.id.toString().split(',')[0]);
     if (response.status ?? false) {
       bookDetails = response.details;
       if (mounted) {
-        setState(() {
-          title = bookDetails?.title ?? "";
-        });
+        setState(() {});
       }
     }
     final response1 = await ApiProvider.instance
-        .fetchBookChapters(widget.id.toString() ?? '3');
+        .fetchBookChapters(widget.id.toString().split(',')[0] ?? '3');
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];

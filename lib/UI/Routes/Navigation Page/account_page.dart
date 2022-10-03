@@ -3,6 +3,7 @@ import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -65,12 +66,30 @@ class _AccountPageState extends State<AccountPage> {
                         onTap: () {
                           if (ind == 0) {
                             Navigation.instance.navigate('/accountInformation');
-                          }else if(ind == ConstanceData.pages.length-2){
+                          } else if (ind == 1) {
                             Storage.instance.logout();
-                            Navigation.instance.navigateAndRemoveUntil('/login');
-                          }else if(ind == 1){
+                            Navigation.instance
+                                .navigateAndRemoveUntil('/login');
+                          } else if (ind == 7) {
                             // Storage.instance.logout();
                             // Navigation.instance.navigate('/cartPage');
+                            _launchUrl(
+                                Uri.parse('https://tratri.in/privacy-policy'));
+                          } else if (ind == 8) {
+                            // Storage.instance.logout();
+                            // Navigation.instance.navigate('/cartPage');
+                            _launchUrl(
+                                Uri.parse('https://tratri.in/contact-us'));
+                          } else if (ind == 6) {
+                            // Storage.instance.logout();
+                            // Navigation.instance.navigate('/cartPage');
+                            _launchUrl(Uri.parse(
+                                'https://tratri.in/refund-and-cancellation'));
+                          } else if (ind == 9) {
+                            // Storage.instance.logout();
+                            // Navigation.instance.navigate('/cartPage');
+                            _launchUrl(Uri.parse(
+                                'https://tratri.in/https://tratri.in/about-us'));
                           }
                         },
                         title: Text(
@@ -116,5 +135,11 @@ class _AccountPageState extends State<AccountPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
   }
 }

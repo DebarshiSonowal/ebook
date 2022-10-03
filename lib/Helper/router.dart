@@ -13,6 +13,8 @@ import '../UI/Routes/Navigation Page/book_details.dart';
 import '../UI/Routes/Navigation Page/cart_page.dart';
 import '../UI/Routes/Navigation Page/category_page.dart';
 import '../UI/Routes/Navigation Page/coupon_page.dart';
+import '../UI/Routes/Navigation Page/magazine_articles.dart';
+import '../UI/Routes/Navigation Page/magazine_details.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
@@ -36,6 +38,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/bookDetails':
       return FadeTransitionPageRouteBuilder(
           page: BookDetails(settings.arguments as int));
+    case '/magazineDetails':
+      return FadeTransitionPageRouteBuilder(
+          page: MagazineDetailsPage(settings.arguments as String));
+    case '/magazineArticles':
+      return FadeTransitionPageRouteBuilder(
+          page: MagazineArticles(settings.arguments as int));
+
     case '/bookInfo':
       return FadeTransitionPageRouteBuilder(
           page: BookInfo(settings.arguments as int));

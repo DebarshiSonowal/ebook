@@ -806,7 +806,7 @@ class ApiProvider {
     Navigation.instance.goBack();
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     var tempDir = "/storage/emulated/0/Download";
-    String fullPath = tempDir + "/${id}";
+    String fullPath = tempDir + "/${id}.pdf";
     print('full path ${fullPath}');
     try {
       Response? response = await dio?.get(

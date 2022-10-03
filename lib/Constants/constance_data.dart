@@ -31,15 +31,17 @@ class ConstanceData {
   static const pages = [
     // 'Cart',
     'Account Information',
-    'FAQs & Support',
+    'Sign out',
     // 'Audio Player Settings',
     'Language Preference',
     'Downloads',
-    // 'Notification Settings',
-    'Privacy',
+    // 'FAQs & Support',
     'Invite Friends',
-    'Sign out',
-    'Open Source Licenses',
+    'Refund and Cancellation',
+    'Terms and Conditions',
+    'Privacy Policy',
+    'Contact Us',
+    'About',
   ];
 
   static const banner = [
@@ -95,39 +97,23 @@ class ConstanceData {
   ];
 
   static final Love = [
+    Book_old('Half Girlfriend', 'Chetan Bhagat',
+        'https://source.unsplash.com/user/c_v_r/1900x800', 4.9),
+    Book_old('3 mistakes of life', 'Chetan Bhagat',
+        'https://source.unsplash.com/user/c_v_r/100x100', 4.7),
+    Book_old('Mismatched', 'CJlewis', 'https://picsum.photos/200/300', 4.4),
     Book_old(
-        'Half Girlfriend',
-        'Chetan Bhagat',
-        'https://source.unsplash.com/user/c_v_r/1900x800',
-        4.9),
-    Book_old(
-        '3 mistakes of life',
-        'Chetan Bhagat',
-        'https://source.unsplash.com/user/c_v_r/100x100',
-        4.7),
-    Book_old(
-        'Mismatched',
-        'CJlewis',
-        'https://picsum.photos/200/300',
-        4.4),
-    Book_old(
-        'Asdfaf',
-        'A.Singh',
-        'https://picsum.photos/seed/picsum/200/300',
-        4.1),
+        'Asdfaf', 'A.Singh', 'https://picsum.photos/seed/picsum/200/300', 4.1),
   ];
 
-  static var Children= [
+  static var Children = [
     Book_old(
         'Aatiaz',
         'CJlewis',
         'https://i.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U',
         4.9),
     Book_old(
-        'Harrff',
-        'JKRowling',
-        'https://picsum.photos/200/300?grayscale',
-        4.7),
+        'Harrff', 'JKRowling', 'https://picsum.photos/200/300?grayscale', 4.7),
     Book_old(
         'ebsb',
         'CJlewis',
@@ -167,7 +153,7 @@ class ConstanceData {
   //   ),
   // ];
 
-  static const categories=[
+  static const categories = [
     'Motivation',
     'Novel',
     'Love',
@@ -175,9 +161,8 @@ class ConstanceData {
     // 'More ->'
   ];
 
-  static const testing="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+  static const testing =
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
       " Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,"
       " when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
-
-
 }

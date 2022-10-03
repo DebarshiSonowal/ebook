@@ -4,6 +4,7 @@ import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:search_page/search_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Constants/constance_data.dart';
 import '../../Helper/navigator.dart';
@@ -36,18 +37,23 @@ class NewSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-                // color: ConstanceData.cardColor,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                ),
-                border: Border.all(color: Colors.white)),
-            margin: const EdgeInsets.symmetric(vertical: 10),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1.h),
-            child: Text(
-              'REGISTER AS WRITER',
-              style: Theme.of(context).textTheme.headline3,
+          GestureDetector(
+            onTap: () {
+              _launchUrl(Uri.parse('https://tratri.in/login/contributor'));
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  // color: ConstanceData.cardColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                  border: Border.all(color: Colors.white)),
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1.h),
+              child: Text(
+                'REGISTER AS WRITER',
+                style: Theme.of(context).textTheme.headline3,
+              ),
             ),
           ),
           SizedBox(
@@ -133,5 +139,11 @@ class NewSearchBar extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url)) {
+      throw 'Could not launch $_url';
+    }
   }
 }

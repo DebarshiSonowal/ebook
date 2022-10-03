@@ -393,15 +393,20 @@ class BookItem extends StatelessWidget {
                             height: 4.5.h,
                             child: ElevatedButton(
                                 onPressed: () {
-                                  Navigation.instance.navigate('/bookDetails',
-                                      args: data.id ?? 0);
+                                  if (data.book_format == "magazine") {
+                                    Navigation.instance.navigate('/magazineArticles',
+                                                                          args: data.id ?? 0);
+                                  } else {
+                                    Navigation.instance.navigate('/bookDetails',
+                                        args: data.id ?? 0);
+                                  }
                                 },
                                 style: ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.all(Colors.white),
                                 ),
                                 child: Text(
-                                  'Preview',
+                                  data.book_format == "magazine"?'View Articles':'Preview',
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline5

@@ -1,3 +1,5 @@
+import 'package:ebook/Networking/api_provider.dart';
+import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,13 +32,20 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
             color: Colors.white,
           ),
           onTap: (i) {
-            if (i != 4) {
+            if (i != 4 && i != 2) {
               Provider.of<DataProvider>(
                       Navigation.instance.navigatorKey.currentContext ??
                           context,
                       listen: false)
                   .setIndex(i);
             } else if (i == 2) {
+              if (data.details?.book_format == "magazine") {
+                Navigation.instance
+                    .navigate('/magazineArticles', args: data.details?.id ?? 0);
+              } else {
+                Navigation.instance
+                    .navigate('/bookDetails', args: data.details?.id ?? 0);
+              }
             } else {
               Navigation.instance.navigate('/accountDetails');
             }
@@ -52,12 +61,21 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 label: 'Library'),
             BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: Image.asset(
-                  ConstanceData.primaryIcon,
-                  height: 5.h,
-                  width: 5.h,
-                  fit: BoxFit.fill,
-                ),
+                icon: Consumer<DataProvider>(builder: (cont, data, _) {
+                  return data.details == null
+                      ? Image.asset(
+                          ConstanceData.primaryIcon,
+                          height: 5.h,
+                          width: 7.w,
+                          fit: BoxFit.fill,
+                        )
+                      : Image.network(
+                          data.details?.profile_pic ?? "",
+                          height: 5.h,
+                          width: 7.w,
+                          fit: BoxFit.fill,
+                        );
+                }),
                 label: ''),
             const BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
@@ -74,5 +92,26 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 label: 'More'),
           ]);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      fetchReadingBook();
+    });
+  }
+
+  void fetchReadingBook() async {
+    if (Storage.instance.readingBook != 0) {
+      final response = await ApiProvider.instance
+          .fetchBookDetails(Storage.instance.readingBook.toString());
+      if (response.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setBookDetails(response.details!);
+      }
+    }
   }
 }

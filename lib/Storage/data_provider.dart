@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../Model/book_category.dart';
+import '../Model/book_details.dart';
 import '../Model/book_format.dart';
 import '../Model/cart_item.dart';
 import '../Model/discount.dart';
@@ -28,7 +29,18 @@ class DataProvider extends ChangeNotifier {
   int currentCategory = 0;
   int currentTab = 0;
   int libraryTab = 0;
+  String title='';
+  BookDetailsModel? details;
 
+  setBookDetails(BookDetailsModel data){
+    details = data;
+    notifyListeners();
+  }
+
+  setTitle(String txt){
+    title = txt;
+    notifyListeners();
+  }
   setCurrentTab(int i) {
     currentTab = i;
     notifyListeners();

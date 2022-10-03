@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/add_review.dart';
@@ -5,6 +6,7 @@ import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 
 import '../../../Constants/constance_data.dart';
@@ -13,6 +15,7 @@ import 'package:sizer/sizer.dart';
 import '../../../Model/book_details.dart';
 import '../../../Model/review.dart';
 import '../../../Networking/api_provider.dart';
+import '../../../Storage/data_provider.dart';
 
 class BookInfo extends StatefulWidget {
   final int id;
@@ -175,7 +178,7 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    BuyButton(),
+                    BuyButton(widget.id),
                     SizedBox(
                       height: 2.h,
                     ),
@@ -829,9 +832,10 @@ class DownloadSection extends StatelessWidget {
 }
 
 class BuyButton extends StatelessWidget {
-  const BuyButton({
-    Key? key,
-  }) : super(key: key);
+  final int id;
+
+
+  BuyButton(this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -866,6 +870,7 @@ class BuyButton extends StatelessWidget {
               onPressed: () {
                 // Navigation.instance
                 //     .navigate('/bookInfo', args: data.id);
+                addtocart(context,id);
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -882,6 +887,52 @@ class BuyButton extends StatelessWidget {
         ],
       ),
     );
+  }
+  void addtocart(context,id) async {
+    final response = await ApiProvider.instance.addToCart(id, '1');
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
+          .setToCart(response.cart?.items ?? []);
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext!,
+          listen: false)
+          .setCartData(response.cart!);
+      Navigation.instance.goBack();
+      showSuccess(context);
+    } else {
+      Navigation.instance.goBack();
+      showError(context);
+    }
+  }
+  void showSuccess(context) {
+    var snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Added to cart',
+        message: 'The following book is added to cart',
+        contentType: ContentType.success,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+  }
+  void showError(context) {
+    var snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Failed',
+        message: 'Something went wrong',
+        contentType: ContentType.failure,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
   }
 }
 

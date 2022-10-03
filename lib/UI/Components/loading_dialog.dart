@@ -13,37 +13,32 @@ class LoadingDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-        backgroundColor: Colors.black54,
-        body: Column(
-          children: [
-            Expanded(
-              child: Container(),
+    return Scaffold(
+      backgroundColor: Colors.black54,
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(),
+          ),
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              child: const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: ConstanceData.primaryColor,
-                ),
+            child: const SizedBox(
+              height: 24,
+              width: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: ConstanceData.primaryColor,
               ),
             ),
-            Expanded(
-              child: Container(),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Container(),
+          ),
+        ],
       ),
     );
   }
