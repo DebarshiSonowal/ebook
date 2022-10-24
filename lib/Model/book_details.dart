@@ -102,9 +102,9 @@ class BookDetailsModel {
     total_rating = json['total_rating'] == null
         ? 0
         : double.parse(json['total_rating'].toString());
-    base_price = json['base_price'] == null
+    base_price = json['selling_price'] == null
         ? 0
-        : double.parse(json['base_price'].toString());
+        : double.parse(json['selling_price'].toString());
     discount = json['discount'] == null
         ? 0
         : double.parse(json['discount'].toString());

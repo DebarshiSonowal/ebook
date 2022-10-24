@@ -20,6 +20,8 @@ import '../../../Model/reading_theme.dart';
 import '../../../Networking/api_provider.dart';
 import '../../../Storage/app_storage.dart';
 import '../../../Storage/data_provider.dart';
+import '../../Components/dynamicSize.dart';
+import '../../Components/splittedText.dart';
 
 class MagazineDetailsPage extends StatefulWidget {
   final String id;
@@ -65,57 +67,27 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
 
   var _counterValue = 12.sp;
 
-  var test = '''<p>  <img alt="\"
-  height="228"
-  src="https://tratri.in/public/storage/photos/1/91U1RolR87L.jpg"
-   style="float:right" width="150" />
+  var test = '''''', text = "";
+  DynamicSize _dynamicSize = DynamicSizeImpl();
+  SplittedText _splittedText = SplittedTextImpl();
+  Size? _size;
+  List<String> _splittedTextList = [];
 
-  But I must explain to you how all this mistaken idea of denouncing
-  pleasure and praising pain was born and I will give you a complete
-  account of the system, and expound the actual teachings of the great
-  explorer of the truth, the master-builder of human happiness. No one
-  rejects, dislikes, or avoids pleasure itself, because it is pleasure,
-  but because those who do not know how to pursue pleasure rationally encounter
-  consequences that are extremely painful. Nor again is there anyone who
-  loves or pursues or desires to obtain pain of itself, because it is pain,
-  but because occasionally circumstances occur in which toil and pain can
-  procure him some great pleasure. To take a trivial example, which of us
-  ever undertakes laborious physical exercise, except to obtain some
-  advantage from it? But who has any right to find fault with a man who
-  chooses to enjoy a pleasure that has no annoying consequences, or one
-  who avoids a pain that produces no resultant pleasure?</p>\n<br />\n
-  But I must explain to you how all this mistaken idea of denouncing
-  pleasure and praising pain was born and I will give you a complete
-  account of the system, and expound the actual teachings of the great
-  explorer of the truth, the master-builder of human happiness. No one
-  rejects, dislikes, or avoids pleasure itself, because it is pleasure,
-  but because those who do not know how to pursue pleasure rationally
-  encounter consequences that are extremely painful. Nor again is there
-  anyone who loves or pursues or desires to obtain pain of itself,
-  because it is pain, but because occasionally circumstances occur in
-  which toil and pain can procure him some great pleasure. To take a
-  trivial example, which of us ever undertakes laborious physical exercise,
-      except to obtain some advantage from it? But who has any right to find
-  fault with a man who chooses to enjoy a pleasure that has no annoying
-  consequences, or one who avoids a pain that produces no resultant pleasure?<br/>
-  <br /><br />&nbsp;","<br /><br />\nAt vero eos et accusamus
-  et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
-  deleniti atque corrupti quos dolores et quas molestias excepturi sint
-  occaecati cupiditate non provident, similique sunt in culpa qui officia
-  deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-  rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta
-  nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-  laceat facere possimus, omnis voluptas assumenda est, omnis dolor
-  repellendus. Temporibus autem quibusdam et aut officiis debitis aut
-  rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et
-  molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-  delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
-  perferendis doloribus asperiores repellat.''';
+  final GlobalKey pageKey = GlobalKey();
 
   @override
   void dispose() {
     super.dispose();
-    removeScreenshotDisable();
+    // removeScreenshotDisable();
+  }
+
+  getSizeFromBloc(GlobalKey pagekey) {
+    _size = _dynamicSize.getSize(pagekey);
+    print(_size);
+  }
+
+  getSplittedText(TextStyle textStyle, txt) {
+    _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
   }
 
   @override
@@ -123,9 +95,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     super.initState();
 
     fetchBookDetails();
-    setScreenshotDisable();
+    // setScreenshotDisable();
     // initPlatformBrightness();
     Future.delayed(Duration.zero, () async {
+      getSizeFromBloc(pageKey);
       brightness = await systemBrightness;
       Navigation.instance.navigate('/readingDialog');
       setState(() {
@@ -160,179 +133,12 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: getTextColor()),
-        title: Text(
-          bookDetails?.title ?? "",
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context)
-              .textTheme
-              .headline1
-              ?.copyWith(color: getTextColor()),
-        ),
-        backgroundColor: getBackGroundColor(),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  // initPlatformBrightness();
-                  return buildAlertDialog();
-                },
-              );
-            },
-            icon: Icon(
-              Icons.font_download,
-              color: getTextColor(),
-            ),
-          ),
-          PopupMenuButton<int>(
-            color: getTextColor(),
-            onSelected: (item) => handleClick(item),
-            itemBuilder: (context) => [
-              PopupMenuItem<int>(
-                value: 0,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Create a Bookmark',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 1,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.bookmark,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Save for later',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 2,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(
-                      Icons.download,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Download',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 3,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.book,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Table of Contents',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 4,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.share,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Share',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 4,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.info,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'About Book',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          // IconButton(
-          //   onPressed: () {
-          //
-          //   },
-          //   icon: const Icon(
-          //     FontAwesomeIcons.hamburger,
-          //   ),
-          // ),
-        ],
-      ),
+      appBar: buildAppBar(context),
       body: Container(
         height: double.infinity,
         width: double.infinity,
         color: getBodyColor(),
+        key: pageKey,
         child: bookDetails == null
             ? const Center(child: CircularProgressIndicator())
             : Consumer<DataProvider>(builder: (context, data, _) {
@@ -340,13 +146,13 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                     ? const Center(
                         child: Text('Oops No Data available here'),
                       )
-                    : ListView.separated(
-                        shrinkWrap: true,
+                    : PageView.builder(
+                        // shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: reading.length,
+                        itemCount: _splittedTextList.length,
                         itemBuilder: (context, index) {
-                          test = reading[index].desc!;
+                          test = _splittedTextList[index];
                           return Container(
                             width: 98.w,
                             // height: 90.h,
@@ -354,55 +160,200 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                               horizontal: 5.w,
                             ),
                             color: getTextColor(),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Html(
-                                    data: test,
-                                    // tagsList: [
-                                    //   'img','p','!DOCTYPE html','body'
-                                    // ],
-                                    // tagsList: ['p'],
-                                    // shrinkWrap: true,
-                                    style: {
-                                      '#': Style(
-                                        fontSize: FontSize(_counterValue),
+                            child: Html(
+                              data: test,
+                              // tagsList: [
+                              //   'img','p','!DOCTYPE html','body'
+                              // ],
+                              // tagsList: ['p'],
+                              // shrinkWrap: true,
+                              style: {
+                                '#': Style(
+                                  fontSize: FontSize(_counterValue),
 
-                                        // maxLines: 20,
-                                        color: getBackGroundColor(),
-                                        // textOverflow: TextOverflow.ellipsis,
-                                      ),
-                                    },
-                                  ),
-                                ],
-                              ),
+                                  // maxLines: 20,
+                                  color: getBackGroundColor(),
+                                  // textOverflow: TextOverflow.ellipsis,
+                                ),
+                              },
                             ),
                           );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          var title = reading[index + 1].title;
-                          return (index != 0 &&
-                                  (reading[index].title ==
-                                      reading[index - 1].title))
-                              ? SizedBox(
-                                  width: 98.w,
-                                  height: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      title!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                              color: getBackGroundColor()),
-                                    ),
-                                  ),
-                                )
-                              : Container();
                         },
                       );
               }),
       ),
+    );
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    return AppBar(
+      iconTheme: IconThemeData(color: getTextColor()),
+      title: Text(
+        bookDetails?.title ?? "",
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context)
+            .textTheme
+            .headline1
+            ?.copyWith(color: getTextColor()),
+      ),
+      backgroundColor: getBackGroundColor(),
+      actions: [
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                // initPlatformBrightness();
+                return buildAlertDialog();
+              },
+            );
+          },
+          icon: Icon(
+            Icons.font_download,
+            color: getTextColor(),
+          ),
+        ),
+        PopupMenuButton<int>(
+          color: getTextColor(),
+          onSelected: (item) => handleClick(item),
+          itemBuilder: (context) => [
+            PopupMenuItem<int>(
+              value: 0,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.add,
+                    color: getBackGroundColor(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    'Create a Bookmark',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: getBackGroundColor(),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 1,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.bookmark,
+                    color: getBackGroundColor(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    'Save for later',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: getBackGroundColor(),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 2,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Icon(
+                    Icons.download,
+                    color: getBackGroundColor(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    'Download',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: getBackGroundColor(),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 3,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.book,
+                    color: getBackGroundColor(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    'Table of Contents',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: getBackGroundColor(),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 4,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.share,
+                    color: getBackGroundColor(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    'Share',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: getBackGroundColor(),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<int>(
+              value: 4,
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.info,
+                    color: getBackGroundColor(),
+                  ),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Text(
+                    'About Book',
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          color: getBackGroundColor(),
+                        ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        // IconButton(
+        //   onPressed: () {
+        //
+        //   },
+        //   icon: const Icon(
+        //     FontAwesomeIcons.hamburger,
+        //   ),
+        // ),
+      ],
     );
   }
 
@@ -737,6 +688,13 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                         //     getTextColor(), _counterValue);
                       });
                     });
+                    setState(() {
+                      getSplittedText(
+                          TextStyle(
+                              color: getBackGroundColor(),
+                              fontSize: FontSize(_counterValue).size),
+                          text);
+                    });
                   },
                   count: _counterValue.toInt(),
                   countColor: Colors.white,
@@ -841,10 +799,17 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       for (var i in chapters) {
         for (var j in i.pages!) {
           reading.add(ReadingChapter(i.title, j));
+          text = text + j;
         }
       }
       if (mounted) {
-        setState(() {});
+        setState(() {
+          getSplittedText(
+              TextStyle(
+                  color: getBackGroundColor(),
+                  fontSize: FontSize(_counterValue).size),
+              text);
+        });
       }
     }
     Navigation.instance.goBack();

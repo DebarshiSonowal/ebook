@@ -14,6 +14,7 @@ class Storage {
   Future<void> setUser(String token) async {
     await sharedpreferences.setString("token", token);
     await sharedpreferences.setBool("isLoggedIn", true);
+    print('set user ${token}');
   }
 
   Future<void> setReadingBook(int id) async {

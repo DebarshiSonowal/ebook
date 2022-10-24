@@ -12,9 +12,11 @@ import '../UI/Routes/Navigation Page/account_information.dart';
 import '../UI/Routes/Navigation Page/book_details.dart';
 import '../UI/Routes/Navigation Page/cart_page.dart';
 import '../UI/Routes/Navigation Page/category_page.dart';
+import '../UI/Routes/Navigation Page/category_specific_page.dart';
 import '../UI/Routes/Navigation Page/coupon_page.dart';
 import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
+import '../UI/Routes/Navigation Page/reading_page.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
@@ -37,7 +39,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: RegisterationOTPVerify());
     case '/bookDetails':
       return FadeTransitionPageRouteBuilder(
-          page: BookDetails(settings.arguments as int));
+          page: BookDetails(settings.arguments as String));
+    case '/reading':
+      return FadeTransitionPageRouteBuilder(
+          page: ReadingPage(settings.arguments as int));
     case '/magazineDetails':
       return FadeTransitionPageRouteBuilder(
           page: MagazineDetailsPage(settings.arguments as String));
@@ -50,6 +55,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           page: BookInfo(settings.arguments as int));
     case '/categories':
       return FadeTransitionPageRouteBuilder(page: CategoryPage());
+      case '/selectCategories':
+      return FadeTransitionPageRouteBuilder(page: CategorySpecificPage(
+        content: settings.arguments as String,
+      ));
 
     case '/accountDetails':
       return FadeTransitionPageRouteBuilder(page: AccountPage());
@@ -70,7 +79,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: CartPage());
     case '/search':
       return FadeTransitionPageRouteBuilder(page: SearchPage());
-
+    case '/searchWithTag':
+      return FadeTransitionPageRouteBuilder(
+          page: SearchPage(
+        tags: (settings.arguments as String),
+        authors: "",
+      ));
+    case '/searchWithAuthor':
+      return FadeTransitionPageRouteBuilder(
+          page: SearchPage(
+        tags: "",
+        authors: (settings.arguments as String),
+      ));
     //Main
     case '/main':
       return FadeTransitionPageRouteBuilder(page: HomePage());

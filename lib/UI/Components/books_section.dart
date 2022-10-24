@@ -17,8 +17,8 @@ class BooksSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ConstanceData.secondaryColor,
-      padding: EdgeInsets.symmetric(vertical: 0.2.h,horizontal: 2.w),
+      // color: ConstanceData.secondaryColor,
+      padding: EdgeInsets.symmetric(vertical: 0.h,horizontal: 2.w),
       height: 37.h,
       width: double.infinity,
       child: Column(
@@ -26,7 +26,7 @@ class BooksSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: 9.h,
+            height:6.h,
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

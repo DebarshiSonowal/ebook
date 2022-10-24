@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
@@ -116,110 +118,235 @@ class _MagazineArticlesState extends State<MagazineArticles> {
               shrinkWrap: true,
               itemBuilder: (cont, count) {
                 var current = bookDetails?.articles![count];
-                return GestureDetector(
-                  onTap: () {
-                    Navigation.instance.navigate('/magazineDetails',
-                        args: "${bookDetails?.id},${count}" ?? '0');
+                return count >= 1
+                    ? GestureDetector(
+                  onTap: (){
+
                   },
-                  child: Container(
-                    width: double.infinity,
-                    // height: 10.h,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.5,
-                        color: Colors
-                            .white, //                   <--- border width here
-                      ),
-                    ),
-                    padding: EdgeInsets.symmetric(
-                        vertical: 1.5.h, horizontal: 2.5.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            // CachedNetworkImage(
-                            //   imageUrl: bookDetails?.profile_pic ?? "",
-                            //   height: 4.h,
-                            //   width: 12.w,
-                            //   fit: BoxFit.fill,
-                            // ),
-                            // SizedBox(
-                            //   width: 2.w,
-                            // ),
-                            SizedBox(
-                              width: 50.w,
-                              child: Text(
-                                bookDetails?.title ?? '',
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(
-                                      color: Colors.white,
+                      child: ClipRect(
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                // height: 10.h,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 0.5,
+                                    color: Colors
+                                        .white, //                   <--- border width here
+                                  ),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 1.5.h, horizontal: 2.5.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        // CachedNetworkImage(
+                                        //   imageUrl: bookDetails?.profile_pic ?? "",
+                                        //   height: 4.h,
+                                        //   width: 12.w,
+                                        //   fit: BoxFit.fill,
+                                        // ),
+                                        // SizedBox(
+                                        //   width: 2.w,
+                                        // ),
+                                        SizedBox(
+                                          width: 50.w,
+                                          child: Text(
+                                            bookDetails?.title ?? '',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5
+                                                ?.copyWith(
+                                                  color: Colors.white,
+                                                ),
+                                          ),
+                                        ),
+                                        // Spacer(),
+                                        // Icon(
+                                        //   Icons.bookmark_border,
+                                        //   color: Colors.black54,
+                                        //   size: 5.h,
+                                        // ),
+                                      ],
                                     ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                current?.title ?? '',
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline3
+                                                    ?.copyWith(
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                              ),
+                                              SizedBox(
+                                                height: 0.5.h,
+                                              ),
+                                              Text(
+                                                current?.short_note ?? '',
+                                                maxLines: 3,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline4
+                                                    ?.copyWith(
+                                                      color: Colors.white,
+                                                      // fontWeight: FontWeight.bold,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 2.w,
+                                        ),
+                                        CachedNetworkImage(
+                                          imageUrl: current?.profile_pic ?? "",
+                                          height: 10.h,
+                                          width: 25.w,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            // Spacer(),
-                            // Icon(
-                            //   Icons.bookmark_border,
-                            //   color: Colors.black54,
-                            //   size: 5.h,
-                            // ),
-                          ],
+                              Container(
+                                height: 100,
+                                width: 150,
+                                child: BackdropFilter(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.2),
+                                        borderRadius: BorderRadius.circular(20)),
+                                  ),
+                                  filter: ImageFilter.blur(sigmaX: 0.7, sigmaY: 0.7),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Flexible(
-                              child: Column(
+                    )
+                    : GestureDetector(
+                        onTap: () {
+                          Navigation.instance.navigate('/magazineDetails',
+                              args: "${bookDetails?.id},${count}" ?? '0');
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          // height: 10.h,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 0.5,
+                              color: Colors
+                                  .white, //                   <--- border width here
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 1.5.h, horizontal: 2.5.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  // CachedNetworkImage(
+                                  //   imageUrl: bookDetails?.profile_pic ?? "",
+                                  //   height: 4.h,
+                                  //   width: 12.w,
+                                  //   fit: BoxFit.fill,
+                                  // ),
+                                  // SizedBox(
+                                  //   width: 2.w,
+                                  // ),
+                                  SizedBox(
+                                    width: 50.w,
+                                    child: Text(
+                                      bookDetails?.title ?? '',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline5
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                    ),
+                                  ),
+                                  // Spacer(),
+                                  // Icon(
+                                  //   Icons.bookmark_border,
+                                  //   color: Colors.black54,
+                                  //   size: 5.h,
+                                  // ),
+                                ],
+                              ),
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    current?.title ?? '',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline3
-                                        ?.copyWith(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          current?.title ?? '',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline3
+                                              ?.copyWith(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
+                                        SizedBox(
+                                          height: 0.5.h,
+                                        ),
+                                        Text(
+                                          current?.short_note ?? '',
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4
+                                              ?.copyWith(
+                                                color: Colors.white,
+                                                // fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   SizedBox(
-                                    height: 0.5.h,
+                                    width: 2.w,
                                   ),
-                                  Text(
-                                    current?.short_note ?? '',
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(
-                                          color: Colors.white,
-                                          // fontWeight: FontWeight.bold,
-                                        ),
+                                  CachedNetworkImage(
+                                    imageUrl: current?.profile_pic ?? "",
+                                    height: 10.h,
+                                    width: 25.w,
+                                    fit: BoxFit.fill,
                                   ),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              width: 2.w,
-                            ),
-                            CachedNetworkImage(
-                              imageUrl: current?.profile_pic ?? "",
-                              height: 10.h,
-                              width: 25.w,
-                              fit: BoxFit.fill,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
+                      );
               },
               separatorBuilder: (cont, count) {
                 return Container(

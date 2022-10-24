@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:core';
 
-import 'package:awesome_icons/awesome_icons.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:counter_button/counter_button.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
-import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Model/book_chapter.dart';
 import 'package:ebook/Model/book_details.dart';
 import 'package:ebook/Model/reading_theme.dart';
@@ -14,28 +10,22 @@ import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:zoom_widget/zoom_widget.dart';
 
 import '../../../Helper/navigator.dart';
-import '../../../Model/book.dart';
 import '../../../Model/reading_chapter.dart';
+import '../../Components/dynamicSize.dart';
+import '../../Components/splittedText.dart';
 
 class BookDetails extends StatefulWidget {
-  final int id;
+  final String input;
 
-  BookDetails(this.id);
+  BookDetails(this.input);
 
   @override
   State<BookDetails> createState() => _BookDetailsState();
@@ -70,7 +60,7 @@ class _BookDetailsState extends State<BookDetails>
   ];
   var list_bg_color = ['black', 'white', 'black', 'black'];
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
-
+  List<String> pageText = [];
   int selectedTheme = 0;
   double brightness = 0.0;
   bool toggle = false;
@@ -78,60 +68,22 @@ class _BookDetailsState extends State<BookDetails>
 
   List<BookChapter> chapters = [];
   List<ReadingChapter> reading = [];
+  String read = '';
   var _counterValue = 12.sp;
 
-  var test = '''<p>  <img alt="\"
-  height="228"
-  src="https://tratri.in/public/storage/photos/1/91U1RolR87L.jpg"
-   style="float:right" width="150" />
+  var test = '''''';
+  DynamicSize _dynamicSize = DynamicSizeImpl();
+  SplittedText _splittedText = SplittedTextImpl();
+  Size? _size;
+  List<String> _splittedTextList = [];
 
-  But I must explain to you how all this mistaken idea of denouncing
-  pleasure and praising pain was born and I will give you a complete
-  account of the system, and expound the actual teachings of the great
-  explorer of the truth, the master-builder of human happiness. No one
-  rejects, dislikes, or avoids pleasure itself, because it is pleasure,
-  but because those who do not know how to pursue pleasure rationally encounter
-  consequences that are extremely painful. Nor again is there anyone who
-  loves or pursues or desires to obtain pain of itself, because it is pain,
-  but because occasionally circumstances occur in which toil and pain can
-  procure him some great pleasure. To take a trivial example, which of us
-  ever undertakes laborious physical exercise, except to obtain some
-  advantage from it? But who has any right to find fault with a man who
-  chooses to enjoy a pleasure that has no annoying consequences, or one
-  who avoids a pain that produces no resultant pleasure?</p>\n<br />\n
-  But I must explain to you how all this mistaken idea of denouncing
-  pleasure and praising pain was born and I will give you a complete
-  account of the system, and expound the actual teachings of the great
-  explorer of the truth, the master-builder of human happiness. No one
-  rejects, dislikes, or avoids pleasure itself, because it is pleasure,
-  but because those who do not know how to pursue pleasure rationally
-  encounter consequences that are extremely painful. Nor again is there
-  anyone who loves or pursues or desires to obtain pain of itself,
-  because it is pain, but because occasionally circumstances occur in
-  which toil and pain can procure him some great pleasure. To take a
-  trivial example, which of us ever undertakes laborious physical exercise,
-      except to obtain some advantage from it? But who has any right to find
-  fault with a man who chooses to enjoy a pleasure that has no annoying
-  consequences, or one who avoids a pain that produces no resultant pleasure?<br/>
-  <br /><br />&nbsp;","<br /><br />\nAt vero eos et accusamus
-  et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum
-  deleniti atque corrupti quos dolores et quas molestias excepturi sint
-  occaecati cupiditate non provident, similique sunt in culpa qui officia
-  deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem
-  rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta
-  nobis est eligendi optio cumque nihil impedit quo minus id quod maxime
-  laceat facere possimus, omnis voluptas assumenda est, omnis dolor
-  repellendus. Temporibus autem quibusdam et aut officiis debitis aut
-  rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et
-  molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente
-  delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut
-  perferendis doloribus asperiores repellat.''';
+  final GlobalKey pageKey = GlobalKey();
 
   @override
   void dispose() {
     super.dispose();
 
-    removeScreenshotDisable();
+    // removeScreenshotDisable();
   }
 
   // void _scrollListener() {
@@ -165,13 +117,15 @@ class _BookDetailsState extends State<BookDetails>
 
     // _scrollController.addListener(_scrollListener);
     fetchBookDetails();
-    setScreenshotDisable();
+    // setScreenshotDisable();
     // initPlatformBrightness();
     Future.delayed(Duration.zero, () async {
       brightness = await systemBrightness;
+      getSizeFromBloc(pageKey);
       Navigation.instance.navigate('/readingDialog');
       setState(() {
-        Storage.instance.setReadingBook(widget.id);
+        Storage.instance
+            .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
       });
     });
     // Future.delayed(Duration(seconds: 2), () {
@@ -185,16 +139,6 @@ class _BookDetailsState extends State<BookDetails>
     } catch (e) {
       print(e);
       throw 'Failed to get system brightness';
-    }
-  }
-
-  Future<void> setBrightness(double brightness) async {
-    try {
-      await ScreenBrightness().setScreenBrightness(brightness);
-      print('success');
-    } catch (e) {
-      print(e);
-      throw 'Failed to set brightness';
     }
   }
 
@@ -232,27 +176,27 @@ class _BookDetailsState extends State<BookDetails>
             color: getTextColor(),
             onSelected: (item) => handleClick(item),
             itemBuilder: (context) => [
-              PopupMenuItem<int>(
-                value: 0,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Create a Bookmark',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
+              // PopupMenuItem<int>(
+              //   value: 0,
+              //   child: Row(
+              //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Icon(
+              //         Icons.add,
+              //         color: getBackGroundColor(),
+              //       ),
+              //       SizedBox(
+              //         width: 5.w,
+              //       ),
+              //       Text(
+              //         'Create a Bookmark',
+              //         style: Theme.of(context).textTheme.headline5?.copyWith(
+              //               color: getBackGroundColor(),
+              //             ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               PopupMenuItem<int>(
                 value: 1,
                 child: Row(
@@ -266,7 +210,7 @@ class _BookDetailsState extends State<BookDetails>
                       width: 5.w,
                     ),
                     Text(
-                      'Save for later',
+                      'Add bookmark',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
                             color: getBackGroundColor(),
                           ),
@@ -280,77 +224,14 @@ class _BookDetailsState extends State<BookDetails>
                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Icon(
-                      Icons.download,
+                      Icons.close,
                       color: getBackGroundColor(),
                     ),
                     SizedBox(
                       width: 5.w,
                     ),
                     Text(
-                      'Download',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 3,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.book,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Table of Contents',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 4,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.share,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Share',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 4,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.info,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'About Book',
+                      'Finished',
                       style: Theme.of(context).textTheme.headline5?.copyWith(
                             color: getBackGroundColor(),
                           ),
@@ -374,6 +255,7 @@ class _BookDetailsState extends State<BookDetails>
         height: double.infinity,
         width: double.infinity,
         color: getBodyColor(),
+        key: pageKey,
         child: bookDetails == null
             ? const Center(child: CircularProgressIndicator())
             : Consumer<DataProvider>(builder: (context, data, _) {
@@ -381,65 +263,51 @@ class _BookDetailsState extends State<BookDetails>
                     ? const Center(
                         child: Text('Oops No Data available here'),
                       )
-                    : ListView.separated(
-                        shrinkWrap: true,
+                    : PageView.builder(
+                        // shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: reading.length,
+                        itemCount: _splittedTextList.length,
                         itemBuilder: (context, index) {
-                          test = reading[index].desc!;
+                          test = _splittedTextList[index] ?? "";
                           return Container(
-                            width: 98.w,
+                            width: 100.w,
                             // height: 90.h,
                             padding: EdgeInsets.symmetric(
                               horizontal: 5.w,
                             ),
                             color: getTextColor(),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Html(
-                                    data: test,
-                                    // tagsList: [
-                                    //   'img','p','!DOCTYPE html','body'
-                                    // ],
-                                    // tagsList: ['p'],
-                                    // shrinkWrap: true,
-                                    style: {
-                                      '#': Style(
-                                        fontSize: FontSize(_counterValue),
+                            // child: Text.rich(
+                            //   TextSpan(
+                            //     text: test,
+                            //   ),
+                            //   style: TextStyle(
+                            //     color: getBackGroundColor(),
+                            //     fontSize: FontSize(_counterValue).size,
+                            //   ),
+                            // ),
+                            child: Html(
+                              data: test,
+                              // tagsList: [
+                              //   'img','p','!DOCTYPE html','body'
+                              // ],
+                              // tagsList: ['p'],
+                              // shrinkWrap: true,
+                              style: {
+                                '#': Style(
+                                  fontSize: FontSize(_counterValue),
 
-                                        // maxLines: 20,
-                                        color: getBackGroundColor(),
-                                        // textOverflow: TextOverflow.ellipsis,
-                                      ),
-                                    },
-                                  ),
-                                ],
-                              ),
+                                  maxLines: FontSize(_counterValue)
+                                      .size!
+                                      .toInt()
+                                      .sp
+                                      .toInt(),
+                                  color: getBackGroundColor(),
+                                  // textOverflow: TextOverflow.ellipsis,
+                                ),
+                              },
                             ),
                           );
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          var title = reading[index + 1].title;
-                          return (index != 0 &&
-                                  (reading[index].title ==
-                                      reading[index - 1].title))
-                              ? SizedBox(
-                                  width: 98.w,
-                                  height: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      title!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                              color: getBackGroundColor()),
-                                    ),
-                                  ),
-                                )
-                              : Container();
                         },
                       );
               }),
@@ -626,8 +494,8 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   void fetchBookDetails() async {
-    final response =
-        await ApiProvider.instance.fetchBookDetails(widget.id.toString());
+    final response = await ApiProvider.instance
+        .fetchBookDetails(widget.input.toString().split(',')[0].toString());
     if (response.status ?? false) {
       bookDetails = response.details;
       if (mounted) {
@@ -637,19 +505,36 @@ class _BookDetailsState extends State<BookDetails>
       }
     }
     final response1 = await ApiProvider.instance
-        .fetchBookChapters(widget.id.toString() ?? '3');
+        .fetchBookChapters(widget.input.toString().split(',')[0] ?? '3');
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];
-      for (var i in chapters) {
-        for (var j in i.pages!) {
-          reading.add(ReadingChapter(i.title, j));
-        }
+      for (var j in chapters[int.parse(widget.input.toString().split(',')[1])]
+          .pages!) {
+        reading.add(ReadingChapter('', j));
+        read = read + j;
       }
+
       if (mounted) {
-        setState(() {});
+        setState(() {
+          getSplittedText(
+              TextStyle(
+                  color: getBackGroundColor(),
+                  fontSize: FontSize(_counterValue).size),
+              read);
+          // setPages(FontSize(_counterValue).size?.toInt());
+        });
       }
     }
     Navigation.instance.goBack();
+  }
+
+  getSizeFromBloc(GlobalKey pagekey) {
+    _size = _dynamicSize.getSize(pagekey);
+    print(_size);
+  }
+
+  getSplittedText(TextStyle textStyle, txt) {
+    _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
   }
 }

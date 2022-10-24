@@ -1,18 +1,22 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 import '../../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Model/book_details.dart';
+import '../../../Model/razorpay_key.dart';
 import '../../../Model/review.dart';
 import '../../../Networking/api_provider.dart';
 import '../../../Storage/data_provider.dart';
@@ -30,6 +34,19 @@ class _BookInfoState extends State<BookInfo>
     with SingleTickerProviderStateMixin {
   BookDetailsModel? bookDetails;
   List<Review> reviews = [];
+  final _razorpay = Razorpay();
+  double tempTotal = 0;
+  var cupon = "";
+  String temp_order_id = '0';
+
+  @override
+  void initState() {
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    super.initState();
+    fetchBookDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,12 +195,14 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    BuyButton(widget.id),
+                    BuyButton(widget.id, () {
+                      initiatePaymentProcess(widget.id);
+                    }),
                     SizedBox(
                       height: 2.h,
                     ),
-                    ReadButton(),
-                    DownloadSection(),
+                    ReadButton(id: widget.id),
+                    DownloadSection(widget.id),
                     SizedBox(
                       width: 90.w,
                       height: 0.03.h,
@@ -216,18 +235,24 @@ class _BookInfoState extends State<BookInfo>
                       child: Row(
                         children: [
                           for (var i in bookDetails?.tags ?? [])
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 1.w, vertical: 0.5.h),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                              ),
-                              child: Text(
-                                i.name ?? "",
-                                style: Theme.of(context).textTheme.headline5,
+                            GestureDetector(
+                              onTap: () {
+                                Navigation.instance.navigate('/searchWithTag',
+                                    args: i.toString());
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 1.w, vertical: 0.5.h),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                ),
+                                child: Text(
+                                  i.name ?? "",
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
                               ),
                             ),
                         ],
@@ -463,12 +488,6 @@ class _BookInfoState extends State<BookInfo>
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchBookDetails();
-  }
-
   void fetchBookDetails() async {
     final response =
         await ApiProvider.instance.fetchBookDetails(widget.id.toString());
@@ -531,6 +550,147 @@ class _BookInfoState extends State<BookInfo>
         },
       ),
     );
+  }
+
+  void initiatePaymentProcess(id) async {
+    Navigation.instance.navigate('/loadingDialog');
+    final response = await ApiProvider.instance.fetchRazorpay();
+    if (response.status ?? false) {
+      if (cupon == null || cupon == "") {
+        initateOrder(response.razorpay!, id);
+      } else {
+        // applyCoupon(cupon, response.razorpay!);
+      }
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  void initateOrder(RazorpayKey razorpay, id) async {
+    final response = await ApiProvider.instance.createOrder(cupon, id);
+    if (response.status ?? false) {
+      tempTotal = response.order?.total ?? 0;
+      temp_order_id = response.order?.order_id.toString() ?? "";
+      startPayment(razorpay, response.order?.total, response.order?.order_id,
+          response.order?.subscriber_id);
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    print(
+        'success ${response.paymentId} ${response.orderId} ${response.signature}');
+    handleSuccess(response);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    // Do something when payment fails
+    print('error ${response.message} ${response.code} ');
+    Navigation.instance.goBack();
+    CoolAlert.show(
+      context: context,
+      type: CoolAlertType.warning,
+      text: response.message ?? "Something went wrong",
+    );
+    Navigation.instance.goBack();
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    // Do something when an external wallet was selected
+  }
+
+  void startPayment(RazorpayKey razorpay, double? total, id, customer_id) {
+    var options = {
+      'key': razorpay.api_key,
+      'amount': total! * 100,
+      // 'order_id': id,
+      'name':
+          '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
+      'description': 'Books',
+      'prefill': {
+        'contact': Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .profile
+            ?.mobile,
+        'email': Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .profile
+            ?.email
+      },
+      'note': {
+        'customer_id': customer_id,
+        'order_id': id,
+      },
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void handleSuccess(PaymentSuccessResponse response) async {
+    final response1 = await ApiProvider.instance
+        .verifyPayment(temp_order_id, response.paymentId, tempTotal ?? 1);
+    if (response1.status ?? false) {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "Payment received Successfully",
+      );
+      Navigation.instance.goBack();
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+      Navigation.instance.goBack();
+    }
+  }
+
+  void showSuccess(context) {
+    var snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Added to cart',
+        message: 'The following book is added to cart',
+        contentType: ContentType.success,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showError(context) {
+    var snackBar = SnackBar(
+      elevation: 0,
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      content: AwesomeSnackbarContent(
+        title: 'Failed',
+        message: 'Something went wrong',
+        contentType: ContentType.failure,
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
@@ -742,9 +902,9 @@ class BookPublishinDetails extends StatelessWidget {
 }
 
 class DownloadSection extends StatelessWidget {
-  const DownloadSection({
-    Key? key,
-  }) : super(key: key);
+  final int id;
+
+  DownloadSection(this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -757,71 +917,92 @@ class DownloadSection extends StatelessWidget {
           SizedBox(
             width: 0.1.w,
           ),
-          SizedBox(
-            height: 15.h,
-            width: 20.w,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.download),
-                Text(
-                  'Download',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.white,
-                      ),
-                ),
-              ],
+          // SizedBox(
+          //   height: 15.h,
+          //   width: 20.w,
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Icon(Icons.download),
+          //       Text(
+          //         'Download',
+          //         style: Theme.of(context).textTheme.headline4?.copyWith(
+          //               // fontSize: 2.h,
+          //               color: Colors.white,
+          //             ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // SizedBox(
+          //   height: 5.h,
+          //   width: 0.1.w,
+          //   child: Container(
+          //     color: Colors.white,
+          //   ),
+          // ),
+          GestureDetector(
+            onTap: () async {
+              final reponse = await ApiProvider.instance.addBookmark(id ?? 0);
+              if (reponse.status ?? false) {
+                Fluttertoast.showToast(msg: reponse.message!);
+                final response = await ApiProvider.instance.fetchBookmark();
+                if (response.status ?? false) {
+                  Provider.of<DataProvider>(
+                          Navigation.instance.navigatorKey.currentContext ??
+                              context,
+                          listen: false)
+                      .setToBookmarks(response.items ?? []);
+                  CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.success,
+                    text: "Bookmark added successfully",
+                  );
+                }
+              }
+            },
+            child: SizedBox(
+              height: 15.h,
+              width: 20.w,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.bookmark_border),
+                  Text(
+                    'Save',
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                          // fontSize: 2.h,
+                          color: Colors.white,
+                        ),
+                  ),
+                ],
+              ),
             ),
           ),
-          SizedBox(
-            height: 5.h,
-            width: 0.1.w,
-            child: Container(
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            height: 15.h,
-            width: 20.w,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.bookmark_border),
-                Text(
-                  'Save',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.white,
-                      ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 5.h,
-            width: 0.1.w,
-            child: Container(
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(
-            height: 15.h,
-            width: 20.w,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.playlist_add),
-                Text(
-                  'Add to List',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.white,
-                      ),
-                ),
-              ],
-            ),
-          ),
+          // SizedBox(
+          //   height: 5.h,
+          //   width: 0.1.w,
+          //   child: Container(
+          //     color: Colors.white,
+          //   ),
+          // ),
+          // SizedBox(
+          //   height: 15.h,
+          //   width: 20.w,
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Icon(Icons.playlist_add),
+          //       Text(
+          //         'Add to List',
+          //         style: Theme.of(context).textTheme.headline4?.copyWith(
+          //               // fontSize: 2.h,
+          //               color: Colors.white,
+          //             ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SizedBox(
             width: 0.1.w,
           ),
@@ -833,71 +1014,72 @@ class DownloadSection extends StatelessWidget {
 
 class BuyButton extends StatelessWidget {
   final int id;
+  Function onTap;
 
-
-  BuyButton(this.id);
+  BuyButton(this.id, this.onTap);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 4.5.h,
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigation.instance
-                //     .navigate('/bookInfo', args: data.id);
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              child: Text(
-                'Buy Now',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
-                      color: Colors.black,
-                    ),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 1.w,
-          ),
-          Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigation.instance
-                //     .navigate('/bookInfo', args: data.id);
-                addtocart(context,id);
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              child: Text(
-                'Add To Cart',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
-                      color: Colors.black,
-                    ),
+    return Material(
+      color: Colors.transparent,
+      child: SizedBox(
+        width: double.infinity,
+        height: 4.5.h,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: ()=>onTap(),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
+                child: Text(
+                  'Buy Now',
+                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                        fontSize: 2.h,
+                        color: Colors.black,
+                      ),
+                ),
               ),
             ),
-          ),
-        ],
+            SizedBox(
+              width: 1.w,
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigation.instance
+                  //     .navigate('/bookInfo', args: data.id);
+                  addtocart(context, id);
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
+                child: Text(
+                  'Add To Cart',
+                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                        fontSize: 2.h,
+                        color: Colors.black,
+                      ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
-  void addtocart(context,id) async {
+
+  void addtocart(context, id) async {
     final response = await ApiProvider.instance.addToCart(id, '1');
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext ?? context,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
           .setToCart(response.cart?.items ?? []);
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext!,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext!,
+              listen: false)
           .setCartData(response.cart!);
       Navigation.instance.goBack();
       showSuccess(context);
@@ -906,6 +1088,7 @@ class BuyButton extends StatelessWidget {
       showError(context);
     }
   }
+
   void showSuccess(context) {
     var snackBar = SnackBar(
       elevation: 0,
@@ -918,8 +1101,8 @@ class BuyButton extends StatelessWidget {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
   }
+
   void showError(context) {
     var snackBar = SnackBar(
       elevation: 0,
@@ -932,14 +1115,13 @@ class BuyButton extends StatelessWidget {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
   }
 }
 
 class ReadButton extends StatelessWidget {
-  const ReadButton({
-    Key? key,
-  }) : super(key: key);
+  final int id;
+
+  const ReadButton({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -949,6 +1131,8 @@ class ReadButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {
           // Navigation.instance.navigate('/bookInfo');
+          // Navigation.instance.navigate('/bookDetails', args: id ?? 0);
+          Navigation.instance.navigate('/reading', args: id ?? 0);
         },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.black),

@@ -17,6 +17,7 @@ import '../Model/book_format.dart';
 import '../Model/bookmark.dart';
 import '../Model/cart_item.dart';
 import '../Model/discount.dart';
+import '../Model/filter.dart';
 import '../Model/generic_response.dart';
 import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
@@ -42,14 +43,6 @@ class ApiProvider {
 
   Dio? dio;
 
-  BaseOptions option =
-      BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer ${Storage.instance.token}',
-    // 'APP-KEY': ConstanceData.app_key
-  });
-
   Future<GenericResponse> addSubscriber(
       fname, lname, email, mobile, dob, password) async {
     var data = {
@@ -60,6 +53,13 @@ class ApiProvider {
       "date_of_birth": dob,
       "password": password
     };
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     var url = "${baseUrl}/subscribers";
     dio = Dio(option);
     debugPrint(url.toString());
@@ -87,6 +87,13 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/login";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     debugPrint(data.toString());
@@ -112,6 +119,13 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -133,6 +147,13 @@ class ApiProvider {
 
   Future<ProfileResponse> getProfile() async {
     var url = "${baseUrl}/subscribers/profile";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -155,6 +176,13 @@ class ApiProvider {
 
   Future<LogoutResponse> logout() async {
     var url = "${baseUrl}/subscribers/logout";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -175,6 +203,35 @@ class ApiProvider {
     }
   }
 
+  Future<Filter> getFilters(format) async {
+    var url = "${baseUrl}/search-filters/${format}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.get(
+        url,
+      );
+      debugPrint("profile response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return Filter.fromJson(response?.data);
+      } else {
+        debugPrint("profile error: ${response?.data}");
+        return Filter.withError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("profile response: ${e.response}");
+      return Filter.withError(e.message);
+    }
+  }
+
   Future<GenericResponse> updateAddressSubscriber(
       old_email, new_email, password) async {
     var data = {
@@ -182,6 +239,13 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${old_email}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -207,6 +271,13 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${email}/primary";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -232,6 +303,13 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${email}/delete";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -253,6 +331,13 @@ class ApiProvider {
 
   Future<BookFormatResponse> fetchBookFormat() async {
     var url = "${baseUrl}${path}/formats";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -274,6 +359,13 @@ class ApiProvider {
 
   Future<BookCategoryResponse> fetchBookCategory(String format) async {
     var url = "${baseUrl}$path/categories/${format}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -294,6 +386,13 @@ class ApiProvider {
 
   Future<HomeBannerResponse> fetchHomeBanner(String format) async {
     var url = "${baseUrl}$path/home-banners/${format}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -314,6 +413,13 @@ class ApiProvider {
 
   Future<HomeSectionResponse> fetchHomeSections(String format) async {
     var url = "${baseUrl}$path/home-sections/${format}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -334,6 +440,13 @@ class ApiProvider {
 
   Future<BookDetailsResponse> fetchBookDetails(String id) async {
     var url = "${baseUrl}$path/detail/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -354,6 +467,13 @@ class ApiProvider {
 
   Future<BookChapterResponse> fetchBookChapters(String id) async {
     var url = "${baseUrl}$path/chapters/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -374,6 +494,13 @@ class ApiProvider {
 
   Future<ReviewResponse> fetchReview(String id) async {
     var url = "${baseUrl}$path/reviews/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -393,6 +520,13 @@ class ApiProvider {
 
   Future<BookmarkResponse> fetchBookmark() async {
     var url = "${baseUrl}$path/bookmark/list";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -412,6 +546,13 @@ class ApiProvider {
 
   Future<MagazinePlanResponse> fetchMagazinePlan(String id) async {
     var url = "${baseUrl}/magazines/plans/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -431,6 +572,13 @@ class ApiProvider {
 
   Future<GenericResponse> addReview(Add_Review review, int id) async {
     var url = "${baseUrl}$path/reviews/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'subscriber_id': review.subscriber_id,
@@ -456,6 +604,13 @@ class ApiProvider {
 
   Future<GenericResponse> addBookmark(int id) async {
     var url = "${baseUrl}$path/bookmark/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     // var data = {
     //   'book_id': id,
@@ -481,6 +636,13 @@ class ApiProvider {
   Future<GenericResponse> verifyPayment(
       order_id, razorpay_payment_id, amount) async {
     var url = "${baseUrl}/sales/order/verify-payment";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'order_id': order_id,
@@ -509,6 +671,13 @@ class ApiProvider {
 
   Future<CartResponse> addToCart(id, qty) async {
     var url = "${baseUrl}/sales/cart/add";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'id': id,
@@ -534,6 +703,13 @@ class ApiProvider {
 
   Future<CartResponse> fetchCart() async {
     var url = "${baseUrl}/sales/cart";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -553,6 +729,13 @@ class ApiProvider {
 
   Future<DiscountResponse> fetchDiscount() async {
     var url = "${baseUrl}/discount/list";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -572,6 +755,13 @@ class ApiProvider {
 
   Future<ApplyCupon> applyDiscount(coupon_code, total_amount) async {
     var url = "${baseUrl}/discount/list";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'total_amount': total_amount,
@@ -597,6 +787,13 @@ class ApiProvider {
 
   Future<MyBooksResponse> fetchMyBooks() async {
     var url = "${baseUrl}${path}/my-list";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -616,6 +813,13 @@ class ApiProvider {
 
   Future<RazorpayResponse> fetchRazorpay() async {
     var url = "${baseUrl}/payment-gateway";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -635,6 +839,13 @@ class ApiProvider {
 
   Future<MyLangResponse> fetchLanguages() async {
     var url = "${baseUrl}/languages";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -654,6 +865,13 @@ class ApiProvider {
 
   Future<OrderHistoryResponse> fetchOrders() async {
     var url = "${baseUrl}/sales/order";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -673,6 +891,13 @@ class ApiProvider {
 
   Future<CartResponse> updateCart(int id, int qty) async {
     var url = "${baseUrl}/sales/cart/update";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'id': id,
@@ -696,8 +921,15 @@ class ApiProvider {
   }
 
   Future<SearchResponse> search(
-      format, category_ids, tag_ids, author_ids, title) async {
+      format, category_ids, tag_ids, author_ids, title,awards) async {
     var url = "${baseUrl}/search/${format}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'format': format,
@@ -708,27 +940,32 @@ class ApiProvider {
       };
       data.addEntries(temp.entries);
     }
-    if (tag_ids == null && tag_ids != "") {
+    if (tag_ids != null && tag_ids != "") {
       var temp = {
         'tag_ids': tag_ids,
       };
       data.addEntries(temp.entries);
     }
-    if (author_ids == null && author_ids != "") {
+    if (author_ids != null && author_ids != "") {
       var temp = {
         'author_ids': author_ids,
       };
       data.addEntries(temp.entries);
     }
-    if (title == null && title != "") {
+    if (title != null && title != "") {
       var temp = {
         'title': title,
       };
       data.addEntries(temp.entries);
     }
-
+    if (awards != null && awards != "") {
+      var temp = {
+        'award_ids': awards,
+      };
+      data.addEntries(temp.entries);
+    }
     debugPrint(url.toString());
-    debugPrint(jsonEncode(data));
+    // debugPrint(jsonEncode(data));
     try {
       Response? response = await dio?.get(
         url.toString(),
@@ -749,6 +986,13 @@ class ApiProvider {
 
   Future<CartResponse> deleteCart(int id) async {
     var url = "${baseUrl}/sales/cart/delete";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
     var data = {
       'id': id,
@@ -771,17 +1015,31 @@ class ApiProvider {
     }
   }
 
-  Future<OrderResponse> createOrder(String coupon_code) async {
+  Future<OrderResponse> createOrder(
+      String coupon_code, direct_buy_book_id) async {
     var url = "${baseUrl}/sales/order";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
     dio = Dio(option);
-    var data = {
-      'coupon_code': coupon_code,
-      // 'qty': qty,
-    };
+    var data = direct_buy_book_id == null
+        ? {
+            'coupon_code': coupon_code,
+          }
+        : {
+            'coupon_code': coupon_code,
+            'direct_buy_book_id': direct_buy_book_id,
+            // 'qty': qty,
+          };
     debugPrint(url.toString());
+    debugPrint(data.toString());
     try {
       Response? response;
-      if (coupon_code != null && coupon_code != "") {
+      if (coupon_code != null && direct_buy_book_id != "") {
         response = await dio?.post(url.toString(), data: jsonEncode(data));
       } else {
         response = await dio?.post(

@@ -25,34 +25,41 @@ class NewSearchBar extends StatelessWidget {
       color: Color(0xff121212),
       child: Row(
         children: [
-          SizedBox(
-            // width: 20.w,
-            height: 7.h,
-            child: Center(
-              child: Image.asset(
-                ConstanceData.primaryIcon,
-                height: 6.h,
-                width: 6.h,
-                fit: BoxFit.contain,
+          GestureDetector(
+            onTap: (){
+              // https://tratri.in
+
+            },
+            child: SizedBox(
+              // width: 20.w,
+              height: 7.h,
+              child: Center(
+                child: Image.asset(
+                  ConstanceData.primaryIcon,
+                  height: 6.h,
+                  width: 6.h,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
           GestureDetector(
             onTap: () {
-              _launchUrl(Uri.parse('https://tratri.in/login/contributor'));
+              // _launchUrl(Uri.parse('https://tratri.in/login/contributor'));
+              _launchUrl(Uri.parse('https://tratri.in'));
             },
             child: Container(
               decoration: BoxDecoration(
                   // color: ConstanceData.cardColor,
                   borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
+                    Radius.circular(15),
                   ),
                   border: Border.all(color: Colors.white)),
               margin: const EdgeInsets.symmetric(vertical: 10),
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
               child: Text(
                 'REGISTER AS WRITER',
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
           ),
@@ -114,7 +121,7 @@ class NewSearchBar extends StatelessWidget {
                 padding: const EdgeInsets.all(10.0),
                 child: data.cartData?.items.isEmpty ?? true
                     ? const Icon(
-                        ConstanceData.storeIcon,
+                       Icons.shopping_cart,
                         // size: 2.h
                       )
                     : Badge(

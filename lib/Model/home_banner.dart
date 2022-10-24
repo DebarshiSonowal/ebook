@@ -30,6 +30,7 @@ class Book {
       short_description;
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
+  bool? is_bookmarked;
 
   Book.fromJson(json) {
     id = json['id'] == null ? 0 : int.parse(json['id'].toString());
@@ -46,6 +47,7 @@ class Book {
     profile_pic = json['profile_pic'] ?? "";
     language = json['language'] ?? "";
     short_description = json['short_description'] ?? "";
+    is_bookmarked = json['is_bookmarked'] ?? false;
 
     tags = json['tags'] == null
         ? []

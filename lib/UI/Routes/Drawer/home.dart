@@ -38,21 +38,16 @@ class _HomeState extends State<Home> {
               color: Color(0xff121212),
             ),
             NewCategoryBar(context),
-            SizedBox(
-              height: 1.h,
-              width: double.infinity,
-              // color: Color(0xff121212),
-            ),
+            // SizedBox(
+            //   height: 1.h,
+            //   width: double.infinity,
+            //   // color: Color(0xff121212),
+            // ),
             buildBooksBar(context),
-            SizedBox(
-              height: 1.h,
-              width: double.infinity,
-              // color: Color(0xff121212),
-            ),
             // // const BannerHome(),
-            // // SizedBox(
-            // //   height: 1.h,
-            // // ),
+            // SizedBox(
+            //   height: 1.h,
+            // ),
             // // const CategoryBar(),
             // // SizedBox(
             // //   height: 1.h,
@@ -72,7 +67,7 @@ class _HomeState extends State<Home> {
                 },
                 separatorBuilder: (cont, ind) {
                   return SizedBox(
-                    height: 1.h,
+                    height: 0.1.h,
                   );
                 },
                 itemCount: Provider.of<DataProvider>(context)
@@ -107,13 +102,13 @@ class _HomeState extends State<Home> {
             //         currentData.bannerList![currentData.currentTab],
             //         currentData)
             //     .length,
-            itemCount:currentData.bannerList![currentData.currentTab]
-                .length,
+            itemCount: currentData.bannerList![currentData.currentTab].length,
             itemBuilder: (cont, count) {
               // HomeBanner data = filterByCategory(
               //     currentData.bannerList![currentData.currentTab],
               //     currentData)[count];
-              Book data = currentData.bannerList![currentData.currentTab][count];
+              Book data =
+                  currentData.bannerList![currentData.currentTab][count];
               return Card(
                 color: Colors.transparent,
                 child: Container(
@@ -273,7 +268,8 @@ class _HomeState extends State<Home> {
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: current.categoryList![current.currentIndex].length~/2,
+                itemCount:
+                    current.categoryList![current.currentIndex].length ~/ 2,
                 itemBuilder: (cont, count) {
                   var data = current.categoryList![current.currentIndex][count];
                   return GestureDetector(
@@ -283,17 +279,20 @@ class _HomeState extends State<Home> {
                         debugPrint(count.toString());
                         current.setCategory(count);
                       });
+                      Navigation.instance.navigate('/selectCategories',
+                          args: '${data.title},${data.id}');
                     },
                     child: Container(
                       // width: 18.w,
                       padding: EdgeInsets.all(0.2.h),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: selected == count
-                                ? const Color(0xffffd400)
-                                : Colors.black,
+                            // color: selected == count
+                            //     ? const Color(0xffffd400)
+                            //     : Colors.black,
+                            color: Colors.black,
                             width: 1,
                           ),
                         ),
@@ -305,9 +304,10 @@ class _HomeState extends State<Home> {
                           style:
                               Theme.of(context).textTheme.headline5?.copyWith(
                                     // fontSize: 1.5.h,
-                                    color: selected == count
-                                        ? const Color(0xffffd400)
-                                        : Colors.white,
+                                    // color: selected == count
+                                    //     ? const Color(0xffffd400)
+                                    //     : Colors.white,
+                                    color: Colors.white,
                                   ),
                         ),
                       ),

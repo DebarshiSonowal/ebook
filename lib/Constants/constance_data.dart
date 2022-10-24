@@ -132,18 +132,20 @@ class ConstanceData {
   static const humanImage = 'assets/images/user.png';
   static const emptyImage = 'assets/images/shelves.png';
   static const searchIcon = FontAwesomeIcons.search;
-  static const homeIcon = FontAwesomeIcons.home;
-  static const libraryIcon = FontAwesomeIcons.book;
-  static const storeIcon = FontAwesomeIcons.shoppingCart;
-  static const orderIcon = FontAwesomeIcons.history;
+  // static const homeIcon = FontAwesomeIcons.home;
+  static const homeIcon = "assets/images/home.png";
+  static const libraryIcon ="assets/images/library.png";
+  static const storeIcon = FontAwesomeIcons.store;
+  static const orderIcon =  "assets/images/orders.png";
   static const moreIcon = FontAwesomeIcons.hamburger;
+  static const readingIcon = "assets/images/reading.png";
 
   // static final reviews=[
   //   Review(
   //     'Dek','Great books', 4.5,
   //   ),
   //   Review(
-  //     'Dek1','Great books1', 4.1,
+  //     'Dek1','Great books1', 4. 1,
   //   ),
   //   Review(
   //     'Dek2','Great books2', 4.3,

@@ -44,27 +44,37 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                     .navigate('/magazineArticles', args: data.details?.id ?? 0);
               } else {
                 Navigation.instance
-                    .navigate('/bookDetails', args: data.details?.id ?? 0);
+                    .navigate('/reading', args: data.details?.id ?? 0);
+                // Navigation.instance
+                //     .navigate('/bookDetails', args: data.details?.id ?? 0);
               }
             } else {
               Navigation.instance.navigate('/accountDetails');
             }
           },
           items: [
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: Icon(ConstanceData.homeIcon),
+                icon: Image.asset(
+                  ConstanceData.homeIcon,
+                  height: 5.h,
+                  width: 5.w,
+                ),
                 label: 'Home'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: Icon(ConstanceData.libraryIcon),
+                icon: Image.asset(
+                  ConstanceData.libraryIcon,
+                  height: 5.h,
+                  width: 5.w,
+                ),
                 label: 'Library'),
             BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
                 icon: Consumer<DataProvider>(builder: (cont, data, _) {
                   return data.details == null
                       ? Image.asset(
-                          ConstanceData.primaryIcon,
+                          ConstanceData.readingIcon,
                           height: 5.h,
                           width: 7.w,
                           fit: BoxFit.fill,
@@ -77,17 +87,20 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                         );
                 }),
                 label: ''),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: Icon(ConstanceData.orderIcon),
+                icon: Image.asset(
+                  ConstanceData.orderIcon,
+                  height: 5.h,
+                  width: 5.w,
+                ),
                 label: 'Orders'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 backgroundColor: ConstanceData.secondaryColor,
-                icon: CircleAvatar(
-                  radius: 15, // Image radius
-                  backgroundImage: AssetImage(
-                    ConstanceData.humanImage,
-                  ),
+                icon: Image.asset(
+                  ConstanceData.humanImage,
+                  height: 5.h,
+                  width: 5.w,
                 ),
                 label: 'More'),
           ]);

@@ -20,7 +20,7 @@ class RazorpayResponse{
   String? message;
   RazorpayKey? razorpay;
 
-  RazorpayResponse.fromJson(json) {
+   RazorpayResponse.fromJson(json) {
     status = json['success'] ?? false;
     message = json['message'] ?? "Something went wrong";
     razorpay = RazorpayKey.fromJson(json['result']);

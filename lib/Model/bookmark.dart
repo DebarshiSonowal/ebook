@@ -1,3 +1,5 @@
+import 'Tag.dart';
+
 class BookmarkItem {
   int? id,
       book_category_id,
@@ -17,7 +19,8 @@ class BookmarkItem {
       language,
       short_description,
       description;
-  double? total_rating, average_rating;
+  double? total_rating, average_rating,selling_price;
+  List<Tag>? tags, awards;
 
   BookmarkItem.fromJson(json) {
     id = json['id'] ?? 0;
@@ -53,6 +56,16 @@ class BookmarkItem {
     average_rating = json['average_rating'] == null
         ? 0
         : double.parse(json['average_rating'].toString());
+    selling_price = json['selling_price'] == null || json['selling_price'] == ""
+        ? 0
+        : double.parse(json['selling_price'].toString());
+
+    tags = json['tags'] == null
+        ? []
+        : (json['tags'] as List).map((e) => Tag.fromJson(e)).toList();
+    awards = json['awards'] == null
+        ? []
+        : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
   }
 }
 

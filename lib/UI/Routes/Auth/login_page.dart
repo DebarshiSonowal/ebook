@@ -261,14 +261,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void Login() async {
-    print('here');
+    Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance
         .loginSubscriber(_phoneController.text, _passwordController.text);
     if (response.status ?? false) {
+
+      await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
-      Storage.instance.setUser(response.access_token ?? "");
-      Navigation.instance.navigate('/main');
+
     }else{
+      Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
@@ -283,6 +285,15 @@ class _LoginPageState extends State<LoginPage> {
           Navigation.instance.navigatorKey.currentContext ?? context,
           listen: false)
           .setProfile(response.profile!);
+      Navigation.instance.goBack();
+      Navigation.instance.navigate('/main');
+    }else{
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: "Something went wrong",
+      );
     }
   }
 }

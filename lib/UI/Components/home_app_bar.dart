@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/book.dart';
 import 'package:flutter/material.dart';
 import 'package:search_page/search_page.dart';
@@ -57,33 +58,34 @@ class _HomeAppBarState extends State<HomeAppBar> {
         IconButton(
           onPressed: () {
             print('searh');
-            showSearch(
-              context: context,
-              delegate: SearchPage<Book_old>(
-                items: ConstanceData.Motivational,
-                searchLabel: 'Search people',
-                suggestion: Center(
-                  child: Text('Filter people by name, surname or age'),
-                ),
-                failure: Center(
-                  child: Text('No person found :('),
-                ),
-                filter: (current) => [
-                  current.name,
-                  current.author,
-                  // person.age.toString(),
-                ],
-                builder: (book) => ListTile(
-                  title: Text(book.name??''),
-                  subtitle: Text(book.author??''),
-                  trailing: CachedNetworkImage(
-                    imageUrl: book.image??'',
-                    height: 20,
-                    width: 20,
-                  ),
-                ),
-              ),
-            );
+            Navigation.instance.navigate('/search');
+            // showSearch(
+            //   context: context,
+            //   delegate: SearchPage<Book_old>(
+            //     items: ConstanceData.Motivational,
+            //     searchLabel: 'Search people',
+            //     suggestion: Center(
+            //       child: Text('Filter people by name, surname or age'),
+            //     ),
+            //     failure: Center(
+            //       child: Text('No person found :('),
+            //     ),
+            //     filter: (current) => [
+            //       current.name,
+            //       current.author,
+            //       // person.age.toString(),
+            //     ],
+            //     builder: (book) => ListTile(
+            //       title: Text(book.name??''),
+            //       subtitle: Text(book.author??''),
+            //       trailing: CachedNetworkImage(
+            //         imageUrl: book.image??'',
+            //         height: 20,
+            //         width: 20,
+            //       ),
+            //     ),
+            //   ),
+            // );
           },
           icon: const Icon(
             ConstanceData.searchIcon,
