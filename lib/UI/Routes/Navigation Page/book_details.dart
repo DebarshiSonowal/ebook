@@ -16,6 +16,7 @@ import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Model/reading_chapter.dart';
@@ -69,7 +70,7 @@ class _BookDetailsState extends State<BookDetails>
   List<BookChapter> chapters = [];
   List<ReadingChapter> reading = [];
   String read = '';
-  var _counterValue = 12.sp;
+  var _counterValue = 13.sp;
 
   var test = '''''';
   DynamicSize _dynamicSize = DynamicSizeImpl();
@@ -272,9 +273,10 @@ class _BookDetailsState extends State<BookDetails>
                           test = _splittedTextList[index] ?? "";
                           return Container(
                             width: 100.w,
-                            // height: 90.h,
+                            // height: 85.h,
                             padding: EdgeInsets.symmetric(
                               horizontal: 5.w,
+                              vertical: 2.h,
                             ),
                             color: getTextColor(),
                             // child: Text.rich(
@@ -286,26 +288,30 @@ class _BookDetailsState extends State<BookDetails>
                             //     fontSize: FontSize(_counterValue).size,
                             //   ),
                             // ),
-                            child: Html(
-                              data: test,
-                              // tagsList: [
-                              //   'img','p','!DOCTYPE html','body'
-                              // ],
-                              // tagsList: ['p'],
-                              // shrinkWrap: true,
-                              style: {
-                                '#': Style(
-                                  fontSize: FontSize(_counterValue),
+                            child: Container(
+                              child: Html(
+                                data: test.trim(),
+                                shrinkWrap: true,
 
-                                  maxLines: FontSize(_counterValue)
-                                      .size!
-                                      .toInt()
-                                      .sp
-                                      .toInt(),
-                                  color: getBackGroundColor(),
-                                  // textOverflow: TextOverflow.ellipsis,
-                                ),
-                              },
+                                // tagsList: [
+                                //   'img','p','!DOCTYPE html','body'
+                                // ],
+                                // tagsList: ['p'],
+                                // shrinkWrap: true,
+                                style: {
+                                  '#': Style(
+                                    fontSize: FontSize(_counterValue),
+
+                                    // maxLines: FontSize(_counterValue)
+                                    //     .size!
+                                    //     .toInt()
+                                    //     .sp
+                                    //     .toInt(),
+                                    color: getBackGroundColor(),
+                                    // textOverflow: TextOverflow.ellipsis,
+                                  ),
+                                },
+                              ),
                             ),
                           );
                         },
@@ -395,24 +401,56 @@ class _BookDetailsState extends State<BookDetails>
               SizedBox(
                 height: 0.5.h,
               ),
-              StatefulBuilder(builder: (context, _) {
-                return CounterButton(
-                  loading: false,
-                  onChange: (int val) {
-                    _(() {
-                      setState(() {
-                        _counterValue = val.toDouble();
-                        // _loadHtmlFromAssets(test, getBackGroundColor(),
-                        //     getTextColor(), _counterValue);
-                      });
-                    });
-                  },
-                  count: _counterValue.toInt(),
-                  countColor: Colors.white,
-                  buttonColor: Colors.white,
-                  progressColor: Colors.white,
-                );
-              }),
+              ToggleSwitch(
+                minWidth: 15.w,
+                minHeight: 4.h,
+                fontSize: 12.sp,
+                initialLabelIndex: 0,
+                activeBgColor: [Colors.black87],
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey,
+                inactiveFgColor: Colors.grey[900],
+                totalSwitches: 3,
+                labels: ['13', '17', '20'],
+                onToggle: (index) {
+                  switch (index) {
+                    case 1:
+                      updateFont(17.sp);
+                      break;
+                    case 2:
+                      updateFont(20.sp);
+                      break;
+                    default:
+                      updateFont(13.sp);
+                  }
+                },
+              ),
+              // StatefulBuilder(builder: (context, _) {
+              //   return CounterButton(
+              //     loading: false,
+              //     onChange: (int val) {
+              //       // _(() {
+              //       //   setState(() {
+              //       //     _counterValue = val.toDouble();
+              //       //     // _loadHtmlFromAssets(test, getBackGroundColor(),
+              //       //     //     getTextColor(), _counterValue);
+              //       //   });
+              //       //   setState(() {
+              //       //     getSplittedText(
+              //       //         TextStyle(
+              //       //             color: getBackGroundColor(),
+              //       //             fontSize: FontSize(_counterValue).size),
+              //       //         read);
+              //       //     // setPages(FontSize(_counterValue).size?.toInt());
+              //       //   });
+              //       // });
+              //     },
+              //     count: _counterValue.toInt(),
+              //     countColor: Colors.white,
+              //     buttonColor: Colors.white,
+              //     progressColor: Colors.white,
+              //   );
+              // }),
               SizedBox(
                 height: 1.h,
               ),
@@ -483,7 +521,17 @@ class _BookDetailsState extends State<BookDetails>
     }
   }
 
-  handleClick(int item) {}
+  handleClick(int item) {
+    switch (item) {
+      case 2:
+        Provider.of<DataProvider>(context, listen: false).details = null;
+        setState(() {});
+        Storage.instance.setReadingBook(0);
+        break;
+      default:
+        break;
+    }
+  }
 
   void setScreenshotDisable() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
@@ -536,5 +584,16 @@ class _BookDetailsState extends State<BookDetails>
 
   getSplittedText(TextStyle textStyle, txt) {
     _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
+  }
+
+  void updateFont(val) {
+   setState(() {
+     _counterValue = val.toDouble();
+      getSplittedText(
+          TextStyle(
+              color: getBackGroundColor(),
+              fontSize: FontSize(_counterValue).size),
+          read);
+    });
   }
 }

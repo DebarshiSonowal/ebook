@@ -18,12 +18,12 @@ class SplittedTextImpl extends SplittedText {
     );
     textPainter.layout(
       minWidth: 0,
-      maxWidth: pageSize.width,
+      maxWidth: pageSize.width-2.w,
     );
 
     // https://medium.com/swlh/flutter-line-metrics-fd98ab180a64
     List<LineMetrics> lines = textPainter.computeLineMetrics();
-    double currentPageBottom = pageSize.height;
+    double currentPageBottom = pageSize.height-12.h;
     int currentPageStartIndex = 0;
     int currentPageEndIndex = 0;
 
@@ -44,7 +44,7 @@ class SplittedTextImpl extends SplittedText {
         _pageTexts.add(pageText);
 
         currentPageStartIndex = currentPageEndIndex;
-        currentPageBottom = top + pageSize.height+25.sp;
+        currentPageBottom = top +( pageSize.height-12.h);
       }
     }
 

@@ -74,15 +74,15 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 icon: Consumer<DataProvider>(builder: (cont, data, _) {
                   return data.details == null
                       ? Image.asset(
-                          ConstanceData.readingIcon,
+                          ConstanceData.primaryIcon,
                           height: 5.h,
                           width: 7.w,
                           fit: BoxFit.fill,
                         )
-                      : Image.network(
-                          data.details?.profile_pic ?? "",
-                          height: 5.h,
-                          width: 7.w,
+                      : Image.asset(
+                          ConstanceData.readingIcon,
+                          height: 5.5.h,
+                          width: 12.w,
                           fit: BoxFit.fill,
                         );
                 }),
