@@ -47,7 +47,6 @@ class _BookDetailsState extends State<BookDetails>
       Colors.black,
     ),
     ReadingTheme(
-
       Colors.black,
       Colors.white,
     ),
@@ -262,8 +261,11 @@ class _BookDetailsState extends State<BookDetails>
             ? const Center(child: CircularProgressIndicator())
             : Consumer<DataProvider>(builder: (context, data, _) {
                 return chapters.isEmpty
-                    ? const Center(
-                        child: Text('Oops No Data available here'),
+                    ? Center(
+                        child: Text(
+                          'Oops No Data available here',
+                          style: getBackGroundColor(),
+                        ),
                       )
                     : PageView.builder(
                         // shrinkWrap: true,
@@ -485,7 +487,12 @@ class _BookDetailsState extends State<BookDetails>
                 minWidth: 15.w,
                 minHeight: 4.h,
                 fontSize: 12.sp,
-                initialLabelIndex: (_counterValue==13.sp?0:_counterValue==17.sp?1:2)??0,
+                initialLabelIndex: (_counterValue == 13.sp
+                        ? 0
+                        : _counterValue == 17.sp
+                            ? 1
+                            : 2) ??
+                    0,
                 activeBgColor: [Colors.black87],
                 activeFgColor: Colors.white,
                 inactiveBgColor: Colors.grey,
@@ -616,7 +623,6 @@ class _BookDetailsState extends State<BookDetails>
                   fontSize: FontSize(_counterValue).size),
               read);
           // setPages(FontSize(_counterValue).size?.toInt());
-
         });
       }
     }
@@ -627,6 +633,7 @@ class _BookDetailsState extends State<BookDetails>
     _size = _dynamicSize.getSize(pagekey);
     print(_size);
   }
+
   void updateFont(val) {
     setState(() {
       _counterValue = val.toDouble();
@@ -637,6 +644,7 @@ class _BookDetailsState extends State<BookDetails>
           read);
     });
   }
+
   getSplittedText(TextStyle textStyle, txt) {
     _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
   }

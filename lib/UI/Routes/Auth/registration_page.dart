@@ -518,9 +518,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   void CreateAccount(fname, lname, email, mobile, dob, password) async {
+    Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.addSubscriber(
         fname, lname, email, mobile, dob, password);
     if(response.status??false){
+      Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
@@ -528,6 +530,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       );
       Navigation.instance.navigate('/login');
     }else{
+      Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,

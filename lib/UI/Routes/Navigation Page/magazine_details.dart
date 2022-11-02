@@ -44,7 +44,6 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       Colors.black,
     ),
     ReadingTheme(
-
       Colors.black,
       Colors.white,
     ),
@@ -145,8 +144,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             ? const Center(child: CircularProgressIndicator())
             : Consumer<DataProvider>(builder: (context, data, _) {
                 return chapters.isEmpty
-                    ? const Center(
-                        child: Text('Oops No Data available here'),
+                    ? Center(
+                        child: Text(
+                          'Oops No Data available here',
+                          style: getBackGroundColor(),
+                        ),
                       )
                     : PageView.builder(
                         // shrinkWrap: true,
@@ -154,7 +156,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                         physics: const ClampingScrollPhysics(),
                         itemCount: reading.length,
                         itemBuilder: (context, index) {
-                          test = reading[index].desc??"";
+                          test = reading[index].desc ?? "";
                           return SingleChildScrollView(
                             child: Column(
                               children: [
@@ -706,7 +708,12 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 minWidth: 15.w,
                 minHeight: 4.h,
                 fontSize: 12.sp,
-                initialLabelIndex: (_counterValue==11.sp?0:_counterValue==14.sp?1:2)??0,
+                initialLabelIndex: (_counterValue == 11.sp
+                        ? 0
+                        : _counterValue == 14.sp
+                            ? 1
+                            : 2) ??
+                    0,
                 activeBgColor: [Colors.black87],
                 activeFgColor: Colors.white,
                 inactiveBgColor: Colors.grey,
@@ -840,6 +847,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     }
     Navigation.instance.goBack();
   }
+
   void updateFont(val) {
     setState(() {
       _counterValue = val.toDouble();

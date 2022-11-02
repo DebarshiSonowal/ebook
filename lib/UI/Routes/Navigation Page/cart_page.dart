@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dotted_line/dotted_line.dart';
@@ -448,12 +450,13 @@ class _CartPageState extends State<CartPage> {
 
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
-    print('error ${response.message} ${response.code} ');
+    var resp = json.decode(response.message!);
+    print('error ${resp['error']['description']} ${response.code} ');
     Navigation.instance.goBack();
     CoolAlert.show(
       context: context,
-      type: CoolAlertType.warning,
-      text: response.message ?? "Something went wrong",
+      type: CoolAlertType.error,
+      text: resp['error']['description'] ?? "Something went wrong",
     );
   }
 
@@ -521,6 +524,7 @@ class _CartPageState extends State<CartPage> {
         text: "Payment received Successfully",
       );
       fetchCartItems();
+      Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(

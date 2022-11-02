@@ -295,100 +295,106 @@ class _SearchPageState extends State<SearchPage> {
                         shrinkWrap: true,
                         itemBuilder: (cont, count) {
                           var current = data.search_results[count];
-                          return Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 1.h, horizontal: 0.5.w),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: const BorderRadius.all(
-                                  Radius.circular(
-                                      5.0) //                 <--- border radius here
-                                  ),
-                            ),
-                            child: ListTile(
-                              title: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: current.profile_pic ?? "",
-                                    fit: BoxFit.fill,
-                                    height: 15.h,
-                                    width: 20.w,
-                                  ),
-                                  SizedBox(
-                                    width: 5.w,
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 60.w,
-                                        child: Text(
-                                          current.title ?? "",
+                          return GestureDetector(
+                            onTap: (){
+                              Navigation.instance
+                                  .navigate('/bookInfo', args: current.id);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 1.h, horizontal: 0.5.w),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                        5.0) //                 <--- border radius here
+                                    ),
+                              ),
+                              child: ListTile(
+                                title: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: current.profile_pic ?? "",
+                                      fit: BoxFit.fill,
+                                      height: 15.h,
+                                      width: 20.w,
+                                    ),
+                                    SizedBox(
+                                      width: 5.w,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 60.w,
+                                          child: Text(
+                                            current.title ?? "",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline2
+                                                ?.copyWith(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 1.5.h,
+                                        ),
+                                        Text(
+                                          current.writer ?? "",
                                           overflow: TextOverflow.ellipsis,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline2
+                                              .headline4
                                               ?.copyWith(
                                                 color: Colors.black,
+                                                // fontWeight: FontWeight.bold,
+                                              ),
+                                        ),
+                                        SizedBox(
+                                          height: 1.5.h,
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '${current.average_rating}' ?? "NA",
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4
+                                                  ?.copyWith(
+                                                    color: Colors.black,
+                                                  ),
+                                            ),
+                                            const Icon(
+                                              Icons.star,
+                                              color: Colors.yellow,
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 1.5.h,
+                                        ),
+                                        Text(
+                                          '₹${current.base_price}' ?? "NA",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline4
+                                              ?.copyWith(
+                                                color: Colors.green,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 1.5.h,
-                                      ),
-                                      Text(
-                                        current.writer ?? "",
-                                        overflow: TextOverflow.ellipsis,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4
-                                            ?.copyWith(
-                                              color: Colors.black,
-                                              // fontWeight: FontWeight.bold,
-                                            ),
-                                      ),
-                                      SizedBox(
-                                        height: 1.5.h,
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            '${current.average_rating}' ?? "NA",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline4
-                                                ?.copyWith(
-                                                  color: Colors.black,
-                                                ),
-                                          ),
-                                          const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 1.5.h,
-                                      ),
-                                      Text(
-                                        '₹${current.base_price}' ?? "NA",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline4
-                                            ?.copyWith(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );

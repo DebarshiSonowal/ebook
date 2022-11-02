@@ -256,13 +256,11 @@ class _HomePageState extends State<HomePage>
       vsync: this,
     );
     _controller?.addListener(() {
-      setState(() {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext ?? context,
-                listen: false)
-            .setCurrentTab(_controller?.index ?? 0);
-      });
-      print(_controller?.index);
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
+          .setCurrentTab(_controller?.index ?? 0);
+      print('index ${_controller?.index}');
     });
   }
 }

@@ -743,23 +743,25 @@ class BookPublishinDetails extends StatelessWidget {
               SizedBox(
                 width: 3.h,
               ),
-              RatingBar.builder(
-                  itemSize: 5.w,
-                  initialRating: bookDetails.average_rating ?? 3,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  // itemPadding:
-                  //     EdgeInsets.symmetric(horizontal: 4.0),
-                  itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.white,
-                        size: 10,
-                      ),
-                  onRatingUpdate: (rating) {
-                    print(rating);
-                  }),
+              AbsorbPointer(
+                child: RatingBar.builder(
+                    itemSize: 5.w,
+                    initialRating: bookDetails.average_rating ?? 3,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    // itemPadding:
+                    //     EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => const Icon(
+                          Icons.star,
+                          color: Colors.white,
+                          size: 10,
+                        ),
+                    onRatingUpdate: (rating) {
+                      print(rating);
+                    }),
+              ),
               Text(
                 '(${bookDetails.total_rating?.toInt()})',
                 style: Theme.of(context).textTheme.headline5?.copyWith(
@@ -1027,6 +1029,7 @@ class DownloadSection extends StatelessWidget {
   }
 
   void addBookmark(int id,context) async{
+    Navigation.instance.navigate('/loadingDialog');
     final reponse = await ApiProvider.instance.addBookmark(id ?? 0);
     if (reponse.status ?? false) {
       Fluttertoast.showToast(msg: reponse.message!);
@@ -1037,10 +1040,18 @@ class DownloadSection extends StatelessWidget {
                 context,
             listen: false)
             .setToBookmarks(response.items ?? []);
+        Navigation.instance.goBack();
         CoolAlert.show(
           context: context,
           type: CoolAlertType.success,
           text: "Bookmark added successfully",
+        );
+      }else{
+        Navigation.instance.goBack();
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.warning,
+          text: "Something went wrong",
         );
       }
     }
@@ -1127,6 +1138,7 @@ class BuyButton extends StatelessWidget {
   }
 
   void addtocart(context, id) async {
+    Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.addToCart(id, '1');
     if (response.status ?? false) {
       Provider.of<DataProvider>(

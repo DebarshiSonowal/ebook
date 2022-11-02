@@ -44,6 +44,7 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
   setCurrentTab(int i) {
+    print('current tab ${i}');
     currentTab = i;
     notifyListeners();
   }

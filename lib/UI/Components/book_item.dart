@@ -615,6 +615,7 @@ class _BookItemState extends State<BookItem> {
   }
 
   void addtocart(context) async {
+    Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.addToCart(widget.data.id!, '1');
     if (response.status ?? false) {
       Provider.of<DataProvider>(
@@ -626,8 +627,10 @@ class _BookItemState extends State<BookItem> {
               listen: false)
           .setCartData(response.cart!);
       Navigation.instance.goBack();
+      Navigation.instance.goBack();
       showSuccess(context);
     } else {
+      Navigation.instance.goBack();
       Navigation.instance.goBack();
       showError(context);
     }

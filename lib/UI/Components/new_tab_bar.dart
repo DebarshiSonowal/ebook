@@ -22,44 +22,44 @@ class NewTabBar extends StatelessWidget {
       color: Color(0xff121212),
       height: 7.h,
       width: double.infinity,
-      child: Row(
-        children: [
-          Expanded(
-            child: TabBar(
-                controller: _controller,
-                indicatorColor: Colors.white,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.grey.shade600,
-                tabs: List.generate(
-                  Provider.of<DataProvider>(
-                              Navigation.instance.navigatorKey.currentContext!,
-                              listen: true)
-                          .formats
-                          ?.length ??
-                      2,
-                  (count) => Tab(
-                    icon: Text(
-                      Provider.of<DataProvider>(
-                                  Navigation
-                                      .instance.navigatorKey.currentContext!,
-                                  listen: true)
-                              .formats![count]
-                              .name ??
-                          "",
-                      style: Theme.of(context).textTheme.headline3?.copyWith(
-                            color: count == Provider.of<DataProvider>(
-                                Navigation
-                                    .instance.navigatorKey.currentContext!,
-                                listen: true).currentTab
-                                ? Colors.white
-                                : Colors.grey.shade600,
+      child: Consumer<DataProvider>(builder: (context, data, _) {
+        return Row(
+          children: [
+            Expanded(
+              child: TabBar(
+                  controller: _controller,
+                  indicatorColor: Colors.transparent,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.grey.shade600,
+                  tabs: List.generate(
+                    data.formats?.length ?? 2,
+                    (count) => Tab(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 1.h,horizontal: 10.w),
+                        decoration: BoxDecoration(
+                            border: (count) == data.currentTab?Border(
+                          bottom: BorderSide(
+                            //                   <--- right side
+                            color: Colors.white,
+                            width: 3.0,
                           ),
+                        ):Border.all()),
+                        child: Text(
+                          data.formats![count].name ?? "",
+                          style:
+                              Theme.of(context).textTheme.headline3?.copyWith(
+                                    color: (count) == data.currentTab
+                                        ? Colors.white
+                                        : Colors.grey.shade600,
+                                  ),
+                        ),
+                      ),
                     ),
-                  ),
-                )),
-          ),
-        ],
-      ),
+                  )),
+            ),
+          ],
+        );
+      }),
     );
   }
 }
