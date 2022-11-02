@@ -27,7 +27,7 @@ class NewTabBar extends StatelessWidget {
           Expanded(
             child: TabBar(
                 controller: _controller,
-                indicatorColor: Colors.black,
+                indicatorColor: Colors.white,
                 labelColor: Colors.white,
                 unselectedLabelColor: Colors.grey.shade600,
                 tabs: List.generate(

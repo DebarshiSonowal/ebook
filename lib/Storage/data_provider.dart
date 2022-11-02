@@ -2,6 +2,7 @@ import 'package:ebook/Model/bookmark.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/home_section.dart';
 import 'package:ebook/Model/order_history.dart';
+import 'package:ebook/Model/writer.dart';
 import 'package:ebook/UI/Routes/Drawer/history.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,7 +16,7 @@ import '../Model/profile.dart';
 
 class DataProvider extends ChangeNotifier {
   List<BookFormat>? formats = [];
-  List<List<BookCategory>>? categoryList = [];
+  List<List<BookCategory>> categoryList = [];
   List<List<Book>>? bannerList = [];
   List<List<HomeSection>>? homeSection = [];
   List<Book> cartBooks =[],myBooks = [], search_results=[];
@@ -31,6 +32,7 @@ class DataProvider extends ChangeNotifier {
   int libraryTab = 0;
   String title='';
   BookDetailsModel? details;
+  writer? writerDetails;
 
   setBookDetails(BookDetailsModel data){
     details = data;
@@ -124,6 +126,11 @@ class DataProvider extends ChangeNotifier {
 
   setCategory(int i) {
     currentCategory = i;
+    notifyListeners();
+  }
+
+  setWriterDetails(writer? writer) {
+    writerDetails = writer;
     notifyListeners();
   }
 }

@@ -259,43 +259,43 @@ class _CartPageState extends State<CartPage> {
                       ),
                       child: Container(
                         padding: EdgeInsets.all(1.h),
-                        height: 20.h,
+                        height: 10.h,
                         width: double.infinity,
                         child: Column(
                           children: [
-                            Expanded(
-                              child: Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Deliver to other | 3-5 Days',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3
-                                          ?.copyWith(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.sp,
-                                          ),
-                                    ),
-                                    Text(
-                                      'Bishnu Nagar, Joysagar, Sivasagar, Dicial Dhulia Gaon',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3
-                                          ?.copyWith(
-                                            color: Colors.black,
-                                            // fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const DottedLine(),
+                            // Expanded(
+                            //   child: Container(
+                            //     child: Column(
+                            //       mainAxisAlignment: MainAxisAlignment.center,
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         Text(
+                            //           'Deliver to other | 3-5 Days',
+                            //           style: Theme.of(context)
+                            //               .textTheme
+                            //               .headline3
+                            //               ?.copyWith(
+                            //                 color: Colors.black,
+                            //                 fontWeight: FontWeight.bold,
+                            //                 fontSize: 16.sp,
+                            //               ),
+                            //         ),
+                            //         Text(
+                            //           data.profile'Bishnu Nagar, Joysagar, Sivasagar, Dicial Dhulia Gaon',
+                            //           overflow: TextOverflow.ellipsis,
+                            //           style: Theme.of(context)
+                            //               .textTheme
+                            //               .headline3
+                            //               ?.copyWith(
+                            //                 color: Colors.black,
+                            //                 // fontWeight: FontWeight.bold,
+                            //               ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
+                            // const DottedLine(),
                             Expanded(
                               child: Container(
                                 child: Row(

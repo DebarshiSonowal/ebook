@@ -16,6 +16,7 @@ import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Model/reading_chapter.dart';
@@ -23,7 +24,7 @@ import '../../Components/dynamicSize.dart';
 import '../../Components/splittedText.dart';
 
 class BookDetails extends StatefulWidget {
-  final String input;
+  final int input;
 
   BookDetails(this.input);
 
@@ -42,12 +43,13 @@ class _BookDetailsState extends State<BookDetails>
   BookDetailsModel? bookDetails;
   var themes = [
     ReadingTheme(
-      Colors.black,
       Colors.white,
+      Colors.black,
     ),
     ReadingTheme(
-      Colors.white,
+
       Colors.black,
+      Colors.white,
     ),
     ReadingTheme(
       Colors.black,
@@ -69,7 +71,7 @@ class _BookDetailsState extends State<BookDetails>
   List<BookChapter> chapters = [];
   List<ReadingChapter> reading = [];
   String read = '';
-  var _counterValue = 12.sp;
+  var _counterValue = 13.sp;
 
   var test = '''''';
   DynamicSize _dynamicSize = DynamicSizeImpl();
@@ -267,49 +269,115 @@ class _BookDetailsState extends State<BookDetails>
                         // shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: _splittedTextList.length,
+                        itemCount: reading.length,
                         itemBuilder: (context, index) {
-                          test = _splittedTextList[index] ?? "";
-                          return Container(
-                            width: 100.w,
-                            // height: 90.h,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 5.w,
-                            ),
-                            color: getTextColor(),
-                            // child: Text.rich(
-                            //   TextSpan(
-                            //     text: test,
-                            //   ),
-                            //   style: TextStyle(
-                            //     color: getBackGroundColor(),
-                            //     fontSize: FontSize(_counterValue).size,
-                            //   ),
-                            // ),
-                            child: Html(
-                              data: test,
-                              // tagsList: [
-                              //   'img','p','!DOCTYPE html','body'
-                              // ],
-                              // tagsList: ['p'],
-                              // shrinkWrap: true,
-                              style: {
-                                '#': Style(
-                                  fontSize: FontSize(_counterValue),
+                          test = reading[index].desc!;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigation.instance.goBack();
+                            },
+                            child: Container(
+                              width: 98.w,
+                              // height: 90.h,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 5.w,
+                              ),
+                              color: getTextColor(),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Html(
+                                      data: test,
+                                      // tagsList: [
+                                      //   'img','p','!DOCTYPE html','body'
+                                      // ],
+                                      // tagsList: ['p'],
+                                      // shrinkWrap: true,
+                                      style: {
+                                        '#': Style(
+                                          fontSize: FontSize(_counterValue),
 
-                                  maxLines: FontSize(_counterValue)
-                                      .size!
-                                      .toInt()
-                                      .sp
-                                      .toInt(),
-                                  color: getBackGroundColor(),
-                                  // textOverflow: TextOverflow.ellipsis,
+                                          // maxLines: 20,
+                                          color: getBackGroundColor(),
+                                          // textOverflow: TextOverflow.ellipsis,
+                                        ),
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              },
+                              ),
                             ),
                           );
                         },
+                        // separatorBuilder: (BuildContext context, int index) {
+                        //   var title = reading[index + 1].title;
+                        //   return (index != 0 &&
+                        //           (reading[index].title ==
+                        //               reading[index - 1].title))
+                        //       ? SizedBox(
+                        //           width: 98.w,
+                        //           height: double.infinity,
+                        //           child: Center(
+                        //             child: Text(
+                        //               title!,
+                        //               style: Theme.of(context)
+                        //                   .textTheme
+                        //                   .headline1
+                        //                   ?.copyWith(
+                        //                       color: getBackGroundColor()),
+                        //             ),
+                        //           ),
+                        //         )
+                        //       : Container();
+                        // },
                       );
+                // : PageView.builder(
+                //     // shrinkWrap: true,
+                //     scrollDirection: Axis.horizontal,
+                //     physics: const ClampingScrollPhysics(),
+                //     itemCount: _splittedTextList.length,
+                //     itemBuilder: (context, index) {
+                //       test = _splittedTextList[index] ?? "";
+                //       return Container(
+                //         width: 100.w,
+                //         // height: 90.h,
+                //         padding: EdgeInsets.symmetric(
+                //           horizontal: 5.w,
+                //         ),
+                //         color: getTextColor(),
+                //         // child: Text.rich(
+                //         //   TextSpan(
+                //         //     text: test,
+                //         //   ),
+                //         //   style: TextStyle(
+                //         //     color: getBackGroundColor(),
+                //         //     fontSize: FontSize(_counterValue).size,
+                //         //   ),
+                //         // ),
+                //         child: Html(
+                //           data: test,
+                //           // tagsList: [
+                //           //   'img','p','!DOCTYPE html','body'
+                //           // ],
+                //           // tagsList: ['p'],
+                //           // shrinkWrap: true,
+                //           style: {
+                //             '#': Style(
+                //               fontSize: FontSize(_counterValue),
+                //
+                //               maxLines: FontSize(_counterValue)
+                //                   .size!
+                //                   .toInt()
+                //                   .sp
+                //                   .toInt(),
+                //               color: getBackGroundColor(),
+                //               // textOverflow: TextOverflow.ellipsis,
+                //             ),
+                //           },
+                //         ),
+                //       );
+                //     },
+                //   );
               }),
       ),
     );
@@ -395,24 +463,48 @@ class _BookDetailsState extends State<BookDetails>
               SizedBox(
                 height: 0.5.h,
               ),
-              StatefulBuilder(builder: (context, _) {
-                return CounterButton(
-                  loading: false,
-                  onChange: (int val) {
-                    _(() {
-                      setState(() {
-                        _counterValue = val.toDouble();
-                        // _loadHtmlFromAssets(test, getBackGroundColor(),
-                        //     getTextColor(), _counterValue);
-                      });
-                    });
-                  },
-                  count: _counterValue.toInt(),
-                  countColor: Colors.white,
-                  buttonColor: Colors.white,
-                  progressColor: Colors.white,
-                );
-              }),
+              // StatefulBuilder(builder: (context, _) {
+              //   return CounterButton(
+              //     loading: false,
+              //     onChange: (int val) {
+              //       _(() {
+              //         setState(() {
+              //           _counterValue = val.toDouble();
+              //           // _loadHtmlFromAssets(test, getBackGroundColor(),
+              //           //     getTextColor(), _counterValue);
+              //         });
+              //       });
+              //     },
+              //     count: _counterValue.toInt(),
+              //     countColor: Colors.white,
+              //     buttonColor: Colors.white,
+              //     progressColor: Colors.white,
+              //   );
+              // }),
+              ToggleSwitch(
+                minWidth: 15.w,
+                minHeight: 4.h,
+                fontSize: 12.sp,
+                initialLabelIndex: (_counterValue==13.sp?0:_counterValue==17.sp?1:2)??0,
+                activeBgColor: [Colors.black87],
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey,
+                inactiveFgColor: Colors.grey[900],
+                totalSwitches: 3,
+                labels: ['13', '17', '20'],
+                onToggle: (index) {
+                  switch (index) {
+                    case 1:
+                      updateFont(17.sp);
+                      break;
+                    case 2:
+                      updateFont(20.sp);
+                      break;
+                    default:
+                      updateFont(13.sp);
+                  }
+                },
+              ),
               SizedBox(
                 height: 1.h,
               ),
@@ -509,10 +601,11 @@ class _BookDetailsState extends State<BookDetails>
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];
-      for (var j in chapters[int.parse(widget.input.toString().split(',')[1])]
-          .pages!) {
-        reading.add(ReadingChapter('', j));
-        read = read + j;
+      for (var i in chapters) {
+        for (var j in i.pages!) {
+          reading.add(ReadingChapter('', j));
+          read = read + j;
+        }
       }
 
       if (mounted) {
@@ -523,6 +616,7 @@ class _BookDetailsState extends State<BookDetails>
                   fontSize: FontSize(_counterValue).size),
               read);
           // setPages(FontSize(_counterValue).size?.toInt());
+
         });
       }
     }
@@ -533,7 +627,16 @@ class _BookDetailsState extends State<BookDetails>
     _size = _dynamicSize.getSize(pagekey);
     print(_size);
   }
-
+  void updateFont(val) {
+    setState(() {
+      _counterValue = val.toDouble();
+      getSplittedText(
+          TextStyle(
+              color: getBackGroundColor(),
+              fontSize: FontSize(_counterValue).size),
+          read);
+    });
+  }
   getSplittedText(TextStyle textStyle, txt) {
     _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
   }

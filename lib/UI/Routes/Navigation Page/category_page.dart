@@ -32,12 +32,20 @@ class _CategoryPageState extends State<CategoryPage> {
                         itemCount: current.categoryList![current.currentIndex].length,
                         itemBuilder: (cont, ind) {
                           var data = current.categoryList![current.currentIndex][ind];
-                          return Container(
-                            height: 10.h,
-                            child: Center(
-                              child: Text(
-                                data.title??"",
-                                style: Theme.of(context).textTheme.headline5,
+                          return GestureDetector(
+                            onTap: (){
+                              Navigation.instance.navigate('/selectCategories',
+                                  args: '${data.title},${data.id}');
+                            },
+                            child: Container(
+                              height: 10.h,
+                              child: Center(
+                                child: Text(
+                                  data.title??"",
+                                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                                    color: Colors.white
+                                  ),
+                                ),
                               ),
                             ),
                           );

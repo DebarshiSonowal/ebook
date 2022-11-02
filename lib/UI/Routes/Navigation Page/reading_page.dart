@@ -248,7 +248,7 @@ class _ReadingPageState extends State<ReadingPage> {
                 height: 1.h,
               ),
               Text(
-                "page ${page_no.toInt() + 1} of ${chapters.length}",
+                "chapter ${page_no.toInt() + 1} of ${chapters.length}",
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .textTheme

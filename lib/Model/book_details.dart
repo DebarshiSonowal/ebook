@@ -30,6 +30,7 @@ class BookDetailsModel {
       language_id,
       publisher_id,
       user_id,
+      contributor_id,
       status,
       total_chapters,
       length;
@@ -44,7 +45,8 @@ class BookDetailsModel {
       writer,
       category,
       language,
-      released_date;
+      released_date,
+      contributor,publication_name;
   double? average_rating,
       total_rating,
       base_price,
@@ -68,6 +70,7 @@ class BookDetailsModel {
     language_id = json['language_id'] ?? 0;
     publisher_id = json['publisher_id'] ?? 0;
     user_id = json['user_id'] ?? 0;
+    contributor_id = json['contributor_id'] ?? 0;
     status = json['status'] ?? 0;
     total_chapters = json['total_chapters'] ?? 0;
 
@@ -79,10 +82,12 @@ class BookDetailsModel {
     profile_pic = json['profile_pic'] ?? "";
     rejected_reason = json['rejected_reason'] ?? "";
     publisher = json['publisher'] ?? "";
+    contributor = json['contributor'] ?? "";
     writer = json['writer'] ?? "";
     category = json['category'] ?? "";
     language = json['language'] ?? "";
     released_date = json['released_date'] ?? "";
+    publication_name = json['publication_name'] ?? "";
 
     //List
     tags = json['tags'] == null
@@ -93,7 +98,9 @@ class BookDetailsModel {
         : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
     articles = json['article_list'] == null
         ? []
-        : (json['article_list'] as List).map((e) => Article.fromJson(e)).toList();
+        : (json['article_list'] as List)
+            .map((e) => Article.fromJson(e))
+            .toList();
 
     //double
     average_rating = json['average_rating'] == null

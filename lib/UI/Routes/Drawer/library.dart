@@ -60,12 +60,12 @@ class _LibrarypageState extends State<Librarypage>
                 return GestureDetector(
                   onTap: () {
                     if (data.libraryTab == 0) {
-                      Navigation.instance.navigate('/reading',
-                          args: (data.myBooks[count].id) ?? 0);
-                      // Navigation.instance.navigate('/bookDetails',
-                      //     args: data.myBooks[count].id ?? 0);
+                      // Navigation.instance.navigate('/reading',
+                      //     args: (data.myBooks[count].id) ?? 0);
+                      Navigation.instance.navigate('/bookDetails',
+                          args: data.myBooks[count].id ?? 0);
                     } else {
-                      show(context,data.bookmarks[count]!);
+                      show(context,data.bookmarks[count]);
                     }
                   },
                   child: Card(

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
@@ -19,91 +21,151 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, data, _) {
-      return BottomNavigationBar(
-          backgroundColor: ConstanceData.secondaryColor,
-          selectedItemColor: Colors.blue,
-          currentIndex: data.currentIndex,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          //
-          // unselectedItemColor: Colors.white,
-          unselectedLabelStyle: TextStyle(
-            fontSize: 1.5.h,
-            color: Colors.white,
-          ),
-          onTap: (i) {
-            if (i != 4 && i != 2) {
-              Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey.currentContext ??
-                          context,
-                      listen: false)
-                  .setIndex(i);
-            } else if (i == 2) {
-              if (data.details?.book_format == "magazine") {
-                Navigation.instance
-                    .navigate('/magazineArticles', args: data.details?.id ?? 0);
+      return Container(
+        padding: EdgeInsets.only(top: 0.2.h),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Colors.white30,
+            Colors.white,
+            Colors.white30,
+          ]),
+        ),
+        child: BottomNavigationBar(
+            backgroundColor: ConstanceData.secondaryColor,
+            selectedItemColor: Colors.white,
+            currentIndex: data.currentIndex,
+            showUnselectedLabels: true,
+            type: BottomNavigationBarType.fixed,
+            unselectedItemColor: Colors.white70,
+            //
+            // unselectedItemColor: Colors.white,
+            unselectedLabelStyle: TextStyle(
+              fontSize: 1.5.h,
+              color: Colors.white,
+            ),
+            onTap: (i) {
+              if (i != 4 && i != 2) {
+                Provider.of<DataProvider>(
+                        Navigation.instance.navigatorKey.currentContext ??
+                            context,
+                        listen: false)
+                    .setIndex(i);
+              } else if (i == 2) {
+                if (data.details?.book_format == "magazine") {
+                  Navigation.instance.navigate('/magazineArticles',
+                      args: data.details?.id ?? 0);
+                } else {
+                  Navigation.instance
+                      .navigate('/reading', args: data.details?.id ?? 0);
+                  // Navigation.instance
+                  //     .navigate('/bookDetails', args: data.details?.id ?? 0);
+                }
               } else {
-                Navigation.instance
-                    .navigate('/reading', args: data.details?.id ?? 0);
-                // Navigation.instance
-                //     .navigate('/bookDetails', args: data.details?.id ?? 0);
+                Navigation.instance.navigate('/accountDetails');
               }
-            } else {
-              Navigation.instance.navigate('/accountDetails');
-            }
-          },
-          items: [
-            BottomNavigationBarItem(
-                backgroundColor: ConstanceData.secondaryColor,
-                icon: Image.asset(
-                  ConstanceData.homeIcon,
-                  height: 5.h,
-                  width: 5.w,
-                ),
-                label: 'Home'),
-            BottomNavigationBarItem(
-                backgroundColor: ConstanceData.secondaryColor,
-                icon: Image.asset(
-                  ConstanceData.libraryIcon,
-                  height: 5.h,
-                  width: 5.w,
-                ),
-                label: 'Library'),
-            BottomNavigationBarItem(
-                backgroundColor: ConstanceData.secondaryColor,
-                icon: Consumer<DataProvider>(builder: (cont, data, _) {
-                  return data.details == null
-                      ? Image.asset(
-                          ConstanceData.readingIcon,
-                          height: 5.h,
-                          width: 7.w,
-                          fit: BoxFit.fill,
-                        )
-                      : Image.network(
-                          data.details?.profile_pic ?? "",
-                          height: 5.h,
-                          width: 7.w,
-                          fit: BoxFit.fill,
-                        );
-                }),
-                label: ''),
-            BottomNavigationBarItem(
-                backgroundColor: ConstanceData.secondaryColor,
-                icon: Image.asset(
-                  ConstanceData.orderIcon,
-                  height: 5.h,
-                  width: 5.w,
-                ),
-                label: 'Orders'),
-            BottomNavigationBarItem(
-                backgroundColor: ConstanceData.secondaryColor,
-                icon: Image.asset(
-                  ConstanceData.humanImage,
-                  height: 5.h,
-                  width: 5.w,
-                ),
-                label: 'More'),
-          ]);
+            },
+            items: [
+              BottomNavigationBarItem(
+                  backgroundColor: ConstanceData.secondaryColor,
+                  icon: Image.asset(
+                    ConstanceData.homeIcon,
+                    height: 3.5.h,
+                    width: 7.w,
+                    fit: BoxFit.fill,
+                    color: Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: true)
+                                .currentIndex ==
+                            0
+                        ? Colors.white
+                        : Colors.grey,
+                  ),
+                  label: 'Home'),
+              BottomNavigationBarItem(
+                  backgroundColor: ConstanceData.secondaryColor,
+                  icon: Image.asset(
+                    ConstanceData.libraryIcon,
+                    height: 3.5.h,
+                    width: 7.w,
+                    fit: BoxFit.fill,
+                    color: Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: true)
+                                .currentIndex ==
+                            1
+                        ? Colors.white
+                        : Colors.grey,
+                  ),
+                  label: 'Library'),
+              BottomNavigationBarItem(
+                  backgroundColor: ConstanceData.secondaryColor,
+                  icon: Consumer<DataProvider>(builder: (cont, data, _) {
+                    return data.details == null
+                        ? Image.asset(
+                            ConstanceData.primaryIcon,
+                      height: 4.5.h,
+                      width: 10.w,
+                            fit: BoxFit.fill,
+                            color: Provider.of<DataProvider>(
+                                            Navigation.instance.navigatorKey
+                                                    .currentContext ??
+                                                context,
+                                            listen: true)
+                                        .currentIndex ==
+                                    3
+                                ? Colors.white
+                                : Colors.grey,
+                          )
+                        : Image.asset(
+                            ConstanceData.readingIcon,
+                      height: 4.5.h,
+                      width: 10.w,
+                            fit: BoxFit.fill,
+                          );
+                  }),
+                  label: ''),
+              BottomNavigationBarItem(
+                  backgroundColor: ConstanceData.secondaryColor,
+                  icon: Image.asset(
+                    ConstanceData.orderIcon,
+                    height: 3.5.h,
+                    width: 7.w,
+                    fit: BoxFit.fill,
+                    color: Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: true)
+                                .currentIndex ==
+                            3
+                        ? Colors.white
+                        : Colors.grey,
+                  ),
+                  label: 'Orders'),
+              BottomNavigationBarItem(
+                  backgroundColor: ConstanceData.secondaryColor,
+                  icon: Image.asset(
+                    ConstanceData.humanImage,
+                    height: 3.5.h,
+                    width: 7.w,
+                    fit: BoxFit.fill,
+                    color: Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: true)
+                                .currentIndex ==
+                            4
+                        ? Colors.white
+                        : Colors.grey,
+                  ),
+                  label: 'More'),
+            ]),
+      );
     });
   }
 

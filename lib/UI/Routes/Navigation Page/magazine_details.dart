@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/book.dart';
@@ -39,12 +40,13 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   BookDetailsModel? bookDetails;
   var themes = [
     ReadingTheme(
-      Colors.black,
       Colors.white,
+      Colors.black,
     ),
     ReadingTheme(
-      Colors.white,
+
       Colors.black,
+      Colors.white,
     ),
     ReadingTheme(
       Colors.black,
@@ -65,7 +67,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
 
   List<BookChapter> chapters = [];
 
-  var _counterValue = 12.sp;
+  var _counterValue = 11.sp;
 
   var test = '''''', text = "";
   DynamicSize _dynamicSize = DynamicSizeImpl();
@@ -150,32 +152,30 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                         // shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
-                        itemCount: _splittedTextList.length,
+                        itemCount: reading.length,
                         itemBuilder: (context, index) {
-                          test = _splittedTextList[index];
-                          return Container(
-                            width: 98.w,
-                            // height: 90.h,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 5.w,
-                            ),
-                            color: getTextColor(),
-                            child: Html(
-                              data: test,
-                              // tagsList: [
-                              //   'img','p','!DOCTYPE html','body'
-                              // ],
-                              // tagsList: ['p'],
-                              // shrinkWrap: true,
-                              style: {
-                                '#': Style(
-                                  fontSize: FontSize(_counterValue),
+                          test = reading[index].desc??"";
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Html(
+                                  data: test.trim(),
+                                  // tagsList: [
+                                  //   'img','p','!DOCTYPE html','body'
+                                  // ],
+                                  // tagsList: ['p'],
+                                  // shrinkWrap: true,
+                                  style: {
+                                    '#': Style(
+                                      fontSize: FontSize(_counterValue),
 
-                                  // maxLines: 20,
-                                  color: getBackGroundColor(),
-                                  // textOverflow: TextOverflow.ellipsis,
+                                      // maxLines: 20,
+                                      color: getBackGroundColor(),
+                                      // textOverflow: TextOverflow.ellipsis,
+                                    ),
+                                  },
                                 ),
-                              },
+                              ],
                             ),
                           );
                         },
@@ -677,31 +677,55 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               SizedBox(
                 height: 0.5.h,
               ),
-              StatefulBuilder(builder: (context, _) {
-                return CounterButton(
-                  loading: false,
-                  onChange: (int val) {
-                    _(() {
-                      setState(() {
-                        _counterValue = val.toDouble();
-                        // _loadHtmlFromAssets(test, getBackGroundColor(),
-                        //     getTextColor(), _counterValue);
-                      });
-                    });
-                    setState(() {
-                      getSplittedText(
-                          TextStyle(
-                              color: getBackGroundColor(),
-                              fontSize: FontSize(_counterValue).size),
-                          text);
-                    });
-                  },
-                  count: _counterValue.toInt(),
-                  countColor: Colors.white,
-                  buttonColor: Colors.white,
-                  progressColor: Colors.white,
-                );
-              }),
+              // StatefulBuilder(builder: (context, _) {
+              //   return CounterButton(
+              //     loading: false,
+              //     onChange: (int val) {
+              //       _(() {
+              //         setState(() {
+              //           _counterValue = val.toDouble();
+              //           // _loadHtmlFromAssets(test, getBackGroundColor(),
+              //           //     getTextColor(), _counterValue);
+              //         });
+              //       });
+              //       setState(() {
+              //         getSplittedText(
+              //             TextStyle(
+              //                 color: getBackGroundColor(),
+              //                 fontSize: FontSize(_counterValue).size),
+              //             text);
+              //       });
+              //     },
+              //     count: _counterValue.toInt(),
+              //     countColor: Colors.white,
+              //     buttonColor: Colors.white,
+              //     progressColor: Colors.white,
+              //   );
+              // }),
+              ToggleSwitch(
+                minWidth: 15.w,
+                minHeight: 4.h,
+                fontSize: 12.sp,
+                initialLabelIndex: (_counterValue==11.sp?0:_counterValue==14.sp?1:2)??0,
+                activeBgColor: [Colors.black87],
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey,
+                inactiveFgColor: Colors.grey[900],
+                totalSwitches: 3,
+                labels: ['11', '14', '17'],
+                onToggle: (index) {
+                  switch (index) {
+                    case 1:
+                      updateFont(14.sp);
+                      break;
+                    case 2:
+                      updateFont(17.sp);
+                      break;
+                    default:
+                      updateFont(11.sp);
+                  }
+                },
+              ),
               SizedBox(
                 height: 1.h,
               ),
@@ -796,10 +820,12 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];
-      for (var i in chapters) {
-        for (var j in i.pages!) {
-          reading.add(ReadingChapter(i.title, j));
-          text = text + j;
+      for (int i = 0; i < chapters.length; i++) {
+        for (var j in chapters[i].pages!) {
+          if (i == int.parse(widget.id.toString().split(',')[1])) {
+            reading.add(ReadingChapter(chapters[i].title, j));
+            text = text + j;
+          }
         }
       }
       if (mounted) {
@@ -813,5 +839,15 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       }
     }
     Navigation.instance.goBack();
+  }
+  void updateFont(val) {
+    setState(() {
+      _counterValue = val.toDouble();
+      getSplittedText(
+          TextStyle(
+              color: getBackGroundColor(),
+              fontSize: FontSize(_counterValue).size),
+          text);
+    });
   }
 }

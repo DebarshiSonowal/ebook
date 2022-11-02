@@ -374,7 +374,7 @@ class _MagazineArticlesState extends State<MagazineArticles> {
   }
 
   void fetchBookDetails() async {
-    Navigation.instance.navigate('/readingDialog');
+    Navigation.instance.navigate('/loadingDialog');
     final response =
         await ApiProvider.instance.fetchBookDetails(widget.id.toString());
     if (response.status ?? false) {

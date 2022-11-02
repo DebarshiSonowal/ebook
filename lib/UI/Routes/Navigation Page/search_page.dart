@@ -65,7 +65,7 @@ class _SearchPageState extends State<SearchPage> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.white,
+        color: Colors.black,
         padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
         child: Consumer<DataProvider>(builder: (context, data, _) {
           return SingleChildScrollView(
@@ -74,7 +74,7 @@ class _SearchPageState extends State<SearchPage> {
                 Container(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Colors.black26,
+                      color: Colors.white,
                       //                   <--- border color
                       width: 1.0,
                     ),
@@ -152,7 +152,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: ConstanceData.secondaryColor,
+                              color: Colors.white,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(25),
                               ),
@@ -164,11 +164,11 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Formats',
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.black),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ],
                             ),
@@ -183,7 +183,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: ConstanceData.secondaryColor,
+                              color: Colors.white,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(25),
                               ),
@@ -195,11 +195,13 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Categories',
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ],
                             ),
@@ -214,7 +216,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: ConstanceData.secondaryColor,
+                              color: Colors.white,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(25),
                               ),
@@ -226,11 +228,13 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Authors',
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ],
                             ),
@@ -245,7 +249,7 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: ConstanceData.secondaryColor,
+                              color: Colors.white,
                               borderRadius: BorderRadius.all(
                                 Radius.circular(25),
                               ),
@@ -257,11 +261,13 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Awards',
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                    color: Colors.black,
+                                  ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ],
                             ),
@@ -281,7 +287,7 @@ class _SearchPageState extends State<SearchPage> {
                     ? Text(
                         'No Results Found',
                         style: Theme.of(context).textTheme.headline1?.copyWith(
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                       )
                     : ListView.separated(

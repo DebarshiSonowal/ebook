@@ -32,6 +32,7 @@ import '../Model/profile.dart';
 import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
 import '../Model/search_response.dart';
+import '../Model/writer.dart';
 
 class ApiProvider {
   ApiProvider._();
@@ -889,6 +890,32 @@ class ApiProvider {
     }
   }
 
+  Future<WriterResponse> fetchWriterDetails(id) async {
+    var url = "${baseUrl}/writer/${id}";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("writer response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return WriterResponse.fromJson(response?.data);
+      } else {
+        debugPrint("writer error: ${response?.data}");
+        return WriterResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("writer error: ${e.response}");
+      return WriterResponse.withError(e.message);
+    }
+  }
+
   Future<CartResponse> updateCart(int id, int qty) async {
     var url = "${baseUrl}/sales/cart/update";
     BaseOptions option =
@@ -921,7 +948,7 @@ class ApiProvider {
   }
 
   Future<SearchResponse> search(
-      format, category_ids, tag_ids, author_ids, title,awards) async {
+      format, category_ids, tag_ids, author_ids, title, awards) async {
     var url = "${baseUrl}/search/${format}";
     BaseOptions option =
         BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {

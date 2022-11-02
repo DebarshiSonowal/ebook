@@ -1,4 +1,5 @@
 import 'Tag.dart';
+import 'article.dart';
 
 class HomeBannerResponse {
   bool? status;
@@ -20,7 +21,7 @@ class HomeBannerResponse {
 }
 
 class Book {
-  int? id, book_category_id, length, total_rating;
+  int? id, book_category_id, length, total_rating,contributor_id;
   String? title,
       writer,
       book_format,
@@ -31,12 +32,16 @@ class Book {
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
   bool? is_bookmarked;
+  List<Article>? articles;
 
   Book.fromJson(json) {
     id = json['id'] == null ? 0 : int.parse(json['id'].toString());
     book_category_id = json['book_category_id'] == null
         ? 0
         : int.parse(json['book_category_id'].toString());
+    contributor_id = json['contributor_id'] == null
+        ? 0
+        : int.parse(json['contributor_id'].toString());
     length = json['length'] == null ? 0 : int.parse(json['length'].toString());
     total_rating = json['total_rating'] ?? 0;
 
@@ -69,5 +74,10 @@ class Book {
         json['average_rating'] == null || json['average_rating'] == ""
             ? 0
             : double.parse(json['average_rating'].toString());
+    articles = json['article_list'] == null
+        ? []
+        : (json['article_list'] as List)
+        .map((e) => Article.fromJson(e))
+        .toList();
   }
 }

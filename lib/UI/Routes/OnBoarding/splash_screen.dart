@@ -69,7 +69,8 @@ class _SplashScreenState extends State<SplashScreen> {
       } else if (Storage.instance.isOnBoarding) {
         Navigation.instance.navigateAndRemoveUntil('/main');
       } else {
-        Navigation.instance.navigateAndRemoveUntil('/login');
+        // Navigation.instance.navigateAndRemoveUntil('/login');
+        Navigation.instance.navigateAndRemoveUntil('/main');
       }
     });
   }

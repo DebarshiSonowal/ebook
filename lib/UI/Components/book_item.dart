@@ -33,6 +33,7 @@ class BookItem extends StatefulWidget {
 
 class _BookItemState extends State<BookItem> {
   bool selected = false;
+
   // final _razorpay = Razorpay();
   var cupon = "";
 
@@ -46,7 +47,6 @@ class _BookItemState extends State<BookItem> {
     // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     // _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     super.initState();
-
   }
 
   @override
@@ -60,6 +60,7 @@ class _BookItemState extends State<BookItem> {
     return GestureDetector(
       onTap: () {
         show(context, widget.data);
+
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -132,30 +133,32 @@ class _BookItemState extends State<BookItem> {
             StatefulBuilder(builder: (context, _) {
               return GestureDetector(
                 onTap: () async {
-                  // try {
-                  //   Provider.of<DataProvider>(
-                  //           Navigation.instance.navigatorKey.currentContext ??
-                  //               context,
-                  //           listen: false)
-                  //       .addToBookmarks(data);
-                  // } catch (e) {
-                  //   print(e);
-                  // }
-                  _(() {
-                    selected = !selected;
-                  });
-                  final reponse = await ApiProvider.instance
-                      .addBookmark(widget.data.id ?? 0);
-                  if (reponse.status ?? false) {
-                    Fluttertoast.showToast(msg: reponse.message!);
-                    final response = await ApiProvider.instance.fetchBookmark();
-                    if (response.status ?? false) {
-                      Provider.of<DataProvider>(
+                  if (Provider.of<DataProvider>(
                               Navigation.instance.navigatorKey.currentContext ??
                                   context,
                               listen: false)
-                          .setToBookmarks(response.items ?? []);
+                          .profile !=
+                      null) {
+                    _(() {
+                      selected = !selected;
+                    });
+                    final reponse = await ApiProvider.instance
+                        .addBookmark(widget.data.id ?? 0);
+                    if (reponse.status ?? false) {
+                      Fluttertoast.showToast(msg: reponse.message!);
+                      final response =
+                          await ApiProvider.instance.fetchBookmark();
+                      if (response.status ?? false) {
+                        Provider.of<DataProvider>(
+                                Navigation
+                                        .instance.navigatorKey.currentContext ??
+                                    context,
+                                listen: false)
+                            .setToBookmarks(response.items ?? []);
+                      }
                     }
+                  } else {
+                    ConstanceData.showAlertDialog(context);
                   }
                 },
                 child: SizedBox(
@@ -172,12 +175,12 @@ class _BookItemState extends State<BookItem> {
                           padding: EdgeInsets.all(0.5.w),
                           // decoration: ,
                           child: Text(
-                            'Rs. ${(widget.data.selling_price?.toStringAsFixed(2)).toString()=='0.00'?(widget.data.base_price??0).toStringAsFixed(2):widget.data.selling_price?.toStringAsFixed(2)}',
+                            'Rs. ${(widget.data.selling_price?.toStringAsFixed(2)).toString() == '0.00' ? (widget.data.base_price ?? 0).toStringAsFixed(2) : widget.data.selling_price?.toStringAsFixed(2)}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style:
                                 Theme.of(context).textTheme.headline6?.copyWith(
-                                      fontSize: 9.sp,
+                                      fontSize: 8.sp,
                                       color: Colors.black,
                                     ),
                           ),
@@ -275,44 +278,55 @@ class _BookItemState extends State<BookItem> {
                               ),
                             ),
                             SizedBox(height: 0.5.h),
-                            Row(
-                              children: [
-                                Text(
-                                  "by ",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      ?.copyWith(color: Colors.white),
-                                ),
-                                Text(
-                                  data.writer ?? "NA",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      ?.copyWith(color: Colors.blue),
-                                ),
-                              ],
-                            ),
+                            data.book_format == "magazine"
+                                ? Container()
+                                : Row(
+                                    children: [
+                                      Text(
+                                        "by ",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5
+                                            ?.copyWith(color: Colors.white),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigation.instance.navigate(
+                                              '/writerInfo',
+                                              args: data.contributor_id);
+                                        },
+                                        child: Text(
+                                          data.writer ?? "NA",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(color: Colors.blue),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                             SizedBox(height: 1.h),
                             Row(
                               children: [
-                                RatingBar.builder(
-                                    itemSize: 6.w,
-                                    initialRating: data.average_rating ?? 3,
-                                    minRating: 1,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    // itemPadding:
-                                    //     EdgeInsets.symmetric(horizontal: 4.0),
-                                    itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: Colors.white,
-                                          size: 10,
-                                        ),
-                                    onRatingUpdate: (rating) {
-                                      print(rating);
-                                    }),
+                                AbsorbPointer(
+                                  child: RatingBar.builder(
+                                      itemSize: 6.w,
+                                      initialRating: data.average_rating ?? 3,
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      // itemPadding:
+                                      //     EdgeInsets.symmetric(horizontal: 4.0),
+                                      itemBuilder: (context, _) => const Icon(
+                                            Icons.star,
+                                            color: Colors.white,
+                                            size: 10,
+                                          ),
+                                      onRatingUpdate: (rating) {
+                                        print(rating);
+                                      }),
+                                ),
                                 Text(
                                   " (${data.total_rating})",
                                   style: Theme.of(context)
@@ -326,7 +340,9 @@ class _BookItemState extends State<BookItem> {
                             Row(
                               children: [
                                 Text(
-                                  "${data.length} pages",
+                                  data.book_format != "magazine"
+                                      ? "${data.length} pages"
+                                      : "${data.articles?.length} articles",
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline5
@@ -384,20 +400,24 @@ class _BookItemState extends State<BookItem> {
                                         children: [
                                           for (var i in data.tags ?? [])
                                             GestureDetector(
-                                              onTap:(){
+                                              onTap: () {
                                                 Navigation.instance.goBack();
-                                                Navigation.instance.navigate('/searchWithTag',args: i.toString());
+                                                Navigation.instance.navigate(
+                                                    '/searchWithTag',
+                                                    args: i.toString());
                                               },
                                               child: Container(
-                                                padding: const EdgeInsets.all(5),
+                                                padding:
+                                                    const EdgeInsets.all(5),
                                                 margin:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 5),
                                                 decoration: BoxDecoration(
                                                   border: Border.all(
                                                       color: Colors.white),
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(5)),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(5)),
                                                 ),
                                                 child: Text(
                                                   i.name ?? "",
@@ -463,11 +483,11 @@ class _BookItemState extends State<BookItem> {
                                           '/magazineArticles',
                                           args: data.id ?? 0);
                                     } else {
-                                      // Navigation.instance.navigate(
-                                      //     '/bookDetails',
-                                      //     args: data.id ?? 0);
-                                      Navigation.instance.navigate('/reading',
+                                      Navigation.instance.navigate(
+                                          '/bookDetails',
                                           args: data.id ?? 0);
+                                      // Navigation.instance.navigate('/reading',
+                                      //     args: data.id ?? 0);
                                     }
                                   },
                                   style: ButtonStyle(
@@ -497,8 +517,9 @@ class _BookItemState extends State<BookItem> {
                                     child: ElevatedButton(
                                       onPressed: () {
                                         // initiatePaymentProcess(widget.data.id);
-                                        Navigation.instance
-                                            .navigate('/bookInfo', args: data.id);
+                                        Navigation.instance.navigate(
+                                            '/bookInfo',
+                                            args: data.id);
                                       },
                                       style: ButtonStyle(
                                         backgroundColor:
@@ -525,7 +546,16 @@ class _BookItemState extends State<BookItem> {
                                       onPressed: () {
                                         // Navigation.instance
                                         //     .navigate('/bookInfo', args: data.id);
-                                        addtocart(context);
+
+                                        if (Provider.of<DataProvider>(
+                                            Navigation.instance.navigatorKey.currentContext ?? context,
+                                            listen: false)
+                                            .profile !=
+                                            null) {
+                                          addtocart(context);
+                                        } else {
+                                          ConstanceData.showAlertDialog(context);
+                                        }
                                       },
                                       style: ButtonStyle(
                                         backgroundColor:

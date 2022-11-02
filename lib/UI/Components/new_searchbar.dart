@@ -26,9 +26,14 @@ class NewSearchBar extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: (){
+            onTap: () {
               // https://tratri.in
-
+              Navigation.instance.navigateAndRemoveUntil('/main');
+              Provider.of<DataProvider>(
+                      Navigation.instance.navigatorKey.currentContext ??
+                          context,
+                      listen: false)
+                  .setIndex(0);
             },
             child: SizedBox(
               // width: 20.w,
@@ -115,13 +120,22 @@ class NewSearchBar extends StatelessWidget {
           Consumer<DataProvider>(builder: (context, data, _) {
             return GestureDetector(
               onTap: () {
-                Navigation.instance.navigate('/cartPage');
+                if (Provider.of<DataProvider>(
+                            Navigation.instance.navigatorKey.currentContext ??
+                                context,
+                            listen: false)
+                        .profile !=
+                    null) {
+                  Navigation.instance.navigate('/cartPage');
+                } else {
+                  ConstanceData.showAlertDialog(context);
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: data.cartData?.items.isEmpty ?? true
                     ? const Icon(
-                       Icons.shopping_cart,
+                        Icons.shopping_cart,
                         // size: 2.h
                       )
                     : Badge(
