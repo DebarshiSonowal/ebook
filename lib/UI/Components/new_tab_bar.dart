@@ -35,15 +35,19 @@ class NewTabBar extends StatelessWidget {
                     data.formats?.length ?? 2,
                     (count) => Tab(
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 1.h,horizontal: 10.w),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 1.h, horizontal: 10.w),
                         decoration: BoxDecoration(
-                            border: (count) == data.currentTab?Border(
-                          bottom: BorderSide(
-                            //                   <--- right side
-                            color: Colors.white,
-                            width: 3.0,
-                          ),
-                        ):Border.all()),
+                          border: (count) == data.currentTab
+                              ? const Border(
+                                  bottom: BorderSide(
+                                    //                   <--- right side
+                                    color: Colors.white,
+                                    width: 1.5,
+                                  ),
+                                )
+                              : Border.all(color: Colors.transparent),
+                        ),
                         child: Text(
                           data.formats![count].name ?? "",
                           style:

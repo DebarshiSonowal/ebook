@@ -55,8 +55,10 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   Navigation.instance.navigate('/magazineArticles',
                       args: data.details?.id ?? 0);
                 } else {
-                  Navigation.instance
-                      .navigate('/reading', args: data.details?.id ?? 0);
+                  if (data.details != null) {
+                    Navigation.instance
+                        .navigate('/reading', args: data.details?.id ?? 0);
+                  }
                   // Navigation.instance
                   //     .navigate('/bookDetails', args: data.details?.id ?? 0);
                 }
@@ -107,23 +109,14 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                     return data.details == null
                         ? Image.asset(
                             ConstanceData.primaryIcon,
-                      height: 4.5.h,
-                      width: 10.w,
+                            height: 4.5.h,
+                            width: 9.w,
                             fit: BoxFit.fill,
-                            color: Provider.of<DataProvider>(
-                                            Navigation.instance.navigatorKey
-                                                    .currentContext ??
-                                                context,
-                                            listen: true)
-                                        .currentIndex ==
-                                    3
-                                ? Colors.white
-                                : Colors.grey,
                           )
                         : Image.asset(
                             ConstanceData.readingIcon,
-                      height: 4.5.h,
-                      width: 10.w,
+                            height: 4.5.h,
+                            width: 10.w,
                             fit: BoxFit.fill,
                           );
                   }),

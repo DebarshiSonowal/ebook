@@ -30,8 +30,19 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigation.instance.goBack();
+          },
+        ),
+      ),
+      body: SafeArea(
         child: Container(
           height: double.infinity,
           width: double.infinity,
@@ -176,7 +187,9 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          if (_phoneController.text.isNotEmpty&&_phoneController.text.length==10&&_passwordController.text.isNotEmpty) {
+                          if (_phoneController.text.isNotEmpty &&
+                              _phoneController.text.length == 10 &&
+                              _passwordController.text.isNotEmpty) {
                             Login();
                           } else {
                             CoolAlert.show(
@@ -204,7 +217,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 5.h,
                 ),
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Navigation.instance.navigate('/signup');
                   },
                   child: Text(
@@ -265,11 +278,9 @@ class _LoginPageState extends State<LoginPage> {
     final response = await ApiProvider.instance
         .loginSubscriber(_phoneController.text, _passwordController.text);
     if (response.status ?? false) {
-
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
-
-    }else{
+    } else {
       Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
@@ -278,16 +289,17 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
   }
+
   void fetchProfile() async {
     final response = await ApiProvider.instance.getProfile();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext ?? context,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
           .setProfile(response.profile!);
       Navigation.instance.goBack();
       Navigation.instance.navigate('/main');
-    }else{
+    } else {
       Navigation.instance.goBack();
       CoolAlert.show(
         context: context,

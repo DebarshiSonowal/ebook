@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage>
             child: Column(
               children: [
                 NewTabBar(controller: _controller),
-                NewSearchBar(),
+                const NewSearchBar(),
                 NewCategoryBar(context),
                 Expanded(
                   child: Consumer<DataProvider>(

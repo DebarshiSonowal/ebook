@@ -47,8 +47,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SafeArea(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigation.instance.goBack();
+          },
+        ),
+      ),
+      body: SafeArea(
         child: Container(
           height: double.infinity,
           width: double.infinity,
@@ -68,7 +79,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 //   width: 34.w,
                 // ),
                 SizedBox(
-                  height: 6.h,
+                  height: 3.h,
                 ),
                 Text(
                   "Signup",

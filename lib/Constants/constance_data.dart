@@ -196,7 +196,7 @@ class ConstanceData {
         style: Theme.of(context).textTheme.headline5?.copyWith(color: Colors.white,fontWeight: FontWeight.bold),
       ),
       onPressed: () {
-        Navigation.instance.navigateAndRemoveUntil('/login');
+        Navigation.instance.navigate('/login');
       },
     );
 

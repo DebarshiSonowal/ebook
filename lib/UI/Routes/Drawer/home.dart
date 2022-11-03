@@ -174,16 +174,8 @@ class _HomeState extends State<Home> {
                   currentData.bannerList![currentData.currentTab][count];
               return GestureDetector(
                 onTap: () {
-                  if (Provider.of<DataProvider>(
-                              Navigation.instance.navigatorKey.currentContext ??
-                                  context,
-                              listen: false)
-                          .profile !=
-                      null) {
-                    show(context, data);
-                  } else {
-                    ConstanceData.showAlertDialog(context);
-                  }
+                  show(context, data);
+
                 },
                 child: Card(
                   color: Colors.transparent,
@@ -686,7 +678,17 @@ class _HomeState extends State<Home> {
                                       onPressed: () {
                                         // Navigation.instance
                                         //     .navigate('/bookInfo', args: data.id);
-                                        addtocart(context, data.id);
+
+                                        if (Provider.of<DataProvider>(
+                                            Navigation.instance.navigatorKey.currentContext ??
+                                                context,
+                                            listen: false)
+                                            .profile !=
+                                            null) {
+                                          addtocart(context, data.id);
+                                        } else {
+                                          ConstanceData.showAlertDialog(context);
+                                        }
                                       },
                                       style: ButtonStyle(
                                         backgroundColor:

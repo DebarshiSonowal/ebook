@@ -1,7 +1,9 @@
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Storage/app_storage.dart';
+import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -68,8 +70,7 @@ class _AccountPageState extends State<AccountPage> {
                             // Navigation.instance.navigate('/accountInformation');
                           } else if (ind == 1) {
                             Storage.instance.logout();
-                            Navigation.instance
-                                .navigateAndRemoveUntil('/login');
+                            Navigation.instance.navigate('/login');
                           } else if (ind == 7) {
                             // Storage.instance.logout();
                             // Navigation.instance.navigate('/cartPage');
@@ -93,7 +94,14 @@ class _AccountPageState extends State<AccountPage> {
                           }
                         },
                         title: Text(
-                          data,
+                          ind == 1
+                              ? (Provider.of<DataProvider>(Navigation.instance
+                                              .navigatorKey.currentContext!)
+                                          .profile ==
+                                      null
+                                  ? "Sign In"
+                                  : data)
+                              : data,
                           style: Theme.of(context).textTheme.headline5,
                         ),
                       );
