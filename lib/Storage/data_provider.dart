@@ -96,7 +96,7 @@ class DataProvider extends ChangeNotifier {
   setToBookmarks(List<BookmarkItem> books) {
     bookmarks = books;
     notifyListeners();
-    Fluttertoast.showToast(msg: "Bookmarked");
+    // Fluttertoast.showToast(msg: "Bookmarked");
   }
 
   addCategoryList(List<BookCategory> list) {

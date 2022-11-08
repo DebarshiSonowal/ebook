@@ -1,13 +1,18 @@
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ebook/Model/article.dart';
+import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Model/book_chapter.dart';
 import '../../../Model/book_details.dart';
 import '../../../Networking/api_provider.dart';
+import '../../Components/article_item_card.dart';
+import '../../Components/blurred_card_item.dart';
 
 class MagazineArticles extends StatefulWidget {
   final int id;
@@ -114,238 +119,28 @@ class _MagazineArticlesState extends State<MagazineArticles> {
               height: 2.h,
             ),
             ListView.separated(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemBuilder: (cont, count) {
                 var current = bookDetails?.articles![count];
-                return count >= 1
-                    ? GestureDetector(
-                  onTap: (){
-
-                  },
-                      child: ClipRect(
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                // height: 10.h,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 0.5,
-                                    color: Colors
-                                        .white, //                   <--- border width here
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 1.5.h, horizontal: 2.5.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        // CachedNetworkImage(
-                                        //   imageUrl: bookDetails?.profile_pic ?? "",
-                                        //   height: 4.h,
-                                        //   width: 12.w,
-                                        //   fit: BoxFit.fill,
-                                        // ),
-                                        // SizedBox(
-                                        //   width: 2.w,
-                                        // ),
-                                        SizedBox(
-                                          width: 50.w,
-                                          child: Text(
-                                            bookDetails?.title ?? '',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline5
-                                                ?.copyWith(
-                                                  color: Colors.white,
-                                                ),
-                                          ),
-                                        ),
-                                        // Spacer(),
-                                        // Icon(
-                                        //   Icons.bookmark_border,
-                                        //   color: Colors.black54,
-                                        //   size: 5.h,
-                                        // ),
-                                      ],
-                                    ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                current?.title ?? '',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline3
-                                                    ?.copyWith(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                              ),
-                                              SizedBox(
-                                                height: 0.5.h,
-                                              ),
-                                              Text(
-                                                current?.short_note ?? '',
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline4
-                                                    ?.copyWith(
-                                                      color: Colors.white,
-                                                      // fontWeight: FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 2.w,
-                                        ),
-                                        CachedNetworkImage(
-                                          imageUrl: current?.profile_pic ?? "",
-                                          height: 10.h,
-                                          width: 25.w,
-                                          fit: BoxFit.fill,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: 100,
-                                width: 150,
-                                child: BackdropFilter(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.2),
-                                        borderRadius: BorderRadius.circular(20)),
-                                  ),
-                                  filter: ImageFilter.blur(sigmaX: 0.7, sigmaY: 0.7),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    )
-                    : GestureDetector(
-                        onTap: () {
-                          Navigation.instance.navigate('/magazineDetails',
-                              args: "${bookDetails?.id},${count}" ?? '0');
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          // height: 10.h,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 0.5,
-                              color: Colors
-                                  .white, //                   <--- border width here
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 1.5.h, horizontal: 2.5.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  // CachedNetworkImage(
-                                  //   imageUrl: bookDetails?.profile_pic ?? "",
-                                  //   height: 4.h,
-                                  //   width: 12.w,
-                                  //   fit: BoxFit.fill,
-                                  // ),
-                                  // SizedBox(
-                                  //   width: 2.w,
-                                  // ),
-                                  SizedBox(
-                                    width: 50.w,
-                                    child: Text(
-                                      bookDetails?.title ?? '',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline5
-                                          ?.copyWith(
-                                            color: Colors.white,
-                                          ),
-                                    ),
-                                  ),
-                                  // Spacer(),
-                                  // Icon(
-                                  //   Icons.bookmark_border,
-                                  //   color: Colors.black54,
-                                  //   size: 5.h,
-                                  // ),
-                                ],
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          current?.title ?? '',
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3
-                                              ?.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        SizedBox(
-                                          height: 0.5.h,
-                                        ),
-                                        Text(
-                                          current?.short_note ?? '',
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4
-                                              ?.copyWith(
-                                                color: Colors.white,
-                                                // fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 2.w,
-                                  ),
-                                  CachedNetworkImage(
-                                    imageUrl: current?.profile_pic ?? "",
-                                    height: 10.h,
-                                    width: 25.w,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                return count >= 1 &&
+                        Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: true)
+                                .profile ==
+                            null
+                    ? BlurredItemCard(
+                        bookDetails: bookDetails,
+                        context: context,
+                        current: current,
+                        count: count)
+                    : articleitemcard(
+                        bookDetails: bookDetails,
+                        context: context,
+                        current: current,
+                        count: count,
                       );
               },
               separatorBuilder: (cont, count) {

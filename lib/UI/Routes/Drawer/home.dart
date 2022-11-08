@@ -729,7 +729,7 @@ class _HomeState extends State<Home> {
                   width: 40.w,
                   child: CachedNetworkImage(
                     imageUrl: data.profile_pic ?? "",
-                    placeholder: (context, url) => Padding(
+                    placeholder: (context, url) => const Padding(
                       padding: EdgeInsets.all(18.0),
                       child: CircularProgressIndicator(
                         strokeWidth: 2,

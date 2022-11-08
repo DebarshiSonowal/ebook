@@ -6,6 +6,7 @@ import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -31,14 +32,14 @@ class _SplashScreenState extends State<SplashScreen> {
               child: Image.asset(
                 ConstanceData.primaryIcon,
                 fit: BoxFit.fill,
-                height: 170,
-                width: 200,
+                height: 20.h,
+                width: 40.w,
               ),
             ),
             const Spacer(
               flex: 1,
             ),
-            Text('Ebook'),
+            // const Text('Tratri'),
             const Spacer(
               flex: 1,
             ),

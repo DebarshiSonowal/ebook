@@ -465,24 +465,6 @@ class _BookDetailsState extends State<BookDetails>
               SizedBox(
                 height: 0.5.h,
               ),
-              // StatefulBuilder(builder: (context, _) {
-              //   return CounterButton(
-              //     loading: false,
-              //     onChange: (int val) {
-              //       _(() {
-              //         setState(() {
-              //           _counterValue = val.toDouble();
-              //           // _loadHtmlFromAssets(test, getBackGroundColor(),
-              //           //     getTextColor(), _counterValue);
-              //         });
-              //       });
-              //     },
-              //     count: _counterValue.toInt(),
-              //     countColor: Colors.white,
-              //     buttonColor: Colors.white,
-              //     progressColor: Colors.white,
-              //   );
-              // }),
               ToggleSwitch(
                 minWidth: 15.w,
                 minHeight: 4.h,
