@@ -1,4 +1,4 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+// import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
@@ -685,31 +685,33 @@ class _BookInfoState extends State<BookInfo>
   }
 
   void showSuccess(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Added to cart',
-        message: 'The following book is added to cart',
-        contentType: ContentType.success,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Added to cart',
+    //     message: 'The following book is added to cart',
+    //     contentType: ContentType.success,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "The following book is added to cart");
   }
 
   void showError(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Failed',
-        message: 'Something went wrong',
-        contentType: ContentType.failure,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Failed',
+    //     message: 'Something went wrong',
+    //     contentType: ContentType.failure,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "Something went wrong");
   }
 }
 
@@ -1158,31 +1160,33 @@ class BuyButton extends StatelessWidget {
   }
 
   void showSuccess(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Added to cart',
-        message: 'The following book is added to cart',
-        contentType: ContentType.success,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Added to cart',
+    //     message: 'The following book is added to cart',
+    //     contentType: ContentType.success,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "The following book is added to cart");
   }
 
   void showError(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Failed',
-        message: 'Something went wrong',
-        contentType: ContentType.failure,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Failed',
+    //     message: 'Something went wrong',
+    //     contentType: ContentType.failure,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "The following book is added to cart");
   }
 }
 

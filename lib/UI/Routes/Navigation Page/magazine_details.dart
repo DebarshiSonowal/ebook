@@ -11,6 +11,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/book.dart';
@@ -146,8 +147,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 return chapters.isEmpty
                     ? Center(
                         child: Text(
-                          'Oops No Data available here',
-                          style: getBackGroundColor(),
+                          bookDetails != null?'':'Oops No Data available here',
+                          style: TextStyle(
+                            color: getBackGroundColor(),
+                          ),
                         ),
                       )
                     : PageView.builder(
@@ -167,6 +170,92 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                   // ],
                                   // tagsList: ['p'],
                                   // shrinkWrap: true,
+                                  customRender: {
+                                    "table": (context, child) {
+                                      return SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: (context.tree as TableLayoutElement)
+                                            .toWidget(context),
+                                      );
+                                    },
+                                    "a": (context, child) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _launchUrl(Uri.parse(
+                                              context.tree.attributes['href'].toString()));
+                                          print(context.tree.attributes['href']);
+                                        },
+                                        child: Text(
+                                          context.tree.element?.innerHtml
+                                              .split("=")[0]
+                                              .toString() ??
+                                              "",
+                                          style: Theme.of(Navigation.instance
+                                              .navigatorKey.currentContext!)
+                                              .textTheme
+                                              .headline5
+                                              ?.copyWith(
+                                            // color: Constance.primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                            TextDecoration.underline,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    // "blockquote": (context, child) {
+                                    //   return setupSummaryCard(
+                                    //     title: 'Small Island Developing States Photo Submission',
+                                    //     site: '@flickr',
+                                    //     description: 'View the album on Flickr.',
+                                    //     imageUrl: 'https://farm6.staticflickr.com/5510/14338202952_93595258ff_z.jpg',
+                                    //   );
+                                    // },
+                                    // "blockquote": (context, child) {
+                                    //   return SizedBox(
+                                    //     height: 28.h,
+                                    //     // width: 90.h,
+                                    //     child: GestureDetector(
+                                    //       onTap: () {
+                                    //         _launchUrl(Uri.parse(context
+                                    //             .tree.element?.innerHtml
+                                    //             .split("=")[3]
+                                    //             .split("?")[0]
+                                    //             .substring(1) ??
+                                    //             ""));
+                                    //
+                                    //         // print(context.tree.element?.innerHtml
+                                    //         //     .split("=")[3]
+                                    //         //     .split("?")[0]);
+                                    //       },
+                                    //       child: AbsorbPointer(
+                                    //         child: WebView(
+                                    //           gestureNavigationEnabled: false,
+                                    //           zoomEnabled: true,
+                                    //           initialUrl: Uri.dataFromString(
+                                    //             getHtmlString(context
+                                    //                 .tree.element?.innerHtml
+                                    //                 .split("=")[3]
+                                    //                 .split("?")[0]
+                                    //                 .split("/")
+                                    //                 .last),
+                                    //             mimeType: 'text/html',
+                                    //             encoding:
+                                    //             Encoding.getByName('utf-8'),
+                                    //           ).toString(),
+                                    //           javascriptMode:
+                                    //           JavascriptMode.unrestricted,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   );
+                                    //   // return Container(
+                                    //   //     child: Text(
+                                    //   //   '${context.tree.element?.innerHtml.split("=")[3].split("?")[0].split("/").last}',
+                                    //   //   style: TextStyle(color: Colors.black),
+                                    //   // ));
+                                    // },
+                                  },
                                   style: {
                                     '#': Style(
                                       fontSize: FontSize(_counterValue),
@@ -829,7 +918,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       chapters = response1.chapters ?? [];
       for (int i = 0; i < chapters.length; i++) {
         for (var j in chapters[i].pages!) {
-          if (i == int.parse(widget.id.toString().split(',')[1])) {
+          // if (i == int.parse(widget.id.toString().split(',')[1])) {
+          //   reading.add(ReadingChapter(chapters[i].title, j));
+          //   text = text + j;
+          // }
+          if(i>=int.parse(widget.id.toString().split(',')[1])){
             reading.add(ReadingChapter(chapters[i].title, j));
             text = text + j;
           }
@@ -857,5 +950,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               fontSize: FontSize(_counterValue).size),
           text);
     });
+  }
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url,mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $_url';
+    }
   }
 }

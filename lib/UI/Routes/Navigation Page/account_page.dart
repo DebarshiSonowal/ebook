@@ -71,22 +71,22 @@ class _AccountPageState extends State<AccountPage> {
                           } else if (ind == 1) {
                             Storage.instance.logout();
                             Navigation.instance.navigate('/login');
-                          } else if (ind == 7) {
+                          } else if (ind == 5) {
                             // Storage.instance.logout();
                             // Navigation.instance.navigate('/cartPage');
                             _launchUrl(
                                 Uri.parse('https://tratri.in/privacy-policy'));
-                          } else if (ind == 8) {
+                          } else if (ind == 6) {
                             // Storage.instance.logout();
                             // Navigation.instance.navigate('/cartPage');
                             _launchUrl(
                                 Uri.parse('https://tratri.in/contact-us'));
-                          } else if (ind == 6) {
+                          } else if (ind == 3) {
                             // Storage.instance.logout();
                             // Navigation.instance.navigate('/cartPage');
                             _launchUrl(Uri.parse(
                                 'https://tratri.in/refund-and-cancellation'));
-                          } else if (ind == 9) {
+                          } else if (ind == 7) {
                             // Storage.instance.logout();
                             // Navigation.instance.navigate('/cartPage');
                             _launchUrl(Uri.parse(

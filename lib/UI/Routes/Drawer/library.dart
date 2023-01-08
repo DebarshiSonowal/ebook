@@ -1,4 +1,4 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+// import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Model/bookmark.dart';
 import 'package:ebook/Networking/api_provider.dart';
@@ -6,6 +6,7 @@ import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Components/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -288,7 +289,7 @@ class _LibrarypageState extends State<Librarypage>
                                   margin: EdgeInsets.symmetric(horizontal: 10),
                                   height: 5,
                                   width: 5,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Colors.white,
                                     shape: BoxShape.circle,
                                   ),
@@ -366,29 +367,6 @@ class _LibrarypageState extends State<Librarypage>
                                         ],
                                       ),
                                     ),
-                                    // GestureDetector(
-                                    //   onTap: () {
-                                    //     Navigation.instance
-                                    //         .navigate('/categories');
-                                    //   },
-                                    //   child: Container(
-                                    //     padding: const EdgeInsets.all(5),
-                                    //     margin: const EdgeInsets.symmetric(
-                                    //         horizontal: 5),
-                                    //     decoration: BoxDecoration(
-                                    //       border:
-                                    //           Border.all(color: Colors.white),
-                                    //       borderRadius: BorderRadius.all(
-                                    //           Radius.circular(5)),
-                                    //     ),
-                                    //     child: Text(
-                                    //       'All Categories',
-                                    //       style: Theme.of(context)
-                                    //           .textTheme
-                                    //           .headline5,
-                                    //     ),
-                                    //   ),
-                                    // ),
                                   ],
                                 ),
                               ),
@@ -523,7 +501,7 @@ class _LibrarypageState extends State<Librarypage>
                   width: 40.w,
                   child: CachedNetworkImage(
                     imageUrl: data.profile_pic ?? "",
-                    placeholder: (context, url) => Padding(
+                    placeholder: (context, url) => const Padding(
                       padding: EdgeInsets.all(18.0),
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
@@ -560,30 +538,32 @@ class _LibrarypageState extends State<Librarypage>
     }
   }
   void showSuccess(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Added to cart',
-        message: 'The following book is added to cart',
-        contentType: ContentType.success,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Added to cart',
+    //     message: 'The following book is added to cart',
+    //     contentType: ContentType.success,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "The following book is added to cart");
   }
 
   void showError(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Failed',
-        message: 'Something went wrong',
-        contentType: ContentType.failure,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Failed',
+    //     message: 'Something went wrong',
+    //     contentType: ContentType.failure,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "Something went wrong");
   }
 }

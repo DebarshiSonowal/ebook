@@ -1,10 +1,11 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+// import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -175,7 +176,6 @@ class _HomeState extends State<Home> {
               return GestureDetector(
                 onTap: () {
                   show(context, data);
-
                 },
                 child: Card(
                   color: Colors.transparent,
@@ -615,11 +615,11 @@ class _HomeState extends State<Home> {
                                           '/magazineArticles',
                                           args: data.id ?? 0);
                                     } else {
-                                      // Navigation.instance.navigate(
-                                      //     '/bookDetails',
-                                      //     args: data.id ?? 0);
-                                      Navigation.instance.navigate('/reading',
+                                      Navigation.instance.navigate(
+                                          '/bookDetails',
                                           args: data.id ?? 0);
+                                      // Navigation.instance.navigate('/reading',
+                                      //     args: data.id ?? 0);
                                     }
                                   },
                                   style: ButtonStyle(
@@ -680,14 +680,18 @@ class _HomeState extends State<Home> {
                                         //     .navigate('/bookInfo', args: data.id);
 
                                         if (Provider.of<DataProvider>(
-                                            Navigation.instance.navigatorKey.currentContext ??
-                                                context,
-                                            listen: false)
-                                            .profile !=
+                                                    Navigation
+                                                            .instance
+                                                            .navigatorKey
+                                                            .currentContext ??
+                                                        context,
+                                                    listen: false)
+                                                .profile !=
                                             null) {
                                           addtocart(context, data.id);
                                         } else {
-                                          ConstanceData.showAlertDialog(context);
+                                          ConstanceData.showAlertDialog(
+                                              context);
                                         }
                                       },
                                       style: ButtonStyle(
@@ -767,31 +771,33 @@ class _HomeState extends State<Home> {
   }
 
   void showSuccess(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Added to cart',
-        message: 'The following book is added to cart',
-        contentType: ContentType.success,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Added to cart',
+    //     message: 'The following book is added to cart',
+    //     contentType: ContentType.success,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "The following book is added to cart");
   }
 
   void showError(context) {
-    var snackBar = SnackBar(
-      elevation: 0,
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      content: AwesomeSnackbarContent(
-        title: 'Failed',
-        message: 'Something went wrong',
-        contentType: ContentType.failure,
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Failed',
+    //     message: 'Something went wrong',
+    //     contentType: ContentType.failure,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "Something went wrong");
   }
 
   getSelected(context, id) {

@@ -57,7 +57,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 } else {
                   if (data.details != null) {
                     Navigation.instance
-                        .navigate('/reading', args: data.details?.id ?? 0);
+                        .navigate('/bookDetails', args: data.details?.id ?? 0);
                   }
                   // Navigation.instance
                   //     .navigate('/bookDetails', args: data.details?.id ?? 0);

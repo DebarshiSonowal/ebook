@@ -27,7 +27,7 @@ class AppTheme {
         colorScheme: colorScheme,
         textTheme: ButtonTextTheme.primary,
       ),
-      cursorColor: primaryColor,
+      // cursorColor: primaryColor,
       textTheme: _buildTextTheme(base.textTheme),
       primaryTextTheme: _buildTextTheme(base.primaryTextTheme),
       accentTextTheme: _buildTextTheme(base.accentTextTheme),

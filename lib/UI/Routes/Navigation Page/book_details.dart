@@ -263,8 +263,10 @@ class _BookDetailsState extends State<BookDetails>
                 return chapters.isEmpty
                     ? Center(
                         child: Text(
-                          'Oops No Data available here',
-                          style: getBackGroundColor(),
+                          bookDetails!=null?'':'Oops No Data available here',
+                          style: TextStyle(
+                            color: getBackGroundColor(),
+                          ),
                         ),
                       )
                     : PageView.builder(

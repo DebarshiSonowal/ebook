@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:counter_button/counter_button.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,8 @@ import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/platform_interface.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Model/book_chapter.dart';
@@ -219,6 +223,7 @@ class _ReadingPageState extends State<ReadingPage> {
                         width: 50.w,
                         child: Html(
                           data: current.pages![0],
+
                           // tagsList: [
                           //   'img','p','!DOCTYPE html','body'
                           // ],
@@ -473,4 +478,5 @@ class _ReadingPageState extends State<ReadingPage> {
       throw 'Failed to get system brightness';
     }
   }
+
 }
