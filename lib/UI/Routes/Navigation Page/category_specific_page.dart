@@ -1,24 +1,39 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../../Model/home_banner.dart';
 import '../../Components/book_item.dart';
 
 class CategorySpecificPage extends StatefulWidget {
   final String content;
 
-  CategorySpecificPage({required this.content});
+  const CategorySpecificPage({
+    required this.content,
+  });
 
   @override
   State<CategorySpecificPage> createState() => _CategorySpecificPageState();
 }
 
 class _CategorySpecificPageState extends State<CategorySpecificPage> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () => fetchBooks());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,18 +67,18 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
                 mainAxisSpacing: 2.h),
             itemBuilder: (BuildContext context, int index) {
               var book = data.search_results[index];
-              return BookItem(data: book, index: index);
+              return BookItem(
+                data: book,
+                index: index,
+                show: (bookData){
+                  ConstanceData.show(context, bookData);
+                },
+              );
             },
           );
         }),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () => fetchBooks());
   }
 
   fetchBooks() async {
@@ -100,5 +115,54 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
         text: "Something went wrong",
       );
     }
+  }
+
+  void addtocart(context, id) async {
+    final response = await ApiProvider.instance.addToCart(id, '1');
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setToCart(response.cart?.items ?? []);
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext!,
+              listen: false)
+          .setCartData(response.cart!);
+      Navigation.instance.goBack();
+      showSuccess(context);
+    } else {
+      Navigation.instance.goBack();
+      showError(context);
+    }
+  }
+
+  void showSuccess(context) {
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Added to cart',
+    //     message: 'The following book is added to cart',
+    //     contentType: ContentType.success,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "The following book is added to cart");
+  }
+
+  void showError(context) {
+    // var snackBar = SnackBar(
+    //   elevation: 0,
+    //   behavior: SnackBarBehavior.floating,
+    //   backgroundColor: Colors.transparent,
+    //   content: AwesomeSnackbarContent(
+    //     title: 'Failed',
+    //     message: 'Something went wrong',
+    //     contentType: ContentType.failure,
+    //   ),
+    // );
+    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    Fluttertoast.showToast(msg: "Something went wrong");
   }
 }

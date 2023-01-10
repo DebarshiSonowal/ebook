@@ -1,6 +1,9 @@
 import 'package:ebook/Helper/navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import '../../../Storage/data_provider.dart';
 
 class AccountInformation extends StatefulWidget {
   const AccountInformation({Key? key}) : super(key: key);
@@ -25,11 +28,11 @@ class _AccountInformationState extends State<AccountInformation> {
             child: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 2.w,
+                  horizontal: 4.w,
                 ),
                 child: Text(
-                  'SIGN OUT',
-                  style: Theme.of(context).textTheme.headline5,
+                  'Sign Out',
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ),
@@ -39,69 +42,72 @@ class _AccountInformationState extends State<AccountInformation> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Account',
-                style: Theme.of(context).textTheme.headline5,
+              SectionInformation(
+                'Name',
+                ""
+                    "${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: true).profile?.f_name ?? ''} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: true).profile?.l_name ?? ''}"
+                    "",
               ),
-              SizedBox(
-                height: 1.h,
+              SectionInformation(
+                'Email',
+                Provider.of<DataProvider>(
+                            Navigation.instance.navigatorKey.currentContext ??
+                                context,
+                            listen: true)
+                        .profile
+                        ?.email ??
+                    "",
               ),
-              Text(
-                'xyz@gmail.com',
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                      fontSize: 18.sp,
-                    ),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Divider(
-                color: Colors.grey.shade200,
-                thickness: 0.5,
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              Text(
-                'Membership',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Text(
-                'None',
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                  fontSize: 18.sp,
-                ),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Text(
-                'Become a Subscriber',
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                  fontSize: 12.sp,
-                  color: Colors.blueAccent,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
-              Divider(
-                color: Colors.grey.shade200,
-                thickness: 0.5,
+              SectionInformation(
+                'Mobile No',
+                Provider.of<DataProvider>(
+                    Navigation.instance.navigatorKey.currentContext ??
+                        context,
+                    listen: true)
+                    .profile
+                    ?.mobile ??
+                    "",
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  SectionInformation(String s, String t) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          s,
+          style: Theme.of(context).textTheme.headline5,
+        ),
+        SizedBox(
+          height: 0.5.h,
+        ),
+        Text(
+          t,
+          style: Theme.of(context).textTheme.headline4?.copyWith(
+                fontSize: 18.sp,
+              ),
+        ),
+        SizedBox(
+          height: 0.5.h,
+        ),
+        Divider(
+          color: Colors.grey.shade200,
+          thickness: 0.5,
+        ),
+        SizedBox(
+          height: 1.h,
+        ),
+      ],
     );
   }
 }

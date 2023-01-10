@@ -67,7 +67,7 @@ class _AccountPageState extends State<AccountPage> {
                       return ListTile(
                         onTap: () {
                           if (ind == 0) {
-                            // Navigation.instance.navigate('/accountInformation');
+                            Navigation.instance.navigate('/accountInformation');
                           } else if (ind == 1) {
                             Storage.instance.logout();
                             Navigation.instance.navigate('/login');

@@ -1,15 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Model/home_banner.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:sizer/sizer.dart';
-import '../../Constants/constance_data.dart';
-import '../../Model/book.dart';
 import 'book_item.dart';
 
 class BooksSection extends StatelessWidget {
-  BooksSection({required this.title, required this.list});
+  final Function(Book data) show;
+  const BooksSection({required this.title, required this.list, required this.show});
 
   final String title;
   final List<Book> list;
@@ -38,33 +35,6 @@ class BooksSection extends StatelessWidget {
                         color: Colors.white,
                       ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.all(5),
-                //   child: Row(
-                //     children: [
-                //       Container(
-                //           decoration: const BoxDecoration(
-                //             color: Colors.blue,
-                //             borderRadius: BorderRadius.only(
-                //                 // topRight: Radius.circular(40.0),
-                //                 // bottomRight: Radius.circular(40.0),
-                //                 topLeft: Radius.circular(40.0),
-                //                 bottomLeft: Radius.circular(40.0)),
-                //           ),
-                //           padding: const EdgeInsets.only(
-                //               left: 4, right: 4, top: 4, bottom: 4),
-                //           child: Text('All')),
-                //       Container(
-                //           padding: const EdgeInsets.only(
-                //               right: 4, top: 4, bottom: 4),
-                //           child: Text('Paid')),
-                //       Container(
-                //           padding: const EdgeInsets.only(
-                //               right: 4, top: 4, bottom: 4),
-                //           child: Text('Free')),
-                //     ],
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -75,7 +45,7 @@ class BooksSection extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (cont, count) {
                   var data = list[count];
-                  return BookItem(data: data,index:count);
+                  return BookItem(data: data,index:count,show:show);
                 }),
           ),
         ],

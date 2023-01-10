@@ -1,23 +1,33 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/writer.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../../Constants/constance_data.dart';
+import '../../../Model/home_banner.dart';
 import '../../Components/book_item.dart';
 
 class WriterInfo extends StatefulWidget {
   final int id;
 
-  WriterInfo(this.id);
+  const WriterInfo(
+    this.id,
+  );
 
   @override
   State<WriterInfo> createState() => _WriterInfoState();
 }
 
 class _WriterInfoState extends State<WriterInfo> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,7 +212,13 @@ class _WriterInfoState extends State<WriterInfo> {
                       shrinkWrap: true,
                       itemBuilder: (cont, count) {
                         var current = data.writerDetails?.books[count];
-                        return BookItem(data: current!, index: count);
+                        return BookItem(
+                          data: current!,
+                          index: count,
+                          show: (data) {
+                            ConstanceData.show(context, data);
+                          },
+                        );
                       }),
                 ),
               ],

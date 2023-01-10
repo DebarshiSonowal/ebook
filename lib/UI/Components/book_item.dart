@@ -1,31 +1,24 @@
 // import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
 import '../../Constants/constance_data.dart';
-import '../../Model/book.dart';
-import '../../Model/razorpay_key.dart';
-import 'book_small_description.dart';
 
 class BookItem extends StatefulWidget {
   final Book data;
   final int index;
-
+  final Function(Book data) show;
   BookItem({
     Key? key,
     required this.data,
-    required this.index,
+    required this.index, required this.show,
   }) : super(key: key);
 
   @override
@@ -60,7 +53,7 @@ class _BookItemState extends State<BookItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        show(context, widget.data);
+        widget.show(widget.data);
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -211,24 +204,6 @@ class _BookItemState extends State<BookItem> {
     );
   }
 
-  void show(context, Book data) {
-    showCupertinoModalBottomSheet(
-      enableDrag: true,
-      // expand: true,
-      elevation: 15,
-      clipBehavior: Clip.antiAlias,
-      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
-      topRadius: const Radius.circular(15),
-      closeProgressThreshold: 10,
-      context: Navigation.instance.navigatorKey.currentContext ?? context,
-      builder: (context) => Container(
-        padding: EdgeInsets.only(top: 0.1.h),
-        color: ConstanceData.secondaryColor.withOpacity(0.97),
-        // height: 80.h,
-        child: bookSmallDescription(data: data),
-      ),
-    );
-  }
 
   getSelected(context, id) {
     return Provider.of<DataProvider>(

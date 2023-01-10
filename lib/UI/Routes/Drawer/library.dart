@@ -1,9 +1,9 @@
 // import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Model/bookmark.dart';
+import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:ebook/UI/Components/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
-import '../../../Model/home_banner.dart';
 
 class Librarypage extends StatefulWidget {
   const Librarypage({Key? key}) : super(key: key);
@@ -47,8 +46,8 @@ class _LibrarypageState extends State<Librarypage>
         child: Consumer<DataProvider>(builder: (cont, data, _) {
           return GridView.builder(
               itemCount: data.libraryTab == 0
-                  ? data.myBooks.length
-                  : data.bookmarks.length,
+                  ? filteredList(data.myBooks, data.currentTab).length
+                  : filteredBookmarkList(data.bookmarks, data.currentTab).length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 2 / 2.5,
@@ -56,24 +55,24 @@ class _LibrarypageState extends State<Librarypage>
               ),
               itemBuilder: (context, count) {
                 var current = data.libraryTab == 0
-                    ? data.myBooks[count]
-                    : data.bookmarks[count];
+                    ? filteredList(data.myBooks, data.currentTab)[count]
+                    : filteredBookmarkList(data.bookmarks, data.currentTab)[count];
                 return GestureDetector(
                   onTap: () {
                     if (data.libraryTab == 0) {
                       // Navigation.instance.navigate('/reading',
                       //     args: (data.myBooks[count].id) ?? 0);
                       Navigation.instance.navigate('/bookDetails',
-                          args: data.myBooks[count].id ?? 0);
+                          args: current.id ?? 0);
                     } else {
-                      show(context,data.bookmarks[count]);
+                      show(context, filteredBookmarkList(data.bookmarks, data.currentTab)[count]);
                     }
                   },
                   child: Card(
                     child: CachedNetworkImage(
                       imageUrl: data.libraryTab == 0
-                          ? data.myBooks[count].profile_pic ?? ""
-                          : data.bookmarks[count].profile_pic ?? "",
+                          ? filteredList(data.myBooks, data.currentTab)[count].profile_pic ?? ""
+                          : filteredBookmarkList(data.bookmarks, data.currentTab)[count].profile_pic ?? "",
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -386,7 +385,6 @@ class _LibrarypageState extends State<Librarypage>
                               overflow: TextOverflow.fade,
                               style: Theme.of(context).textTheme.headline5,
                             ),
-                            SizedBox(height: 1.h),
                             SizedBox(
                               width: double.infinity,
                               height: 4.5.h,
@@ -537,6 +535,7 @@ class _LibrarypageState extends State<Librarypage>
       showError(context);
     }
   }
+
   void showSuccess(context) {
     // var snackBar = SnackBar(
     //   elevation: 0,
@@ -565,5 +564,21 @@ class _LibrarypageState extends State<Librarypage>
     // );
     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
     Fluttertoast.showToast(msg: "Something went wrong");
+  }
+
+  filteredList(List<Book> myBooks, int currentTab) {
+    return myBooks.where((element) =>
+        (element.book_format == "e-book" && currentTab == 0) ||
+                (element.book_format == "magazine" && currentTab == 1)
+            ? true
+            : false).toList()??[];
+  }
+
+  filteredBookmarkList(List<BookmarkItem> bookmarks, int currentTab) {
+    return bookmarks.where((element) =>
+    (element.book_format == "e-book" && currentTab == 0) ||
+        (element.book_format == "magazine" && currentTab == 1)
+        ? true
+        : false).toList()??[];
   }
 }
