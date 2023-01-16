@@ -1,5 +1,7 @@
 import 'package:ebook/Helper/navigator.dart';
 import 'package:flutter/material.dart';
+import 'package:jiffy/jiffy.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -13,6 +15,8 @@ class AccountInformation extends StatefulWidget {
 }
 
 class _AccountInformationState extends State<AccountInformation> {
+  String version = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +24,7 @@ class _AccountInformationState extends State<AccountInformation> {
         centerTitle: false,
         title: Text(
           'Account',
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headline3,
         ),
         actions: [
           GestureDetector(
@@ -32,7 +36,7 @@ class _AccountInformationState extends State<AccountInformation> {
                 ),
                 child: Text(
                   'Sign Out',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.headline5,
                 ),
               ),
             ),
@@ -73,6 +77,16 @@ class _AccountInformationState extends State<AccountInformation> {
                     ?.mobile ??
                     "",
               ),
+              SectionInformation(
+                'Date of Birth',
+                Jiffy(Provider.of<DataProvider>(
+                    Navigation.instance.navigatorKey.currentContext ??
+                        context,
+                    listen: true)
+                    .profile
+                    ?.date_of_birth ??
+                    "").format("dd MMM,yyyy"),
+              ),
             ],
           ),
         ),
@@ -93,7 +107,7 @@ class _AccountInformationState extends State<AccountInformation> {
         ),
         Text(
           t,
-          style: Theme.of(context).textTheme.headline4?.copyWith(
+          style: Theme.of(context).textTheme.headline5?.copyWith(
                 fontSize: 18.sp,
               ),
         ),
@@ -110,4 +124,6 @@ class _AccountInformationState extends State<AccountInformation> {
       ],
     );
   }
+
+
 }

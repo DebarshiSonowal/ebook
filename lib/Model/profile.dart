@@ -4,7 +4,7 @@ class ProfileResponse {
 
   ProfileResponse.fromJson(json) {
     status = true;
-    profile = Profile.fromJson(json);
+    profile = Profile.fromJson(json['result']['data']);
   }
 
   ProfileResponse.withError() {

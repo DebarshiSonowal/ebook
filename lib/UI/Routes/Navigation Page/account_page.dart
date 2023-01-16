@@ -3,6 +3,7 @@ import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,6 +16,21 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  String version = "1.0";
+
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
+
+  void initialize() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      version = packageInfo.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +38,7 @@ class _AccountPageState extends State<AccountPage> {
         centerTitle: false,
         title: Text(
           'Account',
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headline4,
         ),
       ),
       body: Container(
@@ -34,7 +50,7 @@ class _AccountPageState extends State<AccountPage> {
             children: [
               SizedBox(
                 width: double.infinity,
-                height: 20.h,
+                height: 15.h,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -51,15 +67,15 @@ class _AccountPageState extends State<AccountPage> {
                       height: 2.h,
                     ),
                     Text(
-                      'Hi, User',
+                      'Hi, ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name}',
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ],
                 ),
               ),
               SizedBox(
-                height: 65.h,
                 child: ListView.builder(
+                    shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: ConstanceData.pages.length,
                     itemBuilder: (cont, ind) {
@@ -113,11 +129,11 @@ class _AccountPageState extends State<AccountPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      ConstanceData.primaryIcon,
-                      fit: BoxFit.fill,
-                      height: 10.h,
-                    ),
+                    // Image.asset(
+                    //   ConstanceData.primaryIcon,
+                    //   fit: BoxFit.fill,
+                    //   height: 10.h,
+                    // ),
                     SizedBox(
                       height: 2.h,
                     ),
@@ -129,11 +145,11 @@ class _AccountPageState extends State<AccountPage> {
                       height: 2.h,
                     ),
                     Text(
-                      'version 12.15',
+                      'version ${version}',
                       style: Theme.of(context).textTheme.headline5,
                     ),
                     SizedBox(
-                      height: 10.h,
+                      height: 5.h,
                     ),
                   ],
                 ),

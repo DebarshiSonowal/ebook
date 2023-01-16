@@ -47,7 +47,8 @@ class _LibrarypageState extends State<Librarypage>
           return GridView.builder(
               itemCount: data.libraryTab == 0
                   ? filteredList(data.myBooks, data.currentTab).length
-                  : filteredBookmarkList(data.bookmarks, data.currentTab).length,
+                  : filteredBookmarkList(data.bookmarks, data.currentTab)
+                      .length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 2 / 2.5,
@@ -56,23 +57,33 @@ class _LibrarypageState extends State<Librarypage>
               itemBuilder: (context, count) {
                 var current = data.libraryTab == 0
                     ? filteredList(data.myBooks, data.currentTab)[count]
-                    : filteredBookmarkList(data.bookmarks, data.currentTab)[count];
+                    : filteredBookmarkList(
+                        data.bookmarks, data.currentTab)[count];
                 return GestureDetector(
                   onTap: () {
                     if (data.libraryTab == 0) {
                       // Navigation.instance.navigate('/reading',
                       //     args: (data.myBooks[count].id) ?? 0);
-                      Navigation.instance.navigate('/bookDetails',
-                          args: current.id ?? 0);
+                      Navigation.instance
+                          .navigate('/bookDetails', args: current.id ?? 0);
                     } else {
-                      show(context, filteredBookmarkList(data.bookmarks, data.currentTab)[count]);
+                      ConstanceData.show(
+                        context,
+                        filteredBookmarkList(
+                            data.bookmarks, data.currentTab)[count],
+                      );
                     }
                   },
                   child: Card(
                     child: CachedNetworkImage(
                       imageUrl: data.libraryTab == 0
-                          ? filteredList(data.myBooks, data.currentTab)[count].profile_pic ?? ""
-                          : filteredBookmarkList(data.bookmarks, data.currentTab)[count].profile_pic ?? "",
+                          ? filteredList(data.myBooks, data.currentTab)[count]
+                                  .profile_pic ??
+                              ""
+                          : filteredBookmarkList(
+                                      data.bookmarks, data.currentTab)[count]
+                                  .profile_pic ??
+                              "",
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -567,18 +578,24 @@ class _LibrarypageState extends State<Librarypage>
   }
 
   filteredList(List<Book> myBooks, int currentTab) {
-    return myBooks.where((element) =>
-        (element.book_format == "e-book" && currentTab == 0) ||
-                (element.book_format == "magazine" && currentTab == 1)
-            ? true
-            : false).toList()??[];
+    return myBooks
+            .where((element) =>
+                (element.book_format == "e-book" && currentTab == 0) ||
+                        (element.book_format == "magazine" && currentTab == 1)
+                    ? true
+                    : false)
+            .toList() ??
+        [];
   }
 
   filteredBookmarkList(List<BookmarkItem> bookmarks, int currentTab) {
-    return bookmarks.where((element) =>
-    (element.book_format == "e-book" && currentTab == 0) ||
-        (element.book_format == "magazine" && currentTab == 1)
-        ? true
-        : false).toList()??[];
+    return bookmarks
+            .where((element) =>
+                (element.book_format == "e-book" && currentTab == 0) ||
+                        (element.book_format == "magazine" && currentTab == 1)
+                    ? true
+                    : false)
+            .toList() ??
+        [];
   }
 }
