@@ -159,7 +159,7 @@ class ApiProvider {
     debugPrint(url.toString());
 
     try {
-      Response? response = await dio?.post(
+      Response? response = await dio?.get(
         url,
       );
       debugPrint("profile response: ${response?.data}");
@@ -172,6 +172,45 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("profile response: ${e.response}");
       return ProfileResponse.withError();
+    }
+  }
+
+  Future<GenericResponse> updateProfile(
+      String name, String email, String mobile, String date) async {
+    var url = "${baseUrl}/subscribers/profile";
+    BaseOptions option =
+        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${Storage.instance.token}',
+      // 'APP-KEY': ConstanceData.app_key
+    });
+    var data = {
+      "f_name": name.split(" ")[0] ?? "",
+      "l_name": name.split(" ")[1] ?? "",
+      "email": email,
+      "mobile": mobile,
+      "date_of_birth": date,
+    };
+    dio = Dio(option);
+    debugPrint(url.toString());
+    debugPrint(data.toString());
+
+    try {
+      Response? response = await dio?.post(
+        url,
+        data: jsonEncode(data),
+      );
+      debugPrint("profile response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("profile error: ${response?.data}");
+        return GenericResponse.withError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("profile response: ${e.response}");
+      return GenericResponse.withError(e.message);
     }
   }
 

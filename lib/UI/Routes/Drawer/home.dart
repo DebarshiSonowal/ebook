@@ -16,6 +16,7 @@ import '../../../Helper/navigator.dart';
 import '../../../Networking/api_provider.dart';
 import '../../Components/books_section.dart';
 import '../../Components/buildbook_section.dart';
+import '../../Components/dynamic_books_section.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -88,7 +89,7 @@ class _HomeState extends State<Home> {
                     ConstanceData.show(context, data);
                   },
                 ),
-                const dynamicBooksSection(),
+                const DynamicBooksSection(),
                 SizedBox(
                   height: 35.h,
                 ),
@@ -176,40 +177,4 @@ class _HomeState extends State<Home> {
   }
 }
 
-class dynamicBooksSection extends StatelessWidget {
-  const dynamicBooksSection({
-    Key? key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (cont, index) {
-          return Consumer<DataProvider>(
-              builder: (context, data, _) {
-            return BooksSection(
-              title:
-                  data.homeSection![data.currentTab][index].title ??
-                      'Bestselling Books',
-              list:
-                  data.homeSection![data.currentTab][index].book ??
-                      [],
-              show: (data) {
-                ConstanceData.show(context, data);
-              },
-            );
-          });
-        },
-        separatorBuilder: (cont, ind) {
-          return SizedBox(
-            height: 0.1.h,
-          );
-        },
-        itemCount: Provider.of<DataProvider>(context)
-            .homeSection![
-                Provider.of<DataProvider>(context).currentTab]
-            .length);
-  }
-}
