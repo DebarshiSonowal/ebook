@@ -68,7 +68,7 @@ class _LibrarypageState extends State<Librarypage>
                       Navigation.instance
                           .navigate('/bookDetails', args: current.id ?? 0);
                     } else {
-                      ConstanceData.show(
+                      ConstanceData.showBookmarkItem(
                         context,
                         filteredBookmarkList(
                             data.bookmarks, data.currentTab)[count],

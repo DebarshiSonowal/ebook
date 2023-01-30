@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 class EmptyWidget extends StatelessWidget {
-  const EmptyWidget({Key? key}) : super(key: key);
+  Color? color;
+  String? text;
+
+  EmptyWidget({Key? key, this.color, this.text}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +24,10 @@ class EmptyWidget extends StatelessWidget {
             height: 1.h,
           ),
           Text(
-            "Oops! You haven't started reading",
-            style: Theme.of(context).textTheme.headline5,
+            text ?? "Oops! You haven't started reading",
+            style: Theme.of(context).textTheme.headline5?.copyWith(
+                  color: color ?? Colors.white,
+                ),
           ),
         ],
       ),

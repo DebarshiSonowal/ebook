@@ -70,7 +70,6 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   void initState() {
-
     super.initState();
 
     // _scrollController.addListener(_scrollListener);
@@ -211,7 +210,8 @@ class _ReadingPageState extends State<ReadingPage> {
 
                     return GestureDetector(
                       onTap: () {
-                        Navigation.instance.navigate('/bookDetails',args: '${widget.id},${index}');
+                        Navigation.instance.navigate('/bookDetails',
+                            args: '${widget.id},${index}');
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 10.w),
@@ -242,7 +242,7 @@ class _ReadingPageState extends State<ReadingPage> {
                     );
                   },
                   itemCount: chapters.length,
-                  onPageChanged: (count){
+                  onPageChanged: (count) {
                     setState(() {
                       page_no = count.toDouble();
                     });
@@ -374,24 +374,10 @@ class _ReadingPageState extends State<ReadingPage> {
                           });
                         });
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: data.color1,
-                            border: Border.all(
-                                color: selectedTheme == index
-                                    ? Colors.blue
-                                    : data.color1!)),
-                        height: 5.h,
-                        width: 10.w,
-                        child: Center(
-                          child: Text(
-                            'Aa',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(color: data.color2),
-                          ),
-                        ),
+                      child: ThemeItem(
+                        data: data,
+                        selectedTheme: selectedTheme,
+                        index: index,
                       ),
                     );
                   },
@@ -478,5 +464,37 @@ class _ReadingPageState extends State<ReadingPage> {
       throw 'Failed to get system brightness';
     }
   }
+}
 
+class ThemeItem extends StatelessWidget {
+  const ThemeItem({
+    Key? key,
+    required this.data,
+    required this.selectedTheme,
+    required this.index,
+  }) : super(key: key);
+
+  final ReadingTheme data;
+  final int selectedTheme, index;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          color: data.color2,
+          border: Border.all(
+              color: selectedTheme == index ? Colors.blue : data.color1!)),
+      height: 5.h,
+      width: 10.w,
+      child: Center(
+        child: Text(
+          'Aa',
+          style: Theme.of(context)
+              .textTheme
+              .headline5
+              ?.copyWith(color: data.color1),
+        ),
+      ),
+    );
+  }
 }

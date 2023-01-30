@@ -10,7 +10,7 @@ class BookImageInformationWidget extends StatelessWidget {
     required this.data,
   }) : super(key: key);
 
-  final Book data;
+  final String data;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class BookImageInformationWidget extends StatelessWidget {
       height: 25.h,
       width: 40.w,
       child: CachedNetworkImage(
-        imageUrl: data.profile_pic ?? "",
+        imageUrl: data ?? "",
         placeholder: (context, url) => const Padding(
           padding: EdgeInsets.all(18.0),
           child: CircularProgressIndicator(

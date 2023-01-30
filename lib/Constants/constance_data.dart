@@ -1,6 +1,7 @@
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Model/bookmark.dart';
 import 'package:ebook/Model/review.dart';
 
 import 'package:flutter/material.dart';
@@ -255,7 +256,21 @@ class ConstanceData {
       topRadius: const Radius.circular(15),
       closeProgressThreshold: 10,
       context: Navigation.instance.navigatorKey.currentContext ?? context,
-      builder: (context) => PopUpInformation(data:data),
+      builder: (context) => PopUpInformation(data: data),
+    );
+  }
+
+  static showBookmarkItem(context, BookmarkItem data) {
+    showCupertinoModalBottomSheet(
+      enableDrag: true,
+      // expand: true,
+      elevation: 15,
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
+      topRadius: const Radius.circular(15),
+      closeProgressThreshold: 10,
+      context: Navigation.instance.navigatorKey.currentContext ?? context,
+      builder: (context) => PopUpInformationBookmark(data: data),
     );
   }
 

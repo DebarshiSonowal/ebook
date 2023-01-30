@@ -11,8 +11,9 @@ class CloseButtonCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ConstanceData.secondaryColor.withOpacity(0.97),
+      // color: ConstanceData.secondaryColor.withOpacity(0.97),
       child: Column(
+        // mainAxisAlignment: MainAxisAlignment,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,

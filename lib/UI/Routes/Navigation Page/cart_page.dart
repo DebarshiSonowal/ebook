@@ -7,6 +7,7 @@ import 'package:ebook/Model/cart_item.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/razorpay_key.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/UI/Components/empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,9 @@ import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Networking/api_provider.dart';
+import '../../Components/cart_page_item.dart';
+import '../../Components/cupons_card.dart';
+import '../../Components/payment_address_card.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -61,32 +65,19 @@ class _CartPageState extends State<CartPage> {
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            vertical: 1.h, horizontal: 3.w),
-                        child: ListView(
-                          // mainAxisSize: MainAxisSize.min,
-                          shrinkWrap: true,
-                          children: [
-                            Card(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 2.h, horizontal: 2.5.w),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Wanna save more ?',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(color: Colors.black),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () async {
+                            vertical: 0.5.h, horizontal: 3.w),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            // shrinkWrap: true,
+                            children: [
+                              data.items.isEmpty
+                                  ? Container(
+                                      height: 40.h,
+                                      child: EmptyWidget(color:Colors.black,text: "You have not bought anything yet",),
+                                    )
+                                  : CuponsCard(
+                                      cupon: cupon,
+                                      ontap: () async {
                                         final response = await Navigation
                                             .instance
                                             .navigate('/couponPage');
@@ -95,275 +86,63 @@ class _CartPageState extends State<CartPage> {
                                             cupon = response;
                                           });
                                         }
-                                      },
-                                      child: Text(
-                                        cupon != "" ? cupon : 'Apply Coupon',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5
-                                            ?.copyWith(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: data.items.length,
-                                itemBuilder: (cont, count) {
-                                  var simpleIntInput = 1;
-                                  var current = data.items[count];
-                                  return Card(
-                                    color: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.symmetric(
-                                          vertical: 1.h, horizontal: 2.w),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            width: double.infinity,
-                                            height: 15.h,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                data.items.isNotEmpty
-                                                    ? Container(
-                                                        decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .white)),
-                                                        height: 13.h,
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal:
-                                                                    1.5.w),
-                                                        width: 20.w,
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          imageUrl: current
-                                                                  .item_image ??
-                                                              "",
-                                                          placeholder:
-                                                              (context, url) =>
-                                                                  const Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    18.0),
-                                                            child:
-                                                                CircularProgressIndicator(
-                                                                    strokeWidth:
-                                                                        2,
-                                                                    color: Colors
-                                                                        .white),
-                                                          ),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              const Icon(
-                                                                  Icons.image,
-                                                                  color: Colors
-                                                                      .white),
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                      )
-                                                    : Container(),
-                                                SizedBox(
-                                                  width: 5.w,
-                                                ),
-                                                SizedBox(
-                                                  width: 5.w,
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '${current.name}',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline3
-                                                          ?.copyWith(
-                                                            color: Colors.black,
-                                                          ),
-                                                    ),
-                                                    Text(
-                                                      '${current.item_code == null || current.item_code == "" ? 'NA' : current.item_code}',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline3
-                                                          ?.copyWith(
-                                                            color: Colors.black,
-                                                          ),
-                                                    ),
-                                                    Text(
-                                                      '₹${(current.item_unit_cost ?? 1) * simpleIntInput}',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headline3
-                                                          ?.copyWith(
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          const DottedLine(),
-                                          GestureDetector(
-                                            onTap: () {
-                                              removeItem(current.item_id!);
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(2.0),
-                                              child: Text(
-                                                'Remove',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headline4
-                                                    ?.copyWith(
-                                                      color: Colors.red,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                      }),
+                              data.items.isEmpty
+                                  ? SizedBox(
+                                      // height: 50.h,
+                                      child: Center(
+                                        child: ElevatedButton(
+                                          onPressed: () {},
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.green),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
+                                                side: const BorderSide(
+                                                    color: Colors.green),
                                               ),
                                             ),
                                           ),
-                                        ],
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text('Shop Now'),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                })
-                          ],
+                                    )
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: data.items.length,
+                                      itemBuilder: (cont, count) {
+                                        var simpleIntInput = 1;
+                                        var current = data.items[count];
+                                        return CartPageItem(
+                                          data: data,
+                                          current: current,
+                                          simpleIntInput: simpleIntInput,
+                                          removeItem: (int id) {
+                                            removeItem(id);
+                                          },
+                                        );
+                                      })
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    Card(
-                      elevation: 5,
-                      color: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                        ),
-                      ),
-                      child: Container(
-                        padding: EdgeInsets.all(1.h),
-                        height: 10.h,
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            // Expanded(
-                            //   child: Container(
-                            //     child: Column(
-                            //       mainAxisAlignment: MainAxisAlignment.center,
-                            //       crossAxisAlignment: CrossAxisAlignment.start,
-                            //       children: [
-                            //         Text(
-                            //           'Deliver to other | 3-5 Days',
-                            //           style: Theme.of(context)
-                            //               .textTheme
-                            //               .headline3
-                            //               ?.copyWith(
-                            //                 color: Colors.black,
-                            //                 fontWeight: FontWeight.bold,
-                            //                 fontSize: 16.sp,
-                            //               ),
-                            //         ),
-                            //         Text(
-                            //           data.profile'Bishnu Nagar, Joysagar, Sivasagar, Dicial Dhulia Gaon',
-                            //           overflow: TextOverflow.ellipsis,
-                            //           style: Theme.of(context)
-                            //               .textTheme
-                            //               .headline3
-                            //               ?.copyWith(
-                            //                 color: Colors.black,
-                            //                 // fontWeight: FontWeight.bold,
-                            //               ),
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
-                            // const DottedLine(),
-                            Expanded(
-                              child: Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '₹${getTotalAmount(data.cartData!)}',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3
-                                              ?.copyWith(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16.sp,
-                                              ),
-                                        ),
-                                        Text(
-                                          'View Detailed Bill',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3
-                                              ?.copyWith(
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        initiatePaymentProcess();
-                                      },
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                                Colors.green),
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                            side:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                        ),
-                                      ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Text('Proceede to Pay'),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    data.items.isEmpty
+                        ? Container()
+                        : PaymentAddressCard(
+                            data: data,
+                            getTotalAmount: (data) => getTotalAmount(data),
+                            initiatePaymentProcess: initiatePaymentProcess,
+                          ),
                   ],
                 );
         }),
@@ -426,7 +205,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   void initateOrder(RazorpayKey razorpay) async {
-    final response = await ApiProvider.instance.createOrder(cupon,null);
+    final response = await ApiProvider.instance.createOrder(cupon, null);
     if (response.status ?? false) {
       tempTotal = response.order?.total ?? 0;
       temp_order_id = response.order?.order_id.toString() ?? "";
@@ -548,7 +327,6 @@ class _CartPageState extends State<CartPage> {
         tempTotal = response.amount ?? tempTotal;
         initateOrder(razorpayKey);
       }
-
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(

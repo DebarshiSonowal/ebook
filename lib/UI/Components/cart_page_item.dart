@@ -1,10 +1,118 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
+
+import '../../Model/cart_item.dart';
+import '../../Storage/data_provider.dart';
 
 class CartPageItem extends StatelessWidget {
-  const CartPageItem({Key? key}) : super(key: key);
- 
+  const CartPageItem(
+      {Key? key,
+      required this.data,
+      required this.current,
+      required this.simpleIntInput, required this.removeItem})
+      : super(key: key);
+  final DataProvider data;
+  final CartItem current;
+  final int simpleIntInput;
+  final Function(int id) removeItem;
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Card(
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 15.h,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  data.items.isNotEmpty
+                      ? Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white),
+                          ),
+                          height: 13.h,
+                          margin: EdgeInsets.symmetric(horizontal: 1.5.w),
+                          width: 20.w,
+                          child: CachedNetworkImage(
+                            imageUrl: current.item_image ?? "",
+                            placeholder: (context, url) => const Padding(
+                              padding: EdgeInsets.all(18.0),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            ),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.image, color: Colors.black),
+                            fit: BoxFit.fill,
+                          ),
+                        )
+                      : Container(),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  // SizedBox(
+                  //   width: 5.w,
+                  // ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 60.w,
+                        child: Text(
+                          '${current.name}',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(
+                                color: Colors.black,
+                              ),
+                        ),
+                      ),
+                      Text(
+                        '${current.item_code == null || current.item_code == "" ? 'NA' : current.item_code}',
+                        style: Theme.of(context).textTheme.headline3?.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                      Text(
+                        '₹${(current.item_unit_cost ?? 1) * simpleIntInput}',
+                        style: Theme.of(context).textTheme.headline3?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            const DottedLine(),
+            GestureDetector(
+              onTap: () {
+                removeItem(current.item_id!);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text(
+                  'Remove',
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
