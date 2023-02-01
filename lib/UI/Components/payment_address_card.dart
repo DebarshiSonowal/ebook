@@ -39,12 +39,12 @@ class PaymentAddressCard extends StatelessWidget {
                       CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '₹${getTotalAmount(data.cartData!)}',
+                    getTotalAmount(data.cartData!).toString()=="0"?"Free":'₹${getTotalAmount(data.cartData!)}',
                           style: Theme.of(context)
                               .textTheme
                               .headline3
                               ?.copyWith(
-                            color: Colors.black,
+                            color: getTotalAmount(data.cartData!).toString()=="0"?Colors.green:Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
                           ),

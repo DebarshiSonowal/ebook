@@ -11,7 +11,8 @@ class CartPageItem extends StatelessWidget {
       {Key? key,
       required this.data,
       required this.current,
-      required this.simpleIntInput, required this.removeItem})
+      required this.simpleIntInput,
+      required this.removeItem})
       : super(key: key);
   final DataProvider data;
   final CartItem current;
@@ -71,9 +72,10 @@ class CartPageItem extends StatelessWidget {
                         child: Text(
                           '${current.name}',
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(
-                                color: Colors.black,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline3?.copyWith(
+                                    color: Colors.black,
+                                  ),
                         ),
                       ),
                       Text(
@@ -83,9 +85,15 @@ class CartPageItem extends StatelessWidget {
                             ),
                       ),
                       Text(
-                        '₹${(current.item_unit_cost ?? 1) * simpleIntInput}',
+                        ((current.item_unit_cost ?? 1) * simpleIntInput) == 0
+                            ? "Free"
+                            : '₹${(current.item_unit_cost ?? 1) * simpleIntInput}',
                         style: Theme.of(context).textTheme.headline3?.copyWith(
-                              color: Colors.black,
+                              color: ((current.item_unit_cost ?? 1) *
+                                          simpleIntInput) ==
+                                      0
+                                  ? Colors.green
+                                  : Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                       ),

@@ -15,10 +15,12 @@ class BookItem extends StatefulWidget {
   final Book data;
   final int index;
   final Function(Book data) show;
+
   BookItem({
     Key? key,
     required this.data,
-    required this.index, required this.show,
+    required this.index,
+    required this.show,
   }) : super(key: key);
 
   @override
@@ -76,7 +78,7 @@ class _BookItemState extends State<BookItem> {
                       strokeWidth: 2, color: Colors.white),
                 ),
                 errorWidget: (context, url, error) =>
-                    Icon(Icons.image, color: Colors.white),
+                    const Icon(Icons.image, color: Colors.white),
                 fit: BoxFit.fill,
               ),
             ),
@@ -171,16 +173,21 @@ class _BookItemState extends State<BookItem> {
                         ),
                         color: Colors.white,
                         child: Container(
-                          padding: EdgeInsets.all(0.5.w),
+                          padding: EdgeInsets.all(1.w),
                           // decoration: ,
                           child: Text(
-                            'Rs. ${(widget.data.selling_price?.toStringAsFixed(2)).toString() == '0.00' ? (widget.data.base_price ?? 0).toStringAsFixed(2) : widget.data.selling_price?.toStringAsFixed(2)}',
+                            getPriceText(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style:
                                 Theme.of(context).textTheme.headline6?.copyWith(
                                       fontSize: 8.sp,
-                                      color: Colors.black,
+                                      color: getColorText()
+                                          ? Colors.green
+                                          : Colors.black,
+                                      fontWeight: getColorText()
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
                                     ),
                           ),
                         ),
@@ -203,7 +210,6 @@ class _BookItemState extends State<BookItem> {
       ),
     );
   }
-
 
   getSelected(context, id) {
     return Provider.of<DataProvider>(
@@ -254,6 +260,28 @@ class _BookItemState extends State<BookItem> {
     // );
     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
     Fluttertoast.showToast(msg: "Something went wrong");
+  }
+
+  String getPriceText() {
+    var priceText =
+        (widget.data.selling_price?.toStringAsFixed(2)).toString() == '0.00'
+            ? (widget.data.base_price ?? 0).toStringAsFixed(2)
+            : widget.data.selling_price?.toStringAsFixed(2);
+    if (priceText.toString() != '0.00') {
+      return 'Rs. $priceText';
+    }
+    return "FREE";
+  }
+
+  bool getColorText() {
+    var priceText =
+        (widget.data.selling_price?.toStringAsFixed(2)).toString() == '0.00'
+            ? (widget.data.base_price ?? 0).toStringAsFixed(2)
+            : widget.data.selling_price?.toStringAsFixed(2);
+    if (priceText.toString() != '0.00') {
+      return false;
+    }
+    return true;
   }
 // void initiatePaymentProcess(id) async {
 //   Navigation.instance.navigate('/loadingDialog');

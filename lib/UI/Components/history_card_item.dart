@@ -54,7 +54,7 @@ class HistoryCardItem extends StatelessWidget {
               ],
             ),
             Text(
-              '₹${current.total}',
+              current.total.toString().trim()=="0.0"?"FREE":'₹${current.total}',
               overflow: TextOverflow.ellipsis,
               style:
               Theme.of(context).textTheme.headline3?.copyWith(
