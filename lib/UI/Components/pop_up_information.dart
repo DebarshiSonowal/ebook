@@ -25,8 +25,8 @@ class PopUpInformation extends StatelessWidget {
     return Material(
       child: Container(
         padding: EdgeInsets.only(top: 0.1.h),
-        color: ConstanceData.secondaryColor.withOpacity(0.97),
-        height: (data.tags?.isEmpty ?? true) ? 63.2.h : 65.h,
+        color: Colors.black,
+        height: 55.9.h,
         child:DataSection(data: data),
       ),
     );

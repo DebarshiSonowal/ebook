@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../Constants/constance_data.dart';
 import '../../Helper/navigator.dart';
 import '../../Model/bookmark.dart';
 import '../../Model/home_banner.dart';
@@ -21,25 +22,28 @@ class DataSection extends StatelessWidget {
       // alignment: Alignment.topCenter,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigation.instance.navigate('/bookInfo', args: data.id);
-              },
-              child: BookImageInformationWidget(data: data.profile_pic!),
-            ),
-            const Expanded(
-              flex: 2,
-              child: CloseButtonCustom(),
-            ),
-          ],
+        Container(
+          color: ConstanceData.secondaryColor.withOpacity(0.97),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigation.instance.navigate('/bookInfo', args: data.id);
+                },
+                child: BookImageInformationWidget(data: data.profile_pic!),
+              ),
+              const Expanded(
+                flex: 2,
+                child: CloseButtonCustom(),
+              ),
+            ],
+          ),
         ),
         BookInfoSection(data: data),
       ],

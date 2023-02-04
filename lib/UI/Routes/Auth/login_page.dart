@@ -77,6 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
+                      keyboardType: TextInputType.phone,
                       cursorHeight:
                           Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,

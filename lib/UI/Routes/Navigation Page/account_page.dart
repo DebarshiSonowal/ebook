@@ -45,118 +45,108 @@ class _AccountPageState extends State<AccountPage> {
         height: double.infinity,
         width: double.infinity,
         color: Theme.of(context).primaryColor,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                height: 15.h,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ClipOval(
-                      child: SizedBox.fromSize(
-                        size: Size.fromRadius(5.h), // Image radius
-                        child: Image.asset(
-                          ConstanceData.primaryIcon,
-                          fit: BoxFit.fill,
+        child: Consumer<DataProvider>(builder: (context, data, _) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: 15.h,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ClipOval(
+                        child: SizedBox.fromSize(
+                          size: Size.fromRadius(5.h), // Image radius
+                          child: Image.asset(
+                            ConstanceData.primaryIcon,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Text(
-                      'Hi, ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name}',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Text(
+                        'Hi, ${data.profile?.f_name ?? "NA"}',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: ConstanceData.pages.length,
-                    itemBuilder: (cont, ind) {
-                      var data = ConstanceData.pages[ind];
-                      return ListTile(
-                        onTap: () {
-                          if (ind == 0) {
-                            Navigation.instance.navigate('/accountInformation');
-                          } else if (ind == 1) {
-                            Storage.instance.logout();
-                            Navigation.instance.navigate('/login');
-                          } else if (ind == 5) {
-                            // Storage.instance.logout();
-                            // Navigation.instance.navigate('/cartPage');
-                            _launchUrl(
-                                Uri.parse('https://tratri.in/privacy-policy'));
-                          } else if (ind == 6) {
-                            // Storage.instance.logout();
-                            // Navigation.instance.navigate('/cartPage');
-                            _launchUrl(
-                                Uri.parse('https://tratri.in/contact-us'));
-                          } else if (ind == 3) {
-                            // Storage.instance.logout();
-                            // Navigation.instance.navigate('/cartPage');
-                            _launchUrl(Uri.parse(
-                                'https://tratri.in/refund-and-cancellation'));
-                          } else if (ind == 7) {
-                            // Storage.instance.logout();
-                            // Navigation.instance.navigate('/cartPage');
-                            _launchUrl(Uri.parse(
-                                'https://tratri.in/https://tratri.in/about-us'));
-                          }
-                        },
-                        title: Text(
-                          ind == 1
-                              ? (Provider.of<DataProvider>(Navigation.instance
-                                              .navigatorKey.currentContext!)
-                                          .profile ==
-                                      null
-                                  ? "Sign In"
-                                  : data)
-                              : data,
-                          style: Theme.of(context).textTheme.headline5,
-                        ),
-                      );
-                    }),
-              ),
-              SizedBox(
-                width: double.infinity,
-                // height: 20.h,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // Image.asset(
-                    //   ConstanceData.primaryIcon,
-                    //   fit: BoxFit.fill,
-                    //   height: 10.h,
-                    // ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Text(
-                      'Made in India',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    Text(
-                      'version ${version}',
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                  ],
+                SizedBox(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: ConstanceData.pages.length,
+                      itemBuilder: (cont, ind) {
+                        var current = ConstanceData.pages[ind];
+                        return ListTile(
+                          onTap: () {
+                            if (ind == 0) {
+                              Navigation.instance
+                                  .navigate('/accountInformation');
+                            } else if (ind == 1) {
+                              Storage.instance.logout();
+                              Navigation.instance.navigate('/login');
+                            } else if (ind == 3) {
+                              _launchUrl(Uri.parse(
+                                  'https://tratri.in/refund-and-cancellation'));
+                            } else if (ind == 5) {
+                              _launchUrl(Uri.parse(
+                                  'https://tratri.in/privacy-policy'));
+                            } else if (ind == 6) {
+                              _launchUrl(
+                                  Uri.parse('https://tratri.in/contact-us'));
+                            } else if (ind == 7) {
+                              _launchUrl(Uri.parse(
+                                  'https://tratri.in/https://tratri.in/about-us'));
+                            }
+                          },
+                          title: Text(
+                            ind == 1
+                                ? (data.profile == null ? "Sign In" : current)
+                                : current,
+                            style: Theme.of(context).textTheme.headline5,
+                          ),
+                        );
+                      }),
                 ),
-              ),
-            ],
-          ),
-        ),
+                SizedBox(
+                  width: double.infinity,
+                  // height: 20.h,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // Image.asset(
+                      //   ConstanceData.primaryIcon,
+                      //   fit: BoxFit.fill,
+                      //   height: 10.h,
+                      // ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Text(
+                        'Made in India',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      SizedBox(
+                        height: 2.h,
+                      ),
+                      Text(
+                        'version ${version}',
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      SizedBox(
+                        height: 5.h,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

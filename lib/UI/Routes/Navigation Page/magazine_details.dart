@@ -729,11 +729,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: data.color1,
+                            color: data.color2,
                             border: Border.all(
                                 color: selectedTheme == index
                                     ? Colors.blue
-                                    : data.color1!)),
+                                    : data.color2!)),
                         height: 5.h,
                         width: 10.w,
                         child: Center(
@@ -742,7 +742,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                             style: Theme.of(context)
                                 .textTheme
                                 .headline5
-                                ?.copyWith(color: data.color2),
+                                ?.copyWith(color: data.color1),
                           ),
                         ),
                       ),

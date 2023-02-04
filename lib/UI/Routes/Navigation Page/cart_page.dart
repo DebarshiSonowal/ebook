@@ -20,6 +20,7 @@ import '../../../Networking/api_provider.dart';
 import '../../Components/cart_page_item.dart';
 import '../../Components/cupons_card.dart';
 import '../../Components/payment_address_card.dart';
+import '../../Components/shop_now_button.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -56,7 +57,7 @@ class _CartPageState extends State<CartPage> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.grey.shade200,
+        color: Colors.black,
         child: Consumer<DataProvider>(builder: (cont, data, _) {
           return data.cartData == null
               ? Container()
@@ -73,7 +74,11 @@ class _CartPageState extends State<CartPage> {
                               data.items.isEmpty
                                   ? Container(
                                       height: 40.h,
-                                      child: EmptyWidget(color:Colors.black,text: "You have not bought anything yet",),
+                                      child: EmptyWidget(
+                                        color: Colors.white,
+                                        text:
+                                            "You have not bought anything yet",
+                                      ),
                                     )
                                   : CuponsCard(
                                       cupon: cupon,
@@ -88,32 +93,7 @@ class _CartPageState extends State<CartPage> {
                                         }
                                       }),
                               data.items.isEmpty
-                                  ? SizedBox(
-                                      // height: 50.h,
-                                      child: Center(
-                                        child: ElevatedButton(
-                                          onPressed: () {},
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.green),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                              RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                                side: const BorderSide(
-                                                    color: Colors.green),
-                                              ),
-                                            ),
-                                          ),
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text('Shop Now'),
-                                          ),
-                                        ),
-                                      ),
-                                    )
+                                  ? const shopNowButton()
                                   : ListView.builder(
                                       shrinkWrap: true,
                                       physics:

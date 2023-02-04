@@ -92,23 +92,25 @@ class bookBaritem extends StatelessWidget {
                     SizedBox(
                       height: 1.h,
                     ),
-                    RatingBar.builder(
-                        itemSize: 4.w,
-                        initialRating: 3,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        // itemPadding:
-                        //     EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.white,
-                              size: 10,
-                            ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        }),
+                    IgnorePointer(
+                      child: RatingBar.builder(
+                          itemSize: 4.w,
+                          initialRating: 3,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          // itemPadding:
+                          //     EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => const Icon(
+                                Icons.star,
+                                color: Colors.white,
+                                size: 10,
+                              ),
+                          onRatingUpdate: (rating) {
+                            print(rating);
+                          }),
+                    ),
                     SizedBox(
                       height: 1.h,
                     ),

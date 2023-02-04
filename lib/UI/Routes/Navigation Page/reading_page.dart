@@ -483,7 +483,7 @@ class ThemeItem extends StatelessWidget {
       decoration: BoxDecoration(
           color: data.color2,
           border: Border.all(
-              color: selectedTheme == index ? Colors.blue : data.color1!)),
+              color: selectedTheme == index ? Colors.blue : data.color2!)),
       height: 5.h,
       width: 10.w,
       child: Center(

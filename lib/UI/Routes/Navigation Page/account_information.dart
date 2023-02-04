@@ -89,89 +89,80 @@ class _AccountInformationState extends State<AccountInformation> {
         height: double.infinity,
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SectionInformation(
-                name: 'Name',
-                data: ""
-                    "${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name ?? ''} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: true).profile?.l_name ?? ''}"
-                    "",
-                controller: nameController,
-                type: 0,
-                dateChanged: (String date) {},
-              ),
-              SectionInformation(
-                name: 'Email',
-                data: Provider.of<DataProvider>(
-                            Navigation.instance.navigatorKey.currentContext ??
-                                context,
-                            listen: false)
-                        .profile
-                        ?.email ??
-                    "",
-                controller: emailController,
-                type: 1,
-                dateChanged: (String date) {},
-              ),
-              SectionInformation(
-                name: 'Mobile No',
-                data: Provider.of<DataProvider>(
-                            Navigation.instance.navigatorKey.currentContext ??
-                                context,
-                            listen: false)
-                        .profile
-                        ?.mobile ??
-                    "",
-                controller: mobileController,
-                type: 2,
-                dateChanged: (String date) {},
-              ),
-              SectionInformation(
-                name: 'Date of Birth',
-                data: date,
-                controller: dateController,
-                type: 3,
-                dateChanged: (String date) {
-                  setState(() {
-                    this.date = date;
-                  });
-                },
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: 5.h,
-                child: ElevatedButton(
-                  onPressed: () {
-                    updateProfile(nameController.text, emailController.text,
-                        mobileController.text, date);
+        child: Consumer<DataProvider>(builder: (context, data, _) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SectionInformation(
+                  name: 'Name',
+                  data: ""
+                      "${data.profile?.f_name ?? ''} ${data.profile?.l_name ?? ''}"
+                      "",
+                  controller: nameController,
+                  type: 0,
+                  dateChanged: (String date) {},
+                ),
+                SectionInformation(
+                  name: 'Email',
+                  data: data.profile?.email ?? "",
+                  controller: emailController,
+                  type: 1,
+                  dateChanged: (String date) {},
+                ),
+                SectionInformation(
+                  name: 'Mobile No',
+                  data: data.profile?.mobile ?? "",
+                  controller: mobileController,
+                  type: 2,
+                  dateChanged: (String date) {},
+                ),
+                SectionInformation(
+                  name: 'Date of Birth',
+                  data: date,
+                  controller: dateController,
+                  type: 3,
+                  dateChanged: (String date) {
+                    setState(() {
+                      this.date = date;
+                    });
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    // padding: const EdgeInsets.symmetric(
-                    //     horizontal: 50, vertical: 20),
-                    textStyle: Theme.of(context).textTheme.headline5?.copyWith(
-                          fontSize: 17.sp,
-                          color: Colors.black,
-                        ),
-                  ),
-                  child: Text(
-                    'Update',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          fontSize: 15.sp,
-                          color: Colors.black,
-                          // fontWeight: FontWeight.bold,
-                        ),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 5.h,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      updateProfile(nameController.text, emailController.text,
+                          mobileController.text, date);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      // padding: const EdgeInsets.symmetric(
+                      //     horizontal: 50, vertical: 20),
+                      textStyle:
+                          Theme.of(context).textTheme.headline5?.copyWith(
+                                fontSize: 17.sp,
+                                color: Colors.black,
+                              ),
+                    ),
+                    child: Text(
+                      'Update',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontSize: 15.sp,
+                            color: Colors.black,
+                            // fontWeight: FontWeight.bold,
+                          ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

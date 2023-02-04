@@ -1,10 +1,12 @@
 import 'package:coupon_uikit/coupon_uikit.dart';
+import 'package:ebook/Model/discount.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Networking/api_provider.dart';
+import '../../Components/second_part_card.dart';
 
 class CouponPage extends StatefulWidget {
   const CouponPage({Key? key}) : super(key: key);
@@ -30,7 +32,7 @@ class _CouponPageState extends State<CouponPage> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.grey.shade200,
+        color: Colors.black45,
         padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
         child: Consumer<DataProvider>(builder: (context, data, _) {
           return data.cupons.isEmpty
@@ -91,72 +93,7 @@ class _CouponPageState extends State<CouponPage> {
                             ],
                           ),
                         ),
-                        secondChild: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 1.5.h, horizontal: 5.w),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: [
-                                    Text(
-                                      "Coupon Code",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Text(
-                                      "${current.coupon}",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                            color: Color(0xff358f8b),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Valid Till -",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3
-                                          ?.copyWith(
-                                            color: Colors.black,
-                                          ),
-                                    ),
-                                    Text(
-                                      " ${current.valid_to}",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline3
-                                          ?.copyWith(
-                                            color: Colors.black,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        secondChild: secondPartCard(current: current),
                       ),
                     );
                   });
@@ -191,3 +128,5 @@ class _CouponPageState extends State<CouponPage> {
     }
   }
 }
+
+

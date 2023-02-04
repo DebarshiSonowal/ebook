@@ -56,7 +56,7 @@ class PaymentAddressCard extends StatelessWidget {
                               .headline3
                               ?.copyWith(
                             color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                            // fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
