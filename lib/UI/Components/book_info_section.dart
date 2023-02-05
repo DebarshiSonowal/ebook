@@ -193,12 +193,18 @@ class ScrollableContent extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 // decoration: ,
                 child: Text(
-                  'Rs. ${data.selling_price?.toStringAsFixed(2)}',
+                  data.selling_price?.toStringAsFixed(2).toString() == '0.00'
+                      ? 'FREE'
+                      : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.headline6?.copyWith(
                         fontSize: 1.5.h,
-                        color: Colors.black,
+                        color:
+                            data.selling_price?.toStringAsFixed(2).toString() ==
+                                    '0.00'
+                                ? Colors.green
+                                : Colors.black,
                       ),
                 ),
               ),

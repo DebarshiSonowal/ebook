@@ -22,7 +22,7 @@ class CartPageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: Colors.white10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -39,7 +39,9 @@ class CartPageItem extends StatelessWidget {
                   data.items.isNotEmpty
                       ? Container(
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white),
+                            border: Border.all(
+                              color: Colors.white,
+                            ),
                           ),
                           height: 13.h,
                           margin: EdgeInsets.symmetric(horizontal: 1.5.w),
@@ -49,10 +51,14 @@ class CartPageItem extends StatelessWidget {
                             placeholder: (context, url) => const Padding(
                               padding: EdgeInsets.all(18.0),
                               child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white),
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.image, color: Colors.black),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.image,
+                              color: Colors.white,
+                            ),
                             fit: BoxFit.fill,
                           ),
                         )
@@ -74,14 +80,14 @@ class CartPageItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style:
                               Theme.of(context).textTheme.headline3?.copyWith(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                         ),
                       ),
                       Text(
                         '${current.item_code == null || current.item_code == "" ? 'NA' : current.item_code}',
                         style: Theme.of(context).textTheme.headline3?.copyWith(
-                              color: Colors.black,
+                              color: Colors.white,
                             ),
                       ),
                       Text(
@@ -93,8 +99,8 @@ class CartPageItem extends StatelessWidget {
                                           simpleIntInput) ==
                                       0
                                   ? Colors.green
-                                  : Colors.black,
-                              fontWeight: FontWeight.bold,
+                                  : Colors.white,
+                              // fontWeight: FontWeight.bold,
                             ),
                       ),
                     ],
@@ -102,7 +108,12 @@ class CartPageItem extends StatelessWidget {
                 ],
               ),
             ),
-            const DottedLine(),
+            SizedBox(
+              height: 0.5.w,
+            ),
+            const DottedLine(
+              dashColor: Colors.white60,
+            ),
             GestureDetector(
               onTap: () {
                 removeItem(current.item_id!);

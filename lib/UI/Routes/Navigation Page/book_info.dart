@@ -19,6 +19,7 @@ import '../../../Model/book_details.dart';
 import '../../../Model/razorpay_key.dart';
 import '../../../Model/review.dart';
 import '../../../Networking/api_provider.dart';
+import '../../../Storage/app_storage.dart';
 import '../../../Storage/data_provider.dart';
 
 class BookInfo extends StatefulWidget {
@@ -357,7 +358,7 @@ class _BookInfoState extends State<BookInfo>
                               size: 10,
                             ),
                         onRatingUpdate: (rating) {
-                          print(rating);
+                          giveRating(context);
                         }),
                     SizedBox(
                       height: 2.h,
@@ -456,7 +457,6 @@ class _BookInfoState extends State<BookInfo>
                                             size: 10,
                                           ),
                                       onRatingUpdate: (rating) {
-                                        print(rating);
                                       }),
                                 ],
                               ),
@@ -519,7 +519,6 @@ class _BookInfoState extends State<BookInfo>
     final response1 = await ApiProvider.instance.fetchReview('3');
     if (response1.status ?? false) {
       reviews = response1.reviews ?? [];
-      print(reviews.length);
       if (mounted) {
         setState(() {});
       }
@@ -562,7 +561,6 @@ class _BookInfoState extends State<BookInfo>
         // commentHint: 'Set your custom comment hint',
         onCancelled: () => print('cancelled'),
         onSubmitted: (response) async {
-          print('rating: ${response.rating}, comment: ${response.comment}');
           final response1 = await ApiProvider.instance.addReview(
               Add_Review(0, response.comment ?? "", response.rating),
               widget.id);
@@ -608,14 +606,11 @@ class _BookInfoState extends State<BookInfo>
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    print(
-        'success ${response.paymentId} ${response.orderId} ${response.signature}');
     handleSuccess(response);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
-    print('error ${response.message} ${response.code} ');
     Navigation.instance.goBack();
     CoolAlert.show(
       context: context,
@@ -658,7 +653,6 @@ class _BookInfoState extends State<BookInfo>
     try {
       _razorpay.open(options);
     } catch (e) {
-      print(e);
     }
   }
 
@@ -761,7 +755,6 @@ class BookPublishinDetails extends StatelessWidget {
                           size: 10,
                         ),
                     onRatingUpdate: (rating) {
-                      print(rating);
                     }),
               ),
               Text(
@@ -969,11 +962,14 @@ class DownloadSection extends StatelessWidget {
           // ),
           GestureDetector(
             onTap: () async {
-              if (Provider.of<DataProvider>(
-                  Navigation.instance.navigatorKey.currentContext ?? context,
+              if ((Provider.of<DataProvider>(
+                  Navigation.instance.navigatorKey
+                      .currentContext ??
+                      context,
                   listen: false)
                   .profile !=
-                  null) {
+                  null) &&
+                  Storage.instance.isLoggedIn) {
                 addBookmark(id,context);
               } else {
                 ConstanceData.showAlertDialog(context);
@@ -1078,11 +1074,14 @@ class BuyButton extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  if (Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey.currentContext ?? context,
+                  if ((Provider.of<DataProvider>(
+                      Navigation.instance.navigatorKey
+                          .currentContext ??
+                          context,
                       listen: false)
                       .profile !=
-                      null) {
+                      null) &&
+                      Storage.instance.isLoggedIn) {
                     onTap();
                   } else {
                     ConstanceData.showAlertDialog(context);
@@ -1110,12 +1109,14 @@ class BuyButton extends StatelessWidget {
                   // Navigation.instance
                   //     .navigate('/bookInfo', args: data.id);
 
-                  if (Provider.of<DataProvider>(
-                              Navigation.instance.navigatorKey.currentContext ??
-                                  context,
-                              listen: false)
-                          .profile !=
-                      null) {
+                  if ((Provider.of<DataProvider>(
+                      Navigation.instance.navigatorKey
+                          .currentContext ??
+                          context,
+                      listen: false)
+                      .profile !=
+                      null) &&
+                      Storage.instance.isLoggedIn) {
                     addtocart(context, id);
                   } else {
                     ConstanceData.showAlertDialog(context);

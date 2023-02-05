@@ -72,7 +72,7 @@ class _CartPageState extends State<CartPage> {
                             // shrinkWrap: true,
                             children: [
                               data.items.isEmpty
-                                  ? Container(
+                                  ? SizedBox(
                                       height: 40.h,
                                       child: EmptyWidget(
                                         color: Colors.white,

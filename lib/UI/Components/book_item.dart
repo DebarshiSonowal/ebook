@@ -10,6 +10,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../Constants/constance_data.dart';
+import '../../Storage/app_storage.dart';
 
 class BookItem extends StatefulWidget {
   final Book data;
@@ -136,12 +137,14 @@ class _BookItemState extends State<BookItem> {
             StatefulBuilder(builder: (context, _) {
               return GestureDetector(
                 onTap: () async {
-                  if (Provider.of<DataProvider>(
-                              Navigation.instance.navigatorKey.currentContext ??
-                                  context,
-                              listen: false)
-                          .profile !=
-                      null) {
+                  if ((Provider.of<DataProvider>(
+                                  Navigation.instance.navigatorKey
+                                          .currentContext ??
+                                      context,
+                                  listen: false)
+                              .profile !=
+                          null) &&
+                      Storage.instance.isLoggedIn) {
                     _(() {
                       selected = !selected;
                     });

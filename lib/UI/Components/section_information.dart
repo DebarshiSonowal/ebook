@@ -33,9 +33,9 @@ class SectionInformation extends StatelessWidget {
         (type == 0 || type == 1 || type == 2)
             ? TextField(
                 controller: controller,
-                keyboardType: type == 1
+                keyboardType: type == 0
                     ? TextInputType.name
-                    : (type == 2
+                    : (type == 1
                         ? TextInputType.emailAddress
                         : TextInputType.phone),
                 cursorColor: Colors.white,

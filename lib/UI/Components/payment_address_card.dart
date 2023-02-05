@@ -13,7 +13,7 @@ class PaymentAddressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
-      color: Colors.white,
+      color: Colors.white10,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15),
@@ -55,7 +55,7 @@ class PaymentAddressCard extends StatelessWidget {
                               .textTheme
                               .headline3
                               ?.copyWith(
-                            color: Colors.green,
+                            color: Colors.white,
                             // fontWeight: FontWeight.bold,
                           ),
                         ),

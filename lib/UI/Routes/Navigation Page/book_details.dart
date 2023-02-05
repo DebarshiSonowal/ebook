@@ -63,7 +63,7 @@ class _BookDetailsState extends State<BookDetails>
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
   List<String> pageText = [];
   int selectedTheme = 0;
-  double brightness = 0.0;
+  double brightness = 0.0, page_no = 1;
   bool toggle = false;
   double sliderVal = 0;
 
@@ -71,7 +71,9 @@ class _BookDetailsState extends State<BookDetails>
   List<ReadingChapter> reading = [];
   String read = '';
   var _counterValue = 13.sp;
-
+  PageController pageController = PageController(
+    initialPage: 0,
+  );
   var test = '''''';
   DynamicSize _dynamicSize = DynamicSizeImpl();
   SplittedText _splittedText = SplittedTextImpl();
@@ -128,6 +130,9 @@ class _BookDetailsState extends State<BookDetails>
         Storage.instance
             .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
       });
+    });
+    pageController.addListener(() {
+      page_no = pageController.page ?? 1;
     });
     // Future.delayed(Duration(seconds: 2), () {
     //   Navigation.instance.goBack();
@@ -263,7 +268,9 @@ class _BookDetailsState extends State<BookDetails>
                 return chapters.isEmpty
                     ? Center(
                         child: Text(
-                          bookDetails!=null?'':'Oops No Data available here',
+                          bookDetails != null
+                              ? ''
+                              : 'Oops No Data available here',
                           style: TextStyle(
                             color: getBackGroundColor(),
                           ),
@@ -271,6 +278,7 @@ class _BookDetailsState extends State<BookDetails>
                       )
                     : PageView.builder(
                         // shrinkWrap: true,
+                        controller: pageController,
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
                         itemCount: reading.length,
@@ -278,7 +286,7 @@ class _BookDetailsState extends State<BookDetails>
                           test = reading[index].desc!;
                           return GestureDetector(
                             onTap: () {
-                              Navigation.instance.goBack();
+                              // Navigation.instance.goBack();
                             },
                             child: Container(
                               width: 98.w,
@@ -400,10 +408,9 @@ class _BookDetailsState extends State<BookDetails>
             children: [
               Text(
                 "Theme",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               SizedBox(
                 height: 1.h,
@@ -459,10 +466,9 @@ class _BookDetailsState extends State<BookDetails>
               ),
               Text(
                 "Font Size",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -501,10 +507,9 @@ class _BookDetailsState extends State<BookDetails>
               ),
               Text(
                 "Brightness",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               Slider(
                   value: brightness,
@@ -523,6 +528,36 @@ class _BookDetailsState extends State<BookDetails>
                       toggle = false;
                     }
                   }),
+              SizedBox(
+                height: 1.h,
+              ),
+              Text(
+                "Page Slider",
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
+              ),
+              Slider(
+                value: page_no,
+                onChanged: (value) {
+                  _(() {
+                    page_no = value;
+                    pageController.jumpToPage(
+                      page_no.toInt(),
+                    );
+
+                    // setBrightness(value);
+                  });
+                  setState(() {});
+
+                  if (page_no == 0) {
+                    toggle = true;
+                  } else {
+                    toggle = false;
+                  }
+                },
+                max: reading.length.toDouble(),
+              ),
               SizedBox(
                 height: 1.h,
               ),

@@ -9,6 +9,7 @@ import '../../Constants/constance_data.dart';
 import '../../Helper/navigator.dart';
 import '../../Model/home_banner.dart';
 import '../../Networking/api_provider.dart';
+import '../../Storage/app_storage.dart';
 import '../../Storage/data_provider.dart';
 
 class bookSmallDescription extends StatelessWidget {
@@ -342,13 +343,14 @@ class bookSmallDescription extends StatelessWidget {
                                     // Navigation.instance
                                     //     .navigate('/bookInfo', args: data.id);
 
-                                    if (Provider.of<DataProvider>(
-                                                Navigation.instance.navigatorKey
-                                                        .currentContext ??
-                                                    context,
-                                                listen: false)
-                                            .profile !=
-                                        null) {
+                                    if ((Provider.of<DataProvider>(
+                                        Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                            context,
+                                        listen: false)
+                                        .profile !=
+                                        null) &&
+                                        Storage.instance.isLoggedIn) {
                                       addtocart(context,data.id);
                                     } else {
                                       ConstanceData.showAlertDialog(context);

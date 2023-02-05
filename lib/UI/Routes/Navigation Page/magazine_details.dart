@@ -61,10 +61,12 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
 
   int selectedTheme = 0;
-  double brightness = 0.0;
+  double brightness = 0.0, page_no = 1;
   bool toggle = false;
   double sliderVal = 0;
-
+  PageController pageController = PageController(
+    initialPage: 0,
+  );
   List<BookChapter> chapters = [];
 
   var _counterValue = 11.sp;
@@ -108,6 +110,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             .setReadingBook(int.parse(widget.id.toString().split(',')[0]));
       });
     });
+    pageController.addListener(() {
+      page_no = pageController.page ?? 1;
+    });
     // Future.delayed(Duration(seconds: 2), () {
     //   Navigation.instance.goBack();
     // });
@@ -147,7 +152,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 return chapters.isEmpty
                     ? Center(
                         child: Text(
-                          bookDetails != null?'':'Oops No Data available here',
+                          bookDetails != null
+                              ? ''
+                              : 'Oops No Data available here',
                           style: TextStyle(
                             color: getBackGroundColor(),
                           ),
@@ -155,6 +162,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                       )
                     : PageView.builder(
                         // shrinkWrap: true,
+                        controller: pageController,
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
                         itemCount: reading.length,
@@ -174,32 +182,35 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                     "table": (context, child) {
                                       return SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
-                                        child: (context.tree as TableLayoutElement)
-                                            .toWidget(context),
+                                        child:
+                                            (context.tree as TableLayoutElement)
+                                                .toWidget(context),
                                       );
                                     },
                                     "a": (context, child) {
                                       return GestureDetector(
                                         onTap: () {
-                                          _launchUrl(Uri.parse(
-                                              context.tree.attributes['href'].toString()));
-                                          print(context.tree.attributes['href']);
+                                          _launchUrl(Uri.parse(context
+                                              .tree.attributes['href']
+                                              .toString()));
+                                          print(
+                                              context.tree.attributes['href']);
                                         },
                                         child: Text(
                                           context.tree.element?.innerHtml
-                                              .split("=")[0]
-                                              .toString() ??
+                                                  .split("=")[0]
+                                                  .toString() ??
                                               "",
                                           style: Theme.of(Navigation.instance
-                                              .navigatorKey.currentContext!)
+                                                  .navigatorKey.currentContext!)
                                               .textTheme
                                               .headline5
                                               ?.copyWith(
-                                            // color: Constance.primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            decoration:
-                                            TextDecoration.underline,
-                                          ),
+                                                // color: Constance.primaryColor,
+                                                fontWeight: FontWeight.bold,
+                                                decoration:
+                                                    TextDecoration.underline,
+                                              ),
                                         ),
                                       );
                                     },
@@ -436,258 +447,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             ),
           ],
         ),
-        // IconButton(
-        //   onPressed: () {
-        //
-        //   },
-        //   icon: const Icon(
-        //     FontAwesomeIcons.hamburger,
-        //   ),
-        // ),
       ],
     );
   }
 
-  //  GestureDetector(
-  //                 onTap: () {
-  //                   // print('dads');
-  //                   showCupertinoModalBottomSheet(
-  //                     enableDrag: true,
-  //                     // expand: true,
-  //                     elevation: 15,
-  //                     clipBehavior: Clip.antiAlias,
-  //                     backgroundColor:
-  //                     Theme.of(context).accentColor,
-  //                     topRadius: const Radius.circular(15),
-  //                     closeProgressThreshold: 10,
-  //                     context: Navigation.instance.navigatorKey
-  //                         .currentContext ??
-  //                         context,
-  //                     builder: (context) => Material(
-  //                       color: getBodyColor(),
-  //                       child: StatefulBuilder(
-  //                           builder: (context, update) {
-  //                             return SizedBox(
-  //                               height: 30.h,
-  //                               width: double.infinity,
-  //                               child: Column(
-  //                                 children: [
-  //                                   Container(
-  //                                     height: 15.h,
-  //                                     width: double.infinity,
-  //                                     color: Colors.black,
-  //                                     child: Column(
-  //                                       mainAxisAlignment:
-  //                                       MainAxisAlignment.center,
-  //                                       children: [
-  //                                         Text(
-  //                                           "Enjoying your free preview?",
-  //                                           style: Theme.of(context)
-  //                                               .textTheme
-  //                                               .headline5
-  //                                               ?.copyWith(
-  //                                             color:
-  //                                             getTextColor(),
-  //                                           ),
-  //                                         ),
-  //                                         Text(
-  //                                           "Keep reading with a free trial",
-  //                                           style: Theme.of(context)
-  //                                               .textTheme
-  //                                               .headline5
-  //                                               ?.copyWith(
-  //                                             color:
-  //                                             getTextColor(),
-  //                                           ),
-  //                                         ),
-  //                                         SizedBox(
-  //                                           height: 1.h,
-  //                                         ),
-  //                                         SizedBox(
-  //                                           width: double.infinity,
-  //                                           height: 4.5.h,
-  //                                           child: Padding(
-  //                                             padding:
-  //                                             const EdgeInsets
-  //                                                 .symmetric(
-  //                                                 horizontal:
-  //                                                 20.0),
-  //                                             child: ElevatedButton(
-  //                                                 onPressed: () {
-  //                                                   Navigation
-  //                                                       .instance
-  //                                                       .navigate(
-  //                                                       '/bookInfo');
-  //                                                 },
-  //                                                 style: ButtonStyle(
-  //                                                   backgroundColor:
-  //                                                   MaterialStateProperty
-  //                                                       .all(Colors
-  //                                                       .blue),
-  //                                                 ),
-  //                                                 child: Text(
-  //                                                   'Buy Now',
-  //                                                   style: Theme.of(
-  //                                                       context)
-  //                                                       .textTheme
-  //                                                       .headline5
-  //                                                       ?.copyWith(
-  //                                                     fontSize:
-  //                                                     3.h,
-  //                                                     color: Colors
-  //                                                         .black,
-  //                                                   ),
-  //                                                 )),
-  //                                           ),
-  //                                         ),
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                                   Container(
-  //                                     height: 15.h,
-  //                                     width: double.infinity,
-  //                                     color: Colors.grey.shade900,
-  //                                     child: Column(
-  //                                       mainAxisAlignment:
-  //                                       MainAxisAlignment.start,
-  //                                       children: [
-  //                                         Row(
-  //                                           children: [
-  //                                             Expanded(
-  //                                               child: Slider(
-  //                                                 min: 0,
-  //                                                 max: double.parse(
-  //                                                     multiImageProvider
-  //                                                         .length
-  //                                                         .toString()),
-  //                                                 activeColor:
-  //                                                 Colors.blue,
-  //                                                 inactiveColor:
-  //                                                 Colors.white,
-  //                                                 onChanged:
-  //                                                     (double value) {
-  //                                                   update(() {
-  //                                                     setState(() {
-  //                                                       sliderVal =
-  //                                                           value;
-  //                                                       background =
-  //                                                       multiImageProvider[
-  //                                                       value
-  //                                                           .toInt()];
-  //                                                     });
-  //                                                   });
-  //                                                 },
-  //                                                 value: sliderVal,
-  //                                               ),
-  //                                             ),
-  //                                             IconButton(
-  //                                               onPressed: () {
-  //                                                 showSearch(
-  //                                                   context: context,
-  //                                                   delegate:
-  //                                                   SearchPage<
-  //                                                       Book_old>(
-  //                                                     items: ConstanceData
-  //                                                         .Motivational,
-  //                                                     searchLabel:
-  //                                                     'Search people',
-  //                                                     suggestion:
-  //                                                     const Center(
-  //                                                       child: Text(
-  //                                                           'Filter people by name, surname or age'),
-  //                                                     ),
-  //                                                     failure:
-  //                                                     const Center(
-  //                                                       child: Text(
-  //                                                           'No person found :('),
-  //                                                     ),
-  //                                                     filter:
-  //                                                         (current) =>
-  //                                                     [
-  //                                                       current.name,
-  //                                                       current
-  //                                                           .author,
-  //                                                       // person.age.toString(),
-  //                                                     ],
-  //                                                     builder:
-  //                                                         (book) =>
-  //                                                         ListTile(
-  //                                                           title: Text(
-  //                                                               book.name ??
-  //                                                                   ''),
-  //                                                           subtitle: Text(
-  //                                                               book.author ??
-  //                                                                   ''),
-  //                                                           trailing:
-  //                                                           CachedNetworkImage(
-  //                                                             imageUrl:
-  //                                                             book.image ??
-  //                                                                 '',
-  //                                                             height: 20,
-  //                                                             width: 20,
-  //                                                           ),
-  //                                                         ),
-  //                                                   ),
-  //                                                 );
-  //                                               },
-  //                                               icon: Icon(
-  //                                                   Icons.search),
-  //                                             )
-  //                                           ],
-  //                                         ),
-  //                                         SizedBox(
-  //                                           height: 1.h,
-  //                                         ),
-  //                                         Container(
-  //                                           padding: const EdgeInsets
-  //                                               .symmetric(
-  //                                               horizontal: 20.0),
-  //                                           child: Row(
-  //                                             mainAxisAlignment:
-  //                                             MainAxisAlignment
-  //                                                 .spaceBetween,
-  //                                             children: [
-  //                                               Text(
-  //                                                 '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
-  //                                                 style: Theme.of(
-  //                                                     context)
-  //                                                     .textTheme
-  //                                                     .headline5
-  //                                                     ?.copyWith(
-  //                                                   fontSize: 2.h,
-  //                                                   // color: Colors.black,
-  //                                                 ),
-  //                                               ),
-  //                                               Text(
-  //                                                 'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
-  //                                                 style: Theme.of(
-  //                                                     context)
-  //                                                     .textTheme
-  //                                                     .headline5
-  //                                                     ?.copyWith(
-  //                                                   fontSize: 2.h,
-  //                                                   // color: Colors.black,
-  //                                                 ),
-  //                                               ),
-  //                                             ],
-  //                                           ),
-  //                                         ),
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                             );
-  //                           }),
-  //                     ),
-  //                   );
-  //                 },
-  //                 child: Container(
-  //                   height: 4.h,
-  //                   width: double.infinity,
-  //                   color: getBodyColor(),
-  //                 ),
-  //               ),
   AlertDialog buildAlertDialog() {
     return AlertDialog(
       // title: Text('Welcome'),
@@ -701,10 +464,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             children: [
               Text(
                 "Theme",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               SizedBox(
                 height: 1.h,
@@ -760,10 +522,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               ),
               Text(
                 "Font Size",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -827,10 +588,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               ),
               Text(
                 "Brightness",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               Slider(
                   value: brightness,
@@ -849,6 +609,36 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                       toggle = false;
                     }
                   }),
+              SizedBox(
+                height: 1.h,
+              ),
+              Text(
+                "Page Slider",
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
+              ),
+              Slider(
+                value: page_no,
+                onChanged: (value) {
+                  _(() {
+                    page_no = value;
+                    pageController.jumpToPage(
+                      page_no.toInt(),
+                    );
+
+                    // setBrightness(value);
+                  });
+                  setState(() {});
+
+                  if (page_no == 0) {
+                    toggle = true;
+                  } else {
+                    toggle = false;
+                  }
+                },
+                max: reading.length.toDouble(),
+              ),
               SizedBox(
                 height: 1.h,
               ),
@@ -922,7 +712,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           //   reading.add(ReadingChapter(chapters[i].title, j));
           //   text = text + j;
           // }
-          if(i>=int.parse(widget.id.toString().split(',')[1])){
+          if (i >= int.parse(widget.id.toString().split(',')[1])) {
             reading.add(ReadingChapter(chapters[i].title, j));
             text = text + j;
           }
@@ -951,9 +741,250 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           text);
     });
   }
+
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url,mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $_url';
     }
   }
+//  GestureDetector(
+//                 onTap: () {
+//                   // print('dads');
+//                   showCupertinoModalBottomSheet(
+//                     enableDrag: true,
+//                     // expand: true,
+//                     elevation: 15,
+//                     clipBehavior: Clip.antiAlias,
+//                     backgroundColor:
+//                     Theme.of(context).accentColor,
+//                     topRadius: const Radius.circular(15),
+//                     closeProgressThreshold: 10,
+//                     context: Navigation.instance.navigatorKey
+//                         .currentContext ??
+//                         context,
+//                     builder: (context) => Material(
+//                       color: getBodyColor(),
+//                       child: StatefulBuilder(
+//                           builder: (context, update) {
+//                             return SizedBox(
+//                               height: 30.h,
+//                               width: double.infinity,
+//                               child: Column(
+//                                 children: [
+//                                   Container(
+//                                     height: 15.h,
+//                                     width: double.infinity,
+//                                     color: Colors.black,
+//                                     child: Column(
+//                                       mainAxisAlignment:
+//                                       MainAxisAlignment.center,
+//                                       children: [
+//                                         Text(
+//                                           "Enjoying your free preview?",
+//                                           style: Theme.of(context)
+//                                               .textTheme
+//                                               .headline5
+//                                               ?.copyWith(
+//                                             color:
+//                                             getTextColor(),
+//                                           ),
+//                                         ),
+//                                         Text(
+//                                           "Keep reading with a free trial",
+//                                           style: Theme.of(context)
+//                                               .textTheme
+//                                               .headline5
+//                                               ?.copyWith(
+//                                             color:
+//                                             getTextColor(),
+//                                           ),
+//                                         ),
+//                                         SizedBox(
+//                                           height: 1.h,
+//                                         ),
+//                                         SizedBox(
+//                                           width: double.infinity,
+//                                           height: 4.5.h,
+//                                           child: Padding(
+//                                             padding:
+//                                             const EdgeInsets
+//                                                 .symmetric(
+//                                                 horizontal:
+//                                                 20.0),
+//                                             child: ElevatedButton(
+//                                                 onPressed: () {
+//                                                   Navigation
+//                                                       .instance
+//                                                       .navigate(
+//                                                       '/bookInfo');
+//                                                 },
+//                                                 style: ButtonStyle(
+//                                                   backgroundColor:
+//                                                   MaterialStateProperty
+//                                                       .all(Colors
+//                                                       .blue),
+//                                                 ),
+//                                                 child: Text(
+//                                                   'Buy Now',
+//                                                   style: Theme.of(
+//                                                       context)
+//                                                       .textTheme
+//                                                       .headline5
+//                                                       ?.copyWith(
+//                                                     fontSize:
+//                                                     3.h,
+//                                                     color: Colors
+//                                                         .black,
+//                                                   ),
+//                                                 )),
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   ),
+//                                   Container(
+//                                     height: 15.h,
+//                                     width: double.infinity,
+//                                     color: Colors.grey.shade900,
+//                                     child: Column(
+//                                       mainAxisAlignment:
+//                                       MainAxisAlignment.start,
+//                                       children: [
+//                                         Row(
+//                                           children: [
+//                                             Expanded(
+//                                               child: Slider(
+//                                                 min: 0,
+//                                                 max: double.parse(
+//                                                     multiImageProvider
+//                                                         .length
+//                                                         .toString()),
+//                                                 activeColor:
+//                                                 Colors.blue,
+//                                                 inactiveColor:
+//                                                 Colors.white,
+//                                                 onChanged:
+//                                                     (double value) {
+//                                                   update(() {
+//                                                     setState(() {
+//                                                       sliderVal =
+//                                                           value;
+//                                                       background =
+//                                                       multiImageProvider[
+//                                                       value
+//                                                           .toInt()];
+//                                                     });
+//                                                   });
+//                                                 },
+//                                                 value: sliderVal,
+//                                               ),
+//                                             ),
+//                                             IconButton(
+//                                               onPressed: () {
+//                                                 showSearch(
+//                                                   context: context,
+//                                                   delegate:
+//                                                   SearchPage<
+//                                                       Book_old>(
+//                                                     items: ConstanceData
+//                                                         .Motivational,
+//                                                     searchLabel:
+//                                                     'Search people',
+//                                                     suggestion:
+//                                                     const Center(
+//                                                       child: Text(
+//                                                           'Filter people by name, surname or age'),
+//                                                     ),
+//                                                     failure:
+//                                                     const Center(
+//                                                       child: Text(
+//                                                           'No person found :('),
+//                                                     ),
+//                                                     filter:
+//                                                         (current) =>
+//                                                     [
+//                                                       current.name,
+//                                                       current
+//                                                           .author,
+//                                                       // person.age.toString(),
+//                                                     ],
+//                                                     builder:
+//                                                         (book) =>
+//                                                         ListTile(
+//                                                           title: Text(
+//                                                               book.name ??
+//                                                                   ''),
+//                                                           subtitle: Text(
+//                                                               book.author ??
+//                                                                   ''),
+//                                                           trailing:
+//                                                           CachedNetworkImage(
+//                                                             imageUrl:
+//                                                             book.image ??
+//                                                                 '',
+//                                                             height: 20,
+//                                                             width: 20,
+//                                                           ),
+//                                                         ),
+//                                                   ),
+//                                                 );
+//                                               },
+//                                               icon: Icon(
+//                                                   Icons.search),
+//                                             )
+//                                           ],
+//                                         ),
+//                                         SizedBox(
+//                                           height: 1.h,
+//                                         ),
+//                                         Container(
+//                                           padding: const EdgeInsets
+//                                               .symmetric(
+//                                               horizontal: 20.0),
+//                                           child: Row(
+//                                             mainAxisAlignment:
+//                                             MainAxisAlignment
+//                                                 .spaceBetween,
+//                                             children: [
+//                                               Text(
+//                                                 '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
+//                                                 style: Theme.of(
+//                                                     context)
+//                                                     .textTheme
+//                                                     .headline5
+//                                                     ?.copyWith(
+//                                                   fontSize: 2.h,
+//                                                   // color: Colors.black,
+//                                                 ),
+//                                               ),
+//                                               Text(
+//                                                 'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
+//                                                 style: Theme.of(
+//                                                     context)
+//                                                     .textTheme
+//                                                     .headline5
+//                                                     ?.copyWith(
+//                                                   fontSize: 2.h,
+//                                                   // color: Colors.black,
+//                                                 ),
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   ),
+//                                 ],
+//                               ),
+//                             );
+//                           }),
+//                     ),
+//                   );
+//                 },
+//                 child: Container(
+//                   height: 4.h,
+//                   width: double.infinity,
+//                   color: getBodyColor(),
+//                 ),
+//               ),
 }

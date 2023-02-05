@@ -19,50 +19,58 @@ class DataProvider extends ChangeNotifier {
   List<List<BookCategory>> categoryList = [];
   List<List<Book>>? bannerList = [];
   List<List<HomeSection>>? homeSection = [];
-  List<Book> cartBooks =[],myBooks = [], search_results=[];
+  List<Book> cartBooks = [], myBooks = [], search_results = [];
   List<BookmarkItem> bookmarks = [];
   List<CartItem> items = [];
   List<Discount> cupons = [];
-  List<OrderHistory> orders=[];
+  List<OrderHistory> orders = [];
   Cart? cartData;
   Profile? profile;
   int currentIndex = 0;
   int currentCategory = 0;
   int currentTab = 0;
   int libraryTab = 0;
-  String title='';
+  String title = '';
   BookDetailsModel? details;
   writer? writerDetails;
 
-  setBookDetails(BookDetailsModel data){
+  setBookDetails(BookDetailsModel data) {
     details = data;
     notifyListeners();
   }
 
-  setTitle(String txt){
+  setTitle(String txt) {
     title = txt;
     notifyListeners();
   }
+
   setCurrentTab(int i) {
     print('current tab ${i}');
     currentTab = i;
     notifyListeners();
   }
 
-  setProfile(Profile data){
+  setProfile(Profile data) {
     profile = data;
     notifyListeners();
   }
 
-  setMyBooks(List<Book> list){
+  setProfileClear() {
+    profile = null;
+    notifyListeners();
+  }
+
+  setMyBooks(List<Book> list) {
     myBooks = list;
     notifyListeners();
   }
-  setSearchResult(List<Book> list){
+
+  setSearchResult(List<Book> list) {
     search_results = list;
     notifyListeners();
   }
-  setHistory(List<OrderHistory> list){
+
+  setHistory(List<OrderHistory> list) {
     orders = list;
     notifyListeners();
   }

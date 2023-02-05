@@ -68,7 +68,7 @@ class _AccountPageState extends State<AccountPage> {
                         height: 2.h,
                       ),
                       Text(
-                        'Hi, ${data.profile?.f_name ?? "NA"}',
+                        'Hi, ${data.profile?.f_name ?? "Subscriber"}',
                         style: Theme.of(context).textTheme.headline5,
                       ),
                     ],
@@ -87,6 +87,8 @@ class _AccountPageState extends State<AccountPage> {
                               Navigation.instance
                                   .navigate('/accountInformation');
                             } else if (ind == 1) {
+                              Provider.of<DataProvider>(context, listen: false)
+                                  .setProfileClear();
                               Storage.instance.logout();
                               Navigation.instance.navigate('/login');
                             } else if (ind == 3) {
@@ -105,7 +107,10 @@ class _AccountPageState extends State<AccountPage> {
                           },
                           title: Text(
                             ind == 1
-                                ? (data.profile == null ? "Sign In" : current)
+                                ? ((data.profile == null ||
+                                        !Storage.instance.isLoggedIn)
+                                    ? "Sign In"
+                                    : current)
                                 : current,
                             style: Theme.of(context).textTheme.headline5,
                           ),

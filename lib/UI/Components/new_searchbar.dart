@@ -11,6 +11,8 @@ import '../../Helper/navigator.dart';
 import '../../Model/book.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../Storage/app_storage.dart';
+
 class NewSearchBar extends StatelessWidget {
   const NewSearchBar({
     Key? key,
@@ -120,12 +122,14 @@ class NewSearchBar extends StatelessWidget {
           Consumer<DataProvider>(builder: (context, data, _) {
             return GestureDetector(
               onTap: () {
-                if (Provider.of<DataProvider>(
-                            Navigation.instance.navigatorKey.currentContext ??
-                                context,
-                            listen: false)
-                        .profile !=
-                    null) {
+                if ((Provider.of<DataProvider>(
+                    Navigation.instance.navigatorKey
+                        .currentContext ??
+                        context,
+                    listen: false)
+                    .profile !=
+                    null) &&
+                    Storage.instance.isLoggedIn) {
                   Navigation.instance.navigate('/cartPage');
                 } else {
                   ConstanceData.showAlertDialog(context);

@@ -10,7 +10,8 @@ class CuponsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      elevation: 4,
+      color: Colors.white10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -21,10 +22,9 @@ class CuponsCard extends StatelessWidget {
           children: [
             Text(
               'Wanna save more ?',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline1
-                  ?.copyWith(color: Colors.black),
+              style: Theme.of(context).textTheme.headline1?.copyWith(
+                    color: Colors.white,
+                  ),
             ),
             GestureDetector(
               onTap: () => ontap(),

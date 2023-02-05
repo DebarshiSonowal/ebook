@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../../Storage/app_storage.dart';
 import '../../../Storage/data_provider.dart';
 import '../../Components/section_information.dart';
 
@@ -70,7 +71,12 @@ class _AccountInformationState extends State<AccountInformation> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Provider.of<DataProvider>(context, listen: false)
+                  .setProfileClear();
+              Storage.instance.logout();
+              Navigation.instance.navigate('/login');
+            },
             child: Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -177,48 +183,4 @@ class _AccountInformationState extends State<AccountInformation> {
       Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
     }
   }
-
-// SectionInformation(
-//     String s, String t, TextEditingController controller, int type) {
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       Text(
-//         s,
-//         style: Theme.of(context).textTheme.headline5,
-//       ),
-//       SizedBox(
-//         height: 0.5.h,
-//       ),
-//       (type == 0 || type == 1 || type == 2 || type == 3)
-//           ? TextField(
-//               controller: controller,
-//               keyboardType: type == 1
-//                   ? TextInputType.name
-//                   : (type == 2
-//                       ? TextInputType.emailAddress
-//                       : TextInputType.phone),
-//             )
-//           : GestureDetector(
-//               onTap: () {},
-//               child: Text(
-//                 t,
-//                 style: Theme.of(context).textTheme.headline5?.copyWith(
-//                       fontSize: 18.sp,
-//                     ),
-//               ),
-//             ),
-//       SizedBox(
-//         height: 0.5.h,
-//       ),
-//       Divider(
-//         color: Colors.grey.shade200,
-//         thickness: 0.5,
-//       ),
-//       SizedBox(
-//         height: 1.h,
-//       ),
-//     ],
-//   );
-// }
 }

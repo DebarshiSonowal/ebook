@@ -52,7 +52,7 @@ class _ReadingPageState extends State<ReadingPage> {
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
   var _counterValue = 12.sp;
   int selectedTheme = 0;
-  double page_no = 1;
+  double brightness_lvl = 1, page_no = 1;
   bool toggle = false;
   double sliderVal = 0;
   String title = '';
@@ -82,6 +82,9 @@ class _ReadingPageState extends State<ReadingPage> {
       setState(() {
         Storage.instance.setReadingBook(widget.id);
       });
+    });
+    pageController.addListener(() {
+      page_no = pageController.page ?? 1;
     });
     // pageController.addListener(() {
     //   print(pageController.page??0);
@@ -207,7 +210,6 @@ class _ReadingPageState extends State<ReadingPage> {
                   controller: pageController,
                   itemBuilder: (cont, index) {
                     var current = chapters[index];
-
                     return GestureDetector(
                       onTap: () {
                         Navigation.instance.navigate('/bookDetails',
@@ -244,7 +246,7 @@ class _ReadingPageState extends State<ReadingPage> {
                   itemCount: chapters.length,
                   onPageChanged: (count) {
                     setState(() {
-                      page_no = count.toDouble();
+                      brightness_lvl = count.toDouble();
                     });
                   },
                 ),
@@ -253,7 +255,7 @@ class _ReadingPageState extends State<ReadingPage> {
                 height: 1.h,
               ),
               Text(
-                "chapter ${page_no.toInt() + 1} of ${chapters.length}",
+                "chapter ${brightness_lvl.toInt() + 1} of ${chapters.length}",
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .textTheme
@@ -264,15 +266,15 @@ class _ReadingPageState extends State<ReadingPage> {
                 height: 1.h,
               ),
               Slider(
-                  value: page_no,
+                  value: brightness_lvl,
                   min: 0,
                   max: double.parse((chapters.length ?? 0).toString()),
                   onChanged: (value) {
                     print(value);
                     setState(() {
-                      page_no = value.toInt().toDouble();
+                      brightness_lvl = value.toInt().toDouble();
                     });
-                    pageController.jumpToPage(page_no.toInt());
+                    pageController.jumpToPage(brightness_lvl.toInt());
                   }),
             ],
           );
@@ -348,10 +350,9 @@ class _ReadingPageState extends State<ReadingPage> {
             children: [
               Text(
                 "Theme",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                  color: getBackGroundColor(),
+                    ),
               ),
               SizedBox(
                 height: 1.h,
@@ -393,10 +394,9 @@ class _ReadingPageState extends State<ReadingPage> {
               ),
               Text(
                 "Font Size",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -424,10 +424,35 @@ class _ReadingPageState extends State<ReadingPage> {
               ),
               Text(
                 "Brightness",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: getTextColor()),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
+              ),
+              Slider(
+                  value: brightness_lvl,
+                  onChanged: (value) {
+                    _(() {
+                      setState(() {
+                        brightness_lvl = value;
+                        FlutterScreenWake.setBrightness(brightness_lvl);
+                      });
+                      // setBrightness(value);
+                    });
+
+                    if (brightness_lvl == 0) {
+                      toggle = true;
+                    } else {
+                      toggle = false;
+                    }
+                  }),
+              SizedBox(
+                height: 1.h,
+              ),
+              Text(
+                "Page Slider",
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      color: getBackGroundColor(),
+                    ),
               ),
               Slider(
                   value: page_no,
@@ -435,7 +460,9 @@ class _ReadingPageState extends State<ReadingPage> {
                     _(() {
                       setState(() {
                         page_no = value;
-                        FlutterScreenWake.setBrightness(page_no);
+                        pageController.jumpToPage(
+                          page_no.toInt(),
+                        );
                       });
                       // setBrightness(value);
                     });
