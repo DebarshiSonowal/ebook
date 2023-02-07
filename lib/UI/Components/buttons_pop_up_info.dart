@@ -28,14 +28,15 @@ class ButtonsPopUpInfo extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // initiatePaymentProcess(widget.data.id);
-                if (data.book_format == "magazine") {
-                  Navigation.instance
-                      .navigate('/magazineArticles', args: data.id ?? 0);
-                } else {
-                  Navigation.instance.navigate('/bookInfo', args: data.id);
-                  // Navigation.instance.navigate('/reading',
-                  //     args: data.id ?? 0);
-                }
+                Navigation.instance.navigate('/bookInfo', args: data.id);
+                // if (data.book_format == "magazine") {
+                //   Navigation.instance
+                //       .navigate('/magazineArticles', args: data.id ?? 0);
+                // } else {
+                //   Navigation.instance.navigate('/bookInfo', args: data.id);
+                //   // Navigation.instance.navigate('/reading',
+                //   //     args: data.id ?? 0);
+                // }
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -108,14 +109,15 @@ class ButtonsPopUpInfoBookmark extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 // initiatePaymentProcess(widget.data.id);
-                if (data.book_format == "magazine") {
-                  Navigation.instance
-                      .navigate('/magazineArticles', args: data.id ?? 0);
-                } else {
-                  Navigation.instance.navigate('/bookInfo', args: data.id);
-                  // Navigation.instance.navigate('/reading',
-                  //     args: data.id ?? 0);
-                }
+                Navigation.instance.navigate('/bookInfo', args: data.id);
+                // if (data.book_format == "magazine") {
+                //   Navigation.instance
+                //       .navigate('/magazineArticles', args: data.id ?? 0);
+                // } else {
+                //   Navigation.instance.navigate('/bookInfo', args: data.id);
+                //   // Navigation.instance.navigate('/reading',
+                //   //     args: data.id ?? 0);
+                // }
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.blue),

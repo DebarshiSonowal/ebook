@@ -171,111 +171,64 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                           return SingleChildScrollView(
                             child: Column(
                               children: [
-                                Html(
-                                  data: test.trim(),
-                                  // tagsList: [
-                                  //   'img','p','!DOCTYPE html','body'
-                                  // ],
-                                  // tagsList: ['p'],
-                                  // shrinkWrap: true,
-                                  customRender: {
-                                    "table": (context, child) {
-                                      return SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child:
-                                            (context.tree as TableLayoutElement)
-                                                .toWidget(context),
-                                      );
-                                    },
-                                    "a": (context, child) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          _launchUrl(Uri.parse(context
-                                              .tree.attributes['href']
-                                              .toString()));
-                                          print(
-                                              context.tree.attributes['href']);
-                                        },
-                                        child: Text(
-                                          context.tree.element?.innerHtml
-                                                  .split("=")[0]
-                                                  .toString() ??
-                                              "",
-                                          style: Theme.of(Navigation.instance
-                                                  .navigatorKey.currentContext!)
-                                              .textTheme
-                                              .headline5
-                                              ?.copyWith(
-                                                // color: Constance.primaryColor,
-                                                fontWeight: FontWeight.bold,
-                                                decoration:
-                                                    TextDecoration.underline,
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                    // "blockquote": (context, child) {
-                                    //   return setupSummaryCard(
-                                    //     title: 'Small Island Developing States Photo Submission',
-                                    //     site: '@flickr',
-                                    //     description: 'View the album on Flickr.',
-                                    //     imageUrl: 'https://farm6.staticflickr.com/5510/14338202952_93595258ff_z.jpg',
-                                    //   );
-                                    // },
-                                    // "blockquote": (context, child) {
-                                    //   return SizedBox(
-                                    //     height: 28.h,
-                                    //     // width: 90.h,
-                                    //     child: GestureDetector(
-                                    //       onTap: () {
-                                    //         _launchUrl(Uri.parse(context
-                                    //             .tree.element?.innerHtml
-                                    //             .split("=")[3]
-                                    //             .split("?")[0]
-                                    //             .substring(1) ??
-                                    //             ""));
-                                    //
-                                    //         // print(context.tree.element?.innerHtml
-                                    //         //     .split("=")[3]
-                                    //         //     .split("?")[0]);
-                                    //       },
-                                    //       child: AbsorbPointer(
-                                    //         child: WebView(
-                                    //           gestureNavigationEnabled: false,
-                                    //           zoomEnabled: true,
-                                    //           initialUrl: Uri.dataFromString(
-                                    //             getHtmlString(context
-                                    //                 .tree.element?.innerHtml
-                                    //                 .split("=")[3]
-                                    //                 .split("?")[0]
-                                    //                 .split("/")
-                                    //                 .last),
-                                    //             mimeType: 'text/html',
-                                    //             encoding:
-                                    //             Encoding.getByName('utf-8'),
-                                    //           ).toString(),
-                                    //           javascriptMode:
-                                    //           JavascriptMode.unrestricted,
-                                    //         ),
-                                    //       ),
-                                    //     ),
-                                    //   );
-                                    //   // return Container(
-                                    //   //     child: Text(
-                                    //   //   '${context.tree.element?.innerHtml.split("=")[3].split("?")[0].split("/").last}',
-                                    //   //   style: TextStyle(color: Colors.black),
-                                    //   // ));
-                                    // },
+                                GestureDetector(
+                                  onTap: (){
+                                    showBottomSlider(reading.length);
                                   },
-                                  style: {
-                                    '#': Style(
-                                      fontSize: FontSize(_counterValue),
+                                  child: Html(
+                                    data: test.trim(),
+                                    // tagsList: [
+                                    //   'img','p','!DOCTYPE html','body'
+                                    // ],
+                                    // tagsList: ['p'],
+                                    // shrinkWrap: true,
+                                    customRender: {
+                                      "table": (context, child) {
+                                        return SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child:
+                                              (context.tree as TableLayoutElement)
+                                                  .toWidget(context),
+                                        );
+                                      },
+                                      "a": (context, child) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            _launchUrl(Uri.parse(context
+                                                .tree.attributes['href']
+                                                .toString()));
+                                            print(
+                                                context.tree.attributes['href']);
+                                          },
+                                          child: Text(
+                                            context.tree.element?.innerHtml
+                                                    .split("=")[0]
+                                                    .toString() ??
+                                                "",
+                                            style: Theme.of(Navigation.instance
+                                                    .navigatorKey.currentContext!)
+                                                .textTheme
+                                                .headline5
+                                                ?.copyWith(
+                                                  // color: Constance.primaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    },
+                                    style: {
+                                      '#': Style(
+                                        fontSize: FontSize(_counterValue),
 
-                                      // maxLines: 20,
-                                      color: getBackGroundColor(),
-                                      // textOverflow: TextOverflow.ellipsis,
-                                    ),
-                                  },
+                                        // maxLines: 20,
+                                        color: getBackGroundColor(),
+                                        // textOverflow: TextOverflow.ellipsis,
+                                      ),
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -612,40 +565,86 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               SizedBox(
                 height: 1.h,
               ),
-              Text(
-                "Page Slider",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
-              ),
-              Slider(
-                value: page_no,
-                onChanged: (value) {
-                  _(() {
-                    page_no = value;
-                    pageController.jumpToPage(
-                      page_no.toInt(),
-                    );
-
-                    // setBrightness(value);
-                  });
-                  setState(() {});
-
-                  if (page_no == 0) {
-                    toggle = true;
-                  } else {
-                    toggle = false;
-                  }
-                },
-                max: reading.length.toDouble(),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
             ],
           ),
         );
       }),
+    );
+  }
+
+  void showBottomSlider(total) {
+    showCupertinoModalBottomSheet(
+      enableDrag: true,
+      // expand: true,
+      elevation: 15,
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
+      topRadius: const Radius.circular(15),
+      closeProgressThreshold: 10,
+      context: Navigation.instance.navigatorKey.currentContext ?? context,
+      builder: (context) => Material(
+        child: StatefulBuilder(builder: (context, _) {
+          return Container(
+            height: 14.h,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Page Slider",
+                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                Slider(
+                  value: page_no,
+                  onChanged: (value) {
+                    _(() {
+                      page_no = value;
+                      pageController.jumpToPage(
+                        page_no.toInt(),
+                      );
+                    });
+                    setState(() {});
+
+                    if (page_no == 0) {
+                      toggle = true;
+                    } else {
+                      toggle = false;
+                    }
+                  },
+                  max: reading.length.toDouble(),
+                ),
+                SizedBox(
+                  height: 0.5.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Current: ${page_no.toInt()}",
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Colors.black,
+                          ),
+                    ),
+                    Text(
+                      "Total: ${total}",
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Colors.black,
+                          ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 

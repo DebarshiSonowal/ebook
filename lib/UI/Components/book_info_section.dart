@@ -41,16 +41,18 @@ class BookInfoSection extends StatelessWidget {
                         height: 4.5.h,
                         child: ElevatedButton(
                             onPressed: () {
-                              if (data.book_format == "magazine") {
-                                Navigation.instance.navigate(
-                                    '/magazineArticles',
-                                    args: data.id ?? 0);
-                              } else {
-                                Navigation.instance.navigate('/bookDetails',
-                                    args: data.id ?? 0);
-                                // Navigation.instance.navigate('/reading',
-                                //     args: data.id ?? 0);
-                              }
+                              Navigation.instance.navigate('/bookDetails',
+                                  args: data.id ?? 0);
+                              // if (data.book_format == "magazine") {
+                              //   Navigation.instance.navigate(
+                              //       '/magazineArticles',
+                              //       args: data.id ?? 0);
+                              // } else {
+                              //   Navigation.instance.navigate('/bookDetails',
+                              //       args: data.id ?? 0);
+                              //   // Navigation.instance.navigate('/reading',
+                              //   //     args: data.id ?? 0);
+                              // }
                             },
                             style: ButtonStyle(
                               backgroundColor:

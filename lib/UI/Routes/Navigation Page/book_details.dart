@@ -13,11 +13,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/reading_chapter.dart';
 import '../../Components/dynamicSize.dart';
@@ -287,6 +289,7 @@ class _BookDetailsState extends State<BookDetails>
                           return GestureDetector(
                             onTap: () {
                               // Navigation.instance.goBack();
+                              showBottomSlider(reading.length);
                             },
                             child: Container(
                               width: 98.w,
@@ -531,36 +534,6 @@ class _BookDetailsState extends State<BookDetails>
               SizedBox(
                 height: 1.h,
               ),
-              Text(
-                "Page Slider",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
-              ),
-              Slider(
-                value: page_no,
-                onChanged: (value) {
-                  _(() {
-                    page_no = value;
-                    pageController.jumpToPage(
-                      page_no.toInt(),
-                    );
-
-                    // setBrightness(value);
-                  });
-                  setState(() {});
-
-                  if (page_no == 0) {
-                    toggle = true;
-                  } else {
-                    toggle = false;
-                  }
-                },
-                max: reading.length.toDouble(),
-              ),
-              SizedBox(
-                height: 1.h,
-              ),
             ],
           ),
         );
@@ -666,5 +639,85 @@ class _BookDetailsState extends State<BookDetails>
 
   getSplittedText(TextStyle textStyle, txt) {
     _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
+  }
+
+  void showBottomSlider(total) {
+    showCupertinoModalBottomSheet(
+      enableDrag: true,
+      // expand: true,
+      elevation: 15,
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
+      topRadius: const Radius.circular(15),
+      closeProgressThreshold: 10,
+      context: Navigation.instance.navigatorKey.currentContext ?? context,
+      builder: (context) => Material(
+        child: StatefulBuilder(
+          builder: (context,_) {
+            return Container(
+              height: 14.h,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Page Slider",
+                    style: Theme.of(context).textTheme.headline3?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  Slider(
+                    value: page_no,
+                    onChanged: (value) {
+                      _((){
+                        page_no = value;
+                        pageController.jumpToPage(
+                          page_no.toInt(),
+                        );
+                      });
+                      setState(() {
+
+                      });
+
+                      if (page_no == 0) {
+                        toggle = true;
+                      } else {
+                        toggle = false;
+                      }
+                    },
+                    max: reading.length.toDouble(),
+                  ),
+                  SizedBox(
+                    height: 0.5.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Current: ${page_no.toInt()}",
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                      Text(
+                        "Total: ${total}",
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                              color: Colors.black,
+                            ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                ],
+              ),
+            );
+          }
+        ),
+      ),
+    );
   }
 }
