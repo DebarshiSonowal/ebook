@@ -34,6 +34,23 @@ class DataProvider extends ChangeNotifier {
   BookDetailsModel? details;
   writer? writerDetails;
 
+  clearAllData(){
+    // formats=[];
+    // categoryList=[];
+    // bannerList=[];
+    // homeSection=[];
+    cartBooks=[];
+    myBooks=[];
+    search_results=[];
+    bookmarks=[];
+    items=[];
+    // cupons=[];
+    orders=[];
+    cartData=null;
+    profile=null;
+    notifyListeners();
+  }
+
   setBookDetails(BookDetailsModel data) {
     details = data;
     notifyListeners();

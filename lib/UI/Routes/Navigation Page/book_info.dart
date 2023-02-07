@@ -124,42 +124,48 @@ class _BookInfoState extends State<BookInfo>
                                 ),
                                 bookDetails?.book_format != "magazine"
                                     ? Row(
-                                  children: [
-                                    Text(
-                                      "by",
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
-                                    ),
-                                    SizedBox(
-                                      width: 1.h,
-                                    ),
-                                    Text(
-                                     (bookDetails?.contributor?? ""),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(color: Colors.blueAccent),
-                                    ),
-                                  ],
-                                ):Row(
-                                  children: [
-                                    Text(
-                                      "Publisher: ",
-                                      style:
-                                      Theme.of(context).textTheme.headline4,
-                                    ),
-                                    SizedBox(
-                                      width: 1.h,
-                                    ),
-                                    Text(
-                                      (bookDetails?.publication_name?? ""),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline4
-                                          ?.copyWith(color: Colors.blueAccent),
-                                    ),
-                                  ],
-                                ),
+                                        children: [
+                                          Text(
+                                            "by",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4,
+                                          ),
+                                          SizedBox(
+                                            width: 1.h,
+                                          ),
+                                          Text(
+                                            (bookDetails?.contributor ?? ""),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4
+                                                ?.copyWith(
+                                                    color: Colors.blueAccent),
+                                          ),
+                                        ],
+                                      )
+                                    : Row(
+                                        children: [
+                                          Text(
+                                            "Publisher: ",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4,
+                                          ),
+                                          SizedBox(
+                                            width: 1.h,
+                                          ),
+                                          Text(
+                                            (bookDetails?.publication_name ??
+                                                ""),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline4
+                                                ?.copyWith(
+                                                    color: Colors.blueAccent),
+                                          ),
+                                        ],
+                                      ),
                                 SizedBox(
                                   height: 1.5.h,
                                 ),
@@ -221,7 +227,8 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    ReadButton(id: widget.id,format:bookDetails?.book_format??""),
+                    ReadButton(
+                        id: widget.id, format: bookDetails?.book_format ?? ""),
                     DownloadSection(widget.id),
                     SizedBox(
                       width: 90.w,
@@ -358,14 +365,22 @@ class _BookInfoState extends State<BookInfo>
                               size: 10,
                             ),
                         onRatingUpdate: (rating) {
-                          giveRating(context);
+                          if (Storage.instance.isLoggedIn) {
+                            giveRating(context);
+                          } else {
+                            ConstanceData.showAlertDialog(context);
+                          }
                         }),
                     SizedBox(
                       height: 2.h,
                     ),
                     GestureDetector(
                       onTap: () {
-                        giveRating(context);
+                        if (Storage.instance.isLoggedIn) {
+                          giveRating(context);
+                        } else {
+                          ConstanceData.showAlertDialog(context);
+                        }
                       },
                       child: Text(
                         "Write a Review",
@@ -456,8 +471,7 @@ class _BookInfoState extends State<BookInfo>
                                             color: Colors.amber,
                                             size: 10,
                                           ),
-                                      onRatingUpdate: (rating) {
-                                      }),
+                                      onRatingUpdate: (rating) {}),
                                 ],
                               ),
                               SizedBox(
@@ -652,8 +666,7 @@ class _BookInfoState extends State<BookInfo>
 
     try {
       _razorpay.open(options);
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   void handleSuccess(PaymentSuccessResponse response) async {
@@ -754,8 +767,7 @@ class BookPublishinDetails extends StatelessWidget {
                           color: Colors.white,
                           size: 10,
                         ),
-                    onRatingUpdate: (rating) {
-                    }),
+                    onRatingUpdate: (rating) {}),
               ),
               Text(
                 '(${bookDetails.total_rating?.toInt()})',
@@ -963,18 +975,16 @@ class DownloadSection extends StatelessWidget {
           GestureDetector(
             onTap: () async {
               if ((Provider.of<DataProvider>(
-                  Navigation.instance.navigatorKey
-                      .currentContext ??
-                      context,
-                  listen: false)
-                  .profile !=
-                  null) &&
+                              Navigation.instance.navigatorKey.currentContext ??
+                                  context,
+                              listen: false)
+                          .profile !=
+                      null) &&
                   Storage.instance.isLoggedIn) {
-                addBookmark(id,context);
+                addBookmark(id, context);
               } else {
                 ConstanceData.showAlertDialog(context);
               }
-
             },
             child: SizedBox(
               height: 15.h,
@@ -1026,7 +1036,7 @@ class DownloadSection extends StatelessWidget {
     );
   }
 
-  void addBookmark(int id,context) async{
+  void addBookmark(int id, context) async {
     Navigation.instance.navigate('/loadingDialog');
     final reponse = await ApiProvider.instance.addBookmark(id ?? 0);
     if (reponse.status ?? false) {
@@ -1034,9 +1044,8 @@ class DownloadSection extends StatelessWidget {
       final response = await ApiProvider.instance.fetchBookmark();
       if (response.status ?? false) {
         Provider.of<DataProvider>(
-            Navigation.instance.navigatorKey.currentContext ??
-                context,
-            listen: false)
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
             .setToBookmarks(response.items ?? []);
         Navigation.instance.goBack();
         CoolAlert.show(
@@ -1044,7 +1053,7 @@ class DownloadSection extends StatelessWidget {
           type: CoolAlertType.success,
           text: "Bookmark added successfully",
         );
-      }else{
+      } else {
         Navigation.instance.goBack();
         CoolAlert.show(
           context: context,
@@ -1075,18 +1084,17 @@ class BuyButton extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   if ((Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey
-                          .currentContext ??
-                          context,
-                      listen: false)
-                      .profile !=
-                      null) &&
+                                  Navigation.instance.navigatorKey
+                                          .currentContext ??
+                                      context,
+                                  listen: false)
+                              .profile !=
+                          null) &&
                       Storage.instance.isLoggedIn) {
                     onTap();
                   } else {
                     ConstanceData.showAlertDialog(context);
                   }
-
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -1110,12 +1118,12 @@ class BuyButton extends StatelessWidget {
                   //     .navigate('/bookInfo', args: data.id);
 
                   if ((Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey
-                          .currentContext ??
-                          context,
-                      listen: false)
-                      .profile !=
-                      null) &&
+                                  Navigation.instance.navigatorKey
+                                          .currentContext ??
+                                      context,
+                                  listen: false)
+                              .profile !=
+                          null) &&
                       Storage.instance.isLoggedIn) {
                     addtocart(context, id);
                   } else {
@@ -1195,7 +1203,7 @@ class ReadButton extends StatelessWidget {
   final int id;
   final String format;
 
-  const ReadButton({super.key, required this.id,required this.format});
+  const ReadButton({super.key, required this.id, required this.format});
 
   @override
   Widget build(BuildContext context) {
@@ -1208,13 +1216,9 @@ class ReadButton extends StatelessWidget {
           // Navigation.instance.navigate('/bookDetails', args: id ?? 0);
           // Navigation.instance.navigate('/reading', args: id ?? 0);
           if (format == "magazine") {
-            Navigation.instance.navigate(
-                '/magazineArticles',
-                args: id ?? 0);
+            Navigation.instance.navigate('/magazineArticles', args: id ?? 0);
           } else {
-            Navigation.instance.navigate(
-                '/bookDetails',
-                args: id ?? 0);
+            Navigation.instance.navigate('/bookDetails', args: id ?? 0);
             // Navigation.instance.navigate('/reading',
             //     args: data.id ?? 0);
           }
@@ -1229,7 +1233,7 @@ class ReadButton extends StatelessWidget {
           ),
         ),
         child: Text(
-          format=='magazine'?"View Articles":'Read Preview',
+          format == 'magazine' ? "View Articles" : 'Read Preview',
           style: Theme.of(context).textTheme.headline3?.copyWith(
                 // fontSize: 2.5.h,
                 color: Colors.blue,

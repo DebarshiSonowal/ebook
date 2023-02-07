@@ -106,11 +106,11 @@ class ApiProvider {
         return LoginResponse.fromJson(response?.data);
       } else {
         debugPrint("login Subscriber error: ${response?.data}");
-        return LoginResponse.withError();
+        return LoginResponse.withError("something went wrong");
       }
     } on DioError catch (e) {
-      debugPrint("login Subscriber response: ${e.response}");
-      return LoginResponse.withError();
+      debugPrint("login Subscriber response error: ${e.response?.data}");
+      return LoginResponse.withError(e.response?.data['message']);
     }
   }
 

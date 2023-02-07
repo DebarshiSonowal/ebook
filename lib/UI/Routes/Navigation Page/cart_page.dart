@@ -187,9 +187,9 @@ class _CartPageState extends State<CartPage> {
   void initateOrder(RazorpayKey razorpay) async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
     if (response.status ?? false) {
-      tempTotal = response.order?.total ?? 0;
+      tempTotal = response.order?.grand_total ?? 0;
       temp_order_id = response.order?.order_id.toString() ?? "";
-      startPayment(razorpay, response.order?.total, response.order?.order_id,
+      startPayment(razorpay, response.order?.grand_total, response.order?.order_id,
           response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();

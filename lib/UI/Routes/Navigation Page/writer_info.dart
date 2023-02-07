@@ -26,8 +26,6 @@ class WriterInfo extends StatefulWidget {
 }
 
 class _WriterInfoState extends State<WriterInfo> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,164 +52,300 @@ class _WriterInfoState extends State<WriterInfo> {
                       // color: Colors.black,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: Text(
-                    data.writerDetails?.about ??
-                        'Simon & Schuster is the author of Macmillan Dictionary for Children,'
-                            ' a Simon & Schuster book',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Tags',
+                data.writerDetails?.about == ""
+                    ? Container()
+                    : SizedBox(
+                        height: 1.h,
+                      ),
+                data.writerDetails?.about == ""
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: Text(
+                          data.writerDetails?.about ??
+                              'Simon & Schuster is the author of Macmillan Dictionary for Children,'
+                                  ' a Simon & Schuster book',
                           style:
                               Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 2.h,
-                                    // color: Colors.grey.shade200,
+                                    color: Colors.white,
                                   ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 4.h,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      for (var i in data.writerDetails?.tags ?? [])
-                        GestureDetector(
-                          onTap: () {
-                            Navigation.instance.goBack();
-                            Navigation.instance
-                                .navigate('/searchWithTag', args: i.toString());
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                            ),
-                            child: Text(
-                              i.name ?? "",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Awards',
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 2.h,
-                                    // color: Colors.grey.shade200,
-                                  ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 4.h,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      for (var i in data.writerDetails?.awards ?? [])
-                        GestureDetector(
-                          onTap: () {
-                            Navigation.instance.goBack();
-                            Navigation.instance.navigate('/searchWithAuthor',
-                                args: i.toString());
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            margin: const EdgeInsets.symmetric(horizontal: 5),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.white),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                            ),
-                            child: Text(
-                              i.name ?? "",
-                              style: Theme.of(context).textTheme.headline5,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Books by ${data.writerDetails?.name}',
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 2.h,
-                                    // color: Colors.grey.shade200,
-                                  ),
-                        ),
-                        Text(
-                          'More >',
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 1.5.h,
-                                    color: Colors.blueAccent,
-                                  ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
                 SizedBox(
                   height: 1.h,
                 ),
+                (data.writerDetails?.tags ?? []).isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Tags',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      fontSize: 2.h,
+                                      // color: Colors.grey.shade200,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                (data.writerDetails?.tags ?? []).isEmpty
+                    ? Container()
+                    : SizedBox(
+                        height: 4.h,
+                        child: ListView(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            for (var i in data.writerDetails?.tags ?? [])
+                              GestureDetector(
+                                onTap: () {
+                                  Navigation.instance.goBack();
+                                  Navigation.instance.navigate('/searchWithTag',
+                                      args: i.toString());
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5)),
+                                  ),
+                                  child: Text(
+                                    i.name ?? "",
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                 SizedBox(
+                  height: 2.h,
+                ),
+                (data.writerDetails?.awards ?? []).isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Awards',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      fontSize: 2.h,
+                                      // color: Colors.grey.shade200,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                (data.writerDetails?.awards ?? []).isEmpty
+                    ? Container()
+                    : SizedBox(
+                        height: 4.h,
+                        child: ListView(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            for (var i in data.writerDetails?.awards ?? [])
+                              GestureDetector(
+                                onTap: () {
+                                  Navigation.instance.goBack();
+                                  Navigation.instance.navigate(
+                                      '/searchWithAuthor',
+                                      args: i.toString());
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    i.name ?? "",
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                (data.writerDetails?.books
+                                .where((element) =>
+                                    element.book_format == "e-book")
+                                .toList() ??
+                            [])
+                        .isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Books by ${data.writerDetails?.name}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      fontSize: 2.h,
+                                      // color: Colors.grey.shade200,
+                                    ),
+                              ),
+                              Text(
+                                'More >',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      fontSize: 1.5.h,
+                                      color: Colors.blueAccent,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                (data.writerDetails?.books
+                                .where((element) =>
+                                    element.book_format == "e-book")
+                                .toList() ??
+                            [])
+                        .isEmpty
+                    ? Container()
+                    : SizedBox(
+                        height: 1.h,
+                      ),
+                (data.writerDetails?.books
+                                .where((element) =>
+                                    element.book_format == "e-book")
+                                .toList() ??
+                            [])
+                        .isEmpty
+                    ? Container()
+                    : SizedBox(
+                        height: 35.h,
+                        child: ListView.builder(
+                            itemCount: data.writerDetails?.books
+                                .where((element) =>
+                                    element.book_format == "e-book")
+                                .length,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (cont, count) {
+                              var current = data.writerDetails?.books
+                                  .where((element) =>
+                                      element.book_format == "e-book")
+                                  .toList()[count];
+                              return BookItem(
+                                data: current!,
+                                index: count,
+                                show: (data) {
+                                  ConstanceData.show(context, data);
+                                },
+                              );
+                            }),
+                      ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                (data.writerDetails?.books
+                    .where((element) =>
+                element.book_format == "magazine")
+                    .toList() ??
+                    [])
+                    .isEmpty
+                    ? Container()
+                    : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Magazines by ${data.writerDetails?.name}',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(
+                            fontSize: 2.h,
+                            // color: Colors.grey.shade200,
+                          ),
+                        ),
+                        Text(
+                          'More >',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(
+                            fontSize: 1.5.h,
+                            color: Colors.blueAccent,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                (data.writerDetails?.books
+                    .where((element) =>
+                element.book_format == "magazine")
+                    .toList() ??
+                    [])
+                    .isEmpty
+                    ? Container()
+                    : SizedBox(
+                  height: 1.h,
+                ),
+                (data.writerDetails?.books
+                    .where((element) =>
+                element.book_format == "magazine")
+                    .toList() ??
+                    [])
+                    .isEmpty
+                    ? Container()
+                    : SizedBox(
                   height: 35.h,
                   child: ListView.builder(
-                      itemCount: data.writerDetails?.books.length,
+                      itemCount: data.writerDetails?.books
+                          .where((element) =>
+                      element.book_format == "magazine")
+                          .length,
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemBuilder: (cont, count) {
-                        var current = data.writerDetails?.books[count];
+                        var current = data.writerDetails?.books
+                            .where((element) =>
+                        element.book_format == "magazine")
+                            .toList()[count];
                         return BookItem(
                           data: current!,
                           index: count,

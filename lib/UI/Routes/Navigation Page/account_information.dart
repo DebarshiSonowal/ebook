@@ -72,8 +72,7 @@ class _AccountInformationState extends State<AccountInformation> {
         actions: [
           GestureDetector(
             onTap: () {
-              Provider.of<DataProvider>(context, listen: false)
-                  .setProfileClear();
+              Provider.of<DataProvider>(context, listen: false).clearAllData();
               Storage.instance.logout();
               Navigation.instance.navigate('/login');
             },

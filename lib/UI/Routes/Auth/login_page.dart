@@ -286,7 +286,7 @@ class _LoginPageState extends State<LoginPage> {
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
-        text: "Something went wrong",
+        text: response.message??"Something went wrong",
       );
     }
   }

@@ -5,6 +5,7 @@ import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -78,35 +79,21 @@ class _AccountPageState extends State<AccountPage> {
                   child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: ConstanceData.pages.length,
+                      itemCount: Storage.instance.isLoggedIn
+                          ? ConstanceData.pages.length
+                          : ConstanceData.pages2.length,
                       itemBuilder: (cont, ind) {
-                        var current = ConstanceData.pages[ind];
+                        var current = Storage.instance.isLoggedIn
+                            ? ConstanceData.pages[ind]
+                            : ConstanceData.pages2[ind];
                         return ListTile(
                           onTap: () {
-                            if (ind == 0) {
-                              Navigation.instance
-                                  .navigate('/accountInformation');
-                            } else if (ind == 1) {
-                              Provider.of<DataProvider>(context, listen: false)
-                                  .setProfileClear();
-                              Storage.instance.logout();
-                              Navigation.instance.navigate('/login');
-                            } else if (ind == 3) {
-                              _launchUrl(Uri.parse(
-                                  'https://tratri.in/refund-and-cancellation'));
-                            } else if (ind == 5) {
-                              _launchUrl(Uri.parse(
-                                  'https://tratri.in/privacy-policy'));
-                            } else if (ind == 6) {
-                              _launchUrl(
-                                  Uri.parse('https://tratri.in/contact-us'));
-                            } else if (ind == 7) {
-                              _launchUrl(Uri.parse(
-                                  'https://tratri.in/https://tratri.in/about-us'));
-                            }
+                            Storage.instance.isLoggedIn
+                                ? LoggedInAction(ind)
+                                : UnauthorizedAction(ind);
                           },
                           title: Text(
-                            ind == 1
+                            ind == 0
                                 ? ((data.profile == null ||
                                         !Storage.instance.isLoggedIn)
                                     ? "Sign In"
@@ -159,6 +146,63 @@ class _AccountPageState extends State<AccountPage> {
   Future<void> _launchUrl(_url) async {
     if (!await launchUrl(_url)) {
       throw 'Could not launch $_url';
+    }
+  }
+
+  LoggedInAction(int ind) {
+    switch (ind) {
+      case 0:
+        Navigation.instance.navigate('/accountInformation');
+        break;
+      case 1:
+        Provider.of<DataProvider>(context, listen: false).clearAllData();
+        Storage.instance.logout();
+        Navigation.instance.navigate('/main');
+        break;
+      case 2:
+        Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+        break;
+      case 3:
+        _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
+        break;
+      case 5:
+        _launchUrl(Uri.parse('https://tratri.in/privacy-policy'));
+        break;
+      case 6:
+        _launchUrl(Uri.parse('https://tratri.in/contact-us'));
+        break;
+      case 7:
+        _launchUrl(Uri.parse('https://tratri.in/https://tratri.in/about-us'));
+        break;
+      default:
+        break;
+    }
+  }
+
+  UnauthorizedAction(int ind) {
+    switch (ind) {
+      case 0:
+        // Provider.of<DataProvider>(context, listen: false).clearAllData();
+        // Storage.instance.logout();
+        Navigation.instance.navigate('/login');
+        break;
+      case 1:
+        Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+        break;
+      case 2:
+        _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
+        break;
+      case 4:
+        _launchUrl(Uri.parse('https://tratri.in/privacy-policy'));
+        break;
+      case 5:
+        _launchUrl(Uri.parse('https://tratri.in/contact-us'));
+        break;
+      case 6:
+        _launchUrl(Uri.parse('https://tratri.in/https://tratri.in/about-us'));
+        break;
+      default:
+        break;
     }
   }
 }

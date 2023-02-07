@@ -84,6 +84,7 @@ dependencies:
   toggle_switch: ^2.0.1
   jiffy: ^5.0.0
   package_info_plus: ^1.4.2
+  share_plus: ^4.5.3
 #  top_snackbar_flutter: ^3.0.0+1
 
 dev_dependencies:

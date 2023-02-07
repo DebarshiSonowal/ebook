@@ -1,3 +1,4 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Storage {
@@ -28,6 +29,7 @@ class Storage {
 
   Future<void> logout() async{
     await sharedpreferences.clear();
+    Fluttertoast.showToast(msg: "Successfully logged out");
   }
 
   get isLoggedIn => sharedpreferences.getBool("isLoggedIn") ?? false;

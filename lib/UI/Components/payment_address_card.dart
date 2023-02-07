@@ -44,7 +44,7 @@ class PaymentAddressCard extends StatelessWidget {
                               .textTheme
                               .headline3
                               ?.copyWith(
-                            color: getTotalAmount(data.cartData!).toString()=="0"?Colors.green:Colors.black,
+                            color: Colors.green,
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
                           ),

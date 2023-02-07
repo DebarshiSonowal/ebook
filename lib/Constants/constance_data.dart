@@ -55,6 +55,16 @@ class ConstanceData {
     'Contact Us',
     'About',
   ];
+  static const pages2 = [
+    // 'Account Information',
+    'Sign out',
+    'Invite Friends',
+    'Refund and Cancellation',
+    'Terms and Conditions',
+    'Privacy Policy',
+    'Contact Us',
+    'About',
+  ];
 
   static const banner = [
     "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80",
