@@ -114,7 +114,7 @@ class _BookItemState extends State<BookItem> {
             IgnorePointer(
               child: RatingBar.builder(
                 itemSize: 4.w,
-                initialRating: widget.data.average_rating ?? 3,
+                initialRating: widget.data.average_rating ?? 0,
                 minRating: 1,
                 direction: Axis.horizontal,
                 allowHalfRating: true,

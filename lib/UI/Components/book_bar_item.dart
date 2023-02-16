@@ -95,7 +95,7 @@ class bookBaritem extends StatelessWidget {
                     IgnorePointer(
                       child: RatingBar.builder(
                           itemSize: 4.w,
-                          initialRating: 3,
+                          initialRating: data.average_rating??0,
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,

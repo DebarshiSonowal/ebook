@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 import '../../Helper/navigator.dart';
 import '../../Model/article.dart';
 import '../../Model/book_details.dart';
+import '../../Model/home_banner.dart';
 
 class articleitemcard extends StatelessWidget {
   const articleitemcard({
@@ -15,7 +16,7 @@ class articleitemcard extends StatelessWidget {
     required this.count,
   }) : super(key: key);
 
-  final BookDetailsModel? bookDetails;
+  final Book? bookDetails;
   final BuildContext context;
   final Article? current;
   final int count;

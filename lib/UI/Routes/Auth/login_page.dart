@@ -7,6 +7,7 @@ import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Storage/data_provider.dart';
 
@@ -100,18 +101,19 @@ class _LoginPageState extends State<LoginPage> {
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
+                          borderSide:
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -131,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
+                      obscureText: true,
                       style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your password',
@@ -148,18 +151,19 @@ class _LoginPageState extends State<LoginPage> {
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
+                          borderSide:
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -215,7 +219,22 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 5.h,
+                  height: 2.h,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    _launchUrl(
+                        Uri.parse("https://tratri.in/app-forget-password"));
+                  },
+                  child: Text(
+                    "Forgot Password",
+                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                          fontSize: 9.sp,
+                        ),
+                  ),
+                ),
+                SizedBox(
+                  height: 2.h,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -229,40 +248,6 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 5.h,
                 ),
-                // Text('Signup'),
-                // Container(
-                //   width: double.infinity,
-                //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //     children: [
-                //       Container(
-                //         padding: EdgeInsets.all(5.0),
-                //         decoration: const BoxDecoration(
-                //           color: Colors.white,
-                //           shape: BoxShape.circle,
-                //         ),
-                //         child: Icon(
-                //           FontAwesomeIcons.google,
-                //           color: Colors.red,
-                //           size: 5.h,
-                //         ),
-                //       ),
-                //       // Container(
-                //       //   padding: EdgeInsets.all(5.0),
-                //       //   decoration: const BoxDecoration(
-                //       //     color: Colors.white,
-                //       //     shape: BoxShape.circle,
-                //       //   ),
-                //       //   child: Icon(
-                //       //     FontAwesomeIcons.facebook,
-                //       //     color: Colors.blueAccent,
-                //       //     size: 5.h,
-                //       //   ),
-                //       // ),
-                //     ],
-                //   ),
-                // ),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -286,7 +271,7 @@ class _LoginPageState extends State<LoginPage> {
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
-        text: response.message??"Something went wrong",
+        text: response.message ?? "Something went wrong",
       );
     }
   }
@@ -307,6 +292,12 @@ class _LoginPageState extends State<LoginPage> {
         type: CoolAlertType.error,
         text: "Something went wrong",
       );
+    }
+  }
+
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $_url';
     }
   }
 }

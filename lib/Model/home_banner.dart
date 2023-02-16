@@ -21,14 +21,14 @@ class HomeBannerResponse {
 }
 
 class Book {
-  int? id, book_category_id, length, total_rating,contributor_id,no_of_articles;
+  int? id, book_category_id, length, total_rating,contributor_id,no_of_articles,total_chapters;
   String? title,
       writer,
       book_format,
       category,
       profile_pic,
       language,
-      short_description;
+      short_description,description,contributor,publication_name,publisher,released_date;
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
   bool? is_bookmarked;
@@ -45,6 +45,7 @@ class Book {
         : int.parse(json['contributor_id'].toString());
     length = json['length'] == null ? 0 : int.parse(json['length'].toString());
     total_rating = json['total_rating'] ?? 0;
+    total_chapters = json['total_chapters'] ?? 0;
 
     title = json['title'] ?? "";
     writer = json['writer'] ?? json['contributor'] ?? "";
@@ -53,7 +54,12 @@ class Book {
     profile_pic = json['profile_pic'] ?? "";
     language = json['language'] ?? "";
     short_description = json['short_description'] ?? "";
+    description = json['description'] ?? "";
     is_bookmarked = json['is_bookmarked'] ?? false;
+    contributor = json['contributor'] ?? "";
+    publication_name = json['publication_name'] ?? "";
+    released_date = json['released_date'] ?? "";
+    publisher = json['publisher'] ?? "";
 
     tags = json['tags'] == null
         ? []

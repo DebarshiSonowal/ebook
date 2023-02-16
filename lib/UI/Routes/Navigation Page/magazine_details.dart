@@ -17,6 +17,7 @@ import '../../../Helper/navigator.dart';
 import '../../../Model/book.dart';
 import '../../../Model/book_chapter.dart';
 import '../../../Model/book_details.dart';
+import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
 import '../../../Model/reading_theme.dart';
 import '../../../Networking/api_provider.dart';
@@ -38,7 +39,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     with SingleTickerProviderStateMixin {
   int currentIndex = 0;
   List<ReadingChapter> reading = [];
-  BookDetailsModel? bookDetails;
+  Book? bookDetails;
   var themes = [
     ReadingTheme(
       Colors.white,

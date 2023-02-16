@@ -34,12 +34,6 @@ class _HomePageState extends State<HomePage>
     return SafeArea(
       child: WillPopScope(
         onWillPop: () async {
-          // if (Provider.of<DataProvider>(
-          //             Navigation.instance.navigatorKey.currentContext ??
-          //                 context,
-          //             listen: false)
-          //         .currentIndex ==
-          //     0) {
           Dialogs.materialDialog(
               msg: 'Are you sure ? you want to exit',
               title: "Exit",

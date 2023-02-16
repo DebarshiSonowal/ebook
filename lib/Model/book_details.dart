@@ -1,15 +1,17 @@
+import 'package:ebook/Model/home_banner.dart';
+
 import 'Tag.dart';
 import 'article.dart';
 
 class BookDetailsResponse {
   bool? status;
   String? message;
-  BookDetailsModel? details;
+  Book? details;
 
   BookDetailsResponse.fromJson(json) {
     status = json['success'] ?? false;
     message = json['message'] ?? "Something went wrong";
-    details = BookDetailsModel.fromJson(json['result']);
+    details = Book.fromJson(json['result']);
   }
 
   BookDetailsResponse.withError(msg) {

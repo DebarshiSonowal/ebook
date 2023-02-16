@@ -1,17 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
-import 'package:ebook/Model/writer.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Constants/constance_data.dart';
-import '../../../Model/home_banner.dart';
 import '../../Components/book_item.dart';
 
 class WriterInfo extends StatefulWidget {
@@ -211,7 +205,7 @@ class _WriterInfoState extends State<WriterInfo> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Books by ${data.writerDetails?.name}',
+                                'Books',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headline5
@@ -220,15 +214,20 @@ class _WriterInfoState extends State<WriterInfo> {
                                       // color: Colors.grey.shade200,
                                     ),
                               ),
-                              Text(
-                                'More >',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(
-                                      fontSize: 1.5.h,
-                                      color: Colors.blueAccent,
-                                    ),
+                              GestureDetector(
+                                onTap: (){
+
+                                },
+                                child: Text(
+                                  'More >',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      ?.copyWith(
+                                        fontSize: 1.5.h,
+                                        color: Colors.blueAccent,
+                                      ),
+                                ),
                               ),
                             ],
                           ),
@@ -292,7 +291,7 @@ class _WriterInfoState extends State<WriterInfo> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Magazines by ${data.writerDetails?.name}',
+                          'Magazines',
                           style: Theme.of(context)
                               .textTheme
                               .headline5
@@ -301,14 +300,19 @@ class _WriterInfoState extends State<WriterInfo> {
                             // color: Colors.grey.shade200,
                           ),
                         ),
-                        Text(
-                          'More >',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                            fontSize: 1.5.h,
-                            color: Colors.blueAccent,
+                        GestureDetector(
+                          onTap: (){
+
+                          },
+                          child: Text(
+                            'More >',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline5
+                                ?.copyWith(
+                              fontSize: 1.5.h,
+                              color: Colors.blueAccent,
+                            ),
                           ),
                         ),
                       ],

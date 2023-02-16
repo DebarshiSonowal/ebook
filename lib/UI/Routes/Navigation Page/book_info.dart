@@ -16,11 +16,19 @@ import '../../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Model/book_details.dart';
+import '../../../Model/home_banner.dart';
 import '../../../Model/razorpay_key.dart';
 import '../../../Model/review.dart';
 import '../../../Networking/api_provider.dart';
 import '../../../Storage/app_storage.dart';
 import '../../../Storage/data_provider.dart';
+import '../../Components/book_publishing_details.dart';
+import '../../Components/buy_button.dart';
+import '../../Components/download_section.dart';
+import '../../Components/read_button.dart';
+import '../../Components/review_section.dart';
+import '../../Components/tag_bookdetails.dart';
+import '../../Components/winner_of.dart';
 
 class BookInfo extends StatefulWidget {
   final int id;
@@ -33,7 +41,7 @@ class BookInfo extends StatefulWidget {
 
 class _BookInfoState extends State<BookInfo>
     with SingleTickerProviderStateMixin {
-  BookDetailsModel? bookDetails;
+  Book? bookDetails;
   List<Review> reviews = [];
   final _razorpay = Razorpay();
   double tempTotal = 0;
@@ -60,20 +68,17 @@ class _BookInfoState extends State<BookInfo>
                 color: Colors.white,
               ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.share),
-          ),
-        ],
+        // actions: [
+        //
+        // ],
       ),
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: bookDetails == null
-            ? Center(
-                child: Container(
+            ? const Center(
+                child: SizedBox(
                   height: 100,
                   width: 100,
                   child: CircularProgressIndicator(
@@ -86,7 +91,7 @@ class _BookInfoState extends State<BookInfo>
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       height: 20.h,
                       child: Row(
@@ -170,26 +175,7 @@ class _BookInfoState extends State<BookInfo>
                                   height: 1.5.h,
                                 ),
                                 for (var i in bookDetails?.awards ?? [])
-                                  Row(
-                                    children: [
-                                      Text("# Winner of ",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5
-                                          // ?.copyWith(fontSize: 11.sp),
-                                          ),
-                                      Text(
-                                        i.name ?? "",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5
-                                            ?.copyWith(
-                                              color: Colors.blueAccent,
-                                              // fontSize: 11.sp,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
+                                  winnerOf(i: i),
                                 Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
@@ -199,7 +185,7 @@ class _BookInfoState extends State<BookInfo>
                                     padding: EdgeInsets.all(0.5.w),
                                     // decoration: ,
                                     child: Text(
-                                      'Rs. ${bookDetails?.base_price?.toStringAsFixed(2)}',
+                                      'Rs. ${bookDetails?.base_price?.toStringAsFixed(2).toString() == "0.00" ? "FREE" : bookDetails?.base_price?.toStringAsFixed(2)}',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
@@ -207,7 +193,13 @@ class _BookInfoState extends State<BookInfo>
                                           .headline6
                                           ?.copyWith(
                                             fontSize: 9.sp,
-                                            color: Colors.black,
+                                            color: bookDetails?.base_price
+                                                        ?.toStringAsFixed(2)
+                                                        .toString() ==
+                                                    "0.00"
+                                                ? Colors.green
+                                                : Colors.black,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                     ),
                                   ),
@@ -238,7 +230,7 @@ class _BookInfoState extends State<BookInfo>
                       ),
                     ),
                     SizedBox(
-                      height: 3.h,
+                      height: 1.h,
                     ),
                     BookPublishinDetails(
                       bookDetails!,
@@ -247,16 +239,16 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 1.h,
                     ),
-                    SizedBox(
-                      width: 90.w,
-                      height: 0.02.h,
-                      child: Container(
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 1.5.h,
-                    ),
+                    // SizedBox(
+                    //   width: 90.w,
+                    //   height: 0.02.h,
+                    //   child: Container(
+                    //     color: Colors.white,
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 1.5.h,
+                    // ),
                     SizedBox(
                       width: double.infinity,
                       child: Row(
@@ -267,20 +259,7 @@ class _BookInfoState extends State<BookInfo>
                                 Navigation.instance.navigate('/searchWithTag',
                                     args: i.toString());
                               },
-                              child: Container(
-                                padding: const EdgeInsets.all(5),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 1.w, vertical: 0.5.h),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
-                                ),
-                                child: Text(
-                                  i.name ?? "",
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
-                              ),
+                              child: Tag_BookDetails(i: i),
                             ),
                         ],
                       ),
@@ -352,7 +331,7 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     RatingBar.builder(
                         itemSize: 5.h,
-                        initialRating: 0,
+                        initialRating:0,
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
@@ -366,7 +345,7 @@ class _BookInfoState extends State<BookInfo>
                             ),
                         onRatingUpdate: (rating) {
                           if (Storage.instance.isLoggedIn) {
-                            giveRating(context);
+                            giveRating(context,rating);
                           } else {
                             ConstanceData.showAlertDialog(context);
                           }
@@ -377,7 +356,7 @@ class _BookInfoState extends State<BookInfo>
                     GestureDetector(
                       onTap: () {
                         if (Storage.instance.isLoggedIn) {
-                          giveRating(context);
+                          giveRating(context,0);
                         } else {
                           ConstanceData.showAlertDialog(context);
                         }
@@ -432,75 +411,7 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 2.h,
                     ),
-                    ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: reviews.length,
-                      itemBuilder: (cont, index) {
-                        var data = reviews[index];
-                        return Container(
-                          width: double.infinity,
-                          // height: 20.h,
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '${data.subscriber}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline4
-                                        ?.copyWith(color: Colors.white
-                                            // fontSize: 2.h,
-                                            // color: Colors.grey.shade200,
-                                            ),
-                                  ),
-                                  RatingBar.builder(
-                                      itemSize: 5.w,
-                                      initialRating: data.rating ?? 3,
-                                      minRating: 1,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      // itemPadding:
-                                      //     EdgeInsets.symmetric(horizontal: 4.0),
-                                      itemBuilder: (context, _) => const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                            size: 10,
-                                          ),
-                                      onRatingUpdate: (rating) {}),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 1.5.h,
-                              ),
-                              Text(
-                                '${data.content}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(
-                                        // fontSize: 2.h,
-                                        // color: Colors.grey.shade200,
-                                        ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(vertical: 0.5.h),
-                          child: Divider(
-                            color: Colors.white,
-                            height: 0.1.h,
-                          ),
-                        );
-                      },
-                    ),
+                    ReviewSection(reviews: reviews),
                     SizedBox(
                       height: 1.5.h,
                     ),
@@ -539,14 +450,14 @@ class _BookInfoState extends State<BookInfo>
     }
   }
 
-  void giveRating(BuildContext context) {
+  void giveRating(BuildContext context,double rating) {
     showDialog(
       context: context,
       barrierDismissible: true,
       // set to false if you want to force a rating
       builder: (context) => RatingDialog(
         starSize: 4.h,
-        initialRating: 0,
+        initialRating: rating,
         // your app's name?
         title: Text(
           'Give us rating',
@@ -719,527 +630,5 @@ class _BookInfoState extends State<BookInfo>
     // );
     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
     Fluttertoast.showToast(msg: "Something went wrong");
-  }
-}
-
-class BookPublishinDetails extends StatelessWidget {
-  final BookDetailsModel bookDetails;
-
-  final BookInfo widget;
-
-  BookPublishinDetails(this.bookDetails, this.widget);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 20.h,
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 25.w,
-                child: Text(
-                  'RATINGS',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                width: 3.h,
-              ),
-              AbsorbPointer(
-                child: RatingBar.builder(
-                    itemSize: 5.w,
-                    initialRating: bookDetails.average_rating ?? 3,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    // itemPadding:
-                    //     EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => const Icon(
-                          Icons.star,
-                          color: Colors.white,
-                          size: 10,
-                        ),
-                    onRatingUpdate: (rating) {}),
-              ),
-              Text(
-                '(${bookDetails.total_rating?.toInt()})',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.grey.shade200,
-                    ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 25.w,
-                child: Text(
-                  'LENGTH',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                width: 3.h,
-              ),
-              Text(
-                bookDetails?.book_format == "magazine"
-                    ? "${bookDetails.articles?.length} articles"
-                    : '${bookDetails.length} pages | ${bookDetails.total_chapters} chapters',
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.grey.shade200,
-                    ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 25.w,
-                child: Text(
-                  'LANGUAGE',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                width: 3.h,
-              ),
-              Text(
-                '${bookDetails.language}',
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.grey.shade200,
-                    ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 25.w,
-                child: Text(
-                  'FORMAT',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                width: 3.h,
-              ),
-              Text(
-                '${bookDetails.book_format}',
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.grey.shade200,
-                    ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 25.w,
-                child: Text(
-                  'PUBLISHER',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                width: 3.h,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigation.instance.navigate('/writerInfo',
-                      args: bookDetails.contributor_id);
-                },
-                child: Text(
-                  '${bookDetails.publisher}',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        // fontSize: 2.h,
-                        color: Colors.blueAccent,
-                      ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 25.w,
-                child: Text(
-                  'RELEASED',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                        fontSize: 2.h,
-                        color: Colors.grey.shade400,
-                      ),
-                ),
-              ),
-              SizedBox(
-                width: 3.h,
-              ),
-              Text(
-                bookDetails.released_date ?? "",
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.grey.shade200,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DownloadSection extends StatelessWidget {
-  final int id;
-
-  DownloadSection(this.id);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 10.h,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            width: 0.1.w,
-          ),
-          // SizedBox(
-          //   height: 15.h,
-          //   width: 20.w,
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Icon(Icons.download),
-          //       Text(
-          //         'Download',
-          //         style: Theme.of(context).textTheme.headline4?.copyWith(
-          //               // fontSize: 2.h,
-          //               color: Colors.white,
-          //             ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 5.h,
-          //   width: 0.1.w,
-          //   child: Container(
-          //     color: Colors.white,
-          //   ),
-          // ),
-          GestureDetector(
-            onTap: () async {
-              if ((Provider.of<DataProvider>(
-                              Navigation.instance.navigatorKey.currentContext ??
-                                  context,
-                              listen: false)
-                          .profile !=
-                      null) &&
-                  Storage.instance.isLoggedIn) {
-                addBookmark(id, context);
-              } else {
-                ConstanceData.showAlertDialog(context);
-              }
-            },
-            child: SizedBox(
-              height: 15.h,
-              width: 20.w,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.bookmark_border),
-                  Text(
-                    'Save',
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                          // fontSize: 2.h,
-                          color: Colors.white,
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // SizedBox(
-          //   height: 5.h,
-          //   width: 0.1.w,
-          //   child: Container(
-          //     color: Colors.white,
-          //   ),
-          // ),
-          // SizedBox(
-          //   height: 15.h,
-          //   width: 20.w,
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Icon(Icons.playlist_add),
-          //       Text(
-          //         'Add to List',
-          //         style: Theme.of(context).textTheme.headline4?.copyWith(
-          //               // fontSize: 2.h,
-          //               color: Colors.white,
-          //             ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          SizedBox(
-            width: 0.1.w,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void addBookmark(int id, context) async {
-    Navigation.instance.navigate('/loadingDialog');
-    final reponse = await ApiProvider.instance.addBookmark(id ?? 0);
-    if (reponse.status ?? false) {
-      Fluttertoast.showToast(msg: reponse.message!);
-      final response = await ApiProvider.instance.fetchBookmark();
-      if (response.status ?? false) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext ?? context,
-                listen: false)
-            .setToBookmarks(response.items ?? []);
-        Navigation.instance.goBack();
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.success,
-          text: "Bookmark added successfully",
-        );
-      } else {
-        Navigation.instance.goBack();
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.warning,
-          text: "Something went wrong",
-        );
-      }
-    }
-  }
-}
-
-class BuyButton extends StatelessWidget {
-  final int id;
-  Function onTap;
-
-  BuyButton(this.id, this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: SizedBox(
-        width: double.infinity,
-        height: 4.5.h,
-        child: Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  if ((Provider.of<DataProvider>(
-                                  Navigation.instance.navigatorKey
-                                          .currentContext ??
-                                      context,
-                                  listen: false)
-                              .profile !=
-                          null) &&
-                      Storage.instance.isLoggedIn) {
-                    onTap();
-                  } else {
-                    ConstanceData.showAlertDialog(context);
-                  }
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                ),
-                child: Text(
-                  'Buy Now',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
-                        color: Colors.black,
-                      ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 1.w,
-            ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigation.instance
-                  //     .navigate('/bookInfo', args: data.id);
-
-                  if ((Provider.of<DataProvider>(
-                                  Navigation.instance.navigatorKey
-                                          .currentContext ??
-                                      context,
-                                  listen: false)
-                              .profile !=
-                          null) &&
-                      Storage.instance.isLoggedIn) {
-                    addtocart(context, id);
-                  } else {
-                    ConstanceData.showAlertDialog(context);
-                  }
-                },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                ),
-                child: Text(
-                  'Add To Cart',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
-                        color: Colors.black,
-                      ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void addtocart(context, id) async {
-    Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance.addToCart(id, '1');
-    if (response.status ?? false) {
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
-          .setToCart(response.cart?.items ?? []);
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext!,
-              listen: false)
-          .setCartData(response.cart!);
-      Navigation.instance.goBack();
-      showSuccess(context);
-    } else {
-      Navigation.instance.goBack();
-      showError(context);
-    }
-  }
-
-  void showSuccess(context) {
-    // var snackBar = SnackBar(
-    //   elevation: 0,
-    //   behavior: SnackBarBehavior.floating,
-    //   backgroundColor: Colors.transparent,
-    //   content: AwesomeSnackbarContent(
-    //     title: 'Added to cart',
-    //     message: 'The following book is added to cart',
-    //     contentType: ContentType.success,
-    //   ),
-    // );
-    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    Fluttertoast.showToast(msg: "The following book is added to cart");
-  }
-
-  void showError(context) {
-    // var snackBar = SnackBar(
-    //   elevation: 0,
-    //   behavior: SnackBarBehavior.floating,
-    //   backgroundColor: Colors.transparent,
-    //   content: AwesomeSnackbarContent(
-    //     title: 'Failed',
-    //     message: 'Something went wrong',
-    //     contentType: ContentType.failure,
-    //   ),
-    // );
-    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    Fluttertoast.showToast(msg: "The following book is added to cart");
-  }
-}
-
-class ReadButton extends StatelessWidget {
-  final int id;
-  final String format;
-
-  const ReadButton({super.key, required this.id, required this.format});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 5.h,
-      child: ElevatedButton(
-        onPressed: () {
-          // Navigation.instance.navigate('/bookInfo');
-          // Navigation.instance.navigate('/bookDetails', args: id ?? 0);
-          // Navigation.instance.navigate('/reading', args: id ?? 0);
-          if (format == "magazine") {
-            Navigation.instance.navigate('/magazineArticles', args: id ?? 0);
-          } else {
-            Navigation.instance.navigate('/bookDetails', args: id ?? 0);
-            // Navigation.instance.navigate('/reading',
-            //     args: data.id ?? 0);
-          }
-        },
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.black),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: const BorderSide(color: Colors.blue),
-            ),
-          ),
-        ),
-        child: Text(
-          format == 'magazine' ? "View Articles" : 'Read Preview',
-          style: Theme.of(context).textTheme.headline3?.copyWith(
-                // fontSize: 2.5.h,
-                color: Colors.blue,
-              ),
-        ),
-      ),
-    );
   }
 }

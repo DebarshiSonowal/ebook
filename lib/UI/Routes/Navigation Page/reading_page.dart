@@ -17,6 +17,7 @@ import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/book_chapter.dart';
 import '../../../Model/book_details.dart';
+import '../../../Model/home_banner.dart';
 import '../../../Model/reading_theme.dart';
 import '../../../Networking/api_provider.dart';
 import '../../../Storage/app_storage.dart';
@@ -49,7 +50,7 @@ class _ReadingPageState extends State<ReadingPage> {
       Colors.yellow.shade100,
     ),
   ];
-  BookDetailsModel? bookDetails;
+  Book? bookDetails;
   var list_bg_color = ['black', 'white', 'black', 'black'];
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
   var _counterValue = 12.sp;

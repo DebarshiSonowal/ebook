@@ -61,7 +61,7 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
             shrinkWrap: true,
             itemCount: data.search_results.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 0.52.sp,
+                childAspectRatio: 0.4.sp,
                 crossAxisCount: 2,
                 crossAxisSpacing: 10.w,
                 mainAxisSpacing: 2.h),

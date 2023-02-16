@@ -52,12 +52,14 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                     .setIndex(i);
               } else if (i == 2) {
                 if (data.details?.book_format == "magazine") {
-                  Navigation.instance.navigate('/magazineArticles',
-                      args: data.details?.id ?? 0);
+                  // Navigation.instance.navigate('/magazineArticles',
+                  //     args: data.details?.id ?? 0);
+                  ConstanceData.show(context, data.details!);
                 } else {
                   if (data.details != null) {
-                    Navigation.instance
-                        .navigate('/bookDetails', args: data.details?.id ?? 0);
+                    // Navigation.instance
+                    //     .navigate('/bookDetails', args: data.details?.id ?? 0);
+                    ConstanceData.show(context, data.details!);
                   }
                   // Navigation.instance
                   //     .navigate('/bookDetails', args: data.details?.id ?? 0);

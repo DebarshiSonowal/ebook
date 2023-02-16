@@ -31,7 +31,7 @@ class DataProvider extends ChangeNotifier {
   int currentTab = 0;
   int libraryTab = 0;
   String title = '';
-  BookDetailsModel? details;
+  Book? details;
   writer? writerDetails;
 
   clearAllData(){
@@ -51,7 +51,8 @@ class DataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setBookDetails(BookDetailsModel data) {
+  setBookDetails(Book data) {
+    print("Book details ${details?.title}");
     details = data;
     notifyListeners();
   }
@@ -125,7 +126,7 @@ class DataProvider extends ChangeNotifier {
   }
 
   addCategoryList(List<BookCategory> list) {
-    categoryList?.add(list);
+    categoryList.add(list);
     notifyListeners();
   }
 

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Model/article.dart';
+import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,7 @@ class MagazineArticles extends StatefulWidget {
 }
 
 class _MagazineArticlesState extends State<MagazineArticles> {
-  BookDetailsModel? bookDetails;
+  Book? bookDetails;
   List<BookChapter> chapters = [];
 
   @override

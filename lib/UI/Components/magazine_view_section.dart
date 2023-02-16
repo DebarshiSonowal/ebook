@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ebook/Model/home_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -15,7 +16,7 @@ class magazineViewSection extends StatelessWidget {
     required this.bookDetails,
   }) : super(key: key);
 
-  final BookDetailsModel? bookDetails;
+  final Book? bookDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,7 @@ class magazineViewSection extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (cont, count) {
                 var current = bookDetails?.articles![count];
-                return count >= 1 &&
+                return count >= 0 &&
                     Provider.of<DataProvider>(
                         Navigation.instance.navigatorKey
                             .currentContext ??

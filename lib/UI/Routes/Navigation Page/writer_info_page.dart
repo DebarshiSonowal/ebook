@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../../Helper/navigator.dart';
-import '../../../Storage/data_provider.dart';
 
 class WritersInfoPage extends StatelessWidget {
   const WritersInfoPage({Key? key}) : super(key: key);

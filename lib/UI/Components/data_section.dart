@@ -6,6 +6,7 @@ import '../../Model/bookmark.dart';
 import '../../Model/home_banner.dart';
 import 'book_image_info_widget.dart';
 import 'book_info_section.dart';
+import 'book_info_section_bookmark.dart';
 import 'close_button.dart';
 
 class DataSection extends StatelessWidget {

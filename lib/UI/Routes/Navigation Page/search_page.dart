@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
@@ -300,103 +301,7 @@ class _SearchPageState extends State<SearchPage> {
                               Navigation.instance
                                   .navigate('/bookInfo', args: current.id);
                             },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 1.h, horizontal: 0.5.w),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(
-                                        5.0) //                 <--- border radius here
-                                    ),
-                              ),
-                              child: ListTile(
-                                title: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CachedNetworkImage(
-                                      imageUrl: current.profile_pic ?? "",
-                                      fit: BoxFit.fill,
-                                      height: 15.h,
-                                      width: 20.w,
-                                    ),
-                                    SizedBox(
-                                      width: 5.w,
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 60.w,
-                                          child: Text(
-                                            current.title ?? "",
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline2
-                                                ?.copyWith(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 1.5.h,
-                                        ),
-                                        Text(
-                                          current.writer ?? "",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4
-                                              ?.copyWith(
-                                                color: Colors.black,
-                                                // fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                        SizedBox(
-                                          height: 1.5.h,
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              '${current.average_rating}' ?? "NA",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4
-                                                  ?.copyWith(
-                                                    color: Colors.black,
-                                                  ),
-                                            ),
-                                            const Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 1.5.h,
-                                        ),
-                                        Text(
-                                          '₹${current.base_price}' ?? "NA",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline4
-                                              ?.copyWith(
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            child: SearchItem(current: current),
                           );
                         },
                         separatorBuilder: (cont, count) {
@@ -967,6 +872,116 @@ class _SearchPageState extends State<SearchPage> {
       getComaSeparated(
         selectedAwards.keys.toList(),
         selectedAwards.values.toList(),
+      ),
+    );
+  }
+}
+
+class SearchItem extends StatelessWidget {
+  const SearchItem({
+    Key? key,
+    required this.current,
+  }) : super(key: key);
+
+  final Book current;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          vertical: 1.h, horizontal: 0.5.w),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: const BorderRadius.all(
+            Radius.circular(
+                5.0) //                 <--- border radius here
+            ),
+      ),
+      child: ListTile(
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CachedNetworkImage(
+              imageUrl: current.profile_pic ?? "",
+              fit: BoxFit.fill,
+              height: 15.h,
+              width: 20.w,
+            ),
+            SizedBox(
+              width: 5.w,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 60.w,
+                  child: Text(
+                    current.title ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2
+                        ?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
+                SizedBox(
+                  height: 1.5.h,
+                ),
+                Text(
+                  current.writer ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline4
+                      ?.copyWith(
+                        color: Colors.black,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                ),
+                SizedBox(
+                  height: 1.5.h,
+                ),
+                Row(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${current.average_rating}' ?? "NA",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          ?.copyWith(
+                            color: Colors.black,
+                          ),
+                    ),
+                    const Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 1.5.h,
+                ),
+                Text(
+                  current.base_price.toString()=="0.0"?"Free":'₹${current.base_price}' ?? "NA",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline4
+                      ?.copyWith(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -21,6 +21,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
+import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
 import '../../Components/dynamicSize.dart';
 import '../../Components/splittedText.dart';
@@ -42,7 +43,7 @@ class _BookDetailsState extends State<BookDetails>
 
   String background = "https://picsum.photos/id/237/200/300";
 
-  BookDetailsModel? bookDetails;
+  Book? bookDetails;
   var themes = [
     ReadingTheme(
       Colors.white,

@@ -34,11 +34,11 @@ class CategoryBar extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount:
-                current.categoryList[current.currentIndex].length ~/
+                current.categoryList[current.currentTab].length ~/
                     2,
                 itemBuilder: (cont, count) {
                   var data =
-                  current.categoryList[current.currentIndex][count];
+                  current.categoryList[current.currentTab][count];
                   return GestureDetector(
                     onTap: () {
                       // setState(() {
