@@ -39,7 +39,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: RegisterationOTPVerify());
     case '/bookDetails':
       return FadeTransitionPageRouteBuilder(
-          page: BookDetails(settings.arguments as int));
+          page: BookDetails(settings.arguments as String));
     case '/reading':
       return FadeTransitionPageRouteBuilder(
           page: ReadingPage(settings.arguments as int));
@@ -74,7 +74,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(
           page: WriterInfo(settings.arguments as int));
     case '/readingDialog':
-      return FadeTransitionPageRouteBuilder(page: ReadingDialog());
+      return FadeTransitionPageRouteBuilder(page: ReadingDialog(settings.arguments as String));
     case '/cartPage':
       return FadeTransitionPageRouteBuilder(page: CartPage());
     case '/search':

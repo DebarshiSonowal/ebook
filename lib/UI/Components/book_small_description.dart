@@ -283,7 +283,7 @@ class bookSmallDescription extends StatelessWidget {
                                       args: data.id ?? 0);
                                 } else {
                                   Navigation.instance.navigate('/bookDetails',
-                                      args: data.id ?? 0);
+                                      args:'${data.id ?? 0},${data.profile_pic}');
                                   // Navigation.instance.navigate('/reading',
                                   //     args: data.id ?? 0);
                                 }

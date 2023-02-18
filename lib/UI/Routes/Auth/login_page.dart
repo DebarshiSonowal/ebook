@@ -296,7 +296,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $_url';
     }
   }

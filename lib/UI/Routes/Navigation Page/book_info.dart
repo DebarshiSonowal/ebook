@@ -226,8 +226,10 @@ class _BookInfoState extends State<BookInfo>
                       id: widget.id,
                       format: bookDetails?.book_format ?? "",
                       isBought: bookDetails?.is_bought ?? false,
+                      profile_pic: bookDetails?.profile_pic??"",
                     ),
-                    DownloadSection(widget.id,bookDetails?.is_bookmarked??false),
+                    DownloadSection(
+                        widget.id, bookDetails?.is_bookmarked ?? false),
                     SizedBox(
                       width: 90.w,
                       height: 0.03.h,
@@ -641,14 +643,13 @@ class _BookInfoState extends State<BookInfo>
     Fluttertoast.showToast(msg: "Something went wrong");
   }
 
-  void addReview(RatingDialogResponse response) async{
+  void addReview(RatingDialogResponse response) async {
     final response1 = await ApiProvider.instance.addReview(
-        Add_Review(0, response.comment ?? "", response.rating),
-        widget.id);
-    if(response1.status??false){
+        Add_Review(0, response.comment ?? "", response.rating), widget.id);
+    if (response1.status ?? false) {
       fetchReviews();
-    }else{
-      showError(response1.message??"Something went wrong");
+    } else {
+      showError(response1.message ?? "Something went wrong");
     }
   }
 }

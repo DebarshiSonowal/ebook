@@ -29,7 +29,8 @@ import '../../Components/dynamicSize.dart';
 import '../../Components/splittedText.dart';
 
 class BookDetails extends StatefulWidget {
-  final int input;
+  final String input;
+  // final String coverImage;
 
   BookDetails(this.input);
 
@@ -94,30 +95,7 @@ class _BookDetailsState extends State<BookDetails>
     // removeScreenshotDisable();
   }
 
-  // void _scrollListener() {
-  //   // _firstAutoscrollExecuted = true;
-  //
-  //   if (_scrollController.hasClients &&
-  //       _scrollController.position.pixels ==
-  //           _scrollController.position.maxScrollExtent) {
-  //     // _shouldAutoscroll = true;
-  //     // if ((currentPage + 1) >= (chapters[currentChapter].pages?.length ?? 0)) {
-  //     //   // debugPrint(
-  //     //   //     'first one ${currentPage} ${chapters[currentChapter].pages?.length}');
-  //     //   // setState(() {
-  //     //   //   currentChapter++;
-  //     //   //   currentPage = 0;
-  //     //   // });
-  //     // }
-  //   } else {
-  //     // debugPrint(
-  //     //     'second one ${currentPage} ${chapters[currentChapter].pages?.length}');
-  //     // _shouldAutoscroll = false;
-  //     // if (currentPage == 0) {
-  //
-  //     // }
-  //   }
-  // }
+
 
   @override
   void initState() {
@@ -130,7 +108,7 @@ class _BookDetailsState extends State<BookDetails>
     Future.delayed(Duration.zero, () async {
       brightness = await systemBrightness;
       getSizeFromBloc(pageKey);
-      Navigation.instance.navigate('/readingDialog');
+      Navigation.instance.navigate('/readingDialog',args: widget.input.toString().split(',')[1]);
       setState(() {
         Storage.instance
             .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
@@ -177,256 +155,389 @@ class _BookDetailsState extends State<BookDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: getTextColor()),
-        title: Text(
-          title ?? "",
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context)
-              .textTheme
-              .headline1
-              ?.copyWith(color: getTextColor()),
-        ),
-        backgroundColor: getBackGroundColor(),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  // initPlatformBrightness();
-                  return buildAlertDialog();
-                },
-              );
-            },
-            icon: Icon(
-              Icons.font_download,
-              color: getTextColor(),
-            ),
-          ),
-          IconButton(
-            onPressed:() {
-              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
-            },
-            icon: Icon(
-              Icons.share,
-              color: getTextColor(),
-            ),
-          ),
-          // PopupMenuButton<int>(
-          //   color: getTextColor(),
-          //   onSelected: (item) => handleClick(item),
-          //   itemBuilder: (context) => [
-          //     // PopupMenuItem<int>(
-          //     //   value: 0,
-          //     //   child: Row(
-          //     //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     //     children: [
-          //     //       Icon(
-          //     //         Icons.add,
-          //     //         color: getBackGroundColor(),
-          //     //       ),
-          //     //       SizedBox(
-          //     //         width: 5.w,
-          //     //       ),
-          //     //       Text(
-          //     //         'Create a Bookmark',
-          //     //         style: Theme.of(context).textTheme.headline5?.copyWith(
-          //     //               color: getBackGroundColor(),
-          //     //             ),
-          //     //       ),
-          //     //     ],
-          //     //   ),
-          //     // ),
-          //     PopupMenuItem<int>(
-          //       value: 1,
-          //       child: Row(
-          //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           Icon(
-          //             Icons.bookmark,
-          //             color: getBackGroundColor(),
-          //           ),
-          //           SizedBox(
-          //             width: 5.w,
-          //           ),
-          //           Text(
-          //             'Add bookmark',
-          //             style: Theme.of(context).textTheme.headline5?.copyWith(
-          //                   color: getBackGroundColor(),
-          //                 ),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //     PopupMenuItem<int>(
-          //       value: 2,
-          //       child: Row(
-          //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //         children: [
-          //           Icon(
-          //             Icons.close,
-          //             color: getBackGroundColor(),
-          //           ),
-          //           SizedBox(
-          //             width: 5.w,
-          //           ),
-          //           Text(
-          //             'Finished',
-          //             style: Theme.of(context).textTheme.headline5?.copyWith(
-          //                   color: getBackGroundColor(),
-          //                 ),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // IconButton(
-          //   onPressed: () {
-          //
-          //   },
-          //   icon: const Icon(
-          //     FontAwesomeIcons.hamburger,
-          //   ),
-          // ),
-        ],
-      ),
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: getBodyColor(),
-        key: pageKey,
-        child: bookDetails == null
-            ? const Center(child: CircularProgressIndicator())
-            : Consumer<DataProvider>(builder: (context, data, _) {
-                return chapters.isEmpty
-                    ? Center(
-                        child: Text(
-                          bookDetails != null
-                              ? ''
-                              : 'Oops No Data available here',
-                          style: TextStyle(
-                            color: getBackGroundColor(),
+      // appBar: AppBar(
+      //   iconTheme: IconThemeData(color: getTextColor()),
+      //   title: Text(
+      //     title ?? "",
+      //     overflow: TextOverflow.ellipsis,
+      //     style: Theme.of(context)
+      //         .textTheme
+      //         .headline1
+      //         ?.copyWith(color: getTextColor()),
+      //   ),
+      //   backgroundColor: getBackGroundColor(),
+      //   actions: [
+      //     IconButton(
+      //       onPressed: () {
+      //         showDialog(
+      //           context: context,
+      //           builder: (BuildContext context) {
+      //             // initPlatformBrightness();
+      //             return buildAlertDialog();
+      //           },
+      //         );
+      //       },
+      //       icon: Icon(
+      //         Icons.font_download,
+      //         color: getTextColor(),
+      //       ),
+      //     ),
+      //     IconButton(
+      //       onPressed:() {
+      //         Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+      //       },
+      //       icon: Icon(
+      //         Icons.share,
+      //         color: getTextColor(),
+      //       ),
+      //     ),
+      //     // PopupMenuButton<int>(
+      //     //   color: getTextColor(),
+      //     //   onSelected: (item) => handleClick(item),
+      //     //   itemBuilder: (context) => [
+      //     //     // PopupMenuItem<int>(
+      //     //     //   value: 0,
+      //     //     //   child: Row(
+      //     //     //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     //     //     children: [
+      //     //     //       Icon(
+      //     //     //         Icons.add,
+      //     //     //         color: getBackGroundColor(),
+      //     //     //       ),
+      //     //     //       SizedBox(
+      //     //     //         width: 5.w,
+      //     //     //       ),
+      //     //     //       Text(
+      //     //     //         'Create a Bookmark',
+      //     //     //         style: Theme.of(context).textTheme.headline5?.copyWith(
+      //     //     //               color: getBackGroundColor(),
+      //     //     //             ),
+      //     //     //       ),
+      //     //     //     ],
+      //     //     //   ),
+      //     //     // ),
+      //     //     PopupMenuItem<int>(
+      //     //       value: 1,
+      //     //       child: Row(
+      //     //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     //         children: [
+      //     //           Icon(
+      //     //             Icons.bookmark,
+      //     //             color: getBackGroundColor(),
+      //     //           ),
+      //     //           SizedBox(
+      //     //             width: 5.w,
+      //     //           ),
+      //     //           Text(
+      //     //             'Add bookmark',
+      //     //             style: Theme.of(context).textTheme.headline5?.copyWith(
+      //     //                   color: getBackGroundColor(),
+      //     //                 ),
+      //     //           ),
+      //     //         ],
+      //     //       ),
+      //     //     ),
+      //     //     PopupMenuItem<int>(
+      //     //       value: 2,
+      //     //       child: Row(
+      //     //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
+      //     //         children: [
+      //     //           Icon(
+      //     //             Icons.close,
+      //     //             color: getBackGroundColor(),
+      //     //           ),
+      //     //           SizedBox(
+      //     //             width: 5.w,
+      //     //           ),
+      //     //           Text(
+      //     //             'Finished',
+      //     //             style: Theme.of(context).textTheme.headline5?.copyWith(
+      //     //                   color: getBackGroundColor(),
+      //     //                 ),
+      //     //           ),
+      //     //         ],
+      //     //       ),
+      //     //     ),
+      //     //   ],
+      //     // ),
+      //     // IconButton(
+      //     //   onPressed: () {
+      //     //
+      //     //   },
+      //     //   icon: const Icon(
+      //     //     FontAwesomeIcons.hamburger,
+      //     //   ),
+      //     // ),
+      //   ],
+      // ),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              iconTheme: IconThemeData(color: getTextColor()),
+              leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.black,
+                ), onPressed: () {
+                  Navigation.instance.goBack();
+              },
+              ),
+              title: Text(
+                title ?? "",
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    ?.copyWith(color: getTextColor()),
+              ),
+              backgroundColor: getBackGroundColor(),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // initPlatformBrightness();
+                        return buildAlertDialog();
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.font_download,
+                    color: getTextColor(),
+                  ),
+                ),
+                IconButton(
+                  onPressed:() {
+                    Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+                  },
+                  icon: Icon(
+                    Icons.share,
+                    color: getTextColor(),
+                  ),
+                ),
+                // PopupMenuButton<int>(
+                //   color: getTextColor(),
+                //   onSelected: (item) => handleClick(item),
+                //   itemBuilder: (context) => [
+                //     // PopupMenuItem<int>(
+                //     //   value: 0,
+                //     //   child: Row(
+                //     //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     //     children: [
+                //     //       Icon(
+                //     //         Icons.add,
+                //     //         color: getBackGroundColor(),
+                //     //       ),
+                //     //       SizedBox(
+                //     //         width: 5.w,
+                //     //       ),
+                //     //       Text(
+                //     //         'Create a Bookmark',
+                //     //         style: Theme.of(context).textTheme.headline5?.copyWith(
+                //     //               color: getBackGroundColor(),
+                //     //             ),
+                //     //       ),
+                //     //     ],
+                //     //   ),
+                //     // ),
+                //     PopupMenuItem<int>(
+                //       value: 1,
+                //       child: Row(
+                //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Icon(
+                //             Icons.bookmark,
+                //             color: getBackGroundColor(),
+                //           ),
+                //           SizedBox(
+                //             width: 5.w,
+                //           ),
+                //           Text(
+                //             'Add bookmark',
+                //             style: Theme.of(context).textTheme.headline5?.copyWith(
+                //                   color: getBackGroundColor(),
+                //                 ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //     PopupMenuItem<int>(
+                //       value: 2,
+                //       child: Row(
+                //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //         children: [
+                //           Icon(
+                //             Icons.close,
+                //             color: getBackGroundColor(),
+                //           ),
+                //           SizedBox(
+                //             width: 5.w,
+                //           ),
+                //           Text(
+                //             'Finished',
+                //             style: Theme.of(context).textTheme.headline5?.copyWith(
+                //                   color: getBackGroundColor(),
+                //                 ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // IconButton(
+                //   onPressed: () {
+                //
+                //   },
+                //   icon: const Icon(
+                //     FontAwesomeIcons.hamburger,
+                //   ),
+                // ),
+              ],
+              automaticallyImplyLeading: false,
+              expandedHeight:50,
+              floating: true,
+              snap: true,
+            )
+          ];
+        },
+        body: Container(
+          height: double.infinity,
+          width: double.infinity,
+          color: getBodyColor(),
+          key: pageKey,
+          child: bookDetails == null
+              ? const Center(child: CircularProgressIndicator())
+              : Consumer<DataProvider>(builder: (context, data, _) {
+                  return chapters.isEmpty
+                      ? Center(
+                          child: Text(
+                            bookDetails != null
+                                ? ''
+                                : 'Oops No Data available here',
+                            style: TextStyle(
+                              color: getBackGroundColor(),
+                            ),
                           ),
-                        ),
-                      )
-                    : PageView.builder(
-                        // shrinkWrap: true,
-                        controller: pageController,
-                        scrollDirection: Axis.horizontal,
-                        physics: const ClampingScrollPhysics(),
-                        itemCount: reading.length,
-                        itemBuilder: (context, index) {
-                          test = reading[index].desc!;
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigation.instance.goBack();
-                              showBottomSlider(reading.length);
-                            },
-                            child: Container(
-                              width: 98.w,
-                              // height: 90.h,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 5.w,
-                              ),
-                              color: getTextColor(),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Html(
-                                      data: test,
-                                      // tagsList: [
-                                      //   'img','p','!DOCTYPE html','body'
-                                      // ],
-                                      // tagsList: ['p'],
-                                      // shrinkWrap: true,
-                                      style: {
-                                        '#': Style(
-                                          fontSize: FontSize(_counterValue),
+                        )
+                      : PageView.builder(
+                          // shrinkWrap: true,
+                          controller: pageController,
+                          scrollDirection: Axis.horizontal,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: reading.length,
+                          itemBuilder: (context, index) {
+                            test = reading[index].desc!;
+                            return GestureDetector(
+                              onTap: () {
+                                // Navigation.instance.goBack();
+                                showBottomSlider(reading.length);
+                              },
+                              child: Container(
+                                width: 98.w,
+                                // height: 90.h,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.w,
+                                ),
+                                color: getTextColor(),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Html(
+                                        data: test,
+                                        // tagsList: [
+                                        //   'img','p','!DOCTYPE html','body'
+                                        // ],
+                                        // tagsList: ['p'],
+                                        // shrinkWrap: true,
+                                        style: {
+                                          '#': Style(
+                                            fontSize: FontSize(_counterValue),
 
-                                          // maxLines: 20,
-                                          color: getBackGroundColor(),
-                                          // textOverflow: TextOverflow.ellipsis,
-                                        ),
-                                      },
-                                    ),
-                                  ],
+                                            // maxLines: 20,
+                                            color: getBackGroundColor(),
+                                            // textOverflow: TextOverflow.ellipsis,
+                                          ),
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                        // separatorBuilder: (BuildContext context, int index) {
-                        //   var title = reading[index + 1].title;
-                        //   return (index != 0 &&
-                        //           (reading[index].title ==
-                        //               reading[index - 1].title))
-                        //       ? SizedBox(
-                        //           width: 98.w,
-                        //           height: double.infinity,
-                        //           child: Center(
-                        //             child: Text(
-                        //               title!,
-                        //               style: Theme.of(context)
-                        //                   .textTheme
-                        //                   .headline1
-                        //                   ?.copyWith(
-                        //                       color: getBackGroundColor()),
-                        //             ),
-                        //           ),
-                        //         )
-                        //       : Container();
-                        // },
-                      );
-                // : PageView.builder(
-                //     // shrinkWrap: true,
-                //     scrollDirection: Axis.horizontal,
-                //     physics: const ClampingScrollPhysics(),
-                //     itemCount: _splittedTextList.length,
-                //     itemBuilder: (context, index) {
-                //       test = _splittedTextList[index] ?? "";
-                //       return Container(
-                //         width: 100.w,
-                //         // height: 90.h,
-                //         padding: EdgeInsets.symmetric(
-                //           horizontal: 5.w,
-                //         ),
-                //         color: getTextColor(),
-                //         // child: Text.rich(
-                //         //   TextSpan(
-                //         //     text: test,
-                //         //   ),
-                //         //   style: TextStyle(
-                //         //     color: getBackGroundColor(),
-                //         //     fontSize: FontSize(_counterValue).size,
-                //         //   ),
-                //         // ),
-                //         child: Html(
-                //           data: test,
-                //           // tagsList: [
-                //           //   'img','p','!DOCTYPE html','body'
-                //           // ],
-                //           // tagsList: ['p'],
-                //           // shrinkWrap: true,
-                //           style: {
-                //             '#': Style(
-                //               fontSize: FontSize(_counterValue),
-                //
-                //               maxLines: FontSize(_counterValue)
-                //                   .size!
-                //                   .toInt()
-                //                   .sp
-                //                   .toInt(),
-                //               color: getBackGroundColor(),
-                //               // textOverflow: TextOverflow.ellipsis,
-                //             ),
-                //           },
-                //         ),
-                //       );
-                //     },
-                //   );
-              }),
+                            );
+                          },
+                          // separatorBuilder: (BuildContext context, int index) {
+                          //   var title = reading[index + 1].title;
+                          //   return (index != 0 &&
+                          //           (reading[index].title ==
+                          //               reading[index - 1].title))
+                          //       ? SizedBox(
+                          //           width: 98.w,
+                          //           height: double.infinity,
+                          //           child: Center(
+                          //             child: Text(
+                          //               title!,
+                          //               style: Theme.of(context)
+                          //                   .textTheme
+                          //                   .headline1
+                          //                   ?.copyWith(
+                          //                       color: getBackGroundColor()),
+                          //             ),
+                          //           ),
+                          //         )
+                          //       : Container();
+                          // },
+                        );
+                  // : PageView.builder(
+                  //     // shrinkWrap: true,
+                  //     scrollDirection: Axis.horizontal,
+                  //     physics: const ClampingScrollPhysics(),
+                  //     itemCount: _splittedTextList.length,
+                  //     itemBuilder: (context, index) {
+                  //       test = _splittedTextList[index] ?? "";
+                  //       return Container(
+                  //         width: 100.w,
+                  //         // height: 90.h,
+                  //         padding: EdgeInsets.symmetric(
+                  //           horizontal: 5.w,
+                  //         ),
+                  //         color: getTextColor(),
+                  //         // child: Text.rich(
+                  //         //   TextSpan(
+                  //         //     text: test,
+                  //         //   ),
+                  //         //   style: TextStyle(
+                  //         //     color: getBackGroundColor(),
+                  //         //     fontSize: FontSize(_counterValue).size,
+                  //         //   ),
+                  //         // ),
+                  //         child: Html(
+                  //           data: test,
+                  //           // tagsList: [
+                  //           //   'img','p','!DOCTYPE html','body'
+                  //           // ],
+                  //           // tagsList: ['p'],
+                  //           // shrinkWrap: true,
+                  //           style: {
+                  //             '#': Style(
+                  //               fontSize: FontSize(_counterValue),
+                  //
+                  //               maxLines: FontSize(_counterValue)
+                  //                   .size!
+                  //                   .toInt()
+                  //                   .sp
+                  //                   .toInt(),
+                  //               color: getBackGroundColor(),
+                  //               // textOverflow: TextOverflow.ellipsis,
+                  //             ),
+                  //           },
+                  //         ),
+                  //       );
+                  //     },
+                  //   );
+                }),
+        ),
       ),
     );
   }
@@ -622,6 +733,7 @@ class _BookDetailsState extends State<BookDetails>
         .fetchBookDetails(widget.input.toString().split(',')[0].toString());
     if (response.status ?? false) {
       bookDetails = response.details;
+
       if (mounted) {
         setState(() {
           title = bookDetails?.title ?? "";

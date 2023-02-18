@@ -217,7 +217,8 @@ class _ReadingPageState extends State<ReadingPage> {
                     return GestureDetector(
                       onTap: () {
                         Navigation.instance.navigate('/bookDetails',
-                            args: '${widget.id},${index}');
+                            // args: '${widget.id},${index}');
+                            args: '${widget.id},${data.details?.profile_pic}');
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: 10.w),

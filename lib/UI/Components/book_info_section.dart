@@ -43,7 +43,7 @@ class BookInfoSection extends StatelessWidget {
                         child: ElevatedButton(
                             onPressed: () {
                               Navigation.instance
-                                  .navigate('/bookDetails', args: data.id ?? 0);
+                                  .navigate('/bookDetails', args: "${data.id ?? 0},${data.profile_pic}");
                               // if (data.book_format == "magazine") {
                               //   Navigation.instance.navigate(
                               //       '/magazineArticles',
