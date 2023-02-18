@@ -31,7 +31,7 @@ class Book {
       short_description,description,contributor,publication_name,publisher,released_date;
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
-  bool? is_bookmarked;
+  bool? is_bookmarked,is_bought;
   List<Article>? articles;
 
   Book.fromJson(json) {
@@ -56,6 +56,7 @@ class Book {
     short_description = json['short_description'] ?? "";
     description = json['description'] ?? "";
     is_bookmarked = json['is_bookmarked'] ?? false;
+    is_bought = json['is_bought'] ?? false;
     contributor = json['contributor'] ?? "";
     publication_name = json['publication_name'] ?? "";
     released_date = json['released_date'] ?? "";

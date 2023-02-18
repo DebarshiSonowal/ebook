@@ -22,12 +22,16 @@ class Storage {
     await sharedpreferences.setInt("id", id);
   }
 
+  Future<void> setReadingBookPage(int id) async {
+    print("Set Reading Book Page: ${id}");
+    await sharedpreferences.setInt("page", id);
+  }
 
   Future<void> setOnBoarding() async {
     await sharedpreferences.setBool("isOnBoarding", true);
   }
 
-  Future<void> logout() async{
+  Future<void> logout() async {
     await sharedpreferences.clear();
     Fluttertoast.showToast(msg: "Successfully logged out");
   }
@@ -36,7 +40,11 @@ class Storage {
 
   get readingBook => sharedpreferences.getInt("id") ?? 0;
 
+  get readingBookPage => sharedpreferences.getInt("page") ?? 0;
+
   get isOnBoarding => sharedpreferences.getBool("isOnBoarding") ?? false;
 
-  get token => sharedpreferences.getString("token") ?? "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdHJhdHJpLmluXC9hcGlcL3N1YnNjcmliZXJzXC9sb2dpbiIsImlhdCI6MTY2Mjk1OTk5NiwiZXhwIjoxNjYyOTYzNTk2LCJuYmYiOjE2NjI5NTk5OTYsImp0aSI6ImZ2MzYwZ09zNGdReVhsWWoiLCJzdWIiOjQsInBydiI6IjdhNTljY2RhNDc0MGVjOGU1ZDRmMGVhOGQyNjQ3YThiYWE3N2FjZGQifQ.2_F9m8Jw7iYj5jfDl24dU83foJxNU9tVzUUjQIvrTtE";
+  get token =>
+      sharedpreferences.getString("token") ??
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdHJhdHJpLmluXC9hcGlcL3N1YnNjcmliZXJzXC9sb2dpbiIsImlhdCI6MTY2Mjk1OTk5NiwiZXhwIjoxNjYyOTYzNTk2LCJuYmYiOjE2NjI5NTk5OTYsImp0aSI6ImZ2MzYwZ09zNGdReVhsWWoiLCJzdWIiOjQsInBydiI6IjdhNTljY2RhNDc0MGVjOGU1ZDRmMGVhOGQyNjQ3YThiYWE3N2FjZGQifQ.2_F9m8Jw7iYj5jfDl24dU83foJxNU9tVzUUjQIvrTtE";
 }

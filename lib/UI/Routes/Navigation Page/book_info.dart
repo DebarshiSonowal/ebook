@@ -220,7 +220,7 @@ class _BookInfoState extends State<BookInfo>
                       height: 2.h,
                     ),
                     ReadButton(
-                        id: widget.id, format: bookDetails?.book_format ?? ""),
+                        id: widget.id, format: bookDetails?.book_format ?? "",isBought: bookDetails?.is_bought??false,),
                     DownloadSection(widget.id),
                     SizedBox(
                       width: 90.w,

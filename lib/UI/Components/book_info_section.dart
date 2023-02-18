@@ -62,7 +62,7 @@ class BookInfoSection extends StatelessWidget {
                             child: Text(
                               data.book_format == "magazine"
                                   ? 'View Articles'
-                                  : 'Preview',
+                                  : (data.is_bought??false)?'Read':'Preview',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5

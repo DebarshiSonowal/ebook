@@ -134,9 +134,29 @@ class _BookDetailsState extends State<BookDetails>
             .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
       });
     });
-    pageController.addListener(() {
-      page_no = pageController.page ?? 1;
+    Future.delayed(Duration(seconds: 3),(){
+      print("Executed ${Storage.instance.readingBook} ${widget.input.toString().split(',')[0]}");
+      if(Storage.instance.readingBook.toString()==widget.input.toString().split(',')[0].toString()){
+        print("Scroll ${Storage.instance.readingBookPage}");
+        pageController.jumpToPage(Storage.instance.readingBookPage);
+        pageController.addListener(() {
+          page_no = pageController.page ?? 1;
+          if(Storage.instance.readingBook.toString()==widget.input.toString().split(',')[0].toString()){
+            Storage.instance.setReadingBookPage(page_no.toInt());
+          }
+
+        });
+      }else{
+        pageController.addListener(() {
+          page_no = pageController.page ?? 1;
+          // if(Storage.instance.readingBook.toString()==widget.input.toString().split(',')[0].toString()){
+          //   Storage.instance.setReadingBookPage(page_no.toInt());
+          // }
+        });
+      }
     });
+
+
     // Future.delayed(Duration(seconds: 2), () {
     //   Navigation.instance.goBack();
     // });
@@ -181,75 +201,75 @@ class _BookDetailsState extends State<BookDetails>
               color: getTextColor(),
             ),
           ),
-          PopupMenuButton<int>(
-            color: getTextColor(),
-            onSelected: (item) => handleClick(item),
-            itemBuilder: (context) => [
-              // PopupMenuItem<int>(
-              //   value: 0,
-              //   child: Row(
-              //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Icon(
-              //         Icons.add,
-              //         color: getBackGroundColor(),
-              //       ),
-              //       SizedBox(
-              //         width: 5.w,
-              //       ),
-              //       Text(
-              //         'Create a Bookmark',
-              //         style: Theme.of(context).textTheme.headline5?.copyWith(
-              //               color: getBackGroundColor(),
-              //             ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              PopupMenuItem<int>(
-                value: 1,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(
-                      Icons.bookmark,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Add bookmark',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-              PopupMenuItem<int>(
-                value: 2,
-                child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(
-                      Icons.close,
-                      color: getBackGroundColor(),
-                    ),
-                    SizedBox(
-                      width: 5.w,
-                    ),
-                    Text(
-                      'Finished',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          // PopupMenuButton<int>(
+          //   color: getTextColor(),
+          //   onSelected: (item) => handleClick(item),
+          //   itemBuilder: (context) => [
+          //     // PopupMenuItem<int>(
+          //     //   value: 0,
+          //     //   child: Row(
+          //     //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     //     children: [
+          //     //       Icon(
+          //     //         Icons.add,
+          //     //         color: getBackGroundColor(),
+          //     //       ),
+          //     //       SizedBox(
+          //     //         width: 5.w,
+          //     //       ),
+          //     //       Text(
+          //     //         'Create a Bookmark',
+          //     //         style: Theme.of(context).textTheme.headline5?.copyWith(
+          //     //               color: getBackGroundColor(),
+          //     //             ),
+          //     //       ),
+          //     //     ],
+          //     //   ),
+          //     // ),
+          //     PopupMenuItem<int>(
+          //       value: 1,
+          //       child: Row(
+          //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           Icon(
+          //             Icons.bookmark,
+          //             color: getBackGroundColor(),
+          //           ),
+          //           SizedBox(
+          //             width: 5.w,
+          //           ),
+          //           Text(
+          //             'Add bookmark',
+          //             style: Theme.of(context).textTheme.headline5?.copyWith(
+          //                   color: getBackGroundColor(),
+          //                 ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //     PopupMenuItem<int>(
+          //       value: 2,
+          //       child: Row(
+          //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //         children: [
+          //           Icon(
+          //             Icons.close,
+          //             color: getBackGroundColor(),
+          //           ),
+          //           SizedBox(
+          //             width: 5.w,
+          //           ),
+          //           Text(
+          //             'Finished',
+          //             style: Theme.of(context).textTheme.headline5?.copyWith(
+          //                   color: getBackGroundColor(),
+          //                 ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ],
+          // ),
           // IconButton(
           //   onPressed: () {
           //

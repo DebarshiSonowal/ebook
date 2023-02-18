@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -7,8 +9,9 @@ import '../../Helper/navigator.dart';
 class ReadButton extends StatelessWidget {
   final int id;
   final String format;
+  final bool isBought;
 
-  const ReadButton({super.key, required this.id, required this.format});
+  const ReadButton({super.key, required this.id, required this.format, required this.isBought});
 
   @override
   Widget build(BuildContext context) {
