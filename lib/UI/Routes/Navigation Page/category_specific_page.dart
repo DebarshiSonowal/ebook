@@ -4,10 +4,10 @@ import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 

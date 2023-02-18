@@ -2,11 +2,12 @@ import 'dart:convert';
 
 import 'package:counter_button/counter_button.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';

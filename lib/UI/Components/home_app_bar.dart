@@ -3,7 +3,7 @@ import 'package:badges/badges.dart' as badge;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/book.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:search_page/search_page.dart';
 
 import '../../Constants/constance_data.dart';

@@ -2,7 +2,7 @@ import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';

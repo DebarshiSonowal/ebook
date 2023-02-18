@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:counter_button/counter_button.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
@@ -173,7 +174,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                             child: Column(
                               children: [
                                 GestureDetector(
-                                  onTap: (){
+                                  onTap: () {
                                     showBottomSlider(reading.length);
                                   },
                                   child: Html(
@@ -187,9 +188,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                       "table": (context, child) {
                                         return SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
-                                          child:
-                                              (context.tree as TableLayoutElement)
-                                                  .toWidget(context),
+                                          child: (context.tree
+                                                  as TableLayoutElement)
+                                              .toWidget(context),
                                         );
                                       },
                                       "a": (context, child) {
@@ -198,16 +199,18 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                             _launchUrl(Uri.parse(context
                                                 .tree.attributes['href']
                                                 .toString()));
-                                            print(
-                                                context.tree.attributes['href']);
+                                            print(context
+                                                .tree.attributes['href']);
                                           },
                                           child: Text(
                                             context.tree.element?.innerHtml
                                                     .split("=")[0]
                                                     .toString() ??
                                                 "",
-                                            style: Theme.of(Navigation.instance
-                                                    .navigatorKey.currentContext!)
+                                            style: Theme.of(Navigation
+                                                    .instance
+                                                    .navigatorKey
+                                                    .currentContext!)
                                                 .textTheme
                                                 .headline5
                                                 ?.copyWith(

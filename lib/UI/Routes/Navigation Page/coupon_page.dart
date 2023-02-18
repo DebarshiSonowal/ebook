@@ -1,7 +1,7 @@
 import 'package:coupon_uikit/coupon_uikit.dart';
 import 'package:ebook/Model/discount.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import '../../../Helper/navigator.dart';

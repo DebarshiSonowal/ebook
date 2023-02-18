@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Model/article.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/data_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 

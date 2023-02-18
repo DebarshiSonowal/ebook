@@ -1,7 +1,7 @@
 import 'package:ebook/Model/bookmark.dart';
 import 'package:ebook/UI/Components/scrollable_content.dart';
 import 'package:ebook/UI/Components/tags_section.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:sizer/sizer.dart';
 

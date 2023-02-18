@@ -5,7 +5,7 @@ import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
 import 'package:expandable_text/expandable_text.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';

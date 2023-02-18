@@ -1,7 +1,7 @@
 
 import 'dart:ffi';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:sizer/sizer.dart';
 
 import '../../Helper/navigator.dart';

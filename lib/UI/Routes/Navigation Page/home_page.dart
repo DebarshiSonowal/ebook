@@ -3,7 +3,7 @@ import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Routes/Drawer/library.dart';
 import 'package:ebook/UI/Routes/Drawer/more.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter/services.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';

@@ -1,6 +1,6 @@
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';

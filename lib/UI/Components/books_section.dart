@@ -1,6 +1,6 @@
 import 'package:ebook/Model/home_banner.dart';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:sizer/sizer.dart';
 import 'book_item.dart';
 
