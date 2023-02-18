@@ -17,6 +17,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -200,6 +201,15 @@ class _BookDetailsState extends State<BookDetails>
             },
             icon: Icon(
               Icons.font_download,
+              color: getTextColor(),
+            ),
+          ),
+          IconButton(
+            onPressed:() {
+              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+            },
+            icon: Icon(
+              Icons.share,
               color: getTextColor(),
             ),
           ),

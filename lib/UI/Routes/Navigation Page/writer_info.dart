@@ -407,8 +407,8 @@ class WriterAccountHome extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             children: [
               Container(
-                padding: EdgeInsets.all(5),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.all(5),
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
                 child: Image.network(

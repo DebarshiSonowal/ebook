@@ -172,14 +172,15 @@ class BookPublishinDetails extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigation.instance.navigate('/writerInfo',
-                      args: bookDetails.contributor_id);
+                  // Navigation.instance.navigate('/writerInfo',
+                  //     args: bookDetails.contributor_id);
                 },
                 child: Text(
                   '${bookDetails.publisher}',
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                     // fontSize: 2.h,
-                    color: Colors.blueAccent,
+                    // color: Colors.blueAccent,
+                    color: Colors.grey.shade200,
                   ),
                 ),
               ),

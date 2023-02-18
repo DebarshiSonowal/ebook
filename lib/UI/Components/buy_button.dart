@@ -11,9 +11,10 @@ import '../../Storage/data_provider.dart';
 
 class BuyButton extends StatelessWidget {
   final int id;
+  bool isBought;
   Function onTap;
 
-  BuyButton(this.id, this.onTap);
+  BuyButton(this.id, this.onTap,this.isBought);
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,10 @@ class BuyButton extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            isBought?Container():SizedBox(
               width: 1.w,
             ),
-            Expanded(
+            isBought?Container():Expanded(
               child: ElevatedButton(
                 onPressed: () {
                   // Navigation.instance

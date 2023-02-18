@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
   int selected = 0;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-
+  final ScrollController controller = ScrollController();
   void _onRefresh() async {
     // monitor network fetch
     fetchHomeBanner();
@@ -44,13 +44,32 @@ class _HomeState extends State<Home> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1),(){
+      controller.addListener(() {
+        if (controller.position.atEdge) {
+          bool isTop = controller.position.pixels == 0;
+          if (isTop) {
+            _refreshController.requestRefresh();
+          } else {
+            // print('At the bottom');
+          }
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Colors.white30,
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
+        header: const WaterDropHeader(
+          waterDropColor: Colors.white,
+        ),
         footer: CustomFooter(
           builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
@@ -82,6 +101,7 @@ class _HomeState extends State<Home> {
           width: MediaQuery.of(context).size.width,
           // color: Colors.grey,
           child: SingleChildScrollView(
+            controller: controller,
             child: Column(
               children: [
                 BuildBookBarSection(

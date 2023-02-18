@@ -1,4 +1,3 @@
-
 import 'dart:ffi';
 
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -11,7 +10,11 @@ class ReadButton extends StatelessWidget {
   final String format;
   final bool isBought;
 
-  const ReadButton({super.key, required this.id, required this.format, required this.isBought});
+  const ReadButton(
+      {super.key,
+      required this.id,
+      required this.format,
+      required this.isBought});
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +44,15 @@ class ReadButton extends StatelessWidget {
           ),
         ),
         child: Text(
-          format == 'magazine' ? "View Articles" : 'Read Preview',
+          format == 'magazine'
+              ? "View Articles"
+              : isBought
+                  ? 'Read Book'
+                  : 'Read Preview',
           style: Theme.of(context).textTheme.headline3?.copyWith(
-            // fontSize: 2.5.h,
-            color: Colors.blue,
-          ),
+                // fontSize: 2.5.h,
+                color: Colors.blue,
+              ),
         ),
       ),
     );

@@ -13,8 +13,8 @@ import '../../Storage/data_provider.dart';
 
 class DownloadSection extends StatelessWidget {
   final int id;
-
-  DownloadSection(this.id);
+  final bool isBookmarked;
+  DownloadSection(this.id,this.isBookmarked);
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +72,9 @@ class DownloadSection extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.bookmark_border),
+                  Icon(!isBookmarked?Icons.bookmark_border:Icons.bookmark),
                   Text(
-                    'Save',
+                    isBookmarked?'Remove':'Add',
                     style: Theme.of(context).textTheme.headline4?.copyWith(
                       // fontSize: 2.h,
                       color: Colors.white,

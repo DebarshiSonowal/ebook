@@ -21,7 +21,7 @@ class BookmarkItem {
       description;
   double? total_rating, average_rating,selling_price;
   List<Tag>? tags, awards;
-
+  bool? is_bought;
   BookmarkItem.fromJson(json) {
     id = json['id'] ?? 0;
     book_category_id = json['book_category_id'] ?? 0;
@@ -49,6 +49,8 @@ class BookmarkItem {
     language = json['language'] ?? "";
     short_description = json['short_description'] ?? "";
     description = json['description'] ?? "";
+
+    is_bought = json['is_bought'] ?? false;
 
     total_rating = json['total_rating'] == null
         ? 0

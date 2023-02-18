@@ -151,18 +151,17 @@ class _BookInfoState extends State<BookInfo>
                                       )
                                     : Row(
                                         children: [
+                                          // Text(
+                                          //   "Publisher: ",
+                                          //   style: Theme.of(context)
+                                          //       .textTheme
+                                          //       .headline4,
+                                          // ),
+                                          // SizedBox(
+                                          //   width: 1.h,
+                                          // ),
                                           Text(
-                                            "Publisher: ",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline4,
-                                          ),
-                                          SizedBox(
-                                            width: 1.h,
-                                          ),
-                                          Text(
-                                            (bookDetails?.publication_name ??
-                                                ""),
+                                            (bookDetails?.contributor ?? ""),
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .headline4
@@ -210,18 +209,25 @@ class _BookInfoState extends State<BookInfo>
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    BuyButton(widget.id, () {
-                      initiatePaymentProcess(widget.id);
-                    }),
+                    (bookDetails?.is_bought ?? false)
+                        ? Container()
+                        : SizedBox(
+                            height: 2.h,
+                          ),
+                    (bookDetails?.is_bought ?? false)
+                        ? Container()
+                        : BuyButton(widget.id, () {
+                            initiatePaymentProcess(widget.id);
+                          }, bookDetails?.is_bought ?? false),
                     SizedBox(
                       height: 2.h,
                     ),
                     ReadButton(
-                        id: widget.id, format: bookDetails?.book_format ?? "",isBought: bookDetails?.is_bought??false,),
-                    DownloadSection(widget.id),
+                      id: widget.id,
+                      format: bookDetails?.book_format ?? "",
+                      isBought: bookDetails?.is_bought ?? false,
+                    ),
+                    DownloadSection(widget.id,bookDetails?.is_bookmarked??false),
                     SizedBox(
                       width: 90.w,
                       height: 0.03.h,
@@ -331,7 +337,7 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     RatingBar.builder(
                         itemSize: 5.h,
-                        initialRating:0,
+                        initialRating: 0,
                         minRating: 1,
                         direction: Axis.horizontal,
                         allowHalfRating: true,
@@ -345,7 +351,7 @@ class _BookInfoState extends State<BookInfo>
                             ),
                         onRatingUpdate: (rating) {
                           if (Storage.instance.isLoggedIn) {
-                            giveRating(context,rating);
+                            giveRating(context, rating);
                           } else {
                             ConstanceData.showAlertDialog(context);
                           }
@@ -356,7 +362,7 @@ class _BookInfoState extends State<BookInfo>
                     GestureDetector(
                       onTap: () {
                         if (Storage.instance.isLoggedIn) {
-                          giveRating(context,0);
+                          giveRating(context, 0);
                         } else {
                           ConstanceData.showAlertDialog(context);
                         }
@@ -389,7 +395,7 @@ class _BookInfoState extends State<BookInfo>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Reviews (${bookDetails?.total_rating?.toInt()})',
+                            'Reviews (${reviews.length})',
                             style:
                                 Theme.of(context).textTheme.headline1?.copyWith(
                                       // fontSize: 2.5.h,
@@ -397,14 +403,14 @@ class _BookInfoState extends State<BookInfo>
                                       color: Colors.white,
                                     ),
                           ),
-                          Text(
-                            'More >',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      // fontSize: 1.5.h,
-                                      color: Colors.blueAccent,
-                                    ),
-                          ),
+                          // Text(
+                          //   'More >',
+                          //   style:
+                          //       Theme.of(context).textTheme.headline5?.copyWith(
+                          //             // fontSize: 1.5.h,
+                          //             color: Colors.blueAccent,
+                          //           ),
+                          // ),
                         ],
                       ),
                     ),
@@ -441,7 +447,12 @@ class _BookInfoState extends State<BookInfo>
         setState(() {});
       }
     }
-    final response1 = await ApiProvider.instance.fetchReview('3');
+    fetchReviews();
+  }
+
+  fetchReviews() async {
+    final response1 =
+        await ApiProvider.instance.fetchReview(widget.id.toString());
     if (response1.status ?? false) {
       reviews = response1.reviews ?? [];
       if (mounted) {
@@ -450,7 +461,7 @@ class _BookInfoState extends State<BookInfo>
     }
   }
 
-  void giveRating(BuildContext context,double rating) {
+  void giveRating(BuildContext context, double rating) {
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -486,9 +497,7 @@ class _BookInfoState extends State<BookInfo>
         // commentHint: 'Set your custom comment hint',
         onCancelled: () => print('cancelled'),
         onSubmitted: (response) async {
-          final response1 = await ApiProvider.instance.addReview(
-              Add_Review(0, response.comment ?? "", response.rating),
-              widget.id);
+          addReview(response);
         },
       ),
     );
@@ -630,5 +639,16 @@ class _BookInfoState extends State<BookInfo>
     // );
     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
     Fluttertoast.showToast(msg: "Something went wrong");
+  }
+
+  void addReview(RatingDialogResponse response) async{
+    final response1 = await ApiProvider.instance.addReview(
+        Add_Review(0, response.comment ?? "", response.rating),
+        widget.id);
+    if(response1.status??false){
+      fetchReviews();
+    }else{
+      showError(response1.message??"Something went wrong");
+    }
   }
 }

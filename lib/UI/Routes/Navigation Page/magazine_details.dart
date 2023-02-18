@@ -10,6 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:search_page/search_page.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -272,138 +273,147 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             color: getTextColor(),
           ),
         ),
-        PopupMenuButton<int>(
-          color: getTextColor(),
-          onSelected: (item) => handleClick(item),
-          itemBuilder: (context) => [
-            PopupMenuItem<int>(
-              value: 0,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.add,
-                    color: getBackGroundColor(),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    'Create a Bookmark',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: getBackGroundColor(),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<int>(
-              value: 1,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.bookmark,
-                    color: getBackGroundColor(),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    'Save for later',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: getBackGroundColor(),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<int>(
-              value: 2,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Icon(
-                    Icons.download,
-                    color: getBackGroundColor(),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    'Download',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: getBackGroundColor(),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<int>(
-              value: 3,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.book,
-                    color: getBackGroundColor(),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    'Table of Contents',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: getBackGroundColor(),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<int>(
-              value: 4,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.share,
-                    color: getBackGroundColor(),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    'Share',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: getBackGroundColor(),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-            PopupMenuItem<int>(
-              value: 4,
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.info,
-                    color: getBackGroundColor(),
-                  ),
-                  SizedBox(
-                    width: 5.w,
-                  ),
-                  Text(
-                    'About Book',
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: getBackGroundColor(),
-                        ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        IconButton(
+          onPressed:() {
+            Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+          },
+          icon: Icon(
+            Icons.share,
+            color: getTextColor(),
+          ),
         ),
+        // PopupMenuButton<int>(
+        //   color: getTextColor(),
+        //   onSelected: (item) => handleClick(item),
+        //   itemBuilder: (context) => [
+        //     PopupMenuItem<int>(
+        //       value: 0,
+        //       child: Row(
+        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Icon(
+        //             Icons.add,
+        //             color: getBackGroundColor(),
+        //           ),
+        //           SizedBox(
+        //             width: 5.w,
+        //           ),
+        //           Text(
+        //             'Create a Bookmark',
+        //             style: Theme.of(context).textTheme.headline5?.copyWith(
+        //                   color: getBackGroundColor(),
+        //                 ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     PopupMenuItem<int>(
+        //       value: 1,
+        //       child: Row(
+        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Icon(
+        //             Icons.bookmark,
+        //             color: getBackGroundColor(),
+        //           ),
+        //           SizedBox(
+        //             width: 5.w,
+        //           ),
+        //           Text(
+        //             'Save for later',
+        //             style: Theme.of(context).textTheme.headline5?.copyWith(
+        //                   color: getBackGroundColor(),
+        //                 ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     PopupMenuItem<int>(
+        //       value: 2,
+        //       child: Row(
+        //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //         children: [
+        //           Icon(
+        //             Icons.download,
+        //             color: getBackGroundColor(),
+        //           ),
+        //           SizedBox(
+        //             width: 5.w,
+        //           ),
+        //           Text(
+        //             'Download',
+        //             style: Theme.of(context).textTheme.headline5?.copyWith(
+        //                   color: getBackGroundColor(),
+        //                 ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     PopupMenuItem<int>(
+        //       value: 3,
+        //       child: Row(
+        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Icon(
+        //             Icons.book,
+        //             color: getBackGroundColor(),
+        //           ),
+        //           SizedBox(
+        //             width: 5.w,
+        //           ),
+        //           Text(
+        //             'Table of Contents',
+        //             style: Theme.of(context).textTheme.headline5?.copyWith(
+        //                   color: getBackGroundColor(),
+        //                 ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     PopupMenuItem<int>(
+        //       value: 4,
+        //       child: Row(
+        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Icon(
+        //             Icons.share,
+        //             color: getBackGroundColor(),
+        //           ),
+        //           SizedBox(
+        //             width: 5.w,
+        //           ),
+        //           Text(
+        //             'Share',
+        //             style: Theme.of(context).textTheme.headline5?.copyWith(
+        //                   color: getBackGroundColor(),
+        //                 ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     PopupMenuItem<int>(
+        //       value: 4,
+        //       child: Row(
+        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //         children: [
+        //           Icon(
+        //             Icons.info,
+        //             color: getBackGroundColor(),
+        //           ),
+        //           SizedBox(
+        //             width: 5.w,
+        //           ),
+        //           Text(
+        //             'About Book',
+        //             style: Theme.of(context).textTheme.headline5?.copyWith(
+        //                   color: getBackGroundColor(),
+        //                 ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }

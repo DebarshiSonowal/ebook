@@ -8,6 +8,7 @@ import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:sizer/sizer.dart';
+
 // import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 // import 'package:top_snackbar_flutter/tap_bounce_container.dart';
 // import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -34,43 +35,46 @@ class BlurredItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Dialogs.materialDialog(
-            msg: 'You have to be logged in to view this',
-            title: "Want to Read This?",
-            color: Colors.white,
-            titleStyle: TextStyle(
-              fontSize: 16.sp,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-            msgStyle: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.black,
-            ),
-            context: context,
-            actions: [
-              IconsButton(
-                onPressed: () {
-                  Navigation.instance.goBack();
-                },
-                text: 'Cancel',
-                iconData: Icons.close,
-                color: Colors.red,
-                textStyle: TextStyle(color: Colors.white),
-                iconColor: Colors.white,
+        if (bookDetails?.is_bought ?? false) {
+          Dialogs.materialDialog(
+              msg: 'You have to be logged in to view this',
+              title: "Want to Read This?",
+              color: Colors.white,
+              titleStyle: TextStyle(
+                fontSize: 16.sp,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
-              IconsOutlineButton(
-                onPressed: () {
-                Navigation.instance.navigate('/login');
-                },
-                text: 'Log In',
-                color: Colors.green,
-                iconData: Icons.login,
-                textStyle: TextStyle(color: Colors.white),
-                iconColor: Colors.white,
+              msgStyle: TextStyle(
+                fontSize: 12.sp,
+                color: Colors.black,
               ),
-            ]);
-
+              context: context,
+              actions: [
+                IconsButton(
+                  onPressed: () {
+                    Navigation.instance.goBack();
+                  },
+                  text: 'Cancel',
+                  iconData: Icons.close,
+                  color: Colors.red,
+                  textStyle: TextStyle(color: Colors.white),
+                  iconColor: Colors.white,
+                ),
+                IconsOutlineButton(
+                  onPressed: () {
+                    Navigation.instance.navigate('/login');
+                  },
+                  text: 'Log In',
+                  color: Colors.green,
+                  iconData: Icons.login,
+                  textStyle: TextStyle(color: Colors.white),
+                  iconColor: Colors.white,
+                ),
+              ]);
+        } else {
+          Fluttertoast.showToast(msg: "You will have to buy this magazine before reading");
+        }
       },
       child: ClipRect(
         child: Stack(
@@ -122,13 +126,11 @@ class BlurredItemCard extends StatelessWidget {
                           current?.short_note ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                                color: Colors.white,
-                                // fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline5?.copyWith(
+                                    color: Colors.white,
+                                    // fontWeight: FontWeight.bold,
+                                  ),
                         ),
                         // Spacer(),
                       ],

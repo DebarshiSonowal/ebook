@@ -80,10 +80,10 @@ class BookInfoSectionBookmark extends StatelessWidget {
                             // itemPadding:
                             //     EdgeInsets.symmetric(horizontal: 4.0),
                             itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.white,
-                              size: 10,
-                            ),
+                                  Icons.star,
+                                  color: Colors.white,
+                                  size: 10,
+                                ),
                             onRatingUpdate: (rating) {
                               print(rating);
                             }),
@@ -134,13 +134,21 @@ class BookInfoSectionBookmark extends StatelessWidget {
                       padding: const EdgeInsets.all(5),
                       // decoration: ,
                       child: Text(
-                        'Rs. ${data.selling_price?.toStringAsFixed(2)}',
+                        data.selling_price?.toStringAsFixed(2).toString() ==
+                                "0.00"
+                            ? "FREE"
+                            : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.headline6?.copyWith(
-                          fontSize: 1.5.h,
-                          color: Colors.black,
-                        ),
+                              fontSize: 1.5.h,
+                              color: data.selling_price
+                                          ?.toStringAsFixed(2)
+                                          .toString() ==
+                                      "0.00"
+                                  ? Colors.green
+                                  : Colors.black,
+                            ),
                       ),
                     ),
                   ),
@@ -149,9 +157,9 @@ class BookInfoSectionBookmark extends StatelessWidget {
                   SizedBox(height: 0.7.h),
                   data.awards!.isNotEmpty
                       ? Text(
-                    "${data.awards![0].name} Winner",
-                    style: Theme.of(context).textTheme.headline5,
-                  )
+                          "${data.awards![0].name} Winner",
+                          style: Theme.of(context).textTheme.headline5,
+                        )
                       : Container(),
                   SizedBox(height: 0.7.h),
                   Text(
@@ -164,38 +172,40 @@ class BookInfoSectionBookmark extends StatelessWidget {
                   data.book_format == "magazine"
                       ? Container()
                       : SizedBox(
-                    width: double.infinity,
-                    height: 4.5.h,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          if (data.book_format == "magazine") {
-                            Navigation.instance.navigate(
-                                '/magazineArticles',
-                                args: data.id ?? 0);
-                          } else {
-                            Navigation.instance.navigate('/bookDetails',
-                                args: data.id ?? 0);
-                            // Navigation.instance.navigate('/reading',
-                            //     args: data.id ?? 0);
-                          }
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
+                          width: double.infinity,
+                          height: 4.5.h,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                if (data.book_format == "magazine") {
+                                  Navigation.instance.navigate(
+                                      '/magazineArticles',
+                                      args: data.id ?? 0);
+                                } else {
+                                  Navigation.instance.navigate('/bookDetails',
+                                      args: data.id ?? 0);
+                                  // Navigation.instance.navigate('/reading',
+                                  //     args: data.id ?? 0);
+                                }
+                              },
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white),
+                              ),
+                              child: Text(
+                                data.book_format == "magazine"
+                                    ? 'View Articles'
+                                    : (data.is_bought ?? false)
+                                        ? 'Read'
+                                        : 'Preview',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      fontSize: 2.h,
+                                      color: Colors.black,
+                                    ),
+                              )),
                         ),
-                        child: Text(
-                          data.book_format == "magazine"
-                              ? 'View Articles'
-                              : 'Preview',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                            fontSize: 2.h,
-                            color: Colors.black,
-                          ),
-                        )),
-                  ),
                   SizedBox(height: 0.5.h),
                   ButtonsPopUpInfoBookmark(data: data),
                   // SizedBox(height: 1.h),

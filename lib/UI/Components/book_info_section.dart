@@ -42,8 +42,8 @@ class BookInfoSection extends StatelessWidget {
                         height: 4.5.h,
                         child: ElevatedButton(
                             onPressed: () {
-                              Navigation.instance.navigate('/bookDetails',
-                                  args: data.id ?? 0);
+                              Navigation.instance
+                                  .navigate('/bookDetails', args: data.id ?? 0);
                               // if (data.book_format == "magazine") {
                               //   Navigation.instance.navigate(
                               //       '/magazineArticles',
@@ -62,7 +62,9 @@ class BookInfoSection extends StatelessWidget {
                             child: Text(
                               data.book_format == "magazine"
                                   ? 'View Articles'
-                                  : (data.is_bought??false)?'Read':'Preview',
+                                  : (data.is_bought ?? false)
+                                      ? 'Read'
+                                      : 'Preview',
                               style: Theme.of(context)
                                   .textTheme
                                   .headline5
@@ -82,7 +84,3 @@ class BookInfoSection extends StatelessWidget {
     );
   }
 }
-
-
-
-

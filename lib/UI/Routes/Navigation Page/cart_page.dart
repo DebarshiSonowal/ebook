@@ -121,7 +121,7 @@ class _CartPageState extends State<CartPage> {
                         : PaymentAddressCard(
                             data: data,
                             getTotalAmount: (data) => getTotalAmount(data),
-                            initiatePaymentProcess: initiatePaymentProcess,
+                            initiatePaymentProcess:(amount)=>amount<=0?freeItemsProcess():initiatePaymentProcess(),
                           ),
                   ],
                 );
@@ -309,6 +309,25 @@ class _CartPageState extends State<CartPage> {
       }
     } else {
       Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  freeItemsProcess() async{
+    final response = await ApiProvider.instance.createOrder(cupon, null);
+    if(response.status??false){
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "Payment received Successfully",
+      );
+      fetchCartItems();
+      Navigation.instance.goBack();
+    }else{
       CoolAlert.show(
         context: context,
         type: CoolAlertType.warning,

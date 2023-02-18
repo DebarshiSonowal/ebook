@@ -50,10 +50,10 @@ class ButtonsPopUpInfo extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
+          (data.is_bought??false)?Container():SizedBox(
             width: 1.w,
           ),
-          Expanded(
+          (data.is_bought??false)?Container():Expanded(
             child: ElevatedButton(
               onPressed: () {
                 // Navigation.instance
@@ -131,10 +131,10 @@ class ButtonsPopUpInfoBookmark extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
+          (data.is_bought??false)?Container():SizedBox(
             width: 1.w,
           ),
-          Expanded(
+          (data.is_bought??false)?Container():Expanded(
             child: ElevatedButton(
               onPressed: () {
                 // Navigation.instance

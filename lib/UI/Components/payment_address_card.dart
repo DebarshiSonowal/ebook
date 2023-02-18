@@ -8,7 +8,7 @@ class PaymentAddressCard extends StatelessWidget {
   const PaymentAddressCard({Key? key, required this.data, required this.getTotalAmount, required this.initiatePaymentProcess}) : super(key: key);
   final DataProvider data;
   final Function(Cart data) getTotalAmount;
-  final Function initiatePaymentProcess;
+  final Function(int amount) initiatePaymentProcess;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -63,7 +63,7 @@ class PaymentAddressCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        initiatePaymentProcess();
+                        initiatePaymentProcess(int.parse(getTotalAmount(data.cartData!)));
                       },
                       style: ButtonStyle(
                         backgroundColor:

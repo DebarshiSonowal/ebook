@@ -18,7 +18,7 @@ class ReviewSection extends StatelessWidget {
     return ListView.separated(
       physics: NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: reviews.length,
+      itemCount: reviews.length>5?5:reviews.length,
       itemBuilder: (cont, index) {
         var data = reviews[index];
         return IndivisualReview(data: data);

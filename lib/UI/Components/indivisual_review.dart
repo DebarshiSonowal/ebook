@@ -18,6 +18,7 @@ class IndivisualReview extends StatelessWidget {
       width: double.infinity,
       // height: 20.h,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment:
@@ -33,21 +34,23 @@ class IndivisualReview extends StatelessWidget {
                   // color: Colors.grey.shade200,
                 ),
               ),
-              RatingBar.builder(
-                  itemSize: 5.w,
-                  initialRating: data.rating ?? 3,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  // itemPadding:
-                  //     EdgeInsets.symmetric(horizontal: 4.0),
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 10,
-                  ),
-                  onRatingUpdate: (rating) {}),
+              IgnorePointer(
+                child: RatingBar.builder(
+                    itemSize: 5.w,
+                    initialRating: data.rating ?? 3,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    // itemPadding:
+                    //     EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                      size: 10,
+                    ),
+                    onRatingUpdate: (rating) {}),
+              ),
             ],
           ),
           SizedBox(
@@ -55,6 +58,8 @@ class IndivisualReview extends StatelessWidget {
           ),
           Text(
             '${data.content}',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: Theme.of(context)
                 .textTheme
                 .headline5

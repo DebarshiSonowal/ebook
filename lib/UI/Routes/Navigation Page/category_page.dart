@@ -29,9 +29,9 @@ class _CategoryPageState extends State<CategoryPage> {
                   Center(
                     child: ListView.builder(
                       shrinkWrap: true,
-                        itemCount: current.categoryList![current.currentIndex].length,
+                        itemCount: current.categoryList[current.currentTab].length,
                         itemBuilder: (cont, ind) {
-                          var data = current.categoryList![current.currentIndex][ind];
+                          var data = current.categoryList[current.currentTab][ind];
                           return GestureDetector(
                             onTap: (){
                               Navigation.instance.navigate('/selectCategories',

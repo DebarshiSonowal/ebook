@@ -47,8 +47,8 @@ class magazineViewSection extends StatelessWidget {
                       Text(
                         bookDetails?.title ?? '',
                         style: Theme.of(context).textTheme.headline1?.copyWith(
-                          color: Colors.white,
-                        ),
+                              color: Colors.white,
+                            ),
                       ),
                       SizedBox(
                         height: 2.h,
@@ -58,8 +58,8 @@ class magazineViewSection extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 4,
                         style: Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.white,
-                        ),
+                              color: Colors.white,
+                            ),
                       ),
                     ],
                   ),
@@ -85,24 +85,25 @@ class magazineViewSection extends StatelessWidget {
               itemBuilder: (cont, count) {
                 var current = bookDetails?.articles![count];
                 return count >= 0 &&
-                    Provider.of<DataProvider>(
-                        Navigation.instance.navigatorKey
-                            .currentContext ??
-                            context,
-                        listen: true)
-                        .profile ==
-                        null
+                        (Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: true)
+                                .profile ==
+                            null) ||
+                        !(bookDetails?.is_bought ?? false)
                     ? BlurredItemCard(
-                    bookDetails: bookDetails,
-                    context: context,
-                    current: current,
-                    count: count)
+                        bookDetails: bookDetails,
+                        context: context,
+                        current: current,
+                        count: count)
                     : articleitemcard(
-                  bookDetails: bookDetails,
-                  context: context,
-                  current: current,
-                  count: count,
-                );
+                        bookDetails: bookDetails,
+                        context: context,
+                        current: current,
+                        count: count,
+                      );
               },
               separatorBuilder: (cont, count) {
                 return Container(
