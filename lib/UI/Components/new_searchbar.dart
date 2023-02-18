@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart';
@@ -142,8 +142,8 @@ class NewSearchBar extends StatelessWidget {
                         Icons.shopping_cart,
                         // size: 2.h
                       )
-                    : Badge(
-                        position: BadgePosition.topEnd(),
+                    : badge.Badge(
+                        position: badge.BadgePosition.topEnd(),
                         badgeColor: ConstanceData.primaryColor,
                         badgeContent: Text(
                           '${data.cartData?.items.length ?? ""}',

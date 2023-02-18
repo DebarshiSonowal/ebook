@@ -1,4 +1,5 @@
-import 'package:badges/badges.dart';
+// import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badge;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/book.dart';
@@ -98,8 +99,8 @@ class _HomeAppBarState extends State<HomeAppBar> {
         ),
         Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Badge(
-            position: BadgePosition.bottomEnd(),
+          child: badge.Badge(
+            position: badge.BadgePosition.bottomEnd(),
             badgeColor: Colors.white,
             badgeContent: const Icon(
               ConstanceData.moreIcon,
