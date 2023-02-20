@@ -1,6 +1,6 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../Helper/navigator.dart';
@@ -78,25 +78,25 @@ class HistoryCardItem extends StatelessWidget {
               Navigation.instance.navigate('/loadingDialog');
               // await ApiProvider.instance
               //     .download2(current.id ?? 0);
-              var status = await Permission.storage.status;
-              if (status.isDenied) {
-                if (await Permission.storage
-                    .request()
-                    .isGranted) {
-                  await ApiProvider.instance
-                      .download2(current.id ?? 0);
-                } else {
-                  CoolAlert.show(
-                    context: context,
-                    type: CoolAlertType.warning,
-                    text: "We require storage permissions",
-                  );
-                }
-                // We didn't ask for permission yet or the permission has been denied before but not permanently.
-              } else {
-                await ApiProvider.instance
-                    .download2(current.id ?? 0);
-              }
+              // var status = await Permission.storage.status;
+              // if (status.isDenied) {
+              //   if (await Permission.storage
+              //       .request()
+              //       .isGranted) {
+              //     await ApiProvider.instance
+              //         .download2(current.id ?? 0);
+              //   } else {
+              //     CoolAlert.show(
+              //       context: context,
+              //       type: CoolAlertType.warning,
+              //       text: "We require storage permissions",
+              //     );
+              //   }
+              //   // We didn't ask for permission yet or the permission has been denied before but not permanently.
+              // } else {
+              //   await ApiProvider.instance
+              //       .download2(current.id ?? 0);
+              // }
             },
             child: Text(
               'Download',

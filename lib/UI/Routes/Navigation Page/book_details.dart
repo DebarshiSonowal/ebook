@@ -201,77 +201,79 @@ class _BookDetailsState extends State<BookDetails>
           ),
         ],
       ):null,
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: getBodyColor(),
-        key: pageKey,
-        child: bookDetails == null
-            ? const Center(child: CircularProgressIndicator())
-            : Consumer<DataProvider>(builder: (context, data, _) {
-          return chapters.isEmpty
-              ? Center(
-            child: Text(
-              bookDetails != null
-                  ? ''
-                  : 'Oops No Data available here',
-              style: TextStyle(
-                color: getBackGroundColor(),
+      body: SafeArea(
+        child: Container(
+          height: double.infinity,
+          width: double.infinity,
+          color: getBodyColor(),
+          key: pageKey,
+          child: bookDetails == null
+              ? const Center(child: CircularProgressIndicator())
+              : Consumer<DataProvider>(builder: (context, data, _) {
+            return chapters.isEmpty
+                ? Center(
+              child: Text(
+                bookDetails != null
+                    ? ''
+                    : 'Oops No Data available here',
+                style: TextStyle(
+                  color: getBackGroundColor(),
+                ),
               ),
-            ),
-          )
-              : PageView.builder(
-            // shrinkWrap: true,
-            controller: pageController,
-            scrollDirection: Axis.horizontal,
-            physics: const ClampingScrollPhysics(),
-            itemCount: reading.length,
-            itemBuilder: (context, index) {
-              test = reading[index].desc!;
-              return GestureDetector(
-                onTap: () {
-                  // Navigation.instance.goBack();
-                  setState(() {
-                    isShowing=!isShowing;
-                  });
-                  showBottomSlider(reading.length);
-                },
-                child: Container(
-                  width: 98.w,
-                  // height: 90.h,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 5.w,
-                  ),
-                  color: getTextColor(),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Html(
-                          data: test,
-                          // tagsList: [
-                          //   'img','p','!DOCTYPE html','body'
-                          // ],
-                          // tagsList: ['p'],
-                          // shrinkWrap: true,
-                          style: {
-                            '#': Style(
-                              fontSize: FontSize(_counterValue),
+            )
+                : PageView.builder(
+              // shrinkWrap: true,
+              controller: pageController,
+              scrollDirection: Axis.horizontal,
+              physics: const ClampingScrollPhysics(),
+              itemCount: reading.length,
+              itemBuilder: (context, index) {
+                test = reading[index].desc!;
+                return GestureDetector(
+                  onTap: () {
+                    // Navigation.instance.goBack();
+                    setState(() {
+                      isShowing=!isShowing;
+                    });
+                    showBottomSlider(reading.length);
+                  },
+                  child: Container(
+                    width: 98.w,
+                    // height: 90.h,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                    ),
+                    color: getTextColor(),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Html(
+                            data: test,
+                            // tagsList: [
+                            //   'img','p','!DOCTYPE html','body'
+                            // ],
+                            // tagsList: ['p'],
+                            // shrinkWrap: true,
+                            style: {
+                              '#': Style(
+                                fontSize: FontSize(_counterValue),
 
-                              // maxLines: 20,
-                              color: getBackGroundColor(),
-                              // textOverflow: TextOverflow.ellipsis,
-                            ),
-                          },
-                        ),
-                      ],
+                                // maxLines: 20,
+                                color: getBackGroundColor(),
+                                // textOverflow: TextOverflow.ellipsis,
+                              ),
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
 
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }

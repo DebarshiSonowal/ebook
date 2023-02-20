@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:open_file/open_file.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -11,27 +11,13 @@ import 'Storage/app_storage.dart';
 import 'Storage/data_provider.dart';
 
 void main() async{
-  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp(
   //   // name: "GPlusNewApp",
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
   Storage.instance.initializeStorage();
-  const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-
-  const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid);
-  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String? payload) async {
-        if (payload != null) {
-          debugPrint('notification payload: $payload');
-          if(payload != 'downloading'){
-            OpenFile.open(payload);
-          }
-        }
-      });
   runApp(const MyApp());
 }
 

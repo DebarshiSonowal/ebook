@@ -2,7 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Model/order_history.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../Helper/navigator.dart';
