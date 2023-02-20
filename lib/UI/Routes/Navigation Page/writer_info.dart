@@ -7,9 +7,10 @@ import 'package:sizer/sizer.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../Components/book_item.dart';
+import '../../Components/writter_account_home.dart';
 
 class WriterInfo extends StatefulWidget {
-  final int id;
+  final String id;
 
   const WriterInfo(
     this.id,
@@ -32,7 +33,9 @@ class _WriterInfoState extends State<WriterInfo> {
             child: Column(
               children: [
                 WriterAccountHome(
-                    data.writerDetails?.name ?? "",
+                    int.parse(widget.id.toString().split(",")[1] ?? "0") == 0
+                        ? ("${data.writerDetails?.name}")
+                        : ("${data.writerDetails?.title}"),
                     data.writerDetails?.profile_pic ?? "",
                     data.writerDetails?.salutation ?? "",
                     data.writerDetails?.contributor_name ?? ""),
@@ -215,9 +218,7 @@ class _WriterInfoState extends State<WriterInfo> {
                                     ),
                               ),
                               GestureDetector(
-                                onTap: (){
-
-                                },
+                                onTap: () {},
                                 child: Text(
                                   'More >',
                                   style: Theme.of(context)
@@ -277,88 +278,86 @@ class _WriterInfoState extends State<WriterInfo> {
                   height: 2.h,
                 ),
                 (data.writerDetails?.books
-                    .where((element) =>
-                element.book_format == "magazine")
-                    .toList() ??
-                    [])
-                    .isEmpty
+                                .where((element) =>
+                                    element.book_format == "magazine")
+                                .toList() ??
+                            [])
+                        .isEmpty
                     ? Container()
                     : Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Magazines',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                            fontSize: 2.h,
-                            // color: Colors.grey.shade200,
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Magazines',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline5
+                                    ?.copyWith(
+                                      fontSize: 2.h,
+                                      // color: Colors.grey.shade200,
+                                    ),
+                              ),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Text(
+                                  'More >',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5
+                                      ?.copyWith(
+                                        fontSize: 1.5.h,
+                                        color: Colors.blueAccent,
+                                      ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        GestureDetector(
-                          onTap: (){
-
-                          },
-                          child: Text(
-                            'More >',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(
-                              fontSize: 1.5.h,
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
                 (data.writerDetails?.books
-                    .where((element) =>
-                element.book_format == "magazine")
-                    .toList() ??
-                    [])
-                    .isEmpty
+                                .where((element) =>
+                                    element.book_format == "magazine")
+                                .toList() ??
+                            [])
+                        .isEmpty
                     ? Container()
                     : SizedBox(
-                  height: 1.h,
-                ),
+                        height: 1.h,
+                      ),
                 (data.writerDetails?.books
-                    .where((element) =>
-                element.book_format == "magazine")
-                    .toList() ??
-                    [])
-                    .isEmpty
+                                .where((element) =>
+                                    element.book_format == "magazine")
+                                .toList() ??
+                            [])
+                        .isEmpty
                     ? Container()
                     : SizedBox(
-                  height: 35.h,
-                  child: ListView.builder(
-                      itemCount: data.writerDetails?.books
-                          .where((element) =>
-                      element.book_format == "magazine")
-                          .length,
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemBuilder: (cont, count) {
-                        var current = data.writerDetails?.books
-                            .where((element) =>
-                        element.book_format == "magazine")
-                            .toList()[count];
-                        return BookItem(
-                          data: current!,
-                          index: count,
-                          show: (data) {
-                            ConstanceData.show(context, data);
-                          },
-                        );
-                      }),
-                ),
+                        height: 35.h,
+                        child: ListView.builder(
+                            itemCount: data.writerDetails?.books
+                                .where((element) =>
+                                    element.book_format == "magazine")
+                                .length,
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemBuilder: (cont, count) {
+                              var current = data.writerDetails?.books
+                                  .where((element) =>
+                                      element.book_format == "magazine")
+                                  .toList()[count];
+                              return BookItem(
+                                data: current!,
+                                index: count,
+                                show: (data) {
+                                  ConstanceData.show(context, data);
+                                },
+                              );
+                            }),
+                      ),
               ],
             ),
           );
@@ -375,7 +374,8 @@ class _WriterInfoState extends State<WriterInfo> {
 
   fetchDetails() async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance.fetchWriterDetails(widget.id);
+    final response = await ApiProvider.instance.fetchWriterDetails(
+        widget.id.toString().split(",")[0], widget.id.toString().split(",")[1]);
     if (response.success ?? false) {
       Navigation.instance.goBack();
       Provider.of<DataProvider>(
@@ -385,77 +385,5 @@ class _WriterInfoState extends State<WriterInfo> {
     } else {
       Navigation.instance.goBack();
     }
-  }
-}
-
-class WriterAccountHome extends StatelessWidget {
-  final String name, picture, saluation, contributor;
-
-  WriterAccountHome(this.name, this.picture, this.saluation, this.contributor);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 30.h,
-      color: Colors.grey.shade900,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: Image.network(
-                      picture,
-                      height: 10.h,
-                      width: 20.w,
-                    ) ??
-                    Image.asset(
-                      'assets/images/user.png',
-                      fit: BoxFit.fill,
-                      height: 10.h,
-                      width: 20.w,
-                    ),
-              ),
-              Container(
-                padding: EdgeInsets.all(4),
-                color: Colors.white,
-                child: Text(
-                  contributor ?? 'AUTHOR',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 1.5.h,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 2.h,
-          ),
-          Text(
-            "${saluation} ${name}" ?? 'Simon & Schuster',
-            style: Theme.of(context).textTheme.headline5?.copyWith(
-                  fontSize: 2.h,
-                ),
-          ),
-          SizedBox(
-            height: 1.h,
-          ),
-          Text(
-            '1 TITLE',
-            style: Theme.of(context).textTheme.headline5?.copyWith(
-                  fontSize: 1.5.h,
-                ),
-          ),
-        ],
-      ),
-    );
   }
 }

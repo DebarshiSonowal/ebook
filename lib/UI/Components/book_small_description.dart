@@ -92,9 +92,9 @@ class bookSmallDescription extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      Navigation.instance.navigate(
-                                          '/writerInfo',
-                                          args: data.contributor_id);
+                                      print("Contributor 1 is ${data.magazine_id}");
+                                      Navigation.instance
+                                          .navigate('/writerInfo', args: '${data.contributor_id},${data.magazine_id}');
                                     },
                                     child: Text(
                                       data.writer ?? "NA",

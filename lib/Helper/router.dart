@@ -72,7 +72,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: CouponPage());
     case '/writerInfo':
       return FadeTransitionPageRouteBuilder(
-          page: WriterInfo(settings.arguments as int));
+          page: WriterInfo(settings.arguments as String));
     case '/readingDialog':
       return FadeTransitionPageRouteBuilder(page: ReadingDialog(settings.arguments as String));
     case '/cartPage':

@@ -12,7 +12,7 @@ class writer {
       mobile,
       email,
       profile_pic,
-      about;
+      about,title;
   List<Book> books = [];
   List<Tag> tags = [], awards = [];
 
@@ -29,6 +29,7 @@ class writer {
 
     code = json['code'] ?? "";
     about = json['about'] ?? "";
+    title = json['title'] ?? "";
     contributor_name = json['contributor_name'] ?? "";
     salutation = json['salutation'] ?? "";
     name = "${json['f_name'] ?? ""} ${json['l_name'] ?? ""}";

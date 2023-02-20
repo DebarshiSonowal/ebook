@@ -21,7 +21,7 @@ class HomeBannerResponse {
 }
 
 class Book {
-  int? id, book_category_id, length, total_rating,contributor_id,no_of_articles,total_chapters;
+  int? id, book_category_id, length, total_rating,contributor_id,no_of_articles,total_chapters,magazine_id;
   String? title,
       writer,
       book_format,
@@ -40,6 +40,9 @@ class Book {
     book_category_id = json['book_category_id'] == null
         ? 0
         : int.parse(json['book_category_id'].toString());
+    magazine_id = json['magazine_id'] == null
+        ? 0
+        : int.parse(json['magazine_id'].toString());
     contributor_id = json['contributor_id'] == null
         ? 0
         : int.parse(json['contributor_id'].toString());

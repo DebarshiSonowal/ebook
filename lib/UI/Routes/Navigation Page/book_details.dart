@@ -45,7 +45,7 @@ class _BookDetailsState extends State<BookDetails>
   // WebViewController? _controller;
 
   String background = "https://picsum.photos/id/237/200/300";
-
+  bool isShowing = false;
   Book? bookDetails;
   var themes = [
     ReadingTheme(
@@ -155,389 +155,123 @@ class _BookDetailsState extends State<BookDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   iconTheme: IconThemeData(color: getTextColor()),
-      //   title: Text(
-      //     title ?? "",
-      //     overflow: TextOverflow.ellipsis,
-      //     style: Theme.of(context)
-      //         .textTheme
-      //         .headline1
-      //         ?.copyWith(color: getTextColor()),
-      //   ),
-      //   backgroundColor: getBackGroundColor(),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {
-      //         showDialog(
-      //           context: context,
-      //           builder: (BuildContext context) {
-      //             // initPlatformBrightness();
-      //             return buildAlertDialog();
-      //           },
-      //         );
-      //       },
-      //       icon: Icon(
-      //         Icons.font_download,
-      //         color: getTextColor(),
-      //       ),
-      //     ),
-      //     IconButton(
-      //       onPressed:() {
-      //         Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
-      //       },
-      //       icon: Icon(
-      //         Icons.share,
-      //         color: getTextColor(),
-      //       ),
-      //     ),
-      //     // PopupMenuButton<int>(
-      //     //   color: getTextColor(),
-      //     //   onSelected: (item) => handleClick(item),
-      //     //   itemBuilder: (context) => [
-      //     //     // PopupMenuItem<int>(
-      //     //     //   value: 0,
-      //     //     //   child: Row(
-      //     //     //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     //     //     children: [
-      //     //     //       Icon(
-      //     //     //         Icons.add,
-      //     //     //         color: getBackGroundColor(),
-      //     //     //       ),
-      //     //     //       SizedBox(
-      //     //     //         width: 5.w,
-      //     //     //       ),
-      //     //     //       Text(
-      //     //     //         'Create a Bookmark',
-      //     //     //         style: Theme.of(context).textTheme.headline5?.copyWith(
-      //     //     //               color: getBackGroundColor(),
-      //     //     //             ),
-      //     //     //       ),
-      //     //     //     ],
-      //     //     //   ),
-      //     //     // ),
-      //     //     PopupMenuItem<int>(
-      //     //       value: 1,
-      //     //       child: Row(
-      //     //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     //         children: [
-      //     //           Icon(
-      //     //             Icons.bookmark,
-      //     //             color: getBackGroundColor(),
-      //     //           ),
-      //     //           SizedBox(
-      //     //             width: 5.w,
-      //     //           ),
-      //     //           Text(
-      //     //             'Add bookmark',
-      //     //             style: Theme.of(context).textTheme.headline5?.copyWith(
-      //     //                   color: getBackGroundColor(),
-      //     //                 ),
-      //     //           ),
-      //     //         ],
-      //     //       ),
-      //     //     ),
-      //     //     PopupMenuItem<int>(
-      //     //       value: 2,
-      //     //       child: Row(
-      //     //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
-      //     //         children: [
-      //     //           Icon(
-      //     //             Icons.close,
-      //     //             color: getBackGroundColor(),
-      //     //           ),
-      //     //           SizedBox(
-      //     //             width: 5.w,
-      //     //           ),
-      //     //           Text(
-      //     //             'Finished',
-      //     //             style: Theme.of(context).textTheme.headline5?.copyWith(
-      //     //                   color: getBackGroundColor(),
-      //     //                 ),
-      //     //           ),
-      //     //         ],
-      //     //       ),
-      //     //     ),
-      //     //   ],
-      //     // ),
-      //     // IconButton(
-      //     //   onPressed: () {
-      //     //
-      //     //   },
-      //     //   icon: const Icon(
-      //     //     FontAwesomeIcons.hamburger,
-      //     //   ),
-      //     // ),
-      //   ],
-      // ),
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              iconTheme: IconThemeData(color: getTextColor()),
-              leading: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
-                ), onPressed: () {
-                  Navigation.instance.goBack();
-              },
-              ),
-              title: Text(
-                title ?? "",
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1
-                    ?.copyWith(color: getTextColor()),
-              ),
-              backgroundColor: getBackGroundColor(),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        // initPlatformBrightness();
-                        return buildAlertDialog();
-                      },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.font_download,
-                    color: getTextColor(),
-                  ),
-                ),
-                IconButton(
-                  onPressed:() {
-                    Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
-                  },
-                  icon: Icon(
-                    Icons.share,
-                    color: getTextColor(),
-                  ),
-                ),
-                // PopupMenuButton<int>(
-                //   color: getTextColor(),
-                //   onSelected: (item) => handleClick(item),
-                //   itemBuilder: (context) => [
-                //     // PopupMenuItem<int>(
-                //     //   value: 0,
-                //     //   child: Row(
-                //     //     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     //     children: [
-                //     //       Icon(
-                //     //         Icons.add,
-                //     //         color: getBackGroundColor(),
-                //     //       ),
-                //     //       SizedBox(
-                //     //         width: 5.w,
-                //     //       ),
-                //     //       Text(
-                //     //         'Create a Bookmark',
-                //     //         style: Theme.of(context).textTheme.headline5?.copyWith(
-                //     //               color: getBackGroundColor(),
-                //     //             ),
-                //     //       ),
-                //     //     ],
-                //     //   ),
-                //     // ),
-                //     PopupMenuItem<int>(
-                //       value: 1,
-                //       child: Row(
-                //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Icon(
-                //             Icons.bookmark,
-                //             color: getBackGroundColor(),
-                //           ),
-                //           SizedBox(
-                //             width: 5.w,
-                //           ),
-                //           Text(
-                //             'Add bookmark',
-                //             style: Theme.of(context).textTheme.headline5?.copyWith(
-                //                   color: getBackGroundColor(),
-                //                 ),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //     PopupMenuItem<int>(
-                //       value: 2,
-                //       child: Row(
-                //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //         children: [
-                //           Icon(
-                //             Icons.close,
-                //             color: getBackGroundColor(),
-                //           ),
-                //           SizedBox(
-                //             width: 5.w,
-                //           ),
-                //           Text(
-                //             'Finished',
-                //             style: Theme.of(context).textTheme.headline5?.copyWith(
-                //                   color: getBackGroundColor(),
-                //                 ),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // IconButton(
-                //   onPressed: () {
-                //
-                //   },
-                //   icon: const Icon(
-                //     FontAwesomeIcons.hamburger,
-                //   ),
-                // ),
-              ],
-              automaticallyImplyLeading: false,
-              expandedHeight:50,
-              floating: true,
-              snap: true,
-            )
-          ];
+      appBar:isShowing?AppBar(
+        iconTheme: IconThemeData(color: getTextColor()),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          ), onPressed: () {
+          Navigation.instance.goBack();
         },
-        body: Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: getBodyColor(),
-          key: pageKey,
-          child: bookDetails == null
-              ? const Center(child: CircularProgressIndicator())
-              : Consumer<DataProvider>(builder: (context, data, _) {
-                  return chapters.isEmpty
-                      ? Center(
-                          child: Text(
-                            bookDetails != null
-                                ? ''
-                                : 'Oops No Data available here',
-                            style: TextStyle(
-                              color: getBackGroundColor(),
-                            ),
-                          ),
-                        )
-                      : PageView.builder(
-                          // shrinkWrap: true,
-                          controller: pageController,
-                          scrollDirection: Axis.horizontal,
-                          physics: const ClampingScrollPhysics(),
-                          itemCount: reading.length,
-                          itemBuilder: (context, index) {
-                            test = reading[index].desc!;
-                            return GestureDetector(
-                              onTap: () {
-                                // Navigation.instance.goBack();
-                                showBottomSlider(reading.length);
-                              },
-                              child: Container(
-                                width: 98.w,
-                                // height: 90.h,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 5.w,
-                                ),
-                                color: getTextColor(),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    children: [
-                                      Html(
-                                        data: test,
-                                        // tagsList: [
-                                        //   'img','p','!DOCTYPE html','body'
-                                        // ],
-                                        // tagsList: ['p'],
-                                        // shrinkWrap: true,
-                                        style: {
-                                          '#': Style(
-                                            fontSize: FontSize(_counterValue),
-
-                                            // maxLines: 20,
-                                            color: getBackGroundColor(),
-                                            // textOverflow: TextOverflow.ellipsis,
-                                          ),
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          // separatorBuilder: (BuildContext context, int index) {
-                          //   var title = reading[index + 1].title;
-                          //   return (index != 0 &&
-                          //           (reading[index].title ==
-                          //               reading[index - 1].title))
-                          //       ? SizedBox(
-                          //           width: 98.w,
-                          //           height: double.infinity,
-                          //           child: Center(
-                          //             child: Text(
-                          //               title!,
-                          //               style: Theme.of(context)
-                          //                   .textTheme
-                          //                   .headline1
-                          //                   ?.copyWith(
-                          //                       color: getBackGroundColor()),
-                          //             ),
-                          //           ),
-                          //         )
-                          //       : Container();
-                          // },
-                        );
-                  // : PageView.builder(
-                  //     // shrinkWrap: true,
-                  //     scrollDirection: Axis.horizontal,
-                  //     physics: const ClampingScrollPhysics(),
-                  //     itemCount: _splittedTextList.length,
-                  //     itemBuilder: (context, index) {
-                  //       test = _splittedTextList[index] ?? "";
-                  //       return Container(
-                  //         width: 100.w,
-                  //         // height: 90.h,
-                  //         padding: EdgeInsets.symmetric(
-                  //           horizontal: 5.w,
-                  //         ),
-                  //         color: getTextColor(),
-                  //         // child: Text.rich(
-                  //         //   TextSpan(
-                  //         //     text: test,
-                  //         //   ),
-                  //         //   style: TextStyle(
-                  //         //     color: getBackGroundColor(),
-                  //         //     fontSize: FontSize(_counterValue).size,
-                  //         //   ),
-                  //         // ),
-                  //         child: Html(
-                  //           data: test,
-                  //           // tagsList: [
-                  //           //   'img','p','!DOCTYPE html','body'
-                  //           // ],
-                  //           // tagsList: ['p'],
-                  //           // shrinkWrap: true,
-                  //           style: {
-                  //             '#': Style(
-                  //               fontSize: FontSize(_counterValue),
-                  //
-                  //               maxLines: FontSize(_counterValue)
-                  //                   .size!
-                  //                   .toInt()
-                  //                   .sp
-                  //                   .toInt(),
-                  //               color: getBackGroundColor(),
-                  //               // textOverflow: TextOverflow.ellipsis,
-                  //             ),
-                  //           },
-                  //         ),
-                  //       );
-                  //     },
-                  //   );
-                }),
         ),
+        title: Text(
+          title ?? "",
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context)
+              .textTheme
+              .headline1
+              ?.copyWith(color: getTextColor()),
+        ),
+        backgroundColor: getBackGroundColor(),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  // initPlatformBrightness();
+                  return buildAlertDialog();
+                },
+              );
+            },
+            icon: Icon(
+              Icons.font_download,
+              color: getTextColor(),
+            ),
+          ),
+          IconButton(
+            onPressed:() {
+              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+            },
+            icon: Icon(
+              Icons.share,
+              color: getTextColor(),
+            ),
+          ),
+        ],
+      ):null,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        color: getBodyColor(),
+        key: pageKey,
+        child: bookDetails == null
+            ? const Center(child: CircularProgressIndicator())
+            : Consumer<DataProvider>(builder: (context, data, _) {
+          return chapters.isEmpty
+              ? Center(
+            child: Text(
+              bookDetails != null
+                  ? ''
+                  : 'Oops No Data available here',
+              style: TextStyle(
+                color: getBackGroundColor(),
+              ),
+            ),
+          )
+              : PageView.builder(
+            // shrinkWrap: true,
+            controller: pageController,
+            scrollDirection: Axis.horizontal,
+            physics: const ClampingScrollPhysics(),
+            itemCount: reading.length,
+            itemBuilder: (context, index) {
+              test = reading[index].desc!;
+              return GestureDetector(
+                onTap: () {
+                  // Navigation.instance.goBack();
+                  setState(() {
+                    isShowing=!isShowing;
+                  });
+                  showBottomSlider(reading.length);
+                },
+                child: Container(
+                  width: 98.w,
+                  // height: 90.h,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 5.w,
+                  ),
+                  color: getTextColor(),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Html(
+                          data: test,
+                          // tagsList: [
+                          //   'img','p','!DOCTYPE html','body'
+                          // ],
+                          // tagsList: ['p'],
+                          // shrinkWrap: true,
+                          style: {
+                            '#': Style(
+                              fontSize: FontSize(_counterValue),
+
+                              // maxLines: 20,
+                              color: getBackGroundColor(),
+                              // textOverflow: TextOverflow.ellipsis,
+                            ),
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+
+          );
+        }),
       ),
     );
   }

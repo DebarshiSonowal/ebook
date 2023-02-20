@@ -39,8 +39,9 @@ class ScrollableContent extends StatelessWidget {
             SizedBox(height: 0.5.h),
             GestureDetector(
               onTap: () {
+                print("Contributor 2 is ${data.magazine_id}");
                 Navigation.instance
-                    .navigate('/writerInfo', args: data.contributor_id);
+                    .navigate('/writerInfo', args: '${data.contributor_id},${data.magazine_id}');
               },
               child: Text(
                 data.writer ?? "NA",

@@ -929,8 +929,9 @@ class ApiProvider {
     }
   }
 
-  Future<WriterResponse> fetchWriterDetails(id) async {
-    var url = "${baseUrl}/writer/${id}";
+  Future<WriterResponse> fetchWriterDetails(id,magazine_id) async {
+    var url = "${baseUrl}/contributors/${id}/${magazine_id}";
+    // var url = "${baseUrl}/writer/${id}";
     BaseOptions option =
         BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
       'Content-Type': 'application/json',

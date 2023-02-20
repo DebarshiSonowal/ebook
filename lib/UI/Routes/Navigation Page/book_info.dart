@@ -139,13 +139,19 @@ class _BookInfoState extends State<BookInfo>
                                           SizedBox(
                                             width: 1.h,
                                           ),
-                                          Text(
-                                            (bookDetails?.contributor ?? ""),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline4
-                                                ?.copyWith(
-                                                    color: Colors.blueAccent),
+                                          GestureDetector(
+                                            onTap: (){
+                                              Navigation.instance
+                                                  .navigate('/writerInfo', args: '${bookDetails?.contributor_id},${bookDetails?.magazine_id}');
+                                            },
+                                            child: Text(
+                                              (bookDetails?.contributor ?? ""),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4
+                                                  ?.copyWith(
+                                                      color: Colors.blueAccent),
+                                            ),
                                           ),
                                         ],
                                       )
@@ -160,13 +166,19 @@ class _BookInfoState extends State<BookInfo>
                                           // SizedBox(
                                           //   width: 1.h,
                                           // ),
-                                          Text(
-                                            (bookDetails?.contributor ?? ""),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline4
-                                                ?.copyWith(
-                                                    color: Colors.blueAccent),
+                                          GestureDetector(
+                                            onTap: (){
+                                              Navigation.instance
+                                                  .navigate('/writerInfo', args: '${bookDetails?.contributor_id},${bookDetails?.magazine_id}');
+                                            },
+                                            child: Text(
+                                              (bookDetails?.contributor ?? ""),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4
+                                                  ?.copyWith(
+                                                      color: Colors.blueAccent),
+                                            ),
                                           ),
                                         ],
                                       ),
