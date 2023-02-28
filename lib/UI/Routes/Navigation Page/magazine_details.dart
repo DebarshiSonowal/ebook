@@ -107,7 +107,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     Future.delayed(Duration.zero, () async {
       getSizeFromBloc(pageKey);
       brightness = await systemBrightness;
-      Navigation.instance.navigate('/readingDialog');
+      try {
+        Navigation.instance.navigate('/readingDialog',args:widget.id.toString().split(',')[2]);
+      } catch (e) {
+        print(e);
+      }
       setState(() {
         Storage.instance
             .setReadingBook(int.parse(widget.id.toString().split(',')[0]));

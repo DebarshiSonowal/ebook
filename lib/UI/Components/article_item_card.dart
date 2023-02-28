@@ -26,7 +26,7 @@ class articleitemcard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigation.instance.navigate('/magazineDetails',
-            args: "${bookDetails?.id},${count}" ?? '0');
+            args: "${bookDetails?.id},${count},${bookDetails?.profile_pic}");
       },
       child:  Container(
         width: double.infinity,

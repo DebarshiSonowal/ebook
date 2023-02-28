@@ -13,11 +13,12 @@ import 'Storage/data_provider.dart';
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+  await Storage.instance.initializeStorage();
   // await Firebase.initializeApp(
   //   // name: "GPlusNewApp",
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
-  Storage.instance.initializeStorage();
+
   runApp(const MyApp());
 }
 
