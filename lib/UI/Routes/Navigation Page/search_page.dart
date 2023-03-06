@@ -89,6 +89,7 @@ class _SearchPageState extends State<SearchPage> {
                   width: double.infinity,
                   child: Center(
                     child: TextField(
+                      textInputAction: TextInputAction.go,
                       controller: search,
                       onChanged: (txt) {
                         if (txt == "") {

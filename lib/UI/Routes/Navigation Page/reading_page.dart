@@ -7,6 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -35,12 +36,12 @@ class ReadingPage extends StatefulWidget {
 class _ReadingPageState extends State<ReadingPage> {
   var themes = [
     ReadingTheme(
-      Colors.black,
       Colors.white,
+      Colors.black,
     ),
     ReadingTheme(
-      Colors.white,
       Colors.black,
+      Colors.white,
     ),
     ReadingTheme(
       Colors.black,
@@ -52,8 +53,7 @@ class _ReadingPageState extends State<ReadingPage> {
     ),
   ];
   Book? bookDetails;
-  var list_bg_color = ['black', 'white', 'black', 'black'];
-  var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
+
   var _counterValue = 12.sp;
   int selectedTheme = 0;
   double brightness_lvl = 1, page_no = 1;
@@ -356,7 +356,7 @@ class _ReadingPageState extends State<ReadingPage> {
               Text(
                 "Theme",
                 style: Theme.of(context).textTheme.headline5?.copyWith(
-                  color: getBackGroundColor(),
+                      color: getBackGroundColor(),
                     ),
               ),
               SizedBox(
@@ -453,13 +453,13 @@ class _ReadingPageState extends State<ReadingPage> {
               SizedBox(
                 height: 1.h,
               ),
-
             ],
           ),
         );
       }),
     );
   }
+
   void showBottomSlider(total) {
     showCupertinoModalBottomSheet(
       enableDrag: true,
@@ -471,74 +471,71 @@ class _ReadingPageState extends State<ReadingPage> {
       closeProgressThreshold: 10,
       context: Navigation.instance.navigatorKey.currentContext ?? context,
       builder: (context) => Material(
-        child: StatefulBuilder(
-            builder: (context,_) {
-              return Container(
-                height: 14.h,
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Page Slider",
-                      style: Theme.of(context).textTheme.headline3?.copyWith(
+        child: StatefulBuilder(builder: (context, _) {
+          return Container(
+            height: 14.h,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Page Slider",
+                  style: Theme.of(context).textTheme.headline3?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
-                    Slider(
-                      value: page_no,
-                      onChanged: (value) {
-                        _((){
-                          page_no = value;
-                          pageController.jumpToPage(
-                            page_no.toInt(),
-                          );
-                        });
-                        setState(() {
+                ),
+                Slider(
+                  value: page_no,
+                  onChanged: (value) {
+                    _(() {
+                      page_no = value;
+                      pageController.jumpToPage(
+                        page_no.toInt(),
+                      );
+                    });
+                    setState(() {});
 
-                        });
-
-                        if (page_no == 0) {
-                          toggle = true;
-                        } else {
-                          toggle = false;
-                        }
-                      },
-                      max: total.toDouble(),
-                    ),
-                    SizedBox(
-                      height: 0.5.h,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Current: ${page_no.toInt()}",
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
+                    if (page_no == 0) {
+                      toggle = true;
+                    } else {
+                      toggle = false;
+                    }
+                  },
+                  max: total.toDouble(),
+                ),
+                SizedBox(
+                  height: 0.5.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Current: ${page_no.toInt()}",
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
                             color: Colors.black,
                           ),
-                        ),
-                        Text(
-                          "Total: ${total}",
-                          style: Theme.of(context).textTheme.headline4?.copyWith(
+                    ),
+                    Text(
+                      "Total: ${total}",
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
                             color: Colors.black,
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 1.h,
                     ),
                   ],
                 ),
-              );
-            }
-        ),
+                SizedBox(
+                  height: 1.h,
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
+
   Future<double> get systemBrightness async {
     try {
       return await ScreenBrightness().system;

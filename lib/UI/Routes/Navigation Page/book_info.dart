@@ -189,14 +189,14 @@ class _BookInfoState extends State<BookInfo>
                                   winnerOf(i: i),
                                 Card(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
+                                    borderRadius: BorderRadius.circular(3.0),
                                   ),
                                   color: Colors.white,
                                   child: Container(
-                                    padding: EdgeInsets.all(0.5.w),
+                                    padding: EdgeInsets.all(0.7.w),
                                     // decoration: ,
                                     child: Text(
-                                      'Rs. ${bookDetails?.base_price?.toStringAsFixed(2).toString() == "0.00" ? "FREE" : bookDetails?.base_price?.toStringAsFixed(2)}',
+                                      bookDetails?.base_price?.toStringAsFixed(2).toString() == "0.00" ? "FREE" : "Rs. ${bookDetails?.base_price?.toStringAsFixed(2)}",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)

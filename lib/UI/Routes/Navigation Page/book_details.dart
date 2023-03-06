@@ -9,11 +9,11 @@ import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'package:flutter/rendering.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -30,6 +30,7 @@ import '../../Components/splittedText.dart';
 
 class BookDetails extends StatefulWidget {
   final String input;
+
   // final String coverImage;
 
   BookDetails(this.input);
@@ -49,14 +50,6 @@ class _BookDetailsState extends State<BookDetails>
   Book? bookDetails;
   var themes = [
     ReadingTheme(
-      Colors.white,
-      Colors.black,
-    ),
-    ReadingTheme(
-      Colors.black,
-      Colors.white,
-    ),
-    ReadingTheme(
       Colors.black,
       Colors.grey.shade300,
     ),
@@ -64,9 +57,16 @@ class _BookDetailsState extends State<BookDetails>
       Colors.black,
       Colors.yellow.shade100,
     ),
+    ReadingTheme(
+      Colors.black,
+      Colors.white,
+    ),
+    ReadingTheme(
+      Colors.white,
+      Colors.black,
+    ),
   ];
-  var list_bg_color = ['black', 'white', 'black', 'black'];
-  var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
+
   List<String> pageText = [];
   int selectedTheme = 0;
   double brightness = 0.0, page_no = 1;
@@ -81,8 +81,8 @@ class _BookDetailsState extends State<BookDetails>
     initialPage: 0,
   );
   var test = '''''';
-  DynamicSize _dynamicSize = DynamicSizeImpl();
-  SplittedText _splittedText = SplittedTextImpl();
+  final DynamicSize _dynamicSize = DynamicSizeImpl();
+  final SplittedText _splittedText = SplittedTextImpl();
   Size? _size;
   List<String> _splittedTextList = [];
 
@@ -95,8 +95,6 @@ class _BookDetailsState extends State<BookDetails>
     // removeScreenshotDisable();
   }
 
-
-
   @override
   void initState() {
     super.initState();
@@ -108,7 +106,8 @@ class _BookDetailsState extends State<BookDetails>
     Future.delayed(Duration.zero, () async {
       brightness = await systemBrightness;
       getSizeFromBloc(pageKey);
-      Navigation.instance.navigate('/readingDialog',args: widget.input.toString().split(',')[1]);
+      Navigation.instance.navigate('/readingDialog',
+          args: widget.input.toString().split(',')[1]);
       setState(() {
         Storage.instance
             .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
@@ -155,52 +154,56 @@ class _BookDetailsState extends State<BookDetails>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:isShowing?AppBar(
-        iconTheme: IconThemeData(color: getTextColor()),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ), onPressed: () {
-          Navigation.instance.goBack();
-        },
-        ),
-        title: Text(
-          title ?? "",
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context)
-              .textTheme
-              .headline1
-              ?.copyWith(color: getTextColor()),
-        ),
-        backgroundColor: getBackGroundColor(),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  // initPlatformBrightness();
-                  return buildAlertDialog();
+      appBar: isShowing
+          ? AppBar(
+              iconTheme: IconThemeData(color: getTextColor()),
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: getTextColor(),
+                ),
+                onPressed: () {
+                  Navigation.instance.goBack();
                 },
-              );
-            },
-            icon: Icon(
-              Icons.font_download,
-              color: getTextColor(),
-            ),
-          ),
-          IconButton(
-            onPressed:() {
-              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
-            },
-            icon: Icon(
-              Icons.share,
-              color: getTextColor(),
-            ),
-          ),
-        ],
-      ):null,
+              ),
+              title: Text(
+                title ?? "",
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    ?.copyWith(color: getTextColor()),
+              ),
+              backgroundColor: getBackGroundColor(),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // initPlatformBrightness();
+                        return buildAlertDialog();
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.font_download,
+                    color: getTextColor(),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Share.share(
+                        'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+                  },
+                  icon: Icon(
+                    Icons.share,
+                    color: getTextColor(),
+                  ),
+                ),
+              ],
+            )
+          : null,
       body: SafeArea(
         child: Container(
           height: double.infinity,
@@ -210,69 +213,68 @@ class _BookDetailsState extends State<BookDetails>
           child: bookDetails == null
               ? const Center(child: CircularProgressIndicator())
               : Consumer<DataProvider>(builder: (context, data, _) {
-            return chapters.isEmpty
-                ? Center(
-              child: Text(
-                bookDetails != null
-                    ? ''
-                    : 'Oops No Data available here',
-                style: TextStyle(
-                  color: getBackGroundColor(),
-                ),
-              ),
-            )
-                : PageView.builder(
-              // shrinkWrap: true,
-              controller: pageController,
-              scrollDirection: Axis.horizontal,
-              physics: const ClampingScrollPhysics(),
-              itemCount: reading.length,
-              itemBuilder: (context, index) {
-                test = reading[index].desc!;
-                return GestureDetector(
-                  onTap: () {
-                    // Navigation.instance.goBack();
-                    setState(() {
-                      isShowing=!isShowing;
-                    });
-                    showBottomSlider(reading.length);
-                  },
-                  child: Container(
-                    width: 98.w,
-                    // height: 90.h,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.w,
-                    ),
-                    color: getTextColor(),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Html(
-                            data: test,
-                            // tagsList: [
-                            //   'img','p','!DOCTYPE html','body'
-                            // ],
-                            // tagsList: ['p'],
-                            // shrinkWrap: true,
-                            style: {
-                              '#': Style(
-                                fontSize: FontSize(_counterValue),
-
-                                // maxLines: 20,
-                                color: getBackGroundColor(),
-                                // textOverflow: TextOverflow.ellipsis,
-                              ),
-                            },
+                  return chapters.isEmpty
+                      ? Center(
+                          child: Text(
+                            bookDetails != null
+                                ? ''
+                                : 'Oops No Data available here',
+                            style: TextStyle(
+                              color: getBackGroundColor(),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+                        )
+                      : PageView.builder(
+                          // shrinkWrap: true,
+                          controller: pageController,
+                          scrollDirection: Axis.horizontal,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: reading.length,
+                          itemBuilder: (context, index) {
+                            test = reading[index].desc!;
+                            return GestureDetector(
+                              onTap: () {
+                                // Navigation.instance.goBack();
+                                setState(() {
+                                  isShowing = !isShowing;
+                                });
+                                showBottomSlider(reading.length);
+                              },
+                              child: Container(
+                                width: 98.w,
+                                // height: 90.h,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.w,
+                                ),
+                                color: getTextColor(),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Html(
+                                        data: test,
+                                        // tagsList: [
+                                        //   'img','p','!DOCTYPE html','body'
+                                        // ],
+                                        // tagsList: ['p'],
+                                        // shrinkWrap: true,
+                                        style: {
+                                          '#': Style(
+                                            fontSize: FontSize(_counterValue),
 
-            );
-          }),
+                                            // maxLines: 20,
+                                            color: getBackGroundColor(),
+                                            // textOverflow: TextOverflow.ellipsis,
+                                          ),
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                }),
         ),
       ),
     );
