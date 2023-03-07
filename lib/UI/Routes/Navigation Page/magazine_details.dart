@@ -43,14 +43,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   List<ReadingChapter> reading = [];
   Book? bookDetails;
   var themes = [
-    ReadingTheme(
-      Colors.white,
-      Colors.black,
-    ),
-    ReadingTheme(
-      Colors.black,
-      Colors.white,
-    ),
+
     ReadingTheme(
       Colors.black,
       Colors.grey.shade300,
@@ -58,6 +51,14 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     ReadingTheme(
       Colors.black,
       Colors.yellow.shade100,
+    ),
+    ReadingTheme(
+      Colors.white,
+      Colors.black,
+    ),
+    ReadingTheme(
+      Colors.black,
+      Colors.white,
     ),
   ];
   var list_bg_color = ['black', 'white', 'black', 'black'];

@@ -140,9 +140,11 @@ class _BookInfoState extends State<BookInfo>
                                             width: 1.h,
                                           ),
                                           GestureDetector(
-                                            onTap: (){
-                                              Navigation.instance
-                                                  .navigate('/writerInfo', args: '${bookDetails?.contributor_id},${bookDetails?.magazine_id}');
+                                            onTap: () {
+                                              Navigation.instance.navigate(
+                                                  '/writerInfo',
+                                                  args:
+                                                      '${bookDetails?.contributor_id},${bookDetails?.magazine_id}');
                                             },
                                             child: Text(
                                               (bookDetails?.contributor ?? ""),
@@ -167,9 +169,11 @@ class _BookInfoState extends State<BookInfo>
                                           //   width: 1.h,
                                           // ),
                                           GestureDetector(
-                                            onTap: (){
-                                              Navigation.instance
-                                                  .navigate('/writerInfo', args: '${bookDetails?.contributor_id},${bookDetails?.magazine_id}');
+                                            onTap: () {
+                                              Navigation.instance.navigate(
+                                                  '/writerInfo',
+                                                  args:
+                                                      '${bookDetails?.contributor_id},${bookDetails?.magazine_id}');
                                             },
                                             child: Text(
                                               (bookDetails?.contributor ?? ""),
@@ -196,7 +200,12 @@ class _BookInfoState extends State<BookInfo>
                                     padding: EdgeInsets.all(0.7.w),
                                     // decoration: ,
                                     child: Text(
-                                      bookDetails?.base_price?.toStringAsFixed(2).toString() == "0.00" ? "FREE" : "Rs. ${bookDetails?.base_price?.toStringAsFixed(2)}",
+                                      bookDetails?.base_price
+                                                  ?.toStringAsFixed(2)
+                                                  .toString() ==
+                                              "0.00"
+                                          ? "FREE"
+                                          : "Rs. ${bookDetails?.base_price?.toStringAsFixed(2)}",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
@@ -229,7 +238,9 @@ class _BookInfoState extends State<BookInfo>
                     (bookDetails?.is_bought ?? false)
                         ? Container()
                         : BuyButton(widget.id, () {
-                            initiatePaymentProcess(widget.id);
+                            (bookDetails?.base_price ?? 0) <= 0
+                                ? freeItemsProcess()
+                                : initiatePaymentProcess(widget.id);
                           }, bookDetails?.is_bought ?? false),
                     SizedBox(
                       height: 2.h,
@@ -238,7 +249,7 @@ class _BookInfoState extends State<BookInfo>
                       id: widget.id,
                       format: bookDetails?.book_format ?? "",
                       isBought: bookDetails?.is_bought ?? false,
-                      profile_pic: bookDetails?.profile_pic??"",
+                      profile_pic: bookDetails?.profile_pic ?? "",
                     ),
                     DownloadSection(
                         widget.id, bookDetails?.is_bookmarked ?? false),
@@ -533,6 +544,43 @@ class _BookInfoState extends State<BookInfo>
         type: CoolAlertType.warning,
         text: "Something went wrong",
       );
+    }
+  }
+
+  freeItemsProcess() async {
+    final response = await ApiProvider.instance.createOrder(cupon, null);
+    if (response.status ?? false) {
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.success,
+        text: "Payment received Successfully",
+      );
+      fetchCartItems();
+      Navigation.instance.goBack();
+    } else {
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.warning,
+        text: "Something went wrong",
+      );
+    }
+  }
+
+  void fetchCartItems() async {
+    Navigation.instance.navigate('/loadingDialog');
+    final response = await ApiProvider.instance.fetchCart();
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setToCart(response.cart?.items ?? []);
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setCartData(response.cart!);
+      Navigation.instance.goBack();
+    } else {
+      Navigation.instance.goBack();
     }
   }
 
