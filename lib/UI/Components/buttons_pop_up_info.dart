@@ -12,7 +12,8 @@ import '../../Storage/data_provider.dart';
 class ButtonsPopUpInfo extends StatelessWidget {
   const ButtonsPopUpInfo({
     Key? key,
-    required this.data, required this.is_ebook,
+    required this.data,
+    required this.is_ebook,
   }) : super(key: key);
   final bool is_ebook;
   final Book data;
@@ -51,48 +52,104 @@ class ButtonsPopUpInfo extends StatelessWidget {
             ),
           ),
           (data.is_bought ?? false)
-              ? Container()
+              ? is_ebook
+                  ? Container()
+                  : SizedBox(
+                      width: 1.w,
+                    )
               : SizedBox(
                   width: 1.w,
                 ),
           (data.is_bought ?? false)
-              ? Container()
-              : Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigation.instance
-                      //     .navigate('/bookInfo', args: data.id);
-
-                      if ((Provider.of<DataProvider>(
-                                      Navigation.instance.navigatorKey
-                                              .currentContext ??
-                                          context,
-                                      listen: false)
-                                  .profile !=
-                              null) &&
-                          Storage.instance.isLoggedIn) {
-                        if (is_ebook) {
-                          ConstanceData.addtocart(context, data.id);
-                        } else {
-                          Navigation.instance.navigate('/magazineArticles', args: data.id ?? 0);
-                        }
-                      } else {
-                        ConstanceData.showAlertDialog(context);
-                      }
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    ),
-                    child: Text(
-                      is_ebook?'Add To Cart':"View Articles",
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            fontSize: 2.h,
-                            color: Colors.black,
-                          ),
-                    ),
-                  ),
-                ),
+              ? is_ebook
+                  ? Container()
+                  : viewArticlesButton(data: data)
+              : addToButton(data: data),
         ],
+      ),
+    );
+  }
+}
+
+class viewArticlesButton extends StatelessWidget {
+  const viewArticlesButton({
+    super.key,
+    required this.data,
+  });
+
+  final Book data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ElevatedButton(
+        onPressed: () {
+          // Navigation.instance
+          //     .navigate('/bookInfo', args: data.id);
+
+          if ((Provider.of<DataProvider>(
+                          Navigation.instance.navigatorKey.currentContext ??
+                              context,
+                          listen: false)
+                      .profile !=
+                  null) &&
+              Storage.instance.isLoggedIn) {
+            Navigation.instance
+                .navigate('/magazineArticles', args: data.id ?? 0);
+          } else {
+            ConstanceData.showAlertDialog(context);
+          }
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blue),
+        ),
+        child: Text(
+          "View Articles",
+          style: Theme.of(context).textTheme.headline5?.copyWith(
+                fontSize: 2.h,
+                color: Colors.black,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
+class addToButton extends StatelessWidget {
+  const addToButton({
+    super.key,
+    required this.data,
+  });
+
+  final Book data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ElevatedButton(
+        onPressed: () {
+          if ((Provider.of<DataProvider>(
+                          Navigation.instance.navigatorKey.currentContext ??
+                              context,
+                          listen: false)
+                      .profile !=
+                  null) &&
+              Storage.instance.isLoggedIn) {
+            ConstanceData.addtocart(context, data.id);
+          } else {
+            ConstanceData.showAlertDialog(context);
+          }
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blue),
+        ),
+        child: Text(
+          'Add To Cart',
+          style: Theme.of(context).textTheme.headline5?.copyWith(
+                fontSize: 2.h,
+                color: Colors.black,
+              ),
+        ),
       ),
     );
   }
