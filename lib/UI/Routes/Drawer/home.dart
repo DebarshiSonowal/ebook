@@ -138,7 +138,7 @@ class _HomeState extends State<Home> {
     return list
         .where((element) =>
             element.book_category_id ==
-            data.categoryList![data.currentTab][data.currentCategory].id)
+            data.categoryList[data.currentTab][data.currentCategory].id)
         .toList();
   }
 

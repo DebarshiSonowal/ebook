@@ -12,9 +12,9 @@ import '../../Storage/data_provider.dart';
 class ButtonsPopUpInfo extends StatelessWidget {
   const ButtonsPopUpInfo({
     Key? key,
-    required this.data,
+    required this.data, required this.is_ebook,
   }) : super(key: key);
-
+  final bool is_ebook;
   final Book data;
 
   @override
@@ -50,40 +50,48 @@ class ButtonsPopUpInfo extends StatelessWidget {
               ),
             ),
           ),
-          (data.is_bought??false)?Container():SizedBox(
-            width: 1.w,
-          ),
-          (data.is_bought??false)?Container():Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigation.instance
-                //     .navigate('/bookInfo', args: data.id);
+          (data.is_bought ?? false)
+              ? Container()
+              : SizedBox(
+                  width: 1.w,
+                ),
+          (data.is_bought ?? false)
+              ? Container()
+              : Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Navigation.instance
+                      //     .navigate('/bookInfo', args: data.id);
 
-                if ((Provider.of<DataProvider>(
-                                Navigation
-                                        .instance.navigatorKey.currentContext ??
-                                    context,
-                                listen: false)
-                            .profile !=
-                        null) &&
-                    Storage.instance.isLoggedIn) {
-                  ConstanceData.addtocart(context, data.id);
-                } else {
-                  ConstanceData.showAlertDialog(context);
-                }
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              child: Text(
-                'Add To Cart',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
-                      color: Colors.black,
+                      if ((Provider.of<DataProvider>(
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: false)
+                                  .profile !=
+                              null) &&
+                          Storage.instance.isLoggedIn) {
+                        if (is_ebook) {
+                          ConstanceData.addtocart(context, data.id);
+                        } else {
+                          Navigation.instance.navigate('/magazineArticles', args: data.id ?? 0);
+                        }
+                      } else {
+                        ConstanceData.showAlertDialog(context);
+                      }
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
                     ),
-              ),
-            ),
-          ),
+                    child: Text(
+                      is_ebook?'Add To Cart':"View Articles",
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontSize: 2.h,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ),
+                ),
         ],
       ),
     );
@@ -131,40 +139,44 @@ class ButtonsPopUpInfoBookmark extends StatelessWidget {
               ),
             ),
           ),
-          (data.is_bought??false)?Container():SizedBox(
-            width: 1.w,
-          ),
-          (data.is_bought??false)?Container():Expanded(
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigation.instance
-                //     .navigate('/bookInfo', args: data.id);
+          (data.is_bought ?? false)
+              ? Container()
+              : SizedBox(
+                  width: 1.w,
+                ),
+          (data.is_bought ?? false)
+              ? Container()
+              : Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Navigation.instance
+                      //     .navigate('/bookInfo', args: data.id);
 
-                if ((Provider.of<DataProvider>(
-                                Navigation
-                                        .instance.navigatorKey.currentContext ??
-                                    context,
-                                listen: false)
-                            .profile !=
-                        null) &&
-                    Storage.instance.isLoggedIn) {
-                  ConstanceData.addtocart(context, data.id);
-                } else {
-                  ConstanceData.showAlertDialog(context);
-                }
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              child: Text(
-                'Add To Cart',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 2.h,
-                      color: Colors.black,
+                      if ((Provider.of<DataProvider>(
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: false)
+                                  .profile !=
+                              null) &&
+                          Storage.instance.isLoggedIn) {
+                        ConstanceData.addtocart(context, data.id);
+                      } else {
+                        ConstanceData.showAlertDialog(context);
+                      }
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.blue),
                     ),
-              ),
-            ),
-          ),
+                    child: Text(
+                      'Add To Cart',
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontSize: 2.h,
+                            color: Colors.black,
+                          ),
+                    ),
+                  ),
+                ),
         ],
       ),
     );

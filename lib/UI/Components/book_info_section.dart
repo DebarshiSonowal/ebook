@@ -66,7 +66,7 @@ class BookInfoSection extends StatelessWidget {
                             )),
                       ),
                 SizedBox(height: 0.5.h),
-                ButtonsPopUpInfo(data: data),
+                ButtonsPopUpInfo(data: data,is_ebook:data.book_format == "magazine"?false:true),
               ],
             )
           ],

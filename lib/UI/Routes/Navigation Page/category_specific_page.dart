@@ -9,6 +9,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Model/home_banner.dart';
@@ -47,7 +48,9 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+            },
             icon: const Icon(Icons.share),
           ),
         ],

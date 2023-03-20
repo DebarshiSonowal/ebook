@@ -17,11 +17,12 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  var _phoneController = TextEditingController();
-  var _fnameController = TextEditingController();
-  var _lnameController = TextEditingController();
-  var _emailController = TextEditingController();
-  var _passwordController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _fnameController = TextEditingController();
+  final _lnameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   var current = "";
 
@@ -33,6 +34,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     _lnameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
   @override
@@ -63,9 +65,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: Theme
-              .of(context)
-              .primaryColor,
+          color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -83,13 +83,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 Text(
                   "Signup",
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle2
-                      ?.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                        color: Colors.white,
+                      ),
                 ),
 
                 SizedBox(
@@ -102,34 +98,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _fnameController,
                       cursorColor: Colors.white,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline5,
+                      style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your first name',
                         hintText: "Firstname",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -140,13 +124,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -162,34 +146,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _lnameController,
                       cursorColor: Colors.white,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline5,
+                      style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your Last name',
                         hintText: "Lastname",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -200,13 +172,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -223,34 +195,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.number,
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _phoneController,
                       cursorColor: Colors.white,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline5,
+                      style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your phone number',
                         hintText: "Mobile Number",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -261,13 +221,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -284,34 +244,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _emailController,
                       cursorColor: Colors.white,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline5,
+                      style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your Email',
                         hintText: "qwerty@gmail.com",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -322,13 +270,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -345,34 +293,22 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline5,
+                      style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
-                        labelText: 'Enter your Password',
+                        labelText: 'Enter your password',
                         hintText: "Password",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -383,13 +319,62 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 1.h,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  height: 6.5.h,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                    child: TextField(
+                      keyboardType: TextInputType.visiblePassword,
+                      cursorHeight:
+                          Theme.of(context).textTheme.headline5?.fontSize,
+                      autofocus: false,
+                      controller: _confirmPasswordController,
+                      cursorColor: Colors.white,
+                      style: Theme.of(context).textTheme.headline5,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm your password',
+                        hintText: "Password",
+                        labelStyle: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(fontSize: 10.sp),
+                        hintStyle:
+                            Theme.of(context).textTheme.headline5?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
+                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
+                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 1.5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          gapPadding: 0.0,
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide:
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -413,10 +398,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     children: [
                       Text(
                         'DOB:',
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .headline5,
+                        style: Theme.of(context).textTheme.headline5,
                       ),
                       SizedBox(
                         width: 2.w,
@@ -427,8 +409,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         child: Center(
                           child: DateTimePicker(
                             // dateLabelText:
-                            style: Theme
-                                .of(context)
+                            style: Theme.of(context)
                                 .textTheme
                                 .headline4
                                 ?.copyWith(color: Colors.white),
@@ -471,14 +452,27 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           if (_phoneController.text.isNotEmpty &&
                               _phoneController.text.length == 10 &&
                               _passwordController.text.isNotEmpty &&
+                              _confirmPasswordController.text.isNotEmpty &&
                               _fnameController.text.isNotEmpty &&
                               _lnameController.text.isNotEmpty &&
                               _emailController.text.isNotEmpty &&
                               current != '') {
-                            CreateAccount(
-                                _fnameController.text, _lnameController.text,
-                                _emailController.text, _phoneController.text,
-                                current, _passwordController.text);
+                            if (_passwordController.text ==
+                                _confirmPasswordController.text) {
+                              CreateAccount(
+                                  _fnameController.text,
+                                  _lnameController.text,
+                                  _emailController.text,
+                                  _phoneController.text,
+                                  current,
+                                  _passwordController.text);
+                            } else {
+                              CoolAlert.show(
+                                context: context,
+                                type: CoolAlertType.warning,
+                                text: "Confirm Password field is wrong",
+                              );
+                            }
                           } else {
                             CoolAlert.show(
                               context: context,
@@ -489,19 +483,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
+                              MaterialStateProperty.all(Colors.white),
                         ),
                         child: Text(
                           'Sign up',
                           style:
-                          Theme
-                              .of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                            fontSize: 3.h,
-                            color: Colors.black,
-                          ),
+                              Theme.of(context).textTheme.headline5?.copyWith(
+                                    fontSize: 3.h,
+                                    color: Colors.black,
+                                  ),
                         )),
                   ),
                 ),
@@ -514,10 +504,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   },
                   child: Text(
                     "Already have an account? Login",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5,
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                 ),
               ],
@@ -530,9 +517,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void CreateAccount(fname, lname, email, mobile, dob, password) async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance.addSubscriber(
-        fname, lname, email, mobile, dob, password);
-    if(response.status??false){
+    final response = await ApiProvider.instance
+        .addSubscriber(fname, lname, email, mobile, dob, password);
+    if (response.status ?? false) {
       Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
@@ -540,12 +527,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
         text: "Account Created Successfully",
       );
       Navigation.instance.navigate('/login');
-    }else{
+    } else {
       Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,
-        text: response.message??"Something Went Wrong",
+        text: response.message ?? "Something Went Wrong",
       );
     }
   }
