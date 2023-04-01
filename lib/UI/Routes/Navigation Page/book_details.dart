@@ -20,6 +20,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
@@ -252,11 +253,10 @@ class _BookDetailsState extends State<BookDetails>
                                     children: [
                                       Html(
                                         data: test,
-                                        // tagsList: [
-                                        //   'img','p','!DOCTYPE html','body'
-                                        // ],
-                                        // tagsList: ['p'],
-                                        // shrinkWrap: true,
+                                        onLinkTap: (str, contxt, map, elment) {
+                                          debugPrint(str);
+                                          _launchUrl(Uri.parse(str??"https://tratri.in/"));
+                                        },
                                         style: {
                                           '#': Style(
                                             fontSize: FontSize(_counterValue),
@@ -598,5 +598,10 @@ class _BookDetailsState extends State<BookDetails>
         }),
       ),
     );
+  }
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url,mode: LaunchMode.externalApplication)) {
+      throw 'Could not launch $_url';
+    }
   }
 }

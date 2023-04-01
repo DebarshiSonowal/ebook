@@ -34,7 +34,7 @@ class _CategoryPageState extends State<CategoryPage> {
                           var data = current.categoryList[current.currentTab][ind];
                           return GestureDetector(
                             onTap: (){
-                              Navigation.instance.navigate('/selectCategories',
+                              Navigation.instance.navigateAndReplace('/selectCategories',
                                   args: '${data.title},${data.id}');
                             },
                             child: Container(
