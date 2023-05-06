@@ -129,9 +129,24 @@ class _SearchPageState extends State<SearchPage> {
                             Theme.of(context).textTheme.headline4?.copyWith(
                                   color: Colors.black26,
                                 ),
-                        suffixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.black,
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            if (search.text.isEmpty) {
+                              setSearchEmpty();
+                            } else {
+                              search_it(
+                                search.text,
+                                '',
+                                '',
+                                '',
+                                '',
+                              );
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.search,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
@@ -166,7 +181,10 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Formats',
-                                  style: Theme.of(context).textTheme.headline6?.copyWith(color: Colors.black),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(color: Colors.black),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
@@ -197,9 +215,12 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Categories',
-                                  style: Theme.of(context).textTheme.headline6?.copyWith(
-                                    color: Colors.black,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                      ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
@@ -230,9 +251,12 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Authors',
-                                  style: Theme.of(context).textTheme.headline6?.copyWith(
-                                    color: Colors.black,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                      ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
@@ -263,9 +287,12 @@ class _SearchPageState extends State<SearchPage> {
                               children: [
                                 Text(
                                   'Awards',
-                                  style: Theme.of(context).textTheme.headline6?.copyWith(
-                                    color: Colors.black,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                      ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
@@ -298,7 +325,7 @@ class _SearchPageState extends State<SearchPage> {
                         itemBuilder: (cont, count) {
                           var current = data.search_results[count];
                           return GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               Navigation.instance
                                   .navigate('/bookInfo', args: current.id);
                             },
@@ -889,13 +916,11 @@ class SearchItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 1.h, horizontal: 0.5.w),
+      padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 0.5.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: const BorderRadius.all(
-            Radius.circular(
-                5.0) //                 <--- border radius here
+            Radius.circular(5.0) //                 <--- border radius here
             ),
       ),
       child: ListTile(
@@ -913,18 +938,14 @@ class SearchItem extends StatelessWidget {
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   width: 60.w,
                   child: Text(
                     current.title ?? "",
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.headline2?.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -936,10 +957,7 @@ class SearchItem extends StatelessWidget {
                 Text(
                   current.writer ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4
-                      ?.copyWith(
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Colors.black,
                         // fontWeight: FontWeight.bold,
                       ),
@@ -948,15 +966,11 @@ class SearchItem extends StatelessWidget {
                   height: 1.5.h,
                 ),
                 Row(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       '${current.average_rating}' ?? "NA",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.copyWith(
+                      style: Theme.of(context).textTheme.headline4?.copyWith(
                             color: Colors.black,
                           ),
                     ),
@@ -970,11 +984,10 @@ class SearchItem extends StatelessWidget {
                   height: 1.5.h,
                 ),
                 Text(
-                  current.base_price.toString()=="0.0"?"Free":'₹${current.base_price}' ?? "NA",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline4
-                      ?.copyWith(
+                  current.base_price.toString() == "0.0"
+                      ? "Free"
+                      : '₹${current.base_price}' ?? "NA",
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
                       ),

@@ -52,15 +52,15 @@ class _BookDetailsState extends State<BookDetails>
   var themes = [
     ReadingTheme(
       Colors.black,
+      Colors.white,
+    ),
+    ReadingTheme(
+      Colors.black,
       Colors.grey.shade300,
     ),
     ReadingTheme(
       Colors.black,
       Colors.yellow.shade100,
-    ),
-    ReadingTheme(
-      Colors.black,
-      Colors.white,
     ),
     ReadingTheme(
       Colors.white,
@@ -255,7 +255,8 @@ class _BookDetailsState extends State<BookDetails>
                                         data: test,
                                         onLinkTap: (str, contxt, map, elment) {
                                           debugPrint(str);
-                                          _launchUrl(Uri.parse(str??"https://tratri.in/"));
+                                          _launchUrl(Uri.parse(
+                                              str ?? "https://tratri.in/"));
                                         },
                                         style: {
                                           '#': Style(
@@ -599,8 +600,9 @@ class _BookDetailsState extends State<BookDetails>
       ),
     );
   }
+
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url,mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $_url';
     }
   }

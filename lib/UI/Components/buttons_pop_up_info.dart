@@ -135,7 +135,13 @@ class addToButton extends StatelessWidget {
                       .profile !=
                   null) &&
               Storage.instance.isLoggedIn) {
-            ConstanceData.addtocart(context, data.id);
+            debugPrint("${data.subscriptions.isNotEmpty} ${data.book_format != "e-book"}");
+            if (data.subscriptions.isNotEmpty && data.book_format != "e-book") {
+              Navigation.instance
+                  .navigate("/subscription_pop_up", args: data.id);
+            } else {
+              ConstanceData.addtocart(context, data.id);
+            }
           } else {
             ConstanceData.showAlertDialog(context);
           }
@@ -218,6 +224,12 @@ class ButtonsPopUpInfoBookmark extends StatelessWidget {
                               null) &&
                           Storage.instance.isLoggedIn) {
                         ConstanceData.addtocart(context, data.id);
+                        // if (data.book_format!="e-book") {
+                        //   //subscription_pop_up
+                        //
+                        // } else {
+                        //
+                        // }
                       } else {
                         ConstanceData.showAlertDialog(context);
                       }

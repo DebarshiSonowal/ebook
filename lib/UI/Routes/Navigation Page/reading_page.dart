@@ -36,13 +36,14 @@ class ReadingPage extends StatefulWidget {
 class _ReadingPageState extends State<ReadingPage> {
   var themes = [
     ReadingTheme(
-      Colors.white,
       Colors.black,
+      Colors.white,
     ),
     ReadingTheme(
-      Colors.black,
       Colors.white,
+      Colors.black,
     ),
+
     ReadingTheme(
       Colors.black,
       Colors.grey.shade300,

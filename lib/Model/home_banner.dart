@@ -1,5 +1,6 @@
 import 'Tag.dart';
 import 'article.dart';
+import 'subscription.dart';
 
 class HomeBannerResponse {
   bool? status;
@@ -21,22 +22,37 @@ class HomeBannerResponse {
 }
 
 class Book {
-  int? id, book_category_id, length, total_rating,contributor_id,no_of_articles,total_chapters,magazine_id;
+  int? id,
+      book_category_id,
+      length,
+      total_rating,
+      contributor_id,
+      no_of_articles,
+      total_chapters,
+      magazine_id;
   String? title,
       writer,
       book_format,
       category,
       profile_pic,
       language,
-      short_description,description,contributor,publication_name,publisher,released_date;
+      short_description,
+      description,
+      contributor,
+      publication_name,
+      publisher,
+      released_date;
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
-  bool? is_bookmarked,is_bought;
+  bool? is_bookmarked, is_bought;
   List<Article>? articles;
+  List<Subscription> subscriptions = [];
 
   Book.fromJson(json) {
     id = json['id'] == null ? 0 : int.parse(json['id'].toString());
-    no_of_articles = json['no_of_articles'] == null ? 0 : int.parse(json['no_of_articles'].toString());
+    no_of_articles = json['no_of_articles'] == null
+        ? 0
+        : int.parse(json['no_of_articles'].toString());
     book_category_id = json['book_category_id'] == null
         ? 0
         : int.parse(json['book_category_id'].toString());
@@ -68,6 +84,11 @@ class Book {
     tags = json['tags'] == null
         ? []
         : (json['tags'] as List).map((e) => Tag.fromJson(e)).toList();
+    subscriptions = json['subscriptions'] == null
+        ? []
+        : (json['subscriptions'] as List)
+            .map((e) => Subscription.fromJson(e))
+            .toList();
     awards = json['awards'] == null
         ? []
         : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
@@ -88,7 +109,7 @@ class Book {
     articles = json['article_list'] == null
         ? []
         : (json['article_list'] as List)
-        .map((e) => Article.fromJson(e))
-        .toList();
+            .map((e) => Article.fromJson(e))
+            .toList();
   }
 }

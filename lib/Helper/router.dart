@@ -18,6 +18,7 @@ import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
 import '../UI/Routes/Navigation Page/reading_page.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
+import '../UI/Routes/Navigation Page/subscription_buy_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
 
@@ -55,8 +56,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           page: BookInfo(settings.arguments as int));
     case '/categories':
       return FadeTransitionPageRouteBuilder(page: CategoryPage());
-      case '/selectCategories':
-      return FadeTransitionPageRouteBuilder(page: CategorySpecificPage(
+    case '/selectCategories':
+      return FadeTransitionPageRouteBuilder(
+          page: CategorySpecificPage(
         content: settings.arguments as String,
       ));
 
@@ -74,11 +76,17 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(
           page: WriterInfo(settings.arguments as String));
     case '/readingDialog':
-      return FadeTransitionPageRouteBuilder(page: ReadingDialog(settings.arguments as String));
+      return FadeTransitionPageRouteBuilder(
+          page: ReadingDialog(settings.arguments as String));
     case '/cartPage':
       return FadeTransitionPageRouteBuilder(page: CartPage());
     case '/search':
       return FadeTransitionPageRouteBuilder(page: SearchPage());
+    case '/subscription_pop_up':
+      return FadeTransitionPageRouteBuilder(
+          page: SubscriptionBuyPage(
+        id: settings.arguments as int,
+      ));
     case '/searchWithTag':
       return FadeTransitionPageRouteBuilder(
           page: SearchPage(

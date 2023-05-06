@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget bodyWidget(int currentIndex, currentTab) {
-    print(currentIndex);
+    // debugPrint(currentIndex);
     // if (currentTab == 0) {
     switch (currentIndex) {
       case 1:

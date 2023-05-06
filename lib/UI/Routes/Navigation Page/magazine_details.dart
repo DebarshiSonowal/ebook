@@ -6,6 +6,7 @@ import 'package:flutter_html/style.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
@@ -43,7 +44,14 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   List<ReadingChapter> reading = [];
   Book? bookDetails;
   var themes = [
-
+    ReadingTheme(
+      Colors.black,
+      Colors.white,
+    ),
+    ReadingTheme(
+      Colors.white,
+      Colors.black,
+    ),
     ReadingTheme(
       Colors.black,
       Colors.grey.shade300,
@@ -52,14 +60,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       Colors.black,
       Colors.yellow.shade100,
     ),
-    ReadingTheme(
-      Colors.white,
-      Colors.black,
-    ),
-    ReadingTheme(
-      Colors.black,
-      Colors.white,
-    ),
+
   ];
   var list_bg_color = ['black', 'white', 'black', 'black'];
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
@@ -109,7 +110,8 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       getSizeFromBloc(pageKey);
       brightness = await systemBrightness;
       try {
-        Navigation.instance.navigate('/readingDialog',args:widget.id.toString().split(',')[2]);
+        Navigation.instance.navigate('/readingDialog',
+            args: widget.id.toString().split(',')[2]);
       } catch (e) {
         print(e);
       }
@@ -279,8 +281,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           ),
         ),
         IconButton(
-          onPressed:() {
-            Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+          onPressed: () {
+            Share.share(
+                'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
           },
           icon: Icon(
             Icons.share,
