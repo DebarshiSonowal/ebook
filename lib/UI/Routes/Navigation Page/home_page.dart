@@ -9,6 +9,7 @@ import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:upgrader/upgrader.dart';
 import '../../../Networking/api_provider.dart';
 import '../../Components/CategoryBar.dart';
 import '../../Components/bottom_navbar.dart';
@@ -67,37 +68,40 @@ class _HomePageState extends State<HomePage>
               ]);
           return false;
         },
-        child: Scaffold(
-          // appBar: buildAppBar(context),
-          // backgroundColor: const Color(0xff121212),
-          body: Container(
-            height: double.infinity,
-            width: double.infinity,
-            // color: Colors.white30,
-            child: Column(
-              children: [
-                NewTabBar(controller: _controller),
-                const NewSearchBar(),
-                const CategoryBar(),
-                Expanded(
-                  child: Consumer<DataProvider>(builder: (context, current, _) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 1.h),
-                      child:
-                          bodyWidget(current.currentIndex, current.currentTab),
-                    );
-                  }),
-                ),
-              ],
+        child: UpgradeAlert(
+          upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino),
+          child: Scaffold(
+            // appBar: buildAppBar(context),
+            // backgroundColor: const Color(0xff121212),
+            body: Container(
+              height: double.infinity,
+              width: double.infinity,
+              // color: Colors.white30,
+              child: Column(
+                children: [
+                  NewTabBar(controller: _controller),
+                  const NewSearchBar(),
+                  const CategoryBar(),
+                  Expanded(
+                    child: Consumer<DataProvider>(builder: (context, current, _) {
+                      return Padding(
+                        padding: EdgeInsets.only(top: 1.h),
+                        child:
+                            bodyWidget(current.currentIndex, current.currentTab),
+                      );
+                    }),
+                  ),
+                ],
+              ),
             ),
+            // floatingActionButton: FloatingActionButton(
+            //   onPressed: () {},
+            //   child: Image.asset(ConstanceData.primaryIcon),
+            // ),
+            // floatingActionButtonLocation:
+            //     FloatingActionButtonLocation.centerDocked,
+            bottomNavigationBar: const BottomNavBarCustom(),
           ),
-          // floatingActionButton: FloatingActionButton(
-          //   onPressed: () {},
-          //   child: Image.asset(ConstanceData.primaryIcon),
-          // ),
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerDocked,
-          bottomNavigationBar: const BottomNavBarCustom(),
         ),
       ),
     );

@@ -86,6 +86,7 @@ dependencies:
   package_info_plus: ^1.4.2
   share_plus: ^4.5.3
   modal_bottom_sheet: ^3.0.0-pre
+  upgrader: ^4.8.1
 #  top_snackbar_flutter: ^3.0.0+1
 
 dev_dependencies:

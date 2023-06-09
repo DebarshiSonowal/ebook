@@ -186,6 +186,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                     showBottomSlider(reading.length);
                                   },
                                   child: Html(
+                                    // data: test.trim(),
                                     data: test.trim(),
                                     // tagsList: [
                                     //   'img','p','!DOCTYPE html','body'
