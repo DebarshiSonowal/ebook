@@ -200,12 +200,12 @@ class _BookInfoState extends State<BookInfo>
                                     padding: EdgeInsets.all(0.7.w),
                                     // decoration: ,
                                     child: Text(
-                                      bookDetails?.base_price
+                                      bookDetails?.selling_price
                                                   ?.toStringAsFixed(2)
                                                   .toString() ==
                                               "0.00"
                                           ? "FREE"
-                                          : "Rs. ${bookDetails?.base_price?.toStringAsFixed(2)}",
+                                          : "Rs. ${bookDetails?.selling_price?.toStringAsFixed(2)}",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
@@ -213,7 +213,7 @@ class _BookInfoState extends State<BookInfo>
                                           .headline6
                                           ?.copyWith(
                                             fontSize: 9.sp,
-                                            color: bookDetails?.base_price
+                                            color: bookDetails?.selling_price
                                                         ?.toStringAsFixed(2)
                                                         .toString() ==
                                                     "0.00"

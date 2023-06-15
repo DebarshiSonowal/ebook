@@ -223,7 +223,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                                 .textTheme
                                                 .headline5
                                                 ?.copyWith(
-                                                  // color: Constance.primaryColor,
+                                                  color: Colors.blue,
                                                   fontWeight: FontWeight.bold,
                                                   decoration:
                                                       TextDecoration.underline,

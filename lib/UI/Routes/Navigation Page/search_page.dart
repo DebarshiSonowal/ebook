@@ -984,9 +984,9 @@ class SearchItem extends StatelessWidget {
                   height: 1.5.h,
                 ),
                 Text(
-                  current.base_price.toString() == "0.0"
+                  current.selling_price.toString() == "0.0"
                       ? "Free"
-                      : '₹${current.base_price}' ?? "NA",
+                      : '₹${current.selling_price}' ?? "NA",
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
