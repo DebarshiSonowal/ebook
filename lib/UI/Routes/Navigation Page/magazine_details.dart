@@ -2,7 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:counter_button/counter_button.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+
+// import 'package:flutter_html/style.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -60,7 +61,6 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       Colors.black,
       Colors.yellow.shade100,
     ),
-
   ];
   var list_bg_color = ['black', 'white', 'black', 'black'];
   var list_txt_color = ['white', 'black', '#e0e0e0', '#fff9be'];
@@ -81,7 +81,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   SplittedText _splittedText = SplittedTextImpl();
   Size? _size;
   List<String> _splittedTextList = [];
-
+  String reviewUrl = "";
   final GlobalKey pageKey = GlobalKey();
 
   @override
@@ -121,6 +121,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       });
     });
     pageController.addListener(() {
+      setState(() {
+        reviewUrl = reading[pageController.page!.toInt()].url ?? "";
+      });
       page_no = pageController.page ?? 1;
     });
     // Future.delayed(Duration(seconds: 2), () {
@@ -178,6 +181,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                         itemCount: reading.length,
                         itemBuilder: (context, index) {
                           test = reading[index].desc ?? "";
+                          reviewUrl = reading[index].url ?? "";
                           return SingleChildScrollView(
                             child: Column(
                               children: [
@@ -193,45 +197,45 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                     // ],
                                     // tagsList: ['p'],
                                     // shrinkWrap: true,
-                                    customRender: {
-                                      "table": (context, child) {
-                                        return SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: (context.tree
-                                                  as TableLayoutElement)
-                                              .toWidget(context),
-                                        );
-                                      },
-                                      "a": (context, child) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            _launchUrl(Uri.parse(context
-                                                .tree.attributes['href']
-                                                .toString()));
-                                            print(context
-                                                .tree.attributes['href']);
-                                          },
-                                          child: Text(
-                                            context.tree.element?.innerHtml
-                                                    .split("=")[0]
-                                                    .toString() ??
-                                                "",
-                                            style: Theme.of(Navigation
-                                                    .instance
-                                                    .navigatorKey
-                                                    .currentContext!)
-                                                .textTheme
-                                                .headline5
-                                                ?.copyWith(
-                                                  color: Colors.blue,
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                ),
-                                          ),
-                                        );
-                                      },
-                                    },
+                                    // customRender: {
+                                    //   "table": (context, child) {
+                                    //     return SingleChildScrollView(
+                                    //       scrollDirection: Axis.horizontal,
+                                    //       child: (context.tree
+                                    //               as TableLayoutElement)
+                                    //           .toWidget(context),
+                                    //     );
+                                    //   },
+                                    //   "a": (context, child) {
+                                    //     return GestureDetector(
+                                    //       onTap: () {
+                                    //         _launchUrl(Uri.parse(context
+                                    //             .tree.attributes['href']
+                                    //             .toString()));
+                                    //         print(context
+                                    //             .tree.attributes['href']);
+                                    //       },
+                                    //       child: Text(
+                                    //         context.tree.element?.innerHtml
+                                    //                 .split("=")[0]
+                                    //                 .toString() ??
+                                    //             "",
+                                    //         style: Theme.of(Navigation
+                                    //                 .instance
+                                    //                 .navigatorKey
+                                    //                 .currentContext!)
+                                    //             .textTheme
+                                    //             .headline5
+                                    //             ?.copyWith(
+                                    //               color: Colors.blue,
+                                    //               fontWeight: FontWeight.bold,
+                                    //               decoration:
+                                    //                   TextDecoration.underline,
+                                    //             ),
+                                    //       ),
+                                    //     );
+                                    //   },
+                                    // },
                                     style: {
                                       '#': Style(
                                         fontSize: FontSize(_counterValue),
@@ -281,148 +285,31 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             color: getTextColor(),
           ),
         ),
+        (reviewUrl != "")
+            ? IconButton(
+                onPressed: () {
+                  debugPrint(reviewUrl);
+                  _launchUrl(reviewUrl);
+                },
+                icon: Icon(
+                  Icons.reviews,
+                  color: getTextColor(),
+                ),
+              )
+            : Container(),
         IconButton(
           onPressed: () {
+            // Share.share(
+            //     'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+            String page = "reading";
             Share.share(
-                'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+                'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}');
           },
           icon: Icon(
             Icons.share,
             color: getTextColor(),
           ),
         ),
-        // PopupMenuButton<int>(
-        //   color: getTextColor(),
-        //   onSelected: (item) => handleClick(item),
-        //   itemBuilder: (context) => [
-        //     PopupMenuItem<int>(
-        //       value: 0,
-        //       child: Row(
-        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //         children: [
-        //           Icon(
-        //             Icons.add,
-        //             color: getBackGroundColor(),
-        //           ),
-        //           SizedBox(
-        //             width: 5.w,
-        //           ),
-        //           Text(
-        //             'Create a Bookmark',
-        //             style: Theme.of(context).textTheme.headline5?.copyWith(
-        //                   color: getBackGroundColor(),
-        //                 ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     PopupMenuItem<int>(
-        //       value: 1,
-        //       child: Row(
-        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //         children: [
-        //           Icon(
-        //             Icons.bookmark,
-        //             color: getBackGroundColor(),
-        //           ),
-        //           SizedBox(
-        //             width: 5.w,
-        //           ),
-        //           Text(
-        //             'Save for later',
-        //             style: Theme.of(context).textTheme.headline5?.copyWith(
-        //                   color: getBackGroundColor(),
-        //                 ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     PopupMenuItem<int>(
-        //       value: 2,
-        //       child: Row(
-        //         // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //         children: [
-        //           Icon(
-        //             Icons.download,
-        //             color: getBackGroundColor(),
-        //           ),
-        //           SizedBox(
-        //             width: 5.w,
-        //           ),
-        //           Text(
-        //             'Download',
-        //             style: Theme.of(context).textTheme.headline5?.copyWith(
-        //                   color: getBackGroundColor(),
-        //                 ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     PopupMenuItem<int>(
-        //       value: 3,
-        //       child: Row(
-        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //         children: [
-        //           Icon(
-        //             Icons.book,
-        //             color: getBackGroundColor(),
-        //           ),
-        //           SizedBox(
-        //             width: 5.w,
-        //           ),
-        //           Text(
-        //             'Table of Contents',
-        //             style: Theme.of(context).textTheme.headline5?.copyWith(
-        //                   color: getBackGroundColor(),
-        //                 ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     PopupMenuItem<int>(
-        //       value: 4,
-        //       child: Row(
-        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //         children: [
-        //           Icon(
-        //             Icons.share,
-        //             color: getBackGroundColor(),
-        //           ),
-        //           SizedBox(
-        //             width: 5.w,
-        //           ),
-        //           Text(
-        //             'Share',
-        //             style: Theme.of(context).textTheme.headline5?.copyWith(
-        //                   color: getBackGroundColor(),
-        //                 ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     PopupMenuItem<int>(
-        //       value: 4,
-        //       child: Row(
-        //         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //         children: [
-        //           Icon(
-        //             Icons.info,
-        //             color: getBackGroundColor(),
-        //           ),
-        //           SizedBox(
-        //             width: 5.w,
-        //           ),
-        //           Text(
-        //             'About Book',
-        //             style: Theme.of(context).textTheme.headline5?.copyWith(
-        //                   color: getBackGroundColor(),
-        //                 ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
@@ -728,6 +615,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];
+      setState(() {
+        reviewUrl = response1.chapters![0].review_url ?? "";
+        debugPrint("ReviewUrl: $reviewUrl");
+      });
       for (int i = 0; i < chapters.length; i++) {
         for (var j in chapters[i].pages!) {
           // if (i == int.parse(widget.id.toString().split(',')[1])) {
@@ -735,7 +626,8 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           //   text = text + j;
           // }
           if (i >= int.parse(widget.id.toString().split(',')[1])) {
-            reading.add(ReadingChapter(chapters[i].title, j));
+            reading.add(
+                ReadingChapter(chapters[i].title, j, chapters[i].review_url));
             text = text + j;
           }
         }
@@ -745,7 +637,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           getSplittedText(
               TextStyle(
                   color: getBackGroundColor(),
-                  fontSize: FontSize(_counterValue).size),
+                  fontSize: FontSize(_counterValue).value),
               text);
         });
       }
@@ -759,254 +651,14 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       getSplittedText(
           TextStyle(
               color: getBackGroundColor(),
-              fontSize: FontSize(_counterValue).size),
+              fontSize: FontSize(_counterValue).value),
           text);
     });
   }
 
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(Uri.parse(_url), mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $_url';
     }
   }
-//  GestureDetector(
-//                 onTap: () {
-//                   // print('dads');
-//                   showCupertinoModalBottomSheet(
-//                     enableDrag: true,
-//                     // expand: true,
-//                     elevation: 15,
-//                     clipBehavior: Clip.antiAlias,
-//                     backgroundColor:
-//                     Theme.of(context).accentColor,
-//                     topRadius: const Radius.circular(15),
-//                     closeProgressThreshold: 10,
-//                     context: Navigation.instance.navigatorKey
-//                         .currentContext ??
-//                         context,
-//                     builder: (context) => Material(
-//                       color: getBodyColor(),
-//                       child: StatefulBuilder(
-//                           builder: (context, update) {
-//                             return SizedBox(
-//                               height: 30.h,
-//                               width: double.infinity,
-//                               child: Column(
-//                                 children: [
-//                                   Container(
-//                                     height: 15.h,
-//                                     width: double.infinity,
-//                                     color: Colors.black,
-//                                     child: Column(
-//                                       mainAxisAlignment:
-//                                       MainAxisAlignment.center,
-//                                       children: [
-//                                         Text(
-//                                           "Enjoying your free preview?",
-//                                           style: Theme.of(context)
-//                                               .textTheme
-//                                               .headline5
-//                                               ?.copyWith(
-//                                             color:
-//                                             getTextColor(),
-//                                           ),
-//                                         ),
-//                                         Text(
-//                                           "Keep reading with a free trial",
-//                                           style: Theme.of(context)
-//                                               .textTheme
-//                                               .headline5
-//                                               ?.copyWith(
-//                                             color:
-//                                             getTextColor(),
-//                                           ),
-//                                         ),
-//                                         SizedBox(
-//                                           height: 1.h,
-//                                         ),
-//                                         SizedBox(
-//                                           width: double.infinity,
-//                                           height: 4.5.h,
-//                                           child: Padding(
-//                                             padding:
-//                                             const EdgeInsets
-//                                                 .symmetric(
-//                                                 horizontal:
-//                                                 20.0),
-//                                             child: ElevatedButton(
-//                                                 onPressed: () {
-//                                                   Navigation
-//                                                       .instance
-//                                                       .navigate(
-//                                                       '/bookInfo');
-//                                                 },
-//                                                 style: ButtonStyle(
-//                                                   backgroundColor:
-//                                                   MaterialStateProperty
-//                                                       .all(Colors
-//                                                       .blue),
-//                                                 ),
-//                                                 child: Text(
-//                                                   'Buy Now',
-//                                                   style: Theme.of(
-//                                                       context)
-//                                                       .textTheme
-//                                                       .headline5
-//                                                       ?.copyWith(
-//                                                     fontSize:
-//                                                     3.h,
-//                                                     color: Colors
-//                                                         .black,
-//                                                   ),
-//                                                 )),
-//                                           ),
-//                                         ),
-//                                       ],
-//                                     ),
-//                                   ),
-//                                   Container(
-//                                     height: 15.h,
-//                                     width: double.infinity,
-//                                     color: Colors.grey.shade900,
-//                                     child: Column(
-//                                       mainAxisAlignment:
-//                                       MainAxisAlignment.start,
-//                                       children: [
-//                                         Row(
-//                                           children: [
-//                                             Expanded(
-//                                               child: Slider(
-//                                                 min: 0,
-//                                                 max: double.parse(
-//                                                     multiImageProvider
-//                                                         .length
-//                                                         .toString()),
-//                                                 activeColor:
-//                                                 Colors.blue,
-//                                                 inactiveColor:
-//                                                 Colors.white,
-//                                                 onChanged:
-//                                                     (double value) {
-//                                                   update(() {
-//                                                     setState(() {
-//                                                       sliderVal =
-//                                                           value;
-//                                                       background =
-//                                                       multiImageProvider[
-//                                                       value
-//                                                           .toInt()];
-//                                                     });
-//                                                   });
-//                                                 },
-//                                                 value: sliderVal,
-//                                               ),
-//                                             ),
-//                                             IconButton(
-//                                               onPressed: () {
-//                                                 showSearch(
-//                                                   context: context,
-//                                                   delegate:
-//                                                   SearchPage<
-//                                                       Book_old>(
-//                                                     items: ConstanceData
-//                                                         .Motivational,
-//                                                     searchLabel:
-//                                                     'Search people',
-//                                                     suggestion:
-//                                                     const Center(
-//                                                       child: Text(
-//                                                           'Filter people by name, surname or age'),
-//                                                     ),
-//                                                     failure:
-//                                                     const Center(
-//                                                       child: Text(
-//                                                           'No person found :('),
-//                                                     ),
-//                                                     filter:
-//                                                         (current) =>
-//                                                     [
-//                                                       current.name,
-//                                                       current
-//                                                           .author,
-//                                                       // person.age.toString(),
-//                                                     ],
-//                                                     builder:
-//                                                         (book) =>
-//                                                         ListTile(
-//                                                           title: Text(
-//                                                               book.name ??
-//                                                                   ''),
-//                                                           subtitle: Text(
-//                                                               book.author ??
-//                                                                   ''),
-//                                                           trailing:
-//                                                           CachedNetworkImage(
-//                                                             imageUrl:
-//                                                             book.image ??
-//                                                                 '',
-//                                                             height: 20,
-//                                                             width: 20,
-//                                                           ),
-//                                                         ),
-//                                                   ),
-//                                                 );
-//                                               },
-//                                               icon: Icon(
-//                                                   Icons.search),
-//                                             )
-//                                           ],
-//                                         ),
-//                                         SizedBox(
-//                                           height: 1.h,
-//                                         ),
-//                                         Container(
-//                                           padding: const EdgeInsets
-//                                               .symmetric(
-//                                               horizontal: 20.0),
-//                                           child: Row(
-//                                             mainAxisAlignment:
-//                                             MainAxisAlignment
-//                                                 .spaceBetween,
-//                                             children: [
-//                                               Text(
-//                                                 '${(multiImageProvider.length - sliderVal).toInt()} pages left in the chapter',
-//                                                 style: Theme.of(
-//                                                     context)
-//                                                     .textTheme
-//                                                     .headline5
-//                                                     ?.copyWith(
-//                                                   fontSize: 2.h,
-//                                                   // color: Colors.black,
-//                                                 ),
-//                                               ),
-//                                               Text(
-//                                                 'page ${sliderVal.toInt() + 1} of ${multiImageProvider.length}',
-//                                                 style: Theme.of(
-//                                                     context)
-//                                                     .textTheme
-//                                                     .headline5
-//                                                     ?.copyWith(
-//                                                   fontSize: 2.h,
-//                                                   // color: Colors.black,
-//                                                 ),
-//                                               ),
-//                                             ],
-//                                           ),
-//                                         ),
-//                                       ],
-//                                     ),
-//                                   ),
-//                                 ],
-//                               ),
-//                             );
-//                           }),
-//                     ),
-//                   );
-//                 },
-//                 child: Container(
-//                   height: 4.h,
-//                   width: double.infinity,
-//                   color: getBodyColor(),
-//                 ),
-//               ),
 }

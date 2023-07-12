@@ -1,6 +1,6 @@
 
 class ReadingChapter{
-  String? title,desc;
+  String? title,desc,url;
 
-  ReadingChapter(this.title, this.desc);
+  ReadingChapter(this.title, this.desc,this.url);
 }

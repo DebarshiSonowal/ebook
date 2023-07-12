@@ -144,7 +144,7 @@ class NewSearchBar extends StatelessWidget {
                       )
                     : badge.Badge(
                         position: badge.BadgePosition.topEnd(),
-                        badgeColor: ConstanceData.primaryColor,
+                        // badgeColor: ConstanceData.primaryColor,
                         badgeContent: Text(
                           '${data.cartData?.items.length ?? ""}',
                           style:

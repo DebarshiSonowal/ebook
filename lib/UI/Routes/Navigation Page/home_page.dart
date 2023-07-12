@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Routes/Drawer/library.dart';
 import 'package:ebook/UI/Routes/Drawer/more.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter/services.dart';
 import 'package:material_dialogs/material_dialogs.dart';
@@ -9,6 +12,7 @@ import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+// import 'package:uni_links2/uni_links.dart';
 import 'package:upgrader/upgrader.dart';
 import '../../../Networking/api_provider.dart';
 import '../../Components/CategoryBar.dart';
@@ -28,6 +32,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   TabController? _controller;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,11 +89,12 @@ class _HomePageState extends State<HomePage>
                   const NewSearchBar(),
                   const CategoryBar(),
                   Expanded(
-                    child: Consumer<DataProvider>(builder: (context, current, _) {
+                    child:
+                        Consumer<DataProvider>(builder: (context, current, _) {
                       return Padding(
                         padding: EdgeInsets.only(top: 1.h),
-                        child:
-                            bodyWidget(current.currentIndex, current.currentTab),
+                        child: bodyWidget(
+                            current.currentIndex, current.currentTab),
                       );
                     }),
                   ),
@@ -122,24 +129,14 @@ class _HomePageState extends State<HomePage>
       default:
         return const Home();
     }
-    // } else {
-    //   switch (currentIndex) {
-    //     case 1:
-    //       return const Librarypage();
-    //     case 3:
-    //       return const OrderHistoryPage();
-    //     case 4:
-    //       return const More();
-    //     default:
-    //       return const Home();
-    //   }
-    // }
   }
+
+
 
   @override
   void initState() {
     super.initState();
-    fetchCartItems();
+    fetchDetails();
     _controller = TabController(
       length: Provider.of<DataProvider>(
                   Navigation.instance.navigatorKey.currentContext!,
@@ -181,7 +178,7 @@ class _HomePageState extends State<HomePage>
     });
   }
 
-  void fetchCartItems() async {
+  Future<void> fetchCartItems() async {
     // Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.fetchCart();
     if (response.status ?? false) {
@@ -197,5 +194,20 @@ class _HomePageState extends State<HomePage>
     } else {
       // Navigation.instance.goBack();
     }
+  }
+
+  // Future<void> getDynamicLink() async {
+  //   final PendingDynamicLinkData? dynamicLinkData =
+  //       await FirebaseDynamicLinks.instance.getInitialLink();
+  //   if (dynamicLinkData != null) {
+  //     final Uri deepLink = dynamicLinkData.link;
+  //     debugPrint("URL link2 $deepLink");
+  //   }
+  // }
+
+  void fetchDetails() async {
+    await fetchCartItems();
+    // getDynamicLink();
+    // initUniLinks();
   }
 }

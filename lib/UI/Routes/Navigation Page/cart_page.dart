@@ -209,14 +209,23 @@ class _CartPageState extends State<CartPage> {
 
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
-    var resp = json.decode(response.message!);
-    print('error ${resp['error']['description']} ${response.code} ');
-    Navigation.instance.goBack();
-    CoolAlert.show(
-      context: context,
-      type: CoolAlertType.error,
-      text: resp['error']['description'] ?? "Something went wrong",
-    );
+    try {
+      var resp = json.decode(response.message!);
+      debugPrint('error ${resp['error']['description']} ${response.code} ');
+      Navigation.instance.goBack();
+      CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: resp['error']['description'] ?? "Something went wrong",
+          );
+    } catch (e) {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: response.message ?? "Something went wrong",
+      );
+    }
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {

@@ -73,10 +73,9 @@ class _BookDetailsState extends State<BookDetails>
   double brightness = 0.0, page_no = 1;
   bool toggle = false;
   double sliderVal = 0;
-
   List<BookChapter> chapters = [];
   List<ReadingChapter> reading = [];
-  String read = '';
+  String read = '', reviewUrl = "";
   var _counterValue = 13.sp;
   PageController pageController = PageController(
     initialPage: 0,
@@ -100,47 +99,7 @@ class _BookDetailsState extends State<BookDetails>
   void initState() {
     super.initState();
 
-    // _scrollController.addListener(_scrollListener);
-    fetchBookDetails();
-    // setScreenshotDisable();
-    // initPlatformBrightness();
-    Future.delayed(Duration.zero, () async {
-      brightness = await systemBrightness;
-      getSizeFromBloc(pageKey);
-      Navigation.instance.navigate('/readingDialog',
-          args: widget.input.toString().split(',')[1]);
-      setState(() {
-        Storage.instance
-            .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
-      });
-    });
-    Future.delayed(Duration(seconds: 3), () {
-      print(
-          "Executed ${Storage.instance.readingBook} ${widget.input.toString().split(',')[0]}");
-      if (Storage.instance.readingBook.toString() ==
-          widget.input.toString().split(',')[0].toString()) {
-        print("Scroll ${Storage.instance.readingBookPage}");
-        pageController.jumpToPage(Storage.instance.readingBookPage);
-        pageController.addListener(() {
-          page_no = pageController.page ?? 1;
-          if (Storage.instance.readingBook.toString() ==
-              widget.input.toString().split(',')[0].toString()) {
-            Storage.instance.setReadingBookPage(page_no.toInt());
-          }
-        });
-      } else {
-        pageController.addListener(() {
-          page_no = pageController.page ?? 1;
-          // if(Storage.instance.readingBook.toString()==widget.input.toString().split(',')[0].toString()){
-          //   Storage.instance.setReadingBookPage(page_no.toInt());
-          // }
-        });
-      }
-    });
-
-    // Future.delayed(Duration(seconds: 2), () {
-    //   Navigation.instance.goBack();
-    // });
+    fetchData();
   }
 
   Future<double> get systemBrightness async {
@@ -172,7 +131,7 @@ class _BookDetailsState extends State<BookDetails>
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .headline2
                     ?.copyWith(color: getTextColor()),
               ),
               backgroundColor: getBackGroundColor(),
@@ -192,10 +151,25 @@ class _BookDetailsState extends State<BookDetails>
                     color: getTextColor(),
                   ),
                 ),
+                (reviewUrl != "")
+                    ? IconButton(
+                        onPressed: () {
+                          debugPrint(reviewUrl);
+                          _launchUrl(reviewUrl);
+                        },
+                        icon: Icon(
+                          Icons.reviews,
+                          color: getTextColor(),
+                        ),
+                      )
+                    : Container(),
                 IconButton(
                   onPressed: () {
+                    // Share.share(
+                    //     'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+                    String page = "reading";
                     Share.share(
-                        'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+                        'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page');
                   },
                   icon: Icon(
                     Icons.share,
@@ -253,11 +227,11 @@ class _BookDetailsState extends State<BookDetails>
                                     children: [
                                       Html(
                                         data: test,
-                                        onLinkTap: (str, contxt, map, elment) {
-                                          debugPrint(str);
-                                          _launchUrl(Uri.parse(
-                                              str ?? "https://tratri.in/"));
-                                        },
+                                        // onLinkTap: (str, contxt, map, elment) {
+                                        //   debugPrint(str);
+                                        //   _launchUrl(Uri.parse(
+                                        //       str ?? "https://tratri.in/"));
+                                        // },
                                         style: {
                                           '#': Style(
                                             fontSize: FontSize(_counterValue),
@@ -467,7 +441,7 @@ class _BookDetailsState extends State<BookDetails>
     await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
-  void fetchBookDetails() async {
+  Future<void> fetchBookDetails() async {
     final response = await ApiProvider.instance
         .fetchBookDetails(widget.input.toString().split(',')[0].toString());
     if (response.status ?? false) {
@@ -484,9 +458,13 @@ class _BookDetailsState extends State<BookDetails>
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];
+      setState(() {
+        reviewUrl = response1.chapters![0].review_url ?? "";
+        debugPrint("ReviewUrl: $reviewUrl");
+      });
       for (var i in chapters) {
         for (var j in i.pages!) {
-          reading.add(ReadingChapter('', j));
+          reading.add(ReadingChapter('', j, i.review_url));
           read = read + j;
         }
       }
@@ -496,7 +474,7 @@ class _BookDetailsState extends State<BookDetails>
           getSplittedText(
               TextStyle(
                   color: getBackGroundColor(),
-                  fontSize: FontSize(_counterValue).size),
+                  fontSize: FontSize(_counterValue).value),
               read);
           // setPages(FontSize(_counterValue).size?.toInt());
         });
@@ -516,7 +494,7 @@ class _BookDetailsState extends State<BookDetails>
       getSplittedText(
           TextStyle(
               color: getBackGroundColor(),
-              fontSize: FontSize(_counterValue).size),
+              fontSize: FontSize(_counterValue).value),
           read);
     });
   }
@@ -602,8 +580,45 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url, mode: LaunchMode.externalApplication)) {
+    if (!await launchUrl(Uri.parse(_url), mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $_url';
     }
+  }
+
+  void fetchData() async {
+    await fetchBookDetails();
+    Future.delayed(Duration.zero, () async {
+      brightness = await systemBrightness;
+      getSizeFromBloc(pageKey);
+      Navigation.instance.navigate('/readingDialog',
+          args: widget.input.toString().split(',')[1]);
+      setState(() {
+        Storage.instance
+            .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
+      });
+    });
+    Future.delayed(const Duration(seconds: 5), () {
+      debugPrint(
+          "Executed ${Storage.instance.readingBook} ${widget.input.toString().split(',')[0]}");
+      if (Storage.instance.readingBook.toString() ==
+          widget.input.toString().split(',')[0].toString()) {
+        debugPrint("Scroll ${Storage.instance.readingBookPage}");
+        pageController.jumpToPage(Storage.instance.readingBookPage);
+        pageController.addListener(() {
+          page_no = pageController.page ?? 1;
+          setState(() {
+            reviewUrl = reading[pageController.page!.toInt()].url ?? "";
+          });
+          if (Storage.instance.readingBook.toString() ==
+              widget.input.toString().split(',')[0].toString()) {
+            Storage.instance.setReadingBookPage(page_no.toInt());
+          }
+        });
+      } else {
+        pageController.addListener(() {
+          page_no = pageController.page ?? 1;
+        });
+      }
+    });
   }
 }

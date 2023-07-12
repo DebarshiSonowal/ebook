@@ -101,7 +101,7 @@ class _HomeAppBarState extends State<HomeAppBar> {
           padding: const EdgeInsets.all(10.0),
           child: badge.Badge(
             position: badge.BadgePosition.bottomEnd(),
-            badgeColor: Colors.white,
+            // badgeColor: Colors.white,
             badgeContent: const Icon(
               ConstanceData.moreIcon,
               color: Colors.black,

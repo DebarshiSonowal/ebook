@@ -238,7 +238,7 @@ class _BookInfoState extends State<BookInfo>
                     (bookDetails?.is_bought ?? false)
                         ? Container()
                         : BuyButton(widget.id, () {
-                            (bookDetails?.base_price ?? 0) <= 0
+                            (bookDetails?.selling_price ?? 0) <= 0
                                 ? freeItemsProcess()
                                 : initiatePaymentProcess(widget.id);
                           }, bookDetails?.is_bought ?? false),
@@ -252,7 +252,7 @@ class _BookInfoState extends State<BookInfo>
                       profile_pic: bookDetails?.profile_pic ?? "",
                     ),
                     DownloadSection(
-                        widget.id, bookDetails?.is_bookmarked ?? false),
+                        widget.id, bookDetails?.is_bookmarked ?? false,bookDetails?.book_format ?? ""),
                     SizedBox(
                       width: 90.w,
                       height: 0.03.h,
@@ -587,9 +587,9 @@ class _BookInfoState extends State<BookInfo>
   void initateOrder(RazorpayKey razorpay, id) async {
     final response = await ApiProvider.instance.createOrder(cupon, id);
     if (response.status ?? false) {
-      tempTotal = response.order?.total ?? 0;
+      tempTotal = response.order?.grand_total ?? 0;
       temp_order_id = response.order?.order_id.toString() ?? "";
-      startPayment(razorpay, response.order?.total, response.order?.order_id,
+      startPayment(razorpay, response.order?.grand_total, response.order?.order_id,
           response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();

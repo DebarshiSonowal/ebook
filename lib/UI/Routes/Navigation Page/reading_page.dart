@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/platform_interface.dart';
+// import 'package:webview_flutter/platform_interface.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';

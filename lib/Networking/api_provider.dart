@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
@@ -54,13 +55,15 @@ class ApiProvider {
       "date_of_birth": dob,
       "password": password
     };
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     var url = "${baseUrl}/subscribers";
     dio = Dio(option);
     debugPrint(url.toString());
@@ -88,13 +91,15 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/login";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     debugPrint(data.toString());
@@ -120,13 +125,15 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -148,13 +155,15 @@ class ApiProvider {
 
   Future<ProfileResponse> getProfile() async {
     var url = "${baseUrl}/subscribers/profile";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -178,13 +187,15 @@ class ApiProvider {
   Future<GenericResponse> updateProfile(
       String name, String email, String mobile, String date) async {
     var url = "${baseUrl}/subscribers/profile";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     var data = {
       "f_name": name.split(" ")[0] ?? "",
       "l_name": name.split(" ")[1] ?? "",
@@ -216,13 +227,15 @@ class ApiProvider {
 
   Future<LogoutResponse> logout() async {
     var url = "${baseUrl}/subscribers/logout";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -245,13 +258,15 @@ class ApiProvider {
 
   Future<Filter> getFilters(format) async {
     var url = "${baseUrl}/search-filters/${format}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -279,13 +294,15 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${old_email}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -311,13 +328,15 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${email}/primary";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -343,13 +362,15 @@ class ApiProvider {
       "password": password,
     };
     var url = "${baseUrl}/subscribers/address/${email}/delete";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -371,13 +392,15 @@ class ApiProvider {
 
   Future<BookFormatResponse> fetchBookFormat() async {
     var url = "${baseUrl}${path}/formats";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
 
@@ -399,13 +422,15 @@ class ApiProvider {
 
   Future<BookCategoryResponse> fetchBookCategory(String format) async {
     var url = "${baseUrl}$path/categories/${format}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -426,13 +451,15 @@ class ApiProvider {
 
   Future<HomeBannerResponse> fetchHomeBanner(String format) async {
     var url = "${baseUrl}$path/home-banners/${format}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -453,13 +480,15 @@ class ApiProvider {
 
   Future<HomeSectionResponse> fetchHomeSections(String format) async {
     var url = "${baseUrl}$path/home-sections/${format}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -480,13 +509,15 @@ class ApiProvider {
 
   Future<BookDetailsResponse> fetchBookDetails(String id) async {
     var url = "${baseUrl}$path/detail/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -507,40 +538,44 @@ class ApiProvider {
 
   Future<BookChapterResponse> fetchBookChapters(String id) async {
     var url = "${baseUrl}$path/chapters/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
-      debugPrint("BookDetails response: ${response?.data}");
+      debugPrint("chapters response: ${response?.data}");
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return BookChapterResponse.fromJson(response?.data);
       } else {
-        debugPrint("BookDetails error: ${response?.data}");
+        debugPrint("chapters error: ${response?.data}");
         return BookChapterResponse.withError(
             response?.data['message'] ?? "Something went wrong");
       }
     } on DioError catch (e) {
-      debugPrint("BookDetails response: ${e.response}");
+      debugPrint("chapters response: ${e.response}");
       return BookChapterResponse.withError(e.message.toString());
     }
   }
 
   Future<ReviewResponse> fetchReview(String id) async {
     var url = "${baseUrl}$path/reviews/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -560,13 +595,15 @@ class ApiProvider {
 
   Future<BookmarkResponse> fetchBookmark() async {
     var url = "${baseUrl}$path/bookmark/list";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -586,13 +623,15 @@ class ApiProvider {
 
   Future<MagazinePlanResponse> fetchMagazinePlan(String id) async {
     var url = "${baseUrl}/magazines/plans/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -612,13 +651,15 @@ class ApiProvider {
 
   Future<GenericResponse> addReview(Add_Review review, int id) async {
     var url = "${baseUrl}$path/reviews/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'subscriber_id': review.subscriber_id,
@@ -644,13 +685,15 @@ class ApiProvider {
 
   Future<GenericResponse> addBookmark(int id) async {
     var url = "${baseUrl}$path/bookmark/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     // var data = {
     //   'book_id': id,
@@ -676,13 +719,15 @@ class ApiProvider {
   Future<GenericResponse> verifyPayment(
       order_id, razorpay_payment_id, amount) async {
     var url = "${baseUrl}/sales/order/verify-payment";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'order_id': order_id,
@@ -711,13 +756,15 @@ class ApiProvider {
 
   Future<CartResponse> addToCart(id, qty) async {
     var url = "${baseUrl}/sales/cart/add";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'id': id,
@@ -743,13 +790,15 @@ class ApiProvider {
 
   Future<CartResponse> fetchCart() async {
     var url = "${baseUrl}/sales/cart";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -769,13 +818,15 @@ class ApiProvider {
 
   Future<DiscountResponse> fetchDiscount() async {
     var url = "${baseUrl}/discount/list";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -795,13 +846,15 @@ class ApiProvider {
 
   Future<ApplyCupon> applyDiscount(coupon_code, total_amount) async {
     var url = "${baseUrl}/discount/list";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'total_amount': total_amount,
@@ -827,13 +880,15 @@ class ApiProvider {
 
   Future<MyBooksResponse> fetchMyBooks() async {
     var url = "${baseUrl}${path}/my-list";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -853,13 +908,15 @@ class ApiProvider {
 
   Future<RazorpayResponse> fetchRazorpay() async {
     var url = "${baseUrl}/payment-gateway";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -879,13 +936,15 @@ class ApiProvider {
 
   Future<MyLangResponse> fetchLanguages() async {
     var url = "${baseUrl}/languages";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -905,13 +964,15 @@ class ApiProvider {
 
   Future<OrderHistoryResponse> fetchOrders() async {
     var url = "${baseUrl}/sales/order";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -929,16 +990,18 @@ class ApiProvider {
     }
   }
 
-  Future<WriterResponse> fetchWriterDetails(id,magazine_id) async {
+  Future<WriterResponse> fetchWriterDetails(id, magazine_id) async {
     var url = "${baseUrl}/contributors/${id}/${magazine_id}";
     // var url = "${baseUrl}/writer/${id}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     debugPrint(url.toString());
     try {
@@ -958,13 +1021,15 @@ class ApiProvider {
 
   Future<CartResponse> updateCart(int id, int qty) async {
     var url = "${baseUrl}/sales/cart/update";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'id': id,
@@ -990,13 +1055,15 @@ class ApiProvider {
   Future<SearchResponse> search(
       format, category_ids, tag_ids, author_ids, title, awards) async {
     var url = "${baseUrl}/search/${format}";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'format': format,
@@ -1032,6 +1099,7 @@ class ApiProvider {
       data.addEntries(temp.entries);
     }
     debugPrint(url.toString());
+    debugPrint(data.entries.toString());
     // debugPrint(jsonEncode(data));
     try {
       Response? response = await dio?.get(
@@ -1053,13 +1121,15 @@ class ApiProvider {
 
   Future<CartResponse> deleteCart(int id) async {
     var url = "${baseUrl}/sales/cart/delete";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = {
       'id': id,
@@ -1085,13 +1155,15 @@ class ApiProvider {
   Future<OrderResponse> createOrder(
       String coupon_code, direct_buy_book_id) async {
     var url = "${baseUrl}/sales/order";
-    BaseOptions option =
-        BaseOptions(connectTimeout: 80000, receiveTimeout: 80000, headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${Storage.instance.token}',
-      // 'APP-KEY': ConstanceData.app_key
-    });
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
     dio = Dio(option);
     var data = direct_buy_book_id == null
         ? {
@@ -1126,81 +1198,81 @@ class ApiProvider {
     }
   }
 
-  // Future download2(int id) async {
-  //   var url = '${baseUrl}/sales/invoice/${id}';
-  //   Navigation.instance.goBack();
-  //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //   var tempDir = "/storage/emulated/0/Download";
-  //   String fullPath = tempDir + "/${id}.pdf";
-  //   print('full path ${fullPath}');
-  //   try {
-  //     Response? response = await dio?.get(
-  //       url,
-  //       onReceiveProgress: showDownloadProgress,
-  //       //Received data with List<int> s
-  //       options: Options(
-  //           responseType: ResponseType.bytes,
-  //           followRedirects: false,
-  //           validateStatus: (status) {
-  //             return status! < 500;
-  //           }),
-  //     );
-  //     print(response?.headers);
-  //     File file = File(fullPath);
-  //     var raf = file.openSync(mode: FileMode.write);
-  //     // response.data is List<int> type
-  //     raf.writeFromSync(response?.data);
-  //     await raf.close();
-  //     Future.delayed(Duration(seconds: 2), () {
-  //       showCompleteDownload(fullPath);
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-  //
-  // void showDownloadProgress(received, total) async {
-  //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //   if (total != -1) {
-  //     print((received / total * 100).toStringAsFixed(0) + "%");
-  //     await Future<void>.delayed(const Duration(seconds: 1), () async {
-  //       final AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //           AndroidNotificationDetails('progress channel', 'progress channel',
-  //               channelShowBadge: false,
-  //               importance: Importance.max,
-  //               priority: Priority.high,
-  //               onlyAlertOnce: true,
-  //               showProgress: true,
-  //               maxProgress: total,
-  //               progress: received);
-  //       final NotificationDetails platformChannelSpecifics =
-  //           NotificationDetails(android: androidPlatformChannelSpecifics);
-  //       await flutterLocalNotificationsPlugin.show(
-  //           0, 'Saving Invoice', 'Downloading', platformChannelSpecifics,
-  //           payload: 'item x');
-  //     });
-  //   }
-  // }
-  //
-  // void showCompleteDownload(fullPath) async {
-  //   debugPrint("Completed");
-  //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  //   await flutterLocalNotificationsPlugin.cancelAll().then((value) async {
-  //     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  //         AndroidNotificationDetails(
-  //       'progress channel',
-  //       'progress channel',
-  //       channelShowBadge: false,
-  //       importance: Importance.max,
-  //       priority: Priority.high,
-  //       onlyAlertOnce: true,
-  //       showProgress: false,
-  //     );
-  //     const NotificationDetails platformChannelSpecifics =
-  //         NotificationDetails(android: androidPlatformChannelSpecifics);
-  //     await flutterLocalNotificationsPlugin.show(1, 'Invoice Downloaded',
-  //         'Saved Successfully', platformChannelSpecifics,
-  //         payload: fullPath);
-  //   });
-  // }
+// Future download2(int id) async {
+//   var url = '${baseUrl}/sales/invoice/${id}';
+//   Navigation.instance.goBack();
+//   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//   var tempDir = "/storage/emulated/0/Download";
+//   String fullPath = tempDir + "/${id}.pdf";
+//   print('full path ${fullPath}');
+//   try {
+//     Response? response = await dio?.get(
+//       url,
+//       onReceiveProgress: showDownloadProgress,
+//       //Received data with List<int> s
+//       options: Options(
+//           responseType: ResponseType.bytes,
+//           followRedirects: false,
+//           validateStatus: (status) {
+//             return status! < 500;
+//           }),
+//     );
+//     print(response?.headers);
+//     File file = File(fullPath);
+//     var raf = file.openSync(mode: FileMode.write);
+//     // response.data is List<int> type
+//     raf.writeFromSync(response?.data);
+//     await raf.close();
+//     Future.delayed(Duration(seconds: 2), () {
+//       showCompleteDownload(fullPath);
+//     });
+//   } catch (e) {
+//     print(e);
+//   }
+// }
+//
+// void showDownloadProgress(received, total) async {
+//   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//   if (total != -1) {
+//     print((received / total * 100).toStringAsFixed(0) + "%");
+//     await Future<void>.delayed(const Duration(seconds: 1), () async {
+//       final AndroidNotificationDetails androidPlatformChannelSpecifics =
+//           AndroidNotificationDetails('progress channel', 'progress channel',
+//               channelShowBadge: false,
+//               importance: Importance.max,
+//               priority: Priority.high,
+//               onlyAlertOnce: true,
+//               showProgress: true,
+//               maxProgress: total,
+//               progress: received);
+//       final NotificationDetails platformChannelSpecifics =
+//           NotificationDetails(android: androidPlatformChannelSpecifics);
+//       await flutterLocalNotificationsPlugin.show(
+//           0, 'Saving Invoice', 'Downloading', platformChannelSpecifics,
+//           payload: 'item x');
+//     });
+//   }
+// }
+//
+// void showCompleteDownload(fullPath) async {
+//   debugPrint("Completed");
+//   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+//   await flutterLocalNotificationsPlugin.cancelAll().then((value) async {
+//     const AndroidNotificationDetails androidPlatformChannelSpecifics =
+//         AndroidNotificationDetails(
+//       'progress channel',
+//       'progress channel',
+//       channelShowBadge: false,
+//       importance: Importance.max,
+//       priority: Priority.high,
+//       onlyAlertOnce: true,
+//       showProgress: false,
+//     );
+//     const NotificationDetails platformChannelSpecifics =
+//         NotificationDetails(android: androidPlatformChannelSpecifics);
+//     await flutterLocalNotificationsPlugin.show(1, 'Invoice Downloaded',
+//         'Saved Successfully', platformChannelSpecifics,
+//         payload: fullPath);
+//   });
+// }
 }

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "988029776739",
+    "project_id": "tratri-official",
+    "storage_bucket": "tratri-official.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988029776739:android:63d4c508aec23275699956",
+        "android_client_info": {
+          "package_name": "com.tsinfosec.ebook.ebook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "988029776739-n8t9bmj9e8jbkoukg462mej6g0dq39bb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCALVjTbVgGUI7mWgQXzcZ9st71ZOw-gI0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "988029776739-n8t9bmj9e8jbkoukg462mej6g0dq39bb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

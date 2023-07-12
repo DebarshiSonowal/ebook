@@ -14,7 +14,8 @@ import '../../Storage/data_provider.dart';
 class DownloadSection extends StatelessWidget {
   final int id;
   final bool isBookmarked;
-  DownloadSection(this.id,this.isBookmarked);
+  final String format;
+  DownloadSection(this.id,this.isBookmarked, this.format);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,8 @@ class DownloadSection extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+              String page = "details";
+              Share.share('https://tratri.in/link?format=$format&id=$id&details=$page');
             },
             child: SizedBox(
               height: 15.h,

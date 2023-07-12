@@ -23,7 +23,7 @@ class BookChapterResponse {
 }
 
 class BookChapter {
-  String? title, sub_title, slug;
+  String? title, sub_title, slug, review_url;
   List<String>? pages;
   int? sequence, first_page_no, last_page_no;
   bool? show_title;
@@ -38,7 +38,7 @@ class BookChapter {
     last_page_no = json['last_page_no'] ?? 0;
 
     show_title = json['show_title'] ?? false;
-
+    review_url = json['review_url']??"";
     pages = json['pages'] == null
         ? []
         : (json['pages'] as List).map((e) => e.toString()).toList();
