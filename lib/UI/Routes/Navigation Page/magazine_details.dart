@@ -303,7 +303,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             //     'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
             String page = "reading";
             Share.share(
-                'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}');
+                'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}&page=${pageController.page?.toInt()}');
           },
           icon: Icon(
             Icons.share,
@@ -509,7 +509,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                       ),
                 ),
                 Slider(
-                  value: page_no,
+                  value: pageController.page??1,
                   onChanged: (value) {
                     _(() {
                       page_no = value;
@@ -534,7 +534,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Current: ${page_no.toInt()}",
+                      "Current: ${pageController.page}",
                       style: Theme.of(context).textTheme.headline4?.copyWith(
                             color: Colors.black,
                           ),

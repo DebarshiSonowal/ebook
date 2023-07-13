@@ -25,19 +25,19 @@ import '../UI/Routes/OnBoarding/splash_screen.dart';
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
-      return FadeTransitionPageRouteBuilder(page: SplashScreen());
+      return FadeTransitionPageRouteBuilder(page: const SplashScreen());
     // case '/onboarding':
     //   return FadeTransitionPageRouteBuilder(page: OnBoardingPage());
 
     // login pages
     case '/login':
-      return FadeTransitionPageRouteBuilder(page: LoginPage());
+      return FadeTransitionPageRouteBuilder(page: const LoginPage());
     case '/signup':
-      return FadeTransitionPageRouteBuilder(page: RegistrationPage());
-    case '/verifyOtpLogin':
-      return FadeTransitionPageRouteBuilder(page: LoginOtpVerify());
+      return FadeTransitionPageRouteBuilder(page: const RegistrationPage());
+    case '/loginReturn':
+      return FadeTransitionPageRouteBuilder(page: const LoginPageReturn());
     case '/verifyOtpSignup':
-      return FadeTransitionPageRouteBuilder(page: RegisterationOTPVerify());
+      return FadeTransitionPageRouteBuilder(page: const RegisterationOTPVerify());
     case '/bookDetails':
       return FadeTransitionPageRouteBuilder(
           page: BookDetails(settings.arguments as String));
@@ -55,7 +55,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(
           page: BookInfo(settings.arguments as int));
     case '/categories':
-      return FadeTransitionPageRouteBuilder(page: CategoryPage());
+      return FadeTransitionPageRouteBuilder(page: const CategoryPage());
     case '/selectCategories':
       return FadeTransitionPageRouteBuilder(
           page: CategorySpecificPage(
@@ -63,15 +63,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       ));
 
     case '/accountDetails':
-      return FadeTransitionPageRouteBuilder(page: AccountPage());
+      return FadeTransitionPageRouteBuilder(page: const AccountPage());
 
     case '/accountInformation':
-      return FadeTransitionPageRouteBuilder(page: AccountInformation());
+      return FadeTransitionPageRouteBuilder(page: const AccountInformation());
 
     case '/loadingDialog':
       return FadeTransitionPageRouteBuilder(page: LoadingDialog());
     case '/couponPage':
-      return FadeTransitionPageRouteBuilder(page: CouponPage());
+      return FadeTransitionPageRouteBuilder(page: const CouponPage());
     case '/writerInfo':
       return FadeTransitionPageRouteBuilder(
           page: WriterInfo(settings.arguments as String));
@@ -79,7 +79,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(
           page: ReadingDialog(settings.arguments as String));
     case '/cartPage':
-      return FadeTransitionPageRouteBuilder(page: CartPage());
+      return FadeTransitionPageRouteBuilder(page: const CartPage());
     case '/search':
       return FadeTransitionPageRouteBuilder(page: SearchPage());
     case '/subscription_pop_up':

@@ -522,7 +522,9 @@ class ApiProvider {
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
-      debugPrint("BookDetails response: ${response?.data}");
+      debugPrint("BookDetails response: "
+          // "${response?.data}"
+      );
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return BookDetailsResponse.fromJson(response?.data);
       } else {

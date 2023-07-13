@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sizer/sizer.dart';
 import 'package:uni_links/uni_links.dart';
-
+import '../../../Storage/app_storage.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Networking/api_provider.dart';
@@ -52,12 +52,24 @@ class _HomeState extends State<Home> {
         final uri = Uri.parse(initialLink);
         if (uri.queryParameters['details'] == "reading") {
           if (uri.queryParameters['format'] == "e-book") {
-            Navigation.instance.navigate('/bookDetails',
-                args: uri.queryParameters['id'] ?? "0");
+            if (Storage.instance.isLoggedIn) {
+              Storage.instance.setReadingBookPage(int.parse(uri.queryParameters['page'] ?? "0"));
+              Navigation.instance.navigate('/bookDetails',
+                  args: "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image'] ?? ""}");
+            } else {
+              await Navigation.instance.navigate('/loginReturn');
+              initUniLinks();
+            }
           } else {
-            Navigation.instance.navigate('/bookDetails',
-                args:
-                    "${int.parse(uri.queryParameters['id'] ?? "0")},${int.parse(uri.queryParameters['count'] ?? "0")}");
+            if (Storage.instance.isLoggedIn) {
+              Storage.instance.setReadingBookPage(int.parse(uri.queryParameters['page'] ?? "0"));
+              Navigation.instance.navigate('/bookDetails',
+                  args:
+                      "${int.parse(uri.queryParameters['id'] ?? "0")},${int.parse(uri.queryParameters['count'] ?? "0")}");
+            } else {
+              await Navigation.instance.navigate('/loginReturn');
+              initUniLinks();
+            }
           }
         } else {
           Navigation.instance.navigate('/bookInfo',

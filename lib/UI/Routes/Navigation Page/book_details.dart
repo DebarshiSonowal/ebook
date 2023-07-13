@@ -99,7 +99,7 @@ class _BookDetailsState extends State<BookDetails>
   void initState() {
     super.initState();
 
-    fetchData();
+    Future.delayed(Duration.zero,()=>fetchData());
   }
 
   Future<double> get systemBrightness async {
@@ -169,7 +169,7 @@ class _BookDetailsState extends State<BookDetails>
                     //     'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
                     String page = "reading";
                     Share.share(
-                        'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page');
+                        'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${bookDetails?.profile_pic}');
                   },
                   icon: Icon(
                     Icons.share,
@@ -343,12 +343,12 @@ class _BookDetailsState extends State<BookDetails>
                             ? 1
                             : 2) ??
                     0,
-                activeBgColor: [Colors.black87],
+                activeBgColor: const [Colors.black87],
                 activeFgColor: Colors.white,
                 inactiveBgColor: Colors.grey,
                 inactiveFgColor: Colors.grey[900],
                 totalSwitches: 3,
-                labels: ['13', '17', '20'],
+                labels: const ['13', '17', '20'],
                 onToggle: (index) {
                   switch (index) {
                     case 1:
@@ -431,8 +431,6 @@ class _BookDetailsState extends State<BookDetails>
     }
   }
 
-  handleClick(int item) {}
-
   void setScreenshotDisable() async {
     await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
@@ -471,7 +469,7 @@ class _BookDetailsState extends State<BookDetails>
 
       if (mounted) {
         setState(() {
-          getSplittedText(
+          getSplitedText(
               TextStyle(
                   color: getBackGroundColor(),
                   fontSize: FontSize(_counterValue).value),
@@ -485,13 +483,12 @@ class _BookDetailsState extends State<BookDetails>
 
   getSizeFromBloc(GlobalKey pagekey) {
     _size = _dynamicSize.getSize(pagekey);
-    print(_size);
   }
 
   void updateFont(val) {
     setState(() {
       _counterValue = val.toDouble();
-      getSplittedText(
+      getSplitedText(
           TextStyle(
               color: getBackGroundColor(),
               fontSize: FontSize(_counterValue).value),
@@ -499,8 +496,12 @@ class _BookDetailsState extends State<BookDetails>
     });
   }
 
-  getSplittedText(TextStyle textStyle, txt) {
-    _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
+  getSplitedText(TextStyle textStyle, txt) {
+    try {
+      _splittedTextList = _splittedText.getSplittedText(_size!, textStyle, txt);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void showBottomSlider(total) {
@@ -530,7 +531,7 @@ class _BookDetailsState extends State<BookDetails>
                       ),
                 ),
                 Slider(
-                  value: page_no,
+                  value: pageController.page??1,
                   onChanged: (value) {
                     _(() {
                       page_no = value;
@@ -555,7 +556,7 @@ class _BookDetailsState extends State<BookDetails>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Current: ${page_no.toInt()}",
+                      "Current: ${pageController.page?.toInt()}",
                       style: Theme.of(context).textTheme.headline4?.copyWith(
                             color: Colors.black,
                           ),
@@ -586,12 +587,15 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   void fetchData() async {
+    // print("here we are");
+    Navigation.instance.navigate('/readingDialog',
+        args: widget.input.toString().split(',')[1]);
     await fetchBookDetails();
+    // print("here we are");
     Future.delayed(Duration.zero, () async {
       brightness = await systemBrightness;
       getSizeFromBloc(pageKey);
-      Navigation.instance.navigate('/readingDialog',
-          args: widget.input.toString().split(',')[1]);
+
       setState(() {
         Storage.instance
             .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
@@ -605,20 +609,18 @@ class _BookDetailsState extends State<BookDetails>
         debugPrint("Scroll ${Storage.instance.readingBookPage}");
         pageController.jumpToPage(Storage.instance.readingBookPage);
         pageController.addListener(() {
-          page_no = pageController.page ?? 1;
           setState(() {
+            page_no = pageController.page ?? 1;
             reviewUrl = reading[pageController.page!.toInt()].url ?? "";
           });
-          if (Storage.instance.readingBook.toString() ==
-              widget.input.toString().split(',')[0].toString()) {
-            Storage.instance.setReadingBookPage(page_no.toInt());
-          }
+          Storage.instance.setReadingBookPage(page_no.toInt());
         });
       } else {
         pageController.addListener(() {
           page_no = pageController.page ?? 1;
         });
       }
+      // Navigation.instance.goBack();
     });
   }
 }
