@@ -23,7 +23,6 @@ class Storage {
   }
 
   Future<void> setReadingBookPage(int id) async {
-    print("Set Reading Book Page: ${id}");
     await sharedpreferences.setInt("page", id);
   }
 
