@@ -8,8 +8,12 @@ import 'package:ebook/Model/reading_theme.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/Utility/blockquote_extention.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html_iframe/flutter_html_iframe.dart';
+import 'package:flutter_html_table/flutter_html_table.dart';
+import 'package:flutter_html_video/flutter_html_video.dart';
 import 'package:flutter_screen_wake/flutter_screen_wake.dart';
 import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -26,6 +30,9 @@ import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
+import '../../../Utility/embeded_link_extenion.dart';
+import '../../../Utility/image_extension.dart';
+import '../../../Utility/spaceExtension.dart';
 import '../../Components/dynamicSize.dart';
 import '../../Components/splittedText.dart';
 
@@ -207,6 +214,7 @@ class _BookDetailsState extends State<BookDetails>
                           itemCount: reading.length,
                           itemBuilder: (context, index) {
                             test = reading[index].desc!;
+                            debugPrint(test);
                             return GestureDetector(
                               onTap: () {
                                 // Navigation.instance.goBack();
@@ -241,6 +249,16 @@ class _BookDetailsState extends State<BookDetails>
                                             // textOverflow: TextOverflow.ellipsis,
                                           ),
                                         },
+                                        extensions: const [
+
+                                          IframeHtmlExtension(),
+                                          TableHtmlExtension(),
+                                          VideoHtmlExtension(),
+                                          EmbeddedLinkExtension(2),
+                                          BlockquoteExtension(),
+                                          CustomImageExtension(),
+                                          CustomSpaceExtension(),
+                                        ],
                                       ),
                                     ],
                                   ),

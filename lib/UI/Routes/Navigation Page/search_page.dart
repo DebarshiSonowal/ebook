@@ -42,6 +42,9 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     Future.delayed(Duration.zero, () => fetchFilter());
     Future.delayed(Duration.zero, () {
+      setState(() {
+        _value = Provider.of<DataProvider>(context,listen: false).currentTab==0?"e-book":"magazine";
+      });
       if (widget.tags != null && widget.tags != "") {
         search_it("", "", widget.tags, "", "");
       } else if (widget.authors != null && widget.authors != "") {
