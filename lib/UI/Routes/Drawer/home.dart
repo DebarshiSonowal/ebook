@@ -47,9 +47,11 @@ class _HomeState extends State<Home> {
       final initialLink = await getInitialLink();
       if (initialLink == null) {
         debugPrint("deeplink start $initialLink");
+
         initUniLinksAlive();
       } else {
         debugPrint("deeplink $initialLink");
+        await fetchBookDetails(initialLink);
         goToUrl(initialLink);
       }
     } on PlatformException {
@@ -63,14 +65,15 @@ class _HomeState extends State<Home> {
     // ... check initialLink
 
     // Attach a listener to the stream
-    _sub = linkStream.listen((String? link) {
-      debugPrint("deeplink start not $link");
-      if(link!=null) {
-        debugPrint("deeplink $link");
+    _sub = linkStream.listen((String? link) async {
+      debugPrint("deep linking start not $link");
+      if (link != null) {
+        debugPrint("deep linking $link");
+        await fetchBookDetails(link);
         goToUrlSecond(link);
       }
     }, onError: (err) {
-      debugPrint("deeplink $err");
+      debugPrint("deep linking $err");
       // Handle exception by warning the user their action did not succeed
     });
 
@@ -240,6 +243,16 @@ class _HomeState extends State<Home> {
   void goToUrl(String initialLink) async {
     final uri = Uri.parse(initialLink);
     if (uri.queryParameters['details'] == "reading") {
+      checkByFormat(uri, initialLink);
+    } else {
+      Navigation.instance.navigate('/bookInfo',
+          args: int.parse(uri.queryParameters['id'] ?? "0"));
+    }
+  }
+
+  void goToUrlSecond(String initialLink) async {
+    final uri = Uri.parse(initialLink);
+    if (uri.queryParameters['details'] == "reading") {
       if (uri.queryParameters['format'] == "e-book") {
         Provider.of<DataProvider>(context, listen: false).setCurrentTab(0);
         if (Storage.instance.isLoggedIn) {
@@ -278,7 +291,7 @@ class _HomeState extends State<Home> {
           }
         } else {
           await Navigation.instance.navigate('/loginReturn');
-          initUniLinks();
+          initUniLinksAlive();
         }
       }
     } else {
@@ -286,53 +299,67 @@ class _HomeState extends State<Home> {
           args: int.parse(uri.queryParameters['id'] ?? "0"));
     }
   }
-  void goToUrlSecond(String initialLink) async {
-    final uri = Uri.parse(initialLink);
-    if (uri.queryParameters['details'] == "reading") {
-      if (uri.queryParameters['format'] == "e-book") {
-        Provider.of<DataProvider>(context, listen: false).setCurrentTab(0);
-        if (Storage.instance.isLoggedIn) {
-          if (Provider.of<DataProvider>(context, listen: false).myBooks.any(
-                  (element) =>
-              (element.id ?? 0) ==
-                  int.parse(uri.queryParameters['id'] ?? "0"))) {
-            Storage.instance.setReadingBookPage(
-                int.parse(uri.queryParameters['page'] ?? "0"));
-            Navigation.instance.navigate('/bookDetails',
-                args:
-                "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image'] ?? ""}");
-          } else {
-            Navigation.instance.navigate('/bookInfo',
-                args: int.parse(uri.queryParameters['id'] ?? "0"));
-          }
-        } else {
-          await Navigation.instance.navigate('/loginReturn');
-          initUniLinks();
-        }
+
+  void checkByFormat(Uri uri, String initialLink) async {
+    if (uri.queryParameters['format'] == "e-book") {
+      Provider.of<DataProvider>(context, listen: false).setCurrentTab(0);
+      if (Storage.instance.isLoggedIn) {
+        sentToDestination(uri);
       } else {
-        Provider.of<DataProvider>(context, listen: false).setCurrentTab(1);
-        if (Storage.instance.isLoggedIn) {
-          if (Provider.of<DataProvider>(context, listen: false).myBooks.any(
-                  (element) =>
-              (element.id ?? 0) ==
-                  int.parse(uri.queryParameters['id'] ?? "0"))) {
-            Storage.instance.setReadingBookPage(
-                int.parse(uri.queryParameters['page'] ?? "0"));
-            Navigation.instance.navigate('/bookDetails',
-                args:
-                "${int.parse(uri.queryParameters['id'] ?? "0")},${int.parse(uri.queryParameters['count'] ?? "0")}");
-          } else {
-            Navigation.instance.navigate('/bookInfo',
-                args: int.parse(uri.queryParameters['id'] ?? "0"));
-          }
-        } else {
-          await Navigation.instance.navigate('/loginReturn');
-          initUniLinksAlive();
-        }
+        await Navigation.instance.navigate('/loginReturn');
+        initUniLinks();
       }
+    } else {
+      Provider.of<DataProvider>(context, listen: false).setCurrentTab(1);
+      if (Storage.instance.isLoggedIn) {
+        sentToDestination(uri);
+      } else {
+        await Navigation.instance.navigate('/loginReturn');
+        initUniLinks();
+      }
+    }
+  }
+
+  void sentToDestination(Uri uri) async {
+    if (checkIfBoughtOrFree(uri)) {
+      Storage.instance
+          .setReadingBookPage(int.parse(uri.queryParameters['page'] ?? "0"));
+      Navigation.instance.navigate('/bookDetails',
+          args:
+              "${int.parse(uri.queryParameters['id'] ?? "0")},${int.parse(uri.queryParameters['count'] ?? "0")}");
     } else {
       Navigation.instance.navigate('/bookInfo',
           args: int.parse(uri.queryParameters['id'] ?? "0"));
+    }
+  }
+
+  bool checkIfBoughtOrFree(Uri uri) {
+    if (Provider.of<DataProvider>(context, listen: false).myBooks.any(
+        (element) =>
+            (element.id ?? 0) == int.parse(uri.queryParameters['id'] ?? "0"))) {
+      return true;
+    }
+    if (Provider.of<DataProvider>(context, listen: false)
+            .details
+            ?.selling_price
+            ?.toStringAsFixed(2)
+            .toString() ==
+        "0.00") {
+      return true;
+    }
+
+    return false;
+  }
+
+  fetchBookDetails(String? initialLink) async {
+    final uri = Uri.parse(initialLink ?? "");
+    final response = await ApiProvider.instance
+        .fetchBookDetails("${uri.queryParameters['id'] ?? 0}");
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setBookDetails(response.details!);
     }
   }
 }

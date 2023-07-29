@@ -619,7 +619,7 @@ class _BookDetailsState extends State<BookDetails>
             .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
       });
     });
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 3), () {
       debugPrint(
           "Executed ${Storage.instance.readingBook} ${widget.input.toString().split(',')[0]}");
       if (Storage.instance.readingBook.toString() ==

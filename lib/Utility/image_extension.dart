@@ -23,8 +23,11 @@ class CustomImageExtension extends HtmlExtension{
         // width: 90.h,
         child: CachedNetworkImage(
             imageUrl:context.attributes['src']??"",
-          fit: BoxFit.cover,
+          // fit: BoxFit.cover,
+          height: double.tryParse(context.attributes['height']??"100"),
+          width: double.tryParse(context.attributes['width']??"100"),
         ),
+        // child: material.Text(context.attributes.toString()),
       ),
     );
   }
