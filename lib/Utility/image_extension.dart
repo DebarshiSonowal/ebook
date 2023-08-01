@@ -19,7 +19,7 @@ class CustomImageExtension extends HtmlExtension{
     debugPrint(context.innerHtml);
     return WidgetSpan(
       child: Container(
-        color: Colors.black,
+        color: Colors.transparent,
         // width: 90.h,
         child: CachedNetworkImage(
             imageUrl:context.attributes['src']??"",

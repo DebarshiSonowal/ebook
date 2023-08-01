@@ -250,7 +250,6 @@ class _BookDetailsState extends State<BookDetails>
                                           ),
                                         },
                                         extensions: const [
-
                                           IframeHtmlExtension(),
                                           TableHtmlExtension(),
                                           VideoHtmlExtension(),
