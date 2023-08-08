@@ -184,6 +184,37 @@ class ApiProvider {
     }
   }
 
+  Future<GenericResponse> deleteProfile() async {
+    var url = "${baseUrl}/subscribers/profile/delete";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.post(
+        url,
+      );
+      debugPrint("profile response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("profile error: ${response?.data}");
+        return GenericResponse.withError(response?.data['message']);
+      }
+    } on DioError catch (e) {
+      debugPrint("profile response: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
+
   Future<GenericResponse> updateProfile(
       String name, String email, String mobile, String date) async {
     var url = "${baseUrl}/subscribers/profile";
@@ -459,7 +490,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -489,7 +520,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -519,7 +550,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -527,7 +558,7 @@ class ApiProvider {
       Response? response = await dio?.get(url.toString());
       debugPrint("BookDetails response: "
           // "${response?.data}"
-      );
+          );
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return BookDetailsResponse.fromJson(response?.data);
       } else {
@@ -551,7 +582,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -637,7 +668,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -805,7 +836,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -980,7 +1011,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -1010,7 +1041,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid?"android":"ios",
+          'platform': Platform.isAndroid ? "android" : "ios",
         });
     dio = Dio(option);
     debugPrint(url.toString());
@@ -1077,7 +1108,7 @@ class ApiProvider {
     dio = Dio(option);
     var data = {
       'format': format,
-      'platform': Platform.isAndroid?"android":"ios",
+      'platform': Platform.isAndroid ? "android" : "ios",
     };
     if (category_ids != null && category_ids != "") {
       var temp = {

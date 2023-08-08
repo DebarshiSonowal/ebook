@@ -27,14 +27,16 @@ class BuyButton extends StatelessWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () => ((Provider.of<DataProvider>(
-                                    Navigation.instance.navigatorKey
-                                            .currentContext ??
-                                        context,
-                                    listen: false)
-                                .profile !=
-                            null) &&
-                        Storage.instance.isLoggedIn)
+                onPressed: () =>
+                ((Provider
+                    .of<DataProvider>(
+                    Navigation.instance.navigatorKey
+                        .currentContext ??
+                        context,
+                    listen: false)
+                    .profile !=
+                    null) &&
+                    Storage.instance.isLoggedIn)
                     ? onTap()
                     : ConstanceData.showAlertDialog(context)
                 // if () {
@@ -48,51 +50,86 @@ class BuyButton extends StatelessWidget {
                 ),
                 child: Text(
                   'Buy Now',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 2.h,
-                        color: Colors.black,
-                      ),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline5
+                      ?.copyWith(
+                    fontSize: 2.h,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
             isBought
                 ? Container()
                 : SizedBox(
-                    width: 1.w,
-                  ),
+              width: 1.w,
+            ),
             isBought
                 ? Container()
                 : Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigation.instance
-                        //     .navigate('/bookInfo', args: data.id);
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigation.instance
+                  //     .navigate('/bookInfo', args: data.id);
 
-                        if ((Provider.of<DataProvider>(
-                                        Navigation.instance.navigatorKey
-                                                .currentContext ??
-                                            context,
-                                        listen: false)
-                                    .profile !=
-                                null) &&
-                            Storage.instance.isLoggedIn) {
-                          addtocart(context, id);
-                        } else {
-                          ConstanceData.showAlertDialog(context);
-                        }
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      ),
-                      child: Text(
-                        'Add To Cart',
-                        style: Theme.of(context).textTheme.headline5?.copyWith(
-                              fontSize: 2.h,
-                              color: Colors.black,
-                            ),
-                      ),
-                    ),
+                  if (Provider
+                      .of<DataProvider>(
+                      Navigation.instance.navigatorKey.currentContext ??
+                          context,
+                      listen: false)
+                      .cartData
+                      ?.items
+                      .where((element) =>
+                  (element.item_id ?? 0) == (id ?? 0))
+                      .isNotEmpty ??
+                      false) {
+                   Navigation.instance.navigate("/cartPage");
+                  } else {
+                    if ((Provider
+                        .of<DataProvider>(
+                        Navigation.instance.navigatorKey
+                            .currentContext ??
+                            context,
+                        listen: false)
+                        .profile !=
+                        null) &&
+                        Storage.instance.isLoggedIn) {
+                      addtocart(context, id);
+                    } else {
+                      ConstanceData.showAlertDialog(context);
+                    }
+                  }
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                ),
+                child: Text(
+                  (Provider
+                      .of<DataProvider>(
+                      Navigation.instance.navigatorKey.currentContext ??
+                          context,
+                      listen: false)
+                      .cartData
+                      ?.items
+                      .where((element) =>
+                  (element.item_id ?? 0) == (id ?? 0))
+                      .isNotEmpty ??
+                      false) ?
+                  'Go To Cart'
+                      : 'Add To Cart',
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline5
+                      ?.copyWith(
+                    fontSize: 2.h,
+                    color: Colors.black,
                   ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -104,12 +141,12 @@ class BuyButton extends StatelessWidget {
     final response = await ApiProvider.instance.addToCart(id, '1');
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
           .setToCart(response.cart?.items ?? []);
       Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext!,
-              listen: false)
+          Navigation.instance.navigatorKey.currentContext!,
+          listen: false)
           .setCartData(response.cart!);
       Navigation.instance.goBack();
       showSuccess(context);

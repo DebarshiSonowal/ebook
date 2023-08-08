@@ -1,8 +1,10 @@
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -157,7 +159,7 @@ class _AccountPageState extends State<AccountPage> {
       case 1:
         Provider.of<DataProvider>(context, listen: false).clearAllData();
         Storage.instance.logout();
-        Navigation.instance.navigate('/main');
+        Navigation.instance.navigateAndRemoveUntil('/main');
         break;
       case 2:
         Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
@@ -175,6 +177,7 @@ class _AccountPageState extends State<AccountPage> {
         _launchUrl(Uri.parse('https://tratri.in/https://tratri.in/about-us'));
         break;
       default:
+        requestDelete();
         break;
     }
   }
@@ -205,4 +208,19 @@ class _AccountPageState extends State<AccountPage> {
         break;
     }
   }
+
+  void requestDelete() async{
+    Navigation.instance.navigate("/loadingDialog");
+    final response = await ApiProvider.instance.deleteProfile();
+    if (response.status??false){
+      Navigation.instance.goBack();
+      Provider.of<DataProvider>(context, listen: false).clearAllData();
+      Storage.instance.logout();
+      Navigation.instance.navigateAndRemoveUntil('/main');
+    }else{
+      Navigation.instance.goBack();
+      Fluttertoast.showToast(msg: response.message??"Something went wrong");
+    }
+  }
+
 }

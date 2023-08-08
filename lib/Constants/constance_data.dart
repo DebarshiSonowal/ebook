@@ -55,6 +55,7 @@ class ConstanceData {
     'Privacy Policy',
     'Contact Us',
     'About',
+    'Request Delete Account',
   ];
   static const pages2 = [
     // 'Account Information',

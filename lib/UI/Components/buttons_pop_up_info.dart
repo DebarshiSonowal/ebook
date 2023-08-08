@@ -135,12 +135,27 @@ class addToButton extends StatelessWidget {
                       .profile !=
                   null) &&
               Storage.instance.isLoggedIn) {
-            debugPrint("${data.subscriptions.isNotEmpty} ${data.book_format != "e-book"}");
-            if (data.subscriptions.isNotEmpty && data.book_format != "e-book") {
-              Navigation.instance
-                  .navigate("/subscription_pop_up", args: data.id);
+            debugPrint(
+                "${data.subscriptions.isNotEmpty} ${data.book_format != "e-book"}");
+            if ((Provider.of<DataProvider>(
+                        Navigation.instance.navigatorKey.currentContext ??
+                            context,
+                        listen: false)
+                    .cartData
+                    ?.items
+                    .where(
+                        (element) => (element.item_id ?? 0) == (data.id ?? 0))
+                    .isNotEmpty ??
+                false)) {
+              Navigation.instance.navigate("/cartPage");
             } else {
-              ConstanceData.addtocart(context, data.id);
+              if (data.subscriptions.isNotEmpty &&
+                  data.book_format != "e-book") {
+                Navigation.instance
+                    .navigate("/subscription_pop_up", args: data.id);
+              } else {
+                ConstanceData.addtocart(context, data.id);
+              }
             }
           } else {
             ConstanceData.showAlertDialog(context);
@@ -149,13 +164,21 @@ class addToButton extends StatelessWidget {
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.blue),
         ),
-        child: Text(
-          'Add To Cart',
-          style: Theme.of(context).textTheme.headline5?.copyWith(
-                fontSize: 2.h,
-                color: Colors.black,
-              ),
-        ),
+        child: Consumer<DataProvider>(builder: (context, repo, _) {
+          return Text(
+            (repo.cartData?.items
+                        .where((element) =>
+                            (element.item_id ?? 0) == (data.id ?? 0))
+                        .isNotEmpty ??
+                    false)
+                ? 'Go To Cart'
+                : 'Add To Cart',
+            style: Theme.of(context).textTheme.headline5?.copyWith(
+                  fontSize: 2.h,
+                  color: Colors.black,
+                ),
+          );
+        }),
       ),
     );
   }
