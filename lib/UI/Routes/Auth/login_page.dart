@@ -4,9 +4,12 @@ import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:social_login_buttons/social_login_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Storage/data_provider.dart';
@@ -19,13 +22,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    _phoneController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
   }
 
@@ -52,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 6.h,
+                  height: 3.h,
                 ),
                 Image.asset(
                   ConstanceData.primaryIcon,
@@ -70,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                 ),
                 SizedBox(
-                  height: 6.h,
+                  height: 4.h,
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -78,16 +81,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.emailAddress,
                       cursorHeight:
                           Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
-                      controller: _phoneController,
+                      controller: _emailController,
                       cursorColor: Colors.white,
                       style: Theme.of(context).textTheme.headline5,
                       decoration: InputDecoration(
-                        labelText: 'Enter your registered phone number',
-                        hintText: "Mobile number",
+                        labelText: 'Enter your email',
+                        hintText: "Email Address",
                         labelStyle: Theme.of(context)
                             .textTheme
                             .headline6
@@ -183,7 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                 //   ),
                 // ),
                 SizedBox(
-                  height: 4.h,
+                  height: 3.h,
                 ),
                 SizedBox(
                   width: double.infinity,
@@ -192,8 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          if (_phoneController.text.isNotEmpty &&
-                              _phoneController.text.length == 10 &&
+                          if (_emailController.text.isNotEmpty &&
                               _passwordController.text.isNotEmpty) {
                             Login();
                           } else {
@@ -246,7 +248,43 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(
-                  height: 5.h,
+                  height: 3.h,
+                ),
+                SizedBox(
+                  width: 60.w,
+                  child: SocialLoginButton(
+                    backgroundColor: Colors.amber,
+                    height: 40,
+                    text: 'Sign In',
+                    borderRadius: 5,
+                    fontSize: 15.sp,
+                    buttonType: SocialLoginButtonType.google,
+                    // imageWidth: 20,
+                    // imagepath: "assets/file.png",
+                    // imageURL: "URL",
+                    onPressed: () async {
+                      final response = await signInWithGoogle();
+                      loginSocial(
+                          response.user?.displayName
+                                  ?.split(" ")[0] ??
+                              "",
+                          ((response.user?.displayName
+                                          ?.split(" ")
+                                          .length ??
+                                      0) >
+                                  1)
+                              ? response.user?.displayName
+                                  ?.split(" ")[1]
+                              : "",
+                          response.user?.email ?? "",
+                          "",
+                          "google");
+                      // loginEmail();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 3.h,
                 ),
                 SizedBox(
                   height: 5.h,
@@ -262,7 +300,7 @@ class _LoginPageState extends State<LoginPage> {
   void Login() async {
     Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance
-        .loginSubscriber(_phoneController.text, _passwordController.text);
+        .socialLogin("","",_emailController.text, _passwordController.text,"normal");
     if (response.status ?? false) {
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
@@ -299,5 +337,38 @@ class _LoginPageState extends State<LoginPage> {
     if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $_url';
     }
+  }
+
+  void loginSocial(fname, lname, email, password, provider) async {
+    final response = await ApiProvider.instance
+        .socialLogin(fname, lname, email, password, provider);
+    if (response.status ?? false) {
+      await Storage.instance.setUser(response.access_token ?? "");
+      fetchProfile();
+    } else {
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: response.message ?? "Something went wrong",
+      );
+    }
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

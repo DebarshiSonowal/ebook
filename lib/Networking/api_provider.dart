@@ -85,6 +85,45 @@ class ApiProvider {
     }
   }
 
+  Future<LoginResponse> socialLogin(
+      fname, lname, email, password,provider) async {
+    var data = {
+      "provider":provider,
+      "f_name": fname,
+      "l_name": lname,
+      "email": email,
+      "password": password,
+    };
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    var url = "${baseUrl}/subscribers/login-new";
+    dio = Dio(option);
+    debugPrint(url.toString());
+    debugPrint(jsonEncode(data));
+
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("socialLogin response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LoginResponse.fromJson(response?.data);
+      } else {
+        debugPrint("socialLogin error: ${response?.data}");
+        return LoginResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("socialLogin response: ${e.response}");
+      return LoginResponse.withError(e.message.toString());
+    }
+  }
+
   Future<LoginResponse> loginSubscriber(mobile, password) async {
     var data = {
       "mobile": mobile,

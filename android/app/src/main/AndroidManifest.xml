@@ -56,9 +56,11 @@
                 <!-- Accepts URIs that begin with https://YOUR_HOST -->
                 <data
                     android:host="tratri.in"
+                    android:path="/link"
                     android:scheme="http" />
                 <data
                     android:host="tratri.in"
+                    android:path="/link"
                     android:scheme="https" />
 
             </intent-filter>

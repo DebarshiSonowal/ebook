@@ -625,6 +625,7 @@ class _BookInfoState extends State<BookInfo>
       'key': razorpay.api_key,
       'amount': total! * 100,
       // 'order_id': id,
+    "image" : "https://tratri.in/assets/assets/images/logos/logo-razorpay.jpg",
       'name':
           '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
       'description': 'Books',

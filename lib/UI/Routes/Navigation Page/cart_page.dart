@@ -121,7 +121,9 @@ class _CartPageState extends State<CartPage> {
                         : PaymentAddressCard(
                             data: data,
                             getTotalAmount: (data) => getTotalAmount(data),
-                            initiatePaymentProcess:(amount)=>amount<=0?freeItemsProcess():initiatePaymentProcess(),
+                            initiatePaymentProcess: (amount) => amount <= 0
+                                ? freeItemsProcess()
+                                : initiatePaymentProcess(),
                           ),
                   ],
                 );
@@ -189,8 +191,8 @@ class _CartPageState extends State<CartPage> {
     if (response.status ?? false) {
       tempTotal = response.order?.grand_total ?? 0;
       temp_order_id = response.order?.order_id.toString() ?? "";
-      startPayment(razorpay, response.order?.grand_total, response.order?.order_id,
-          response.order?.subscriber_id);
+      startPayment(razorpay, response.order?.grand_total,
+          response.order?.order_id, response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(
@@ -214,10 +216,10 @@ class _CartPageState extends State<CartPage> {
       debugPrint('error ${resp['error']['description']} ${response.code} ');
       Navigation.instance.goBack();
       CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            text: resp['error']['description'] ?? "Something went wrong",
-          );
+        context: context,
+        type: CoolAlertType.error,
+        text: resp['error']['description'] ?? "Something went wrong",
+      );
     } catch (e) {
       Navigation.instance.goBack();
       CoolAlert.show(
@@ -237,6 +239,7 @@ class _CartPageState extends State<CartPage> {
       'key': razorpay.api_key,
       'amount': total! * 100,
       // 'order_id': id,
+      "image": "https://tratri.in/assets/assets/images/logos/logo-razorpay.jpg",
       'name':
           '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
       'description': 'Books',
@@ -326,9 +329,9 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  freeItemsProcess() async{
+  freeItemsProcess() async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
-    if(response.status??false){
+    if (response.status ?? false) {
       CoolAlert.show(
         context: context,
         type: CoolAlertType.success,
@@ -336,7 +339,7 @@ class _CartPageState extends State<CartPage> {
       );
       fetchCartItems();
       Navigation.instance.goBack();
-    }else{
+    } else {
       CoolAlert.show(
         context: context,
         type: CoolAlertType.warning,

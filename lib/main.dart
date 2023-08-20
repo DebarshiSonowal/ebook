@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
           builder: (context, orientation, deviceType) {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
-              title: 'Ebook',
+              title: 'Tratri',
               theme: AppTheme.getTheme(),
               navigatorKey: Navigation.instance.navigatorKey,
               onGenerateRoute: generateRoute,

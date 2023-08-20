@@ -14,7 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "988029776739-n8t9bmj9e8jbkoukg462mej6g0dq39bb.apps.googleusercontent.com",
+          "client_id": "988029776739-n72gnv1q7551r72vl9qqtehcvjp01mgd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tsinfosec.ebook.ebook",
+            "certificate_hash": "8380022215f67f9de75f4dc3f93b7b62247453ac"
+          }
+        },
+        {
+          "client_id": "988029776739-p1lop07qqoe0iqitod625m1dp3sh58ko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tsinfosec.ebook.ebook",
+            "certificate_hash": "96e8777be3897e1dc4f5be13ebea1d59b8616c8a"
+          }
+        },
+        {
+          "client_id": "988029776739-kalj2t300ufa5pq0ntv0ueajpbog016q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +43,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "988029776739-n8t9bmj9e8jbkoukg462mej6g0dq39bb.apps.googleusercontent.com",
+              "client_id": "988029776739-kalj2t300ufa5pq0ntv0ueajpbog016q.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "988029776739-fqm0qe9dvn53qfuu7cj9d4c232io6ctp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tsinfosec.ebook.ebook"
+              }
             }
           ]
         }

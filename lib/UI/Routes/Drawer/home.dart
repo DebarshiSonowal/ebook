@@ -34,6 +34,7 @@ class _HomeState extends State<Home> {
   final ScrollController controller = ScrollController();
 
   void _onRefresh() async {
+
     // monitor network fetch
     fetchHomeBanner();
     fetchHomeSection();
@@ -219,6 +220,8 @@ class _HomeState extends State<Home> {
                 Navigation.instance.navigatorKey.currentContext!,
                 listen: false)
             .addBannerList(response.banners!);
+      }else{
+
       }
     }
   }
