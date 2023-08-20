@@ -265,20 +265,16 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () async {
                       final response = await signInWithGoogle();
                       loginSocial(
-                          response.user?.displayName
-                                  ?.split(" ")[0] ??
-                              "",
-                          ((response.user?.displayName
-                                          ?.split(" ")
-                                          .length ??
-                                      0) >
-                                  1)
-                              ? response.user?.displayName
-                                  ?.split(" ")[1]
-                              : "",
-                          response.user?.email ?? "",
-                          "",
-                          "google");
+                        response.user?.displayName?.split(" ")[0] ?? "",
+                        ((response.user?.displayName?.split(" ").length ?? 0) >
+                                1)
+                            ? response.user?.displayName?.split(" ")[1]
+                            : "",
+                        response.user?.email ?? "",
+                        "",
+                        "google",
+                        response.user?.phoneNumber ?? "",
+                      );
                       // loginEmail();
                     },
                   ),
@@ -299,8 +295,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void Login() async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance
-        .socialLogin("","",_emailController.text, _passwordController.text,"normal");
+    final response = await ApiProvider.instance.socialLogin(
+        "", "", _emailController.text, _passwordController.text, "normal","");
     if (response.status ?? false) {
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
@@ -339,13 +335,16 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void loginSocial(fname, lname, email, password, provider) async {
+  void loginSocial(fname, lname, email, password, provider, mobile) async {
+    Navigation.instance.navigate("/loadingDialog");
     final response = await ApiProvider.instance
-        .socialLogin(fname, lname, email, password, provider);
+        .socialLogin(fname, lname, email, password, provider, mobile);
     if (response.status ?? false) {
+      Navigation.instance.goBack();
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
     } else {
+      Navigation.instance.goBack();
       CoolAlert.show(
         context: context,
         type: CoolAlertType.error,

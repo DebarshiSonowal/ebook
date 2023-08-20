@@ -9,6 +9,14 @@ import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
 
+extension EmailValidator on String {
+  bool isValidEmail() {
+    return RegExp(
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
+  }
+}
+
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);
 
@@ -450,12 +458,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (_phoneController.text.isNotEmpty &&
-                              _phoneController.text.length == 10 &&
+                              _phoneController.text.length>7 &&
                               _passwordController.text.isNotEmpty &&
                               _confirmPasswordController.text.isNotEmpty &&
                               _fnameController.text.isNotEmpty &&
                               _lnameController.text.isNotEmpty &&
                               _emailController.text.isNotEmpty &&
+                              _emailController.text.isValidEmail() &&
                               current != '') {
                             if (_passwordController.text ==
                                 _confirmPasswordController.text) {

@@ -86,13 +86,14 @@ class ApiProvider {
   }
 
   Future<LoginResponse> socialLogin(
-      fname, lname, email, password,provider) async {
+      fname, lname, email, password,provider,mobile) async {
     var data = {
       "provider":provider,
       "f_name": fname,
       "l_name": lname,
       "email": email,
       "password": password,
+      "mobile": mobile,
     };
     BaseOptions option = BaseOptions(
         connectTimeout: const Duration(seconds: 10),
@@ -120,7 +121,7 @@ class ApiProvider {
       }
     } on DioError catch (e) {
       debugPrint("socialLogin response: ${e.response}");
-      return LoginResponse.withError(e.message.toString());
+      return LoginResponse.withError(e.response?.data['message'].toString());
     }
   }
 
