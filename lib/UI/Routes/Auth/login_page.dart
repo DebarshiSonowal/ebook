@@ -253,9 +253,9 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   width: 60.w,
                   child: SocialLoginButton(
-                    backgroundColor: Colors.amber,
+                    backgroundColor: Colors.white70,
                     height: 40,
-                    text: 'Sign In',
+                    text: 'Sign in',
                     borderRadius: 5,
                     fontSize: 15.sp,
                     buttonType: SocialLoginButtonType.google,
