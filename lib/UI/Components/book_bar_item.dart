@@ -72,25 +72,25 @@ class bookBaritem extends StatelessWidget {
                       data.title ?? '',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headline3?.copyWith(
+                      style: Theme.of(context).textTheme.headline2?.copyWith(
                             // fontSize: 2.5.h,
                             color: Colors.white,
                           ),
                     ),
                     SizedBox(
-                      height: 1.h,
+                      height: 1.5.h,
                     ),
                     Text(
                       data.writer ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
                             // fontSize: 1.5.h,
                             color: Colors.white,
                           ),
                     ),
                     SizedBox(
-                      height: 1.h,
+                      height: 1.5.h,
                     ),
                     IgnorePointer(
                       child: RatingBar.builder(
@@ -114,38 +114,38 @@ class bookBaritem extends StatelessWidget {
                     SizedBox(
                       height: 1.h,
                     ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      color: Colors.white,
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        // decoration: ,
-                        child: Text(
-                          data.selling_price?.toStringAsFixed(2) == "0.00"
-                              ? "FREE"
-                              : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline5
-                              ?.copyWith(
-                                // fontSize: 1.5.h,
-                                color: data.selling_price?.toStringAsFixed(2) ==
-                                        "0.00"
-                                    ? Colors.green
-                                    : Colors.black,
-                                fontWeight:
-                                    data.selling_price?.toStringAsFixed(2) ==
-                                            "0.00"
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                              ),
-                        ),
-                      ),
-                    ),
+                    // Card(
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(5.0),
+                    //   ),
+                    //   color: Colors.white,
+                    //   child: Container(
+                    //     padding: const EdgeInsets.all(5),
+                    //     // decoration: ,
+                    //     child: Text(
+                    //       data.selling_price?.toStringAsFixed(2) == "0.00"
+                    //           ? "FREE"
+                    //           : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
+                    //       maxLines: 1,
+                    //       overflow: TextOverflow.ellipsis,
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .headline5
+                    //           ?.copyWith(
+                    //             // fontSize: 1.5.h,
+                    //             color: data.selling_price?.toStringAsFixed(2) ==
+                    //                     "0.00"
+                    //                 ? Colors.green
+                    //                 : Colors.black,
+                    //             fontWeight:
+                    //                 data.selling_price?.toStringAsFixed(2) ==
+                    //                         "0.00"
+                    //                     ? FontWeight.bold
+                    //                     : FontWeight.normal,
+                    //           ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

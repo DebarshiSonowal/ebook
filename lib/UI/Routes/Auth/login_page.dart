@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
@@ -250,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 3.h,
                 ),
-                SizedBox(
+                Platform.isAndroid?SizedBox(
                   width: 60.w,
                   child: SocialLoginButton(
                     backgroundColor: Colors.white70,
@@ -264,6 +266,42 @@ class _LoginPageState extends State<LoginPage> {
                     // imageURL: "URL",
                     onPressed: () async {
                       final response = await signInWithGoogle();
+                      loginSocial(
+                        response.user?.displayName?.split(" ")[0] ?? "",
+                        ((response.user?.displayName?.split(" ").length ?? 0) >
+                                1)
+                            ? response.user?.displayName?.split(" ")[1]
+                            : "",
+                        response.user?.email ?? "",
+                        "",
+                        "google",
+                        response.user?.phoneNumber ?? "",
+                      );
+                      // loginEmail();
+                    },
+                  ),
+                ):Container(),
+                SizedBox(
+                  height: 1.h,
+                ),
+                SizedBox(
+                  width: 60.w,
+                  child: SocialLoginButton(
+                    backgroundColor: Colors.white70,
+                    height: 40,
+                    text: 'Sign in',
+                    borderRadius: 5,
+                    fontSize: 15.sp,
+                    buttonType: SocialLoginButtonType.apple,
+                    // imageWidth: 20,
+                    // imagepath: "assets/file.png",
+                    // imageURL: "URL",
+                    onPressed: () async {
+                      final response = await signInWithApple();
+
+                      print(response.user);
+                      print(response.additionalUserInfo);
+                      print(response.credential);
                       loginSocial(
                         response.user?.displayName?.split(" ")[0] ?? "",
                         ((response.user?.displayName?.split(" ").length ?? 0) >
@@ -351,6 +389,16 @@ class _LoginPageState extends State<LoginPage> {
         text: response.message ?? "Something went wrong",
       );
     }
+  }
+
+  Future<UserCredential> signInWithApple() async {
+    final appleProvider = AppleAuthProvider();
+    print(appleProvider.parameters);
+    // if (kIsWeb) {
+    //   await FirebaseAuth.instance.signInWithPopup(appleProvider);
+    // } else {
+      return await FirebaseAuth.instance.signInWithProvider(appleProvider);
+    // }
   }
 
   Future<UserCredential> signInWithGoogle() async {

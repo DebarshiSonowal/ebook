@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "988029776739-s0d7094jqf190hrnohrhb4eral7tdl5c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tsinfosec.ebook.ebook",
+            "certificate_hash": "441dd3fae954a6cc08844d98b71962f9e8581060"
+          }
+        },
+        {
           "client_id": "988029776739-kalj2t300ufa5pq0ntv0ueajpbog016q.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -47,10 +55,11 @@
               "client_type": 3
             },
             {
-              "client_id": "988029776739-fqm0qe9dvn53qfuu7cj9d4c232io6ctp.apps.googleusercontent.com",
+              "client_id": "988029776739-61ivga0i77qshvu37v6mkj5r5nr7hqiv.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.tsinfosec.ebook.ebook"
+                "bundle_id": "com.tsinfosec.ebook.ebook",
+                "app_store_id": "6451299864"
               }
             }
           ]

@@ -111,105 +111,79 @@ class _BookItemState extends State<BookItem> {
             SizedBox(
               height: 0.5.h,
             ),
-            IgnorePointer(
-              child: RatingBar.builder(
-                itemSize: 4.w,
-                initialRating: widget.data.average_rating ?? 0,
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                // itemPadding:
-                //     EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => const Icon(
-                  Icons.star,
-                  color: Colors.white,
-                  size: 10,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IgnorePointer(
+                  child: RatingBar.builder(
+                    itemSize: 4.w,
+                    initialRating: widget.data.average_rating ?? 0,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    allowHalfRating: true,
+                    itemCount: 5,
+                    // itemPadding:
+                    //     EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.white,
+                      size: 10,
+                    ),
+                    onRatingUpdate: (rating) {
+                      print(rating);
+                    },
+                  ),
                 ),
-                onRatingUpdate: (rating) {
-                  print(rating);
-                },
-              ),
-            ),
-            SizedBox(
-              height: 0.5.h,
-            ),
-            StatefulBuilder(builder: (context, _) {
-              return GestureDetector(
-                onTap: () async {
-                  if ((Provider.of<DataProvider>(
-                                  Navigation.instance.navigatorKey
-                                          .currentContext ??
+
+                StatefulBuilder(builder: (context, _) {
+                    return GestureDetector(
+                      onTap: () async {
+                        if ((Provider.of<DataProvider>(
+                            Navigation.instance.navigatorKey
+                                .currentContext ??
+                                context,
+                            listen: false)
+                            .profile !=
+                            null) &&
+                            Storage.instance.isLoggedIn) {
+                          _(() {
+                            selected = !selected;
+                          });
+                          final reponse = await ApiProvider.instance
+                              .addBookmark(widget.data.id ?? 0);
+                          if (reponse.status ?? false) {
+                            Fluttertoast.showToast(msg: reponse.message!);
+                            final response =
+                            await ApiProvider.instance.fetchBookmark();
+                            if (response.status ?? false) {
+                              Provider.of<DataProvider>(
+                                  Navigation
+                                      .instance.navigatorKey.currentContext ??
                                       context,
                                   listen: false)
-                              .profile !=
-                          null) &&
-                      Storage.instance.isLoggedIn) {
-                    _(() {
-                      selected = !selected;
-                    });
-                    final reponse = await ApiProvider.instance
-                        .addBookmark(widget.data.id ?? 0);
-                    if (reponse.status ?? false) {
-                      Fluttertoast.showToast(msg: reponse.message!);
-                      final response =
-                          await ApiProvider.instance.fetchBookmark();
-                      if (response.status ?? false) {
-                        Provider.of<DataProvider>(
-                                Navigation
-                                        .instance.navigatorKey.currentContext ??
-                                    context,
-                                listen: false)
-                            .setToBookmarks(response.items ?? []);
-                      }
-                    }
-                  } else {
-                    ConstanceData.showAlertDialog(context);
-                  }
-                },
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        color: Colors.white,
-                        child: Container(
-                          padding: EdgeInsets.all(1.w),
-                          // decoration: ,
-                          child: Text(
-                            getPriceText(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                Theme.of(context).textTheme.headline6?.copyWith(
-                                      fontSize: 8.sp,
-                                      color: getColorText()
-                                          ? Colors.green
-                                          : Colors.black,
-                                      fontWeight: getColorText()
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                    ),
-                          ),
-                        ),
-                      ),
-                      Icon(
+                                  .setToBookmarks(response.items ?? []);
+                            }
+                          }
+                        } else {
+                          ConstanceData.showAlertDialog(context);
+                        }
+                      },
+                      child: Icon(
                         (widget.data.is_bookmarked ?? false) ^ selected
-                            // selected
+                        // selected
                             ? Icons.bookmark
                             : Icons.bookmark_border,
                         size: 12.sp,
                         color: Colors.grey.shade200,
-                      )
-                    ],
-                  ),
-                ),
-              );
-            }),
+                      ),
+                    );
+                  }
+                )
+              ],
+            ),
+            SizedBox(
+              height: 0.5.h,
+            ),
           ],
         ),
       ),
