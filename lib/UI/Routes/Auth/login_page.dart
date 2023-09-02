@@ -8,8 +8,10 @@ import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sizer/sizer.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -282,9 +284,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ):Container(),
                 SizedBox(
-                  height: 1.h,
+                  height: Platform.isIOS?1.h:0,
                 ),
-                SizedBox(
+                Platform.isIOS?SizedBox(
                   width: 60.w,
                   child: SocialLoginButton(
                     backgroundColor: Colors.white70,
@@ -302,21 +304,30 @@ class _LoginPageState extends State<LoginPage> {
                       print(response.user);
                       print(response.additionalUserInfo);
                       print(response.credential);
-                      loginSocial(
-                        response.user?.displayName?.split(" ")[0] ?? "",
-                        ((response.user?.displayName?.split(" ").length ?? 0) >
-                                1)
-                            ? response.user?.displayName?.split(" ")[1]
-                            : "",
-                        response.user?.email ?? "",
-                        "",
-                        "google",
-                        response.user?.phoneNumber ?? "",
+
+                      final credential = await SignInWithApple.getAppleIDCredential(
+                        scopes: [
+                          AppleIDAuthorizationScopes.email,
+                          AppleIDAuthorizationScopes.fullName,
+                        ],
                       );
+                      print(credential);
+                      Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
+                      // loginSocial(
+                      //   response.user?.displayName?.split(" ")[0] ?? "",
+                      //   ((response.user?.displayName?.split(" ").length ?? 0) >
+                      //           1)
+                      //       ? response.user?.displayName?.split(" ")[1]
+                      //       : "",
+                      //   response.user?.email ?? "",
+                      //   "",
+                      //   "google",
+                      //   response.user?.phoneNumber ?? "",
+                      // );
                       // loginEmail();
                     },
                   ),
-                ),
+                ):Container(),
                 SizedBox(
                   height: 3.h,
                 ),
