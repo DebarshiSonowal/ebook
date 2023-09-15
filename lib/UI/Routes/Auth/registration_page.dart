@@ -12,10 +12,11 @@ import '../../../Helper/navigator.dart';
 extension EmailValidator on String {
   bool isValidEmail() {
     return RegExp(
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(this);
   }
 }
+
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({Key? key}) : super(key: key);
@@ -273,18 +274,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -322,18 +323,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -544,5 +545,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
         text: response.message ?? "Something Went Wrong",
       );
     }
+
   }
 }

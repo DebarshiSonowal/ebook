@@ -17,6 +17,13 @@ import 'package:social_login_buttons/social_login_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Storage/data_provider.dart';
+extension EmailValidator on String {
+  bool isValidEmail() {
+    return RegExp(
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+        .hasMatch(this);
+  }
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -200,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (_emailController.text.isNotEmpty &&
-                              _passwordController.text.isNotEmpty) {
+                              _passwordController.text.isNotEmpty&&_emailController.text.isValidEmail()) {
                             Login();
                           } else {
                             CoolAlert.show(
@@ -404,7 +411,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<UserCredential> signInWithApple() async {
     final appleProvider = AppleAuthProvider();
-    print(appleProvider.parameters);
+    debugPrint("${appleProvider.parameters}");
     // if (kIsWeb) {
     //   await FirebaseAuth.instance.signInWithPopup(appleProvider);
     // } else {
