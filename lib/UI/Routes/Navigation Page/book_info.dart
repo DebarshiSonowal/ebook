@@ -1,4 +1,6 @@
 // import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
@@ -11,6 +13,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rating_dialog/rating_dialog.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
@@ -252,7 +255,9 @@ class _BookInfoState extends State<BookInfo>
                       profile_pic: bookDetails?.profile_pic ?? "",
                     ),
                     DownloadSection(
-                        widget.id, bookDetails?.is_bookmarked ?? false,bookDetails?.book_format ?? ""),
+                        widget.id,
+                        bookDetails?.is_bookmarked ?? false,
+                        bookDetails?.book_format ?? ""),
                     SizedBox(
                       width: 90.w,
                       height: 0.03.h,
@@ -555,8 +560,15 @@ class _BookInfoState extends State<BookInfo>
         type: CoolAlertType.success,
         text: "Payment received Successfully",
       );
-      fetchCartItems();
-      Navigation.instance.goBack();
+      if (Platform.isIOS) {
+        final result = await launchUrl(
+            Uri.parse("https://tratri.in/payment/${response.order?.order_id}"));
+        checkIfValid(response.order?.id);
+      } else {
+        fetchCartItems();
+        Navigation.instance.goBack();
+      }
+
     } else {
       CoolAlert.show(
         context: context,
@@ -589,8 +601,8 @@ class _BookInfoState extends State<BookInfo>
     if (response.status ?? false) {
       tempTotal = response.order?.grand_total ?? 0;
       temp_order_id = response.order?.order_id.toString() ?? "";
-      startPayment(razorpay, response.order?.grand_total, response.order?.order_id,
-          response.order?.subscriber_id);
+      startPayment(razorpay, response.order?.grand_total,
+          response.order?.order_id, response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(
@@ -625,7 +637,7 @@ class _BookInfoState extends State<BookInfo>
       'key': razorpay.api_key,
       'amount': total! * 100,
       // 'order_id': id,
-    "image" : "https://tratri.in/assets/assets/images/logos/logo-razorpay.jpg",
+      "image": "https://tratri.in/assets/assets/images/logos/logo-razorpay.jpg",
       'name':
           '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
       'description': 'Books',
@@ -711,6 +723,21 @@ class _BookInfoState extends State<BookInfo>
       fetchReviews();
     } else {
       showError(response1.message ?? "Something went wrong");
+    }
+  }
+
+
+
+  void checkIfValid(int? id) async {
+    final response = await ApiProvider.instance.checkIfPaid(id);
+    if (response.success ?? false) {
+      if (response.result?.isPaid==1) {
+        fetchCartItems();
+      }
+      Navigation.instance.goBack();
+    } else {
+      Navigation.instance.goBack();
+      showError(response.message ?? "Something went wrong");
     }
   }
 }

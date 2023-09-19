@@ -17,6 +17,7 @@ import '../Model/book_details.dart';
 import '../Model/book_format.dart';
 import '../Model/bookmark.dart';
 import '../Model/cart_item.dart';
+import '../Model/check_valid_response.dart';
 import '../Model/discount.dart';
 import '../Model/filter.dart';
 import '../Model/generic_response.dart';
@@ -86,9 +87,9 @@ class ApiProvider {
   }
 
   Future<LoginResponse> socialLogin(
-      fname, lname, email, password,provider,mobile) async {
+      fname, lname, email, password, provider, mobile) async {
     var data = {
-      "provider":provider,
+      "provider": provider,
       "f_name": fname,
       "l_name": lname,
       "email": email,
@@ -132,8 +133,8 @@ class ApiProvider {
     };
     var url = "${baseUrl}/subscribers/login";
     BaseOptions option = BaseOptions(
-        connectTimeout: Duration(seconds: 10),
-        receiveTimeout: Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -166,8 +167,8 @@ class ApiProvider {
     };
     var url = "${baseUrl}/subscribers/address";
     BaseOptions option = BaseOptions(
-        connectTimeout: Duration(seconds: 10),
-        receiveTimeout: Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -1247,6 +1248,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
         });
     dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
     var data = direct_buy_book_id == null
         ? {
             'coupon_code': coupon_code,
@@ -1277,6 +1279,47 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("order error: ${e.response}");
       return OrderResponse.withError(e.message);
+    }
+  }
+
+  fetchUrl(String? order_id) {}
+
+  Future<CheckValidResponse> checkIfPaid(int? id) async {
+    var url = "${baseUrl}/sales/order/check-is-paid";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    var data = {
+      'order_id': id??0,
+    };
+    debugPrint(url.toString());
+    debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        queryParameters: data,
+      );
+
+      debugPrint("order response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CheckValidResponse.fromJson(response?.data);
+      } else {
+        debugPrint("order error: ${response?.data}");
+        return CheckValidResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("order error: ${e.response}");
+      return CheckValidResponse.withError(e.message);
     }
   }
 
