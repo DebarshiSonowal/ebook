@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomImageExtension extends HtmlExtension{
 
@@ -21,17 +22,27 @@ class CustomImageExtension extends HtmlExtension{
       child: Container(
         color: Colors.transparent,
         // width: 90.h,
-        child: CachedNetworkImage(
-            imageUrl:context.attributes['src']??"",
-          // fit: BoxFit.cover,
-          height: double.tryParse(context.attributes['height']??"100"),
-          width: double.tryParse(context.attributes['width']??"100"),
+        child: GestureDetector(
+          onTap: (){
+            _launchUrl(Uri.parse(context.attributes['alt'] ??
+                "https://tratri.in/"));
+          },
+          child: CachedNetworkImage(
+              imageUrl:context.attributes['src']??"",
+            // fit: BoxFit.cover,
+            height: double.tryParse(context.attributes['height']??"100"),
+            width: double.tryParse(context.attributes['width']??"100"),
+          ),
         ),
         // child: material.Text(context.attributes.toString()),
       ),
     );
   }
-
+  Future<void> _launchUrl(_url) async {
+    if (await canLaunchUrl(_url)) {
+      launchUrl(_url);
+    } else {}
+  }
   const CustomImageExtension();
 
   String getImage(String html){

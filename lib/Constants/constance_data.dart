@@ -59,7 +59,7 @@ class ConstanceData {
   ];
   static const pages2 = [
     // 'Account Information',
-    'Sign out',
+    'Sign In',
     'Invite Friends',
     'Refund and Cancellation',
     'Terms and Conditions',

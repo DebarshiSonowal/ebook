@@ -35,21 +35,8 @@ class EmbeddedLinkExtension extends HtmlExtension {
           ? EmbededAdvertise(context: context)
           : GestureDetector(
               onTap: () {
-                if (!context.attributes['href']!.contains("guwahatiplus")) {
-                  _launchUrl(Uri.parse(context.attributes['href'] ??
-                      "https://guwahatiplus.com/"));
-                } else {
-                  if (type == 1) {
-                    Navigation.instance.navigate('/story',
-                        args:
-                            '${context.attributes['href']?.split("/")[context.attributes['href']!.split("/").length - 2]},${context.attributes['href']?.split("/").last},story_page');
-                  } else {
-                    Navigation.instance.navigate('/story',
-                        args:
-                        '${context.attributes['href']?.split("/")[context.attributes['href']!.split("/").length - 2]},${context.attributes['href']?.split("/").last},story_page');
-                    // debugPrint(context.attributes['href']);
-                  }
-                }
+                _launchUrl(Uri.parse(context.attributes['href'] ??
+                    "https://tratri.in/"));
               },
               child: Text(
                 context.innerHtml.replaceAll(";", "").replaceAll("&nbsp",""),

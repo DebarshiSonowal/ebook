@@ -94,13 +94,7 @@ class _AccountPageState extends State<AccountPage> {
                                 ? LoggedInAction(ind)
                                 : UnauthorizedAction(ind);
                           },
-                          title: Text(
-                            ind == 0
-                                ? ((data.profile == null ||
-                                        !Storage.instance.isLoggedIn)
-                                    ? "Sign In"
-                                    : current)
-                                : current,
+                          title: Text(current,
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         );
