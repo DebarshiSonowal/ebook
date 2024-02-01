@@ -1,32 +1,24 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:date_time_picker/date_time_picker.dart';
-import 'package:ebook/Networking/api_provider.dart';
-import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'package:intl/intl.dart';
-
-import '../../../Constants/constance_data.dart';
+import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
-
 extension EmailValidator on String {
   bool isValidEmail() {
     return RegExp(
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
-    )
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(this);
   }
 }
-
-
-class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key}) : super(key: key);
-
+class AppleSignInPage extends StatefulWidget {
+  const AppleSignInPage({super.key, required this.token});
+  final String token;
   @override
-  State<RegistrationPage> createState() => _RegistrationPageState();
+  State<AppleSignInPage> createState() => _AppleSignInPageState();
 }
 
-class _RegistrationPageState extends State<RegistrationPage> {
+class _AppleSignInPageState extends State<AppleSignInPage> {
   final _phoneController = TextEditingController();
   final _fnameController = TextEditingController();
   final _lnameController = TextEditingController();
@@ -45,16 +37,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // var outputFormat = DateFormat('dd/MM/yyyy');
-    // var outputDate = outputFormat.format(DateTime.now());
-    // current =
-    // '${outputDate.toString().split('/')[0]}-${outputDate.toString().split(
-    //     '/')[1]}-${outputDate.toString().split('/')[2]}';
   }
 
   @override
@@ -94,8 +76,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 Text(
                   "Signup",
                   style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                        color: Colors.white,
-                      ),
+                    color: Colors.white,
+                  ),
                 ),
 
                 SizedBox(
@@ -108,7 +90,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _fnameController,
                       cursorColor: Colors.white,
@@ -121,9 +103,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -134,13 +116,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -156,7 +138,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _lnameController,
                       cursorColor: Colors.white,
@@ -169,9 +151,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -182,13 +164,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -205,7 +187,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.number,
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _phoneController,
                       cursorColor: Colors.white,
@@ -218,9 +200,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -231,13 +213,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -254,7 +236,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _emailController,
                       cursorColor: Colors.white,
@@ -267,9 +249,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -280,13 +262,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -303,7 +285,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
@@ -316,9 +298,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -329,13 +311,13 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -352,7 +334,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme.of(context).textTheme.headline5?.fontSize,
                       autofocus: false,
                       controller: _confirmPasswordController,
                       cursorColor: Colors.white,
@@ -365,26 +347,26 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme.of(context).textTheme.headline5?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
+                          borderSide: const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -402,7 +384,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       border: Border.all(
                         color: Colors.white,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                      borderRadius: const BorderRadius.all(Radius.circular(5))),
                   child: Row(
                     // mainAxisAlignment: MainAxisAlignment.,
                     children: [
@@ -494,15 +476,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
+                          MaterialStateProperty.all(Colors.white),
                         ),
                         child: Text(
                           'Sign up',
                           style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 3.h,
-                                    color: Colors.black,
-                                  ),
+                          Theme.of(context).textTheme.headline5?.copyWith(
+                            fontSize: 3.h,
+                            color: Colors.black,
+                          ),
                         )),
                   ),
                 ),
@@ -526,26 +508,5 @@ class _RegistrationPageState extends State<RegistrationPage> {
     );
   }
 
-  void CreateAccount(fname, lname, email, mobile, dob, password) async {
-    Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance
-        .addSubscriber(fname, lname, email, mobile, dob, password);
-    if (response.status ?? false) {
-      Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: "Account Created Successfully",
-      );
-      Navigation.instance.navigate('/login');
-    } else {
-      Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: response.message ?? "Something Went Wrong",
-      );
-    }
-
-  }
+  void CreateAccount(String text, String text2, String text3, String text4, String current, String text5) {}
 }

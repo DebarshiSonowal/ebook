@@ -174,12 +174,30 @@ class _AccountInformationState extends State<AccountInformation> {
 
   void updateProfile(
       String name, String email, String mobile, String date) async {
+    Navigation.instance.navigate("/loadingDialog");
     final response =
         await ApiProvider.instance.updateProfile(name, email, mobile, date);
     if (response.status ?? false) {
-      Fluttertoast.showToast(msg: "Profile updated");
+
+      fetchProfile();
+
+
     } else {
       Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
+    }
+  }
+  void fetchProfile() async {
+    final response = await ApiProvider.instance.getProfile();
+    if (response.status ?? false) {
+      Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
+          .setProfile(response.profile!);
+      Fluttertoast.showToast(msg: "Profile updated");
+      Navigation.instance.goBack();
+    } else {
+      Navigation.instance.goBack();
+
     }
   }
 }

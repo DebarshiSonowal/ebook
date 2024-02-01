@@ -82,7 +82,7 @@ class ApiProvider {
       }
     } on DioError catch (e) {
       debugPrint("add Subscriber response: ${e.response}");
-      return GenericResponse.withError(e.message.toString());
+      return GenericResponse.withError(e.response??e.message.toString());
     }
   }
 
@@ -197,8 +197,8 @@ class ApiProvider {
   Future<ProfileResponse> getProfile() async {
     var url = "${baseUrl}/subscribers/profile";
     BaseOptions option = BaseOptions(
-        connectTimeout: Duration(seconds: 10),
-        receiveTimeout: Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -289,11 +289,11 @@ class ApiProvider {
         return GenericResponse.fromJson(response?.data);
       } else {
         debugPrint("profile error: ${response?.data}");
-        return GenericResponse.withError("Something went wrong");
+        return GenericResponse.withError(response?.data['message']??"Something went wrong");
       }
     } on DioError catch (e) {
       debugPrint("profile response: ${e.response}");
-      return GenericResponse.withError(e.message);
+      return GenericResponse.withError(e.response?.data['message']??e.message);
     }
   }
 
