@@ -141,8 +141,12 @@ class _AccountInformationState extends State<AccountInformation> {
                   height: 5.h,
                   child: ElevatedButton(
                     onPressed: () {
-                      updateProfile(nameController.text, emailController.text,
-                          mobileController.text, date);
+                      updateProfile(
+                        nameController.text,
+                        emailController.text,
+                        mobileController.text,
+                        date,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -178,26 +182,24 @@ class _AccountInformationState extends State<AccountInformation> {
     final response =
         await ApiProvider.instance.updateProfile(name, email, mobile, date);
     if (response.status ?? false) {
-
       fetchProfile();
-
-
     } else {
       Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
+      Navigation.instance.goBack();
     }
   }
+
   void fetchProfile() async {
     final response = await ApiProvider.instance.getProfile();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext ?? context,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
           .setProfile(response.profile!);
       Fluttertoast.showToast(msg: "Profile updated");
       Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
-
     }
   }
 }

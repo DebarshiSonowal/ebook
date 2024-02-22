@@ -268,9 +268,12 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
+    final nameParts = name.split(" ");
     var data = {
       "f_name": name.split(" ")[0] ?? "",
-      "l_name": name.split(" ")[1] ?? "",
+      "l_name": nameParts.length > 2
+          ? nameParts.sublist(1).join(' ') // Join middle name and last name
+          : nameParts.last ?? "",
       "email": email,
       "mobile": mobile,
       "date_of_birth": date,
