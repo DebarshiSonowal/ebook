@@ -261,80 +261,80 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 3.h,
                 ),
-                Platform.isAndroid?SizedBox(
-                  width: 60.w,
-                  child: SocialLoginButton(
-                    backgroundColor: Colors.white70,
-                    height: 40,
-                    text: 'Sign in',
-                    borderRadius: 5,
-                    fontSize: 15.sp,
-                    buttonType: SocialLoginButtonType.google,
-                    // imageWidth: 20,
-                    // imagepath: "assets/file.png",
-                    // imageURL: "URL",
-                    onPressed: () async {
-                      final response = await signInWithGoogle();
-                      loginSocial(
-                        response.user?.displayName?.split(" ")[0] ?? "",
-                        ((response.user?.displayName?.split(" ").length ?? 0) >
-                                1)
-                            ? response.user?.displayName?.split(" ")[1]
-                            : "",
-                        response.user?.email ?? "",
-                        "",
-                        "google",
-                        response.user?.phoneNumber ?? "",
-                      );
-                      // loginEmail();
-                    },
-                  ),
-                ):Container(),
+                // Platform.isAndroid?SizedBox(
+                //   width: 60.w,
+                //   child: SocialLoginButton(
+                //     backgroundColor: Colors.white70,
+                //     height: 40,
+                //     text: 'Sign in',
+                //     borderRadius: 5,
+                //     fontSize: 15.sp,
+                //     buttonType: SocialLoginButtonType.google,
+                //     // imageWidth: 20,
+                //     // imagepath: "assets/file.png",
+                //     // imageURL: "URL",
+                //     onPressed: () async {
+                //       final response = await signInWithGoogle();
+                //       loginSocial(
+                //         response.user?.displayName?.split(" ")[0] ?? "",
+                //         ((response.user?.displayName?.split(" ").length ?? 0) >
+                //                 1)
+                //             ? response.user?.displayName?.split(" ")[1]
+                //             : "",
+                //         response.user?.email ?? "",
+                //         "",
+                //         "google",
+                //         response.user?.phoneNumber ?? "",
+                //       );
+                //       // loginEmail();
+                //     },
+                //   ),
+                // ):Container(),
                 SizedBox(
                   height: Platform.isIOS?1.h:0,
                 ),
-                Platform.isIOS?SizedBox(
-                  width: 60.w,
-                  child: SocialLoginButton(
-                    backgroundColor: Colors.white70,
-                    height: 40,
-                    text: 'Sign in',
-                    borderRadius: 5,
-                    fontSize: 15.sp,
-                    buttonType: SocialLoginButtonType.apple,
-                    // imageWidth: 20,
-                    // imagepath: "assets/file.png",
-                    // imageURL: "URL",
-                    onPressed: () async {
-                      final response = await signInWithApple();
-
-                      print(response.user);
-                      print(response.additionalUserInfo);
-                      print(response.credential);
-
-                      final credential = await SignInWithApple.getAppleIDCredential(
-                        scopes: [
-                          AppleIDAuthorizationScopes.email,
-                          AppleIDAuthorizationScopes.fullName,
-                        ],
-                      );
-                      print(credential);
-                      Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
-                      // loginSocial(
-                      //   response.user?.displayName?.split(" ")[0] ?? "",
-                      //   ((response.user?.displayName?.split(" ").length ?? 0) >
-                      //           1)
-                      //       ? response.user?.displayName?.split(" ")[1]
-                      //       : "",
-                      //   response.user?.email ?? "",
-                      //   "",
-                      //   "google",
-                      //   response.user?.phoneNumber ?? "",
-                      // );
-                      // loginEmail();
-                    },
-                  ),
-                ):Container(),
+                // Platform.isIOS?SizedBox(
+                //   width: 60.w,
+                //   child: SocialLoginButton(
+                //     backgroundColor: Colors.white70,
+                //     height: 40,
+                //     text: 'Sign in',
+                //     borderRadius: 5,
+                //     fontSize: 15.sp,
+                //     buttonType: SocialLoginButtonType.apple,
+                //     // imageWidth: 20,
+                //     // imagepath: "assets/file.png",
+                //     // imageURL: "URL",
+                //     onPressed: () async {
+                //       final response = await signInWithApple();
+                //
+                //       print(response.user);
+                //       print(response.additionalUserInfo);
+                //       print(response.credential);
+                //
+                //       final credential = await SignInWithApple.getAppleIDCredential(
+                //         scopes: [
+                //           AppleIDAuthorizationScopes.email,
+                //           AppleIDAuthorizationScopes.fullName,
+                //         ],
+                //       );
+                //       print(credential);
+                //       Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
+                //       // loginSocial(
+                //       //   response.user?.displayName?.split(" ")[0] ?? "",
+                //       //   ((response.user?.displayName?.split(" ").length ?? 0) >
+                //       //           1)
+                //       //       ? response.user?.displayName?.split(" ")[1]
+                //       //       : "",
+                //       //   response.user?.email ?? "",
+                //       //   "",
+                //       //   "google",
+                //       //   response.user?.phoneNumber ?? "",
+                //       // );
+                //       // loginEmail();
+                //     },
+                //   ),
+                // ):Container(),
                 SizedBox(
                   height: 3.h,
                 ),
