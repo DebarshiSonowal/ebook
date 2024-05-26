@@ -31,15 +31,25 @@ class _AccountInformationState extends State<AccountInformation> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
+      debugPrint(
+          "Date ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.date_of_birth}");
       setState(() {
-        date = Jiffy(Provider.of<DataProvider>(
-                        Navigation.instance.navigatorKey.currentContext ??
-                            context,
-                        listen: false)
-                    .profile
-                    ?.date_of_birth ??
-                "")
-            .format("dd-MM-yyyy");
+        if (Provider.of<DataProvider>(
+                    Navigation.instance.navigatorKey.currentContext ?? context,
+                    listen: false)
+                .profile
+                ?.date_of_birth
+                ?.isNotEmpty ??
+            false) {
+          date = Jiffy(Provider.of<DataProvider>(
+                          Navigation.instance.navigatorKey.currentContext ??
+                              context,
+                          listen: false)
+                      .profile
+                      ?.date_of_birth ??
+                  "")
+              .format("dd-MM-yyyy");
+        }
         nameController.text = ""
             "${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name ?? ''} "
             "${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name ?? ''}"

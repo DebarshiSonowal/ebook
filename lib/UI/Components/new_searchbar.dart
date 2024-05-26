@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:badges/badges.dart' as badge;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Storage/data_provider.dart';
@@ -50,10 +52,11 @@ class NewSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
+          (Platform.isAndroid&&!Storage.instance.isLoggedIn)?GestureDetector(
             onTap: () {
               // _launchUrl(Uri.parse('https://tratri.in/login/contributor'));
-              _launchUrl(Uri.parse('https://tratri.in'));
+              // _launchUrl(Uri.parse('https://tratri.in'));
+              Navigation.instance.navigate("/login");
             },
             child: Container(
               decoration: BoxDecoration(
@@ -65,11 +68,11 @@ class NewSearchBar extends StatelessWidget {
               margin: const EdgeInsets.symmetric(vertical: 10),
               padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
               child: Text(
-                'REGISTER AS WRITER',
+                'Login/Register',
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
-          ),
+          ):Container(),
           SizedBox(
             width: 1.w,
           ),

@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:social_login_buttons/social_login_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Storage/data_provider.dart';
@@ -248,8 +253,38 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                   ),
                 ),
                 SizedBox(
-                  height: 5.h,
+                  height: 3.h,
                 ),
+                Platform.isAndroid?SizedBox(
+                  width: 60.w,
+                  child: SocialLoginButton(
+                    backgroundColor: Colors.white70,
+                    height: 40,
+                    text: 'Sign in',
+                    borderRadius: 5,
+                    fontSize: 15.sp,
+                    buttonType: SocialLoginButtonType.google,
+                    // imageWidth: 20,
+                    // imagepath: "assets/file.png",
+                    // imageURL: "URL",
+                    onPressed: () async {
+                      final response = await signInWithGoogle();
+                      loginSocial(
+                        response.user?.displayName?.split(" ")[0] ?? "",
+                        ((response.user?.displayName?.split(" ").length ?? 0) >
+                            1)
+                            ? response.user?.displayName?.split(" ")[1]
+                            : "",
+                        response.user?.email ?? "",
+                        "",
+                        "google",
+                        response.user?.phoneNumber ?? "",
+                        "",
+                      );
+                      // loginEmail();
+                    },
+                  ),
+                ):Container(),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -286,7 +321,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
               listen: false)
           .setProfile(response.profile!);
       Navigation.instance.goBack();
-      Navigation.instance.goBack();
+      // Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
       CoolAlert.show(
@@ -296,10 +331,44 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       );
     }
   }
+  void loginSocial(fname, lname, email, password, provider, mobile,apple_id) async {
+    Navigation.instance.navigate("/loadingDialog");
+    final response = await ApiProvider.instance
+        .socialLogin(fname, lname, email, password, provider, mobile,apple_id);
+    if (response.status ?? false) {
+      Navigation.instance.goBack();
+      await Storage.instance.setUser(response.access_token ?? "");
+      fetchProfile();
+    } else {
+      Navigation.instance.goBack();
+      CoolAlert.show(
+        context: context,
+        type: CoolAlertType.error,
+        text: response.message ?? "Something went wrong",
+      );
+    }
+  }
 
   Future<void> _launchUrl(_url) async {
     if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $_url';
     }
+  }
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+    await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

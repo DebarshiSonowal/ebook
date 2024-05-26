@@ -73,12 +73,12 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                 SizedBox(
                   height: 3.h,
                 ),
-                Text(
-                  "Signup",
-                  style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                    color: Colors.white,
-                  ),
-                ),
+                // Text(
+                //   "Signup",
+                //   style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                //     color: Colors.white,
+                //   ),
+                // ),
 
                 SizedBox(
                   height: 5.h,

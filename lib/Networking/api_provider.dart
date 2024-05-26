@@ -87,7 +87,7 @@ class ApiProvider {
   }
 
   Future<LoginResponse> socialLogin(
-      fname, lname, email, password, provider, mobile) async {
+      fname, lname, email, password, provider, mobile,apple_id) async {
     var data = {
       "provider": provider,
       "f_name": fname,
@@ -95,6 +95,7 @@ class ApiProvider {
       "email": email,
       "password": password,
       "mobile": mobile,
+      "apple_id":apple_id,
     };
     BaseOptions option = BaseOptions(
         connectTimeout: const Duration(seconds: 10),

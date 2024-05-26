@@ -158,7 +158,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                         ? Colors.white
                         : Colors.grey,
                   ),
-                  label: 'More'),
+                  label: 'Account'),
             ]),
       );
     });

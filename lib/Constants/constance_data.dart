@@ -239,12 +239,12 @@ class ConstanceData {
         style: Theme.of(context).textTheme.headline2,
       ),
       content: Text(
-        "You have not logged in yet.\nPlease Log in or Signup",
+        "You have not logged in yet.\nPlease Log in",
         style: Theme.of(context).textTheme.headline3,
       ),
       actions: [
         cancelButton,
-        signUpButton,
+        // signUpButton,
         launchButton,
       ],
     );

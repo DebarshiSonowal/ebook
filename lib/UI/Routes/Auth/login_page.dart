@@ -17,6 +17,7 @@ import 'package:social_login_buttons/social_login_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Storage/data_provider.dart';
+
 extension EmailValidator on String {
   bool isValidEmail() {
     return RegExp(
@@ -61,7 +62,9 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: Theme.of(context).primaryColor,
+          color: Theme
+              .of(context)
+              .primaryColor,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -79,9 +82,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Text(
                   "Login",
-                  style: Theme.of(context).textTheme.headline3?.copyWith(
-                        color: Colors.white,
-                      ),
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headline3
+                      ?.copyWith(
+                    color: Colors.white,
+                  ),
                 ),
                 SizedBox(
                   height: 4.h,
@@ -94,40 +101,52 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme
+                          .of(context)
+                          .textTheme
+                          .headline5
+                          ?.fontSize,
                       autofocus: false,
                       controller: _emailController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your email',
                         hintText: "Email Address",
-                        labelStyle: Theme.of(context)
+                        labelStyle: Theme
+                            .of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme
+                            .of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 2),
+                          const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -143,41 +162,53 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                      Theme
+                          .of(context)
+                          .textTheme
+                          .headline5
+                          ?.fontSize,
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
                       obscureText: true,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .headline5,
                       decoration: InputDecoration(
                         labelText: 'Enter your password',
                         hintText: "password",
-                        labelStyle: Theme.of(context)
+                        labelStyle: Theme
+                            .of(context)
                             .textTheme
                             .headline6
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
+                        Theme
+                            .of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(
+                          color: Colors.grey.shade400,
+                        ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 2),
+                          const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
+                          const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -207,7 +238,8 @@ class _LoginPageState extends State<LoginPage> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (_emailController.text.isNotEmpty &&
-                              _passwordController.text.isNotEmpty&&_emailController.text.isValidEmail()) {
+                              _passwordController.text.isNotEmpty &&
+                              _emailController.text.isValidEmail()) {
                             Login();
                           } else {
                             CoolAlert.show(
@@ -219,15 +251,19 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
+                          MaterialStateProperty.all(Colors.white),
                         ),
                         child: Text(
                           'Login',
                           style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 3.h,
-                                    color: Colors.black,
-                                  ),
+                          Theme
+                              .of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(
+                            fontSize: 3.h,
+                            color: Colors.black,
+                          ),
                         )),
                   ),
                 ),
@@ -241,100 +277,125 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text(
                     "Forgot Password",
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
-                          fontSize: 9.sp,
-                        ),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(
+                      fontSize: 9.sp,
+                    ),
                   ),
                 ),
                 SizedBox(
                   height: 2.h,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigation.instance.navigate('/signup');
-                  },
-                  child: Text(
-                    "Don't have an account? Signup",
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigation.instance.navigate('/signup');
+                //   },
+                //   child: Text(
+                //     "Don't have an account? Signup",
+                //     style: Theme
+                //         .of(context)
+                //         .textTheme
+                //         .headline5,
+                //   ),
+                // ),
                 SizedBox(
                   height: 3.h,
                 ),
-                // Platform.isAndroid?SizedBox(
-                //   width: 60.w,
-                //   child: SocialLoginButton(
-                //     backgroundColor: Colors.white70,
-                //     height: 40,
-                //     text: 'Sign in',
-                //     borderRadius: 5,
-                //     fontSize: 15.sp,
-                //     buttonType: SocialLoginButtonType.google,
-                //     // imageWidth: 20,
-                //     // imagepath: "assets/file.png",
-                //     // imageURL: "URL",
-                //     onPressed: () async {
-                //       final response = await signInWithGoogle();
-                //       loginSocial(
-                //         response.user?.displayName?.split(" ")[0] ?? "",
-                //         ((response.user?.displayName?.split(" ").length ?? 0) >
-                //                 1)
-                //             ? response.user?.displayName?.split(" ")[1]
-                //             : "",
-                //         response.user?.email ?? "",
-                //         "",
-                //         "google",
-                //         response.user?.phoneNumber ?? "",
-                //       );
-                //       // loginEmail();
-                //     },
-                //   ),
-                // ):Container(),
+                Platform.isIOS
+                    ? SizedBox(
+                  width: 60.w,
+                  child: SocialLoginButton(
+                    backgroundColor: Colors.white70,
+                    height: 40,
+                    text: 'Sign in',
+                    borderRadius: 5,
+                    fontSize: 15.sp,
+                    buttonType: SocialLoginButtonType.google,
+                    // imageWidth: 20,
+                    // imagepath: "assets/file.png",
+                    // imageURL: "URL",
+                    onPressed: () async {
+                      final response = await signInWithGoogle();
+                      loginSocial(
+                          response.user?.displayName?.split(" ")[0] ?? "",
+                          ((response.user?.displayName
+                              ?.split(" ")
+                              .length ??
+                              0) >
+                              1)
+                              ? response.user?.displayName?.split(" ")[1]
+                              : "",
+                          response.user?.email ?? "",
+                          "",
+                          "google",
+                          response.user?.phoneNumber ?? "",
+                          "");
+                      // loginEmail();
+                    },
+                  ),
+                )
+                    : Container(),
                 SizedBox(
-                  height: Platform.isIOS?1.h:0,
+                  height: Platform.isIOS ? 1.h : 0,
                 ),
-                // Platform.isIOS?SizedBox(
-                //   width: 60.w,
-                //   child: SocialLoginButton(
-                //     backgroundColor: Colors.white70,
-                //     height: 40,
-                //     text: 'Sign in',
-                //     borderRadius: 5,
-                //     fontSize: 15.sp,
-                //     buttonType: SocialLoginButtonType.apple,
-                //     // imageWidth: 20,
-                //     // imagepath: "assets/file.png",
-                //     // imageURL: "URL",
-                //     onPressed: () async {
-                //       final response = await signInWithApple();
+                // SignInWithAppleButton(
+                //   onPressed: () async {
+                //     final credential =
+                //         await SignInWithApple.getAppleIDCredential(
+                //       scopes: [
+                //         AppleIDAuthorizationScopes.email,
+                //         AppleIDAuthorizationScopes.fullName,
+                //       ],
+                //     );
                 //
-                //       print(response.user);
-                //       print(response.additionalUserInfo);
-                //       print(response.credential);
+                //     print(credential);
                 //
-                //       final credential = await SignInWithApple.getAppleIDCredential(
-                //         scopes: [
-                //           AppleIDAuthorizationScopes.email,
-                //           AppleIDAuthorizationScopes.fullName,
-                //         ],
-                //       );
-                //       print(credential);
-                //       Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
-                //       // loginSocial(
-                //       //   response.user?.displayName?.split(" ")[0] ?? "",
-                //       //   ((response.user?.displayName?.split(" ").length ?? 0) >
-                //       //           1)
-                //       //       ? response.user?.displayName?.split(" ")[1]
-                //       //       : "",
-                //       //   response.user?.email ?? "",
-                //       //   "",
-                //       //   "google",
-                //       //   response.user?.phoneNumber ?? "",
-                //       // );
-                //       // loginEmail();
-                //     },
-                //   ),
-                // ):Container(),
+                //     // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
+                //     // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+                //   },
+                // ),
+                Platform.isIOS
+                    ? SizedBox(
+                  width: 60.w,
+                  child: SocialLoginButton(
+                    backgroundColor: Colors.white70,
+                    height: 40,
+                    text: 'Sign in',
+                    borderRadius: 5,
+                    fontSize: 15.sp,
+                    buttonType: SocialLoginButtonType.apple,
+                    // imageWidth: 20,
+                    // imagepath: "assets/file.png",
+                    // imageURL: "URL",
+                    onPressed: () async {
+                      await signInWithApple();
+                      //
+                      // print(response);
+                      // print(response.user);
+                      // print(response.additionalUserInfo);
+                      // print(response.credential);
+
+                      // print(credential);
+                      // Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
+                      // loginSocial(
+                      //   response.user?.displayName?.split(" ")[0] ?? "",
+                      //   ((response.user?.displayName?.split(" ").length ?? 0) >
+                      //           1)
+                      //       ? response.user?.displayName?.split(" ")[1]
+                      //       : "",
+                      //   response.user?.email ?? "",
+                      //   "",
+                      //   "google",
+                      //   response.user?.phoneNumber ?? "",
+                      // );
+                      // loginEmail();
+                    },
+                  ),
+                )
+                    : Container(),
                 SizedBox(
                   height: 3.h,
                 ),
@@ -352,7 +413,13 @@ class _LoginPageState extends State<LoginPage> {
   void Login() async {
     Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.socialLogin(
-        "", "", _emailController.text, _passwordController.text, "normal","");
+        "",
+        "",
+        _emailController.text,
+        _passwordController.text,
+        "normal",
+        "",
+        "");
     if (response.status ?? false) {
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
@@ -370,8 +437,8 @@ class _LoginPageState extends State<LoginPage> {
     final response = await ApiProvider.instance.getProfile();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false)
           .setProfile(response.profile!);
       Navigation.instance.goBack();
       Navigation.instance.navigate('/main');
@@ -391,10 +458,18 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void loginSocial(fname, lname, email, password, provider, mobile) async {
+  void loginSocial(fname, lname, email, password, provider, mobile,
+      apple_id) async {
     Navigation.instance.navigate("/loadingDialog");
     final response = await ApiProvider.instance
-        .socialLogin(fname, lname, email, password, provider, mobile);
+        .socialLogin(
+        fname,
+        lname,
+        email,
+        password,
+        provider,
+        mobile,
+        apple_id);
     if (response.status ?? false) {
       Navigation.instance.goBack();
       await Storage.instance.setUser(response.access_token ?? "");
@@ -409,14 +484,79 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<UserCredential> signInWithApple() async {
-    final appleProvider = AppleAuthProvider();
-    debugPrint("${appleProvider.parameters}");
-    // if (kIsWeb) {
-    //   await FirebaseAuth.instance.signInWithPopup(appleProvider);
-    // } else {
-      return await FirebaseAuth.instance.signInWithProvider(appleProvider);
-    // }
+  Future<void> signInWithApple() async {
+    // final appleProvider = AppleAuthProvider();
+    // debugPrint("${appleProvider.parameters}");
+    // // if (kIsWeb) {
+    // //   await FirebaseAuth.instance.signInWithPopup(appleProvider);
+    // // } else {
+    //   return await FirebaseAuth.instance.signInWithProvider(appleProvider);
+    // // }
+
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+    if (credential.userIdentifier?.isNotEmpty ?? false) {
+      if (!mounted) return;
+      showTextFieldDialog(
+        context,
+        "Please Enter Your Credentials",
+        "We need your details to provide you better services",
+        credential.givenName == null ? "" : credential.familyName == null
+            ? credential.givenName
+            : "${credential.givenName} ${credential.familyName}",
+        credential.email,
+        "",
+            (String? name, String? email, String mobile) {
+          if (mobile.isNotEmpty&&mobile.length==10) {
+            loginSocial(
+              name?.split(" ")[0] ?? "",
+              ((name
+                  ?.split(" ")
+                  .length ?? 0) > 1) ? name?.split(" ")[1] : "",
+              email ?? "",
+              "",
+              "ios",
+              mobile ?? "",
+              credential.userIdentifier,
+            );
+          } else {
+            Navigation.instance.goBack();
+            CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              text: "Please Enter Details",
+            );
+          }
+        },
+      );
+    }
+
+    // if(credential)
+  }
+
+  void showTextFieldDialog(BuildContext context,
+      String title,
+      String hintText,
+      String? nameText,
+      String? emailText,
+      String? mobileText,
+      Function(String? name, String? email, String mobile) onSubmit) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+          TextFieldDialog(
+            title: title,
+            hintText: hintText,
+            nameText: nameText,
+            emailText: emailText,
+            mobileText: mobileText,
+            onSubmit: onSubmit,
+          ),
+    );
   }
 
   Future<UserCredential> signInWithGoogle() async {
@@ -425,7 +565,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+    await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
@@ -435,5 +575,226 @@ class _LoginPageState extends State<LoginPage> {
 
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+}
+
+class TextFieldDialog extends StatefulWidget {
+  final String title;
+  final String hintText;
+  final String? nameText;
+  final String? emailText;
+  final String? mobileText;
+  final Function(String? name, String? email, String mobile) onSubmit;
+
+  const TextFieldDialog({
+    Key? key,
+    required this.title,
+    required this.hintText,
+    required this.onSubmit,
+    this.nameText,
+    this.emailText,
+    this.mobileText,
+  }) : super(key: key);
+
+  @override
+  State<TextFieldDialog> createState() => _TextFieldDialogState();
+}
+
+class _TextFieldDialogState extends State<TextFieldDialog> {
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _mobile = TextEditingController();
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _email.dispose();
+    _mobile.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      _name.text = widget.nameText ?? "";
+      _email.text = widget.emailText ?? "";
+      _mobile.text = widget.mobileText ?? "";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        widget.title,
+        style: Theme
+            .of(context)
+            .textTheme
+            .headline5
+            ?.copyWith(
+          fontSize: 15.sp,
+          color: Colors.white,
+        ),
+      ),
+      content: Container(
+        width: 80.w,
+        padding: EdgeInsets.symmetric(
+          horizontal: 1.w,
+          vertical: 1.h,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.hintText,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(
+                fontSize: 11.sp,
+                color: Colors.white70,
+              ),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            SizedBox(
+              width: 90.w,
+              child: TextField(
+                controller: _name,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  labelText: "Please enter your name (optional)",
+                  labelStyle: Theme
+                      .of(context)
+                      .textTheme
+                      .headline5
+                      ?.copyWith(
+                    fontSize: 10.sp,
+                    color: Colors.black45,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(
+                  fontSize: 12.sp,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            SizedBox(
+              width: 90.w,
+              child: TextField(
+                controller: _email,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  labelText: "Please enter your email (optional)",
+                  labelStyle: Theme
+                      .of(context)
+                      .textTheme
+                      .headline5
+                      ?.copyWith(
+                    fontSize: 10.sp,
+                    color: Colors.black45,
+                  ),
+                  fillColor: Colors.white,
+                  filled: true,
+                ),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(
+                  fontSize: 12.sp,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 1.h,
+            ),
+            SizedBox(
+              width: 90.w,
+              child: TextField(
+                controller: _mobile,
+                keyboardType: TextInputType.number,
+                maxLength: 10,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    labelText: "Please enter your mobile number ",
+                    labelStyle: Theme
+                        .of(context)
+                        .textTheme
+                        .headline5
+                        ?.copyWith(
+                      fontSize: 10.sp,
+                      color: Colors.black45,
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    counterText: ""),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headline5
+                    ?.copyWith(
+                  fontSize: 12.sp,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Cancel',
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline5
+                ?.copyWith(
+              fontSize: 10.sp,
+              color: Colors.white54,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            widget.onSubmit(_name.text, _email.text, _mobile.text);
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            'Submit',
+            style: Theme
+                .of(context)
+                .textTheme
+                .headline5
+                ?.copyWith(
+              fontSize: 10.sp,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
