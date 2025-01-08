@@ -22,7 +22,7 @@ class CuponsCard extends StatelessWidget {
           children: [
             Text(
               'Wanna save more ?',
-              style: Theme.of(context).textTheme.headline1?.copyWith(
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     color: Colors.white,
                   ),
             ),
@@ -30,7 +30,7 @@ class CuponsCard extends StatelessWidget {
               onTap: () => ontap(),
               child: Text(
                 cupon != "" ? cupon : 'Apply Coupon',
-                style: Theme.of(context).textTheme.headline5?.copyWith(
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.green,
                       fontWeight: FontWeight.bold,
                     ),

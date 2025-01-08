@@ -38,10 +38,16 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.black,
         centerTitle: false,
         title: Text(
           'Account',
-          style: Theme.of(context).textTheme.headline4,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize: 18.sp,
+              ),
         ),
       ),
       body: Container(
@@ -54,7 +60,7 @@ class _AccountPageState extends State<AccountPage> {
               children: [
                 SizedBox(
                   width: double.infinity,
-                  height: 15.h,
+                  height: 18.h,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -72,7 +78,10 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       Text(
                         'Hi, ${data.profile?.f_name ?? "Subscriber"}',
-                        style: Theme.of(context).textTheme.headline5,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontSize: 18.sp,
+                                ),
                       ),
                     ],
                   ),
@@ -94,8 +103,14 @@ class _AccountPageState extends State<AccountPage> {
                                 ? LoggedInAction(ind)
                                 : UnauthorizedAction(ind);
                           },
-                          title: Text(current,
-                            style: Theme.of(context).textTheme.headline5,
+                          title: Text(
+                            current,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontSize: 17.sp,
+                                ),
                           ),
                         );
                       }),
@@ -116,17 +131,23 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       Text(
                         'Made in India',
-                        style: Theme.of(context).textTheme.headline5,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontSize: 18.sp,
+                                ),
                       ),
                       SizedBox(
                         height: 2.h,
                       ),
                       Text(
-                        'version ${version}',
-                        style: Theme.of(context).textTheme.headline5,
+                        'version $version',
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontSize: 15.sp,
+                                ),
                       ),
                       SizedBox(
-                        height: 5.h,
+                        height: 4.h,
                       ),
                     ],
                   ),
@@ -156,7 +177,8 @@ class _AccountPageState extends State<AccountPage> {
         Navigation.instance.navigateAndRemoveUntil('/main');
         break;
       case 2:
-        Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+        Share.share(
+            'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
         break;
       case 3:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
@@ -184,7 +206,8 @@ class _AccountPageState extends State<AccountPage> {
         Navigation.instance.navigate('/login');
         break;
       case 1:
-        Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+        Share.share(
+            'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
         break;
       case 2:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
@@ -203,18 +226,17 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  void requestDelete() async{
+  void requestDelete() async {
     Navigation.instance.navigate("/loadingDialog");
     final response = await ApiProvider.instance.deleteProfile();
-    if (response.status??false){
+    if (response.status ?? false) {
       Navigation.instance.goBack();
       Provider.of<DataProvider>(context, listen: false).clearAllData();
       Storage.instance.logout();
       Navigation.instance.navigateAndRemoveUntil('/main');
-    }else{
+    } else {
       Navigation.instance.goBack();
-      Fluttertoast.showToast(msg: response.message??"Something went wrong");
+      Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
     }
   }
-
 }

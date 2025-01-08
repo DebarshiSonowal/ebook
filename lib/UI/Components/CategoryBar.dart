@@ -13,14 +13,116 @@ class CategoryBar extends StatelessWidget {
     return Consumer<DataProvider>(builder: (context, current, _) {
       return current.currentIndex == 0
           ? Container(
+              padding: EdgeInsets.only(top: .5.h),
+              decoration: const BoxDecoration(
+                color: const Color(0xff121212),
+                border: Border(
+                  bottom: BorderSide(
+                    // color: selected == count
+                    //     ? const Color(0xffffd400)
+                    //     : Colors.black,
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                ),
+              ),
+              height: 4.5.h,
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount:
+                          current.categoryList[current.currentTab].length ~/ 2,
+                      itemBuilder: (cont, count) {
+                        var data =
+                            current.categoryList[current.currentTab][count];
+                        return GestureDetector(
+                          onTap: () {
+                            // setState(() {
+                            //   selected = count;
+                            //   debugPrint(count.toString());
+                            //   current.setCategory(count);
+                            // });
+                            Navigation.instance.navigate('/selectCategories',
+                                args: '${data.title},${data.id}');
+                          },
+                          child: Container(
+                            // width: 18.w,
+                            padding: EdgeInsets.all(0.2.h),
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+
+                            child: Center(
+                              child: Text(
+                                data.title ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontSize: 15.sp,
+                                      // color: selected == count
+                                      //     ? const Color(0xffffd400)
+                                      //     : Colors.white,
+                                      color: Colors.white,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          width: 10.w,
+                        );
+                      },
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigation.instance.navigate('/categories');
+                    },
+                    child: Container(
+                      width: 13.w,
+                      height: 3.h,
+                      padding: EdgeInsets.all(0.2.h),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Center(
+                        child: Text(
+                          'More ->',
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontSize: 15.sp,
+                                color: Colors.white,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Container();
+    });
+  }
+}
+
+class EnotesCategoryBar extends StatelessWidget {
+  const EnotesCategoryBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DataProvider>(builder: (context, current, _) {
+      return Container(
         padding: EdgeInsets.only(top: .5.h),
         decoration: const BoxDecoration(
           color: const Color(0xff121212),
           border: Border(
             bottom: BorderSide(
-              // color: selected == count
-              //     ? const Color(0xffffd400)
-              //     : Colors.black,
               color: Colors.black,
               width: 1,
             ),
@@ -33,19 +135,11 @@ class CategoryBar extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount:
-                current.categoryList[current.currentTab].length ~/
-                    2,
+                itemCount: current.enotes.length,
                 itemBuilder: (cont, count) {
-                  var data =
-                  current.categoryList[current.currentTab][count];
+                  var data = current.enotes[count];
                   return GestureDetector(
                     onTap: () {
-                      // setState(() {
-                      //   selected = count;
-                      //   debugPrint(count.toString());
-                      //   current.setCategory(count);
-                      // });
                       Navigation.instance.navigate('/selectCategories',
                           args: '${data.title},${data.id}');
                     },
@@ -60,14 +154,14 @@ class CategoryBar extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .textTheme
-                              .headline5
+                              .headlineSmall
                               ?.copyWith(
-                            // fontSize: 1.5.h,
-                            // color: selected == count
-                            //     ? const Color(0xffffd400)
-                            //     : Colors.white,
-                            color: Colors.white,
-                          ),
+                                fontSize: 15.sp,
+                                // color: selected == count
+                                //     ? const Color(0xffffd400)
+                                //     : Colors.white,
+                                color: Colors.white,
+                              ),
                         ),
                       ),
                     ),
@@ -93,19 +187,17 @@ class CategoryBar extends StatelessWidget {
                   child: Text(
                     'More ->',
                     overflow: TextOverflow.ellipsis,
-                    style:
-                    Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 1.5.h,
-                      color: Colors.white,
-                    ),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontSize: 15.sp,
+                          color: Colors.white,
+                        ),
                   ),
                 ),
               ),
             ),
           ],
         ),
-      )
-          : Container();
+      );
     });
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:ebook/Model/cart_item.dart';
 import 'package:ebook/Model/home_banner.dart';
@@ -49,7 +49,7 @@ class _CartPageState extends State<CartPage> {
         title: Text(
           "Cart",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.headline1?.copyWith(
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
               ),
         ),
@@ -178,11 +178,11 @@ class _CartPageState extends State<CartPage> {
       }
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -195,11 +195,11 @@ class _CartPageState extends State<CartPage> {
           response.order?.order_id, response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -215,18 +215,18 @@ class _CartPageState extends State<CartPage> {
       var resp = json.decode(response.message!);
       debugPrint('error ${resp['error']['description']} ${response.code} ');
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: resp['error']['description'] ?? "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: resp['error']['description'] ?? "Something went wrong",
+      // );
     } catch (e) {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: response.message ?? "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: response.message ?? "Something went wrong",
+      // );
     }
   }
 
@@ -276,11 +276,11 @@ class _CartPageState extends State<CartPage> {
       fetchCartItems();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Enter proper credentials",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Enter proper credentials",
+      // );
     }
   }
 
@@ -289,20 +289,20 @@ class _CartPageState extends State<CartPage> {
         .verifyPayment(temp_order_id, response.paymentId, tempTotal ?? 1);
     if (response1.status ?? false) {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        text: "Payment received Successfully",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.success,
+      //   text: "Payment received Successfully",
+      // );
       fetchCartItems();
       Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -321,30 +321,30 @@ class _CartPageState extends State<CartPage> {
       }
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
   freeItemsProcess() async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
     if (response.status ?? false) {
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        text: "Payment received Successfully",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.success,
+      //   text: "Payment received Successfully",
+      // );
       fetchCartItems();
       Navigation.instance.goBack();
     } else {
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 }

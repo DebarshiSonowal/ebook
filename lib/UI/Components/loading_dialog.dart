@@ -80,7 +80,6 @@ class ReadingDialog extends StatelessWidget {
                         imageUrl: url!,
                         height: 30.h,
                         width: 44.w,
-
                         fit: BoxFit.fill,
                       )
                     : Lottie.asset(
@@ -97,12 +96,10 @@ class ReadingDialog extends StatelessWidget {
             const CircularProgressIndicator(
               color: Colors.white,
             ),
-            SizedBox(
-              height:1.h
-            ),
+            SizedBox(height: 1.h),
             Text(
               "Loading",
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             Expanded(
               child: Container(),

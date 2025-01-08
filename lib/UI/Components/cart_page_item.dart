@@ -78,30 +78,34 @@ class CartPageItem extends StatelessWidget {
                         child: Text(
                           '${current.name}',
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.headline3?.copyWith(
-                                    color: Colors.white,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
+                                color: Colors.white,
+                              ),
                         ),
                       ),
                       Text(
                         '${current.item_code == null || current.item_code == "" ? 'NA' : current.item_code}',
-                        style: Theme.of(context).textTheme.headline3?.copyWith(
-                              color: Colors.white,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.displaySmall?.copyWith(
+                                  color: Colors.white,
+                                ),
                       ),
                       Text(
                         ((current.item_unit_cost ?? 1) * simpleIntInput) == 0
                             ? "Free"
                             : '₹${(current.item_unit_cost ?? 1) * simpleIntInput}',
-                        style: Theme.of(context).textTheme.headline3?.copyWith(
-                              color: ((current.item_unit_cost ?? 1) *
-                                          simpleIntInput) ==
-                                      0
-                                  ? Colors.green
-                                  : Colors.white,
-                              // fontWeight: FontWeight.bold,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.displaySmall?.copyWith(
+                                  color: ((current.item_unit_cost ?? 1) *
+                                              simpleIntInput) ==
+                                          0
+                                      ? Colors.green
+                                      : Colors.white,
+                                  // fontWeight: FontWeight.bold,
+                                ),
                       ),
                     ],
                   )
@@ -122,7 +126,7 @@ class CartPageItem extends StatelessWidget {
                 padding: const EdgeInsets.all(2.0),
                 child: Text(
                   'Remove',
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
                       ),

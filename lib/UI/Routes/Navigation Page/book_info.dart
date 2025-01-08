@@ -2,7 +2,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
@@ -67,7 +67,7 @@ class _BookInfoState extends State<BookInfo>
         title: Text(
           bookDetails?.title ?? "",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.headline1?.copyWith(
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
               ),
         ),
@@ -122,7 +122,7 @@ class _BookInfoState extends State<BookInfo>
                                   bookDetails?.title ?? "",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline2
+                                      .displayMedium
                                       ?.copyWith(
                                         color: Colors.white,
                                       ),
@@ -137,7 +137,7 @@ class _BookInfoState extends State<BookInfo>
                                             "by",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline4,
+                                                .headlineMedium,
                                           ),
                                           SizedBox(
                                             width: 1.h,
@@ -153,7 +153,7 @@ class _BookInfoState extends State<BookInfo>
                                               (bookDetails?.contributor ?? ""),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline4
+                                                  .headlineMedium
                                                   ?.copyWith(
                                                       color: Colors.blueAccent),
                                             ),
@@ -182,7 +182,7 @@ class _BookInfoState extends State<BookInfo>
                                               (bookDetails?.contributor ?? ""),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline4
+                                                  .headlineMedium
                                                   ?.copyWith(
                                                       color: Colors.blueAccent),
                                             ),
@@ -213,7 +213,7 @@ class _BookInfoState extends State<BookInfo>
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           ?.copyWith(
                                             fontSize: 9.sp,
                                             color: bookDetails?.selling_price
@@ -315,7 +315,7 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     Text(
                       'Description:',
-                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
                             // fontSize: 2.5.h,
                             color: Colors.white,
                           ),
@@ -338,7 +338,7 @@ class _BookInfoState extends State<BookInfo>
                       expandText: 'show more',
                       collapseText: 'show less',
                       maxLines: 3,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       linkColor: Colors.blue,
                     ),
                     SizedBox(
@@ -356,7 +356,7 @@ class _BookInfoState extends State<BookInfo>
                     ),
                     Text(
                       'Your Rating & Review',
-                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
                             // fontSize: 2.5.h,
                             // color: Colors.grey.shade200,
                             color: Colors.white,
@@ -401,7 +401,7 @@ class _BookInfoState extends State<BookInfo>
                         "Write a Review",
                         style: Theme.of(context)
                             .textTheme
-                            .headline5
+                            .headlineSmall
                             ?.copyWith(color: Colors.blueAccent),
                       ),
                     ),
@@ -426,12 +426,14 @@ class _BookInfoState extends State<BookInfo>
                         children: [
                           Text(
                             'Reviews (${reviews.length})',
-                            style:
-                                Theme.of(context).textTheme.headline1?.copyWith(
-                                      // fontSize: 2.5.h,
-                                      // color: Colors.grey.shade200,
-                                      color: Colors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  // fontSize: 2.5.h,
+                                  // color: Colors.grey.shade200,
+                                  color: Colors.white,
+                                ),
                           ),
                           // Text(
                           //   'More >',
@@ -544,22 +546,22 @@ class _BookInfoState extends State<BookInfo>
       }
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
   freeItemsProcess() async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
     if (response.status ?? false) {
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        text: "Payment received Successfully",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.success,
+      //   text: "Payment received Successfully",
+      // );
       if (Platform.isIOS) {
         final result = await launchUrl(
             Uri.parse("https://tratri.in/payment/${response.order?.order_id}"));
@@ -568,13 +570,12 @@ class _BookInfoState extends State<BookInfo>
         fetchCartItems();
         Navigation.instance.goBack();
       }
-
     } else {
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -605,11 +606,11 @@ class _BookInfoState extends State<BookInfo>
           response.order?.order_id, response.order?.subscriber_id);
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -620,11 +621,11 @@ class _BookInfoState extends State<BookInfo>
   void _handlePaymentError(PaymentFailureResponse response) {
     // Do something when payment fails
     Navigation.instance.goBack();
-    CoolAlert.show(
-      context: context,
-      type: CoolAlertType.warning,
-      text: response.message ?? "Something went wrong",
-    );
+    // CoolAlert.show(
+    //   context: context,
+    //   type: CoolAlertType.warning,
+    //   text: response.message ?? "Something went wrong",
+    // );
     Navigation.instance.goBack();
   }
 
@@ -669,19 +670,19 @@ class _BookInfoState extends State<BookInfo>
         .verifyPayment(temp_order_id, response.paymentId, tempTotal ?? 1);
     if (response1.status ?? false) {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.success,
-        text: "Payment received Successfully",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.success,
+      //   text: "Payment received Successfully",
+      // );
       Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
       Navigation.instance.goBack();
     }
   }
@@ -717,21 +718,33 @@ class _BookInfoState extends State<BookInfo>
   }
 
   void addReview(RatingDialogResponse response) async {
-    final response1 = await ApiProvider.instance.addReview(
-        Add_Review(0, response.comment ?? "", response.rating), widget.id);
-    if (response1.status ?? false) {
-      fetchReviews();
+    if (Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .currentTab !=
+        2) {
+      final response1 = await ApiProvider.instance.addReview(
+          Add_Review(0, response.comment ?? "", response.rating), widget.id);
+      if (response1.status ?? false) {
+        fetchReviews();
+      } else {
+        showError(response1.message ?? "Something went wrong");
+      }
     } else {
-      showError(response1.message ?? "Something went wrong");
+      final response1 = await ApiProvider.instance.addNoteReview(
+          Add_Review(0, response.comment ?? "", response.rating), widget.id);
+      if (response1.status ?? false) {
+        fetchReviews();
+      } else {
+        showError(response1.message ?? "Something went wrong");
+      }
     }
   }
-
-
 
   void checkIfValid(int? id) async {
     final response = await ApiProvider.instance.checkIfPaid(id);
     if (response.success ?? false) {
-      if (response.result?.isPaid==1) {
+      if (response.result?.isPaid == 1) {
         fetchCartItems();
       }
       Navigation.instance.goBack();

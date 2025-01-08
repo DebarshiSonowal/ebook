@@ -12,11 +12,15 @@ import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
 // import 'package:uni_links2/uni_links.dart';
 import 'package:upgrader/upgrader.dart';
+import '../../../Constants/constance_data.dart';
 import '../../../Networking/api_provider.dart';
 import '../../Components/CategoryBar.dart';
 import '../../Components/bottom_navbar.dart';
+import '../../Components/buildbook_section.dart';
+import '../../Components/dynamic_books_section.dart';
 import '../../Components/new_searchbar.dart';
 import '../../Components/new_tab_bar.dart';
 import '../Drawer/home.dart';
@@ -33,8 +37,6 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   TabController? _controller;
 
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,10 +47,10 @@ class _HomePageState extends State<HomePage>
               title: "Exit",
               color: Colors.white,
               context: context,
-              titleStyle: Theme.of(context).textTheme.headline2!.copyWith(
+              titleStyle: Theme.of(context).textTheme.displayMedium!.copyWith(
                     color: Colors.black,
                   ),
-              msgStyle: Theme.of(context).textTheme.headline5!.copyWith(
+              msgStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     color: Colors.black,
                   ),
               actions: [
@@ -75,7 +77,7 @@ class _HomePageState extends State<HomePage>
           return false;
         },
         child: UpgradeAlert(
-          upgrader: Upgrader(dialogStyle: UpgradeDialogStyle.cupertino),
+          upgrader: Upgrader(),
           child: Scaffold(
             // appBar: buildAppBar(context),
             // backgroundColor: const Color(0xff121212),
@@ -83,23 +85,49 @@ class _HomePageState extends State<HomePage>
               height: double.infinity,
               width: double.infinity,
               // color: Colors.white30,
-              child: Column(
-                children: [
-                  NewTabBar(controller: _controller),
-                  const NewSearchBar(),
-                  const CategoryBar(),
-                  Expanded(
-                    child:
-                        Consumer<DataProvider>(builder: (context, current, _) {
-                      return Padding(
-                        padding: EdgeInsets.only(top: 1.h),
-                        child: bodyWidget(
-                            current.currentIndex, current.currentTab),
-                      );
-                    }),
-                  ),
-                ],
-              ),
+              child: Consumer<DataProvider>(builder: (context, data, _) {
+                return
+                    // data.currentTab == 2
+                    //   ? SingleChildScrollView(
+                    //       child: Column(
+                    //         children: [
+                    //
+                    //           Expanded(
+                    //             child: Consumer<DataProvider>(
+                    //               builder: (context, current, _) {
+                    //                 return Padding(
+                    //                   padding: EdgeInsets.only(top: 1.h),
+                    //                   child: bodyNoteWidget(current.currentIndex,
+                    //                       current.currentTab),
+                    //                 );
+                    //               },
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     )
+                    //   :
+                    Column(
+                  children: [
+                    NewTabBar(controller: _controller),
+                    const NewSearchBar(),
+                    data.currentTab == 2
+                        ? EnotesCategoryBar()
+                        : const CategoryBar(),
+                    Expanded(
+                      child: Consumer<DataProvider>(
+                        builder: (context, current, _) {
+                          return Padding(
+                            padding: EdgeInsets.only(top: 1.h),
+                            child: bodyWidget(
+                                current.currentIndex, current.currentTab),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
             ),
             // floatingActionButton: FloatingActionButton(
             //   onPressed: () {},
@@ -131,7 +159,22 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-
+  Widget bodyNoteWidget(int currentIndex, currentTab) {
+    // debugPrint(currentIndex);
+    // if (currentTab == 0) {
+    switch (currentIndex) {
+      case 1:
+        return const Librarypage();
+      case 2:
+        return const Librarypage();
+      case 3:
+        return const OrderHistoryPage();
+      case 4:
+        return const More();
+      default:
+        return const Home();
+    }
+  }
 
   @override
   void initState() {
@@ -176,6 +219,10 @@ class _HomePageState extends State<HomePage>
       }
       debugPrint('index ${_controller?.index}');
     });
+    fetchEnotes();
+    fetchEnotesBanner();
+    fetchEnotesList();
+    getEnoteSection();
   }
 
   Future<void> fetchCartItems() async {
@@ -209,5 +256,58 @@ class _HomePageState extends State<HomePage>
     await fetchCartItems();
     // getDynamicLink();
     // initUniLinks();
+    final response = await ApiProvider.instance.getLibraryList();
+    if (response.success ?? false) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setLibraries(response.result ?? []);
+    } else {}
+  }
+
+  void fetchEnotes() async {
+    final response = await ApiProvider.instance.getEnoteCategory();
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setEnotesCategories(response.result);
+    } else {}
+  }
+
+  void fetchEnotesBanner() async {
+    final response = await ApiProvider.instance.getEnoteBanner();
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setEnotesBanner(response.result);
+    } else {}
+  }
+
+  void fetchEnotesList() async {
+    final response = await ApiProvider.instance.getEnoteList();
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setEnotesList(response.result.bookList);
+    } else {}
+  }
+
+  void getEnoteSection() async {
+    final response = await ApiProvider.instance.getEnoteSection();
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setEnotesSection(response.result);
+    } else {}
+  }
+
+  void fetchEnotesChapterList(id) async {
+    final response = await ApiProvider.instance.getEnoteChapter(id);
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setEnotesChapterList(response.result.chapterList);
+    } else {}
+  }
+
+  void fetchEnotesDetails(id) async {
+    final response = await ApiProvider.instance.getEnoteDetails(id);
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setEnotesDetails(response.result);
+    } else {}
   }
 }

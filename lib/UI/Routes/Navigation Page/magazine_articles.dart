@@ -47,7 +47,7 @@ class _MagazineArticlesState extends State<MagazineArticles> {
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
               .textTheme
-              .headline1
+              .displayLarge
               ?.copyWith(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -55,12 +55,12 @@ class _MagazineArticlesState extends State<MagazineArticles> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        child: bookDetails == null ? Container() : magazineViewSection(bookDetails: bookDetails),
+        child: bookDetails == null
+            ? Container()
+            : magazineViewSection(bookDetails: bookDetails),
       ),
     );
   }
-
-
 
   void fetchBookDetails() async {
     Navigation.instance.navigate('/loadingDialog');
@@ -84,5 +84,3 @@ class _MagazineArticlesState extends State<MagazineArticles> {
     Navigation.instance.goBack();
   }
 }
-
-

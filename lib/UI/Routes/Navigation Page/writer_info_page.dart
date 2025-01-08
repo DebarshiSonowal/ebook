@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 
-
 class WritersInfoPage extends StatelessWidget {
   const WritersInfoPage({Key? key}) : super(key: key);
 
@@ -10,11 +9,11 @@ class WritersInfoPage extends StatelessWidget {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
-         "Account Information",
+          "Account Information",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
               .textTheme
-              .headline1
+              .displayLarge
               ?.copyWith(color: Colors.white),
         ),
         backgroundColor: Colors.black,
@@ -22,7 +21,6 @@ class WritersInfoPage extends StatelessWidget {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-
       ),
     );
   }

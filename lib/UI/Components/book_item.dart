@@ -92,8 +92,9 @@ class _BookItemState extends State<BookItem> {
                 widget.data.title ?? "",
                 // maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.headline4?.copyWith(
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
+                      fontSize: 15.sp,
                     ),
               ),
             ),
@@ -105,7 +106,9 @@ class _BookItemState extends State<BookItem> {
               child: Text(
                 widget.data.writer ?? "",
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontSize: 12.sp,
+                    ),
               ),
             ),
             SizedBox(
@@ -134,51 +137,73 @@ class _BookItemState extends State<BookItem> {
                     },
                   ),
                 ),
-
                 StatefulBuilder(builder: (context, _) {
-                    return GestureDetector(
-                      onTap: () async {
-                        if ((Provider.of<DataProvider>(
-                            Navigation.instance.navigatorKey
-                                .currentContext ??
-                                context,
-                            listen: false)
-                            .profile !=
-                            null) &&
-                            Storage.instance.isLoggedIn) {
-                          _(() {
-                            selected = !selected;
-                          });
+                  return GestureDetector(
+                    onTap: () async {
+                      if ((Provider.of<DataProvider>(
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: false)
+                                  .profile !=
+                              null) &&
+                          Storage.instance.isLoggedIn) {
+                        _(() {
+                          selected = !selected;
+                        });
+                        if (Provider.of<DataProvider>(
+                                    Navigation.instance.navigatorKey
+                                            .currentContext ??
+                                        context,
+                                    listen: false)
+                                .currentTab !=
+                            2) {
                           final reponse = await ApiProvider.instance
                               .addBookmark(widget.data.id ?? 0);
                           if (reponse.status ?? false) {
                             Fluttertoast.showToast(msg: reponse.message!);
                             final response =
-                            await ApiProvider.instance.fetchBookmark();
+                                await ApiProvider.instance.fetchBookmark();
                             if (response.status ?? false) {
                               Provider.of<DataProvider>(
-                                  Navigation
-                                      .instance.navigatorKey.currentContext ??
-                                      context,
-                                  listen: false)
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: false)
                                   .setToBookmarks(response.items ?? []);
                             }
                           }
                         } else {
-                          ConstanceData.showAlertDialog(context);
+                          final reponse = await ApiProvider.instance
+                              .addNoteBookmark(widget.data.id ?? 0);
+                          if (reponse.status ?? false) {
+                            Fluttertoast.showToast(msg: reponse.message!);
+                            final response =
+                                await ApiProvider.instance.fetchNoteBookmark();
+                            if (response.status ?? false) {
+                              Provider.of<DataProvider>(
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: false)
+                                  .setToBookmarks(response.items ?? []);
+                            }
+                          }
                         }
-                      },
-                      child: Icon(
-                        (widget.data.is_bookmarked ?? false) ^ selected
-                        // selected
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
-                        size: 12.sp,
-                        color: Colors.grey.shade200,
-                      ),
-                    );
-                  }
-                )
+                      } else {
+                        ConstanceData.showAlertDialog(context);
+                      }
+                    },
+                    child: Icon(
+                      (widget.data.is_bookmarked ?? false) ^ selected
+                          // selected
+                          ? Icons.bookmark
+                          : Icons.bookmark_border,
+                      size: 12.sp,
+                      color: Colors.grey.shade200,
+                    ),
+                  );
+                })
               ],
             ),
             SizedBox(

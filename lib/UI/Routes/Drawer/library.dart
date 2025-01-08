@@ -29,6 +29,14 @@ class _LibrarypageState extends State<Librarypage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TabBar(
+        labelStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 15.sp,
+        ),
+        unselectedLabelStyle: TextStyle(
+          color: Colors.white60,
+          fontSize: 13.sp,
+        ),
         controller: _controller,
         tabs: const [
           Tab(
@@ -113,30 +121,9 @@ class _LibrarypageState extends State<Librarypage>
   }
 
   void fetchData() async {
-    Navigation.instance.navigate('/loadingDialog');
-    if ((_controller?.index ?? 0) == 1) {
-      final response = await ApiProvider.instance.fetchBookmark();
-      if (response.status ?? false) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext ?? context,
-                listen: false)
-            .setToBookmarks(response.items ?? []);
-        Navigation.instance.goBack();
-      } else {
-        Navigation.instance.goBack();
-      }
-    } else {
-      final response1 = await ApiProvider.instance.fetchMyBooks();
-      if (response1.status ?? false) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext ?? context,
-                listen: false)
-            .setMyBooks(response1.books ?? []);
-        Navigation.instance.goBack();
-      } else {
-        Navigation.instance.goBack();
-      }
-    }
+    fetchBookmarks();
+    fetchMyList();
+    setState(() {});
   }
 
   bool checkCondition(int i) {
@@ -162,6 +149,9 @@ class _LibrarypageState extends State<Librarypage>
 // setMyBooks
 
   filteredList(List<Book> myBooks, int currentTab) {
+    if (currentTab == 2) {
+      return myBooks.toList();
+    }
     return myBooks
             .where((element) =>
                 (element.book_format == "e-book" && currentTab == 0) ||
@@ -173,6 +163,9 @@ class _LibrarypageState extends State<Librarypage>
   }
 
   filteredBookmarkList(List<BookmarkItem> bookmarks, int currentTab) {
+    if (currentTab == 2) {
+      return bookmarks.toList();
+    }
     return bookmarks
             .where((element) =>
                 (element.book_format == "e-book" && currentTab == 0) ||
@@ -181,5 +174,67 @@ class _LibrarypageState extends State<Librarypage>
                     : false)
             .toList() ??
         [];
+  }
+
+  Future<void> fetchBookmarks() async {
+    Navigation.instance.navigate('/loadingDialog');
+    if (Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .currentTab !=
+        2) {
+      final response = await ApiProvider.instance.fetchBookmark();
+      if (response.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setToBookmarks(response.items ?? []);
+        Navigation.instance.goBack();
+      } else {
+        Navigation.instance.goBack();
+      }
+    } else {
+      final response = await ApiProvider.instance.fetchNoteBookmark();
+      if (response.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setToBookmarks(response.items ?? []);
+        Navigation.instance.goBack();
+      } else {
+        Navigation.instance.goBack();
+      }
+    }
+  }
+
+  void fetchMyList() async {
+    Navigation.instance.navigate('/loadingDialog');
+    if (Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .currentTab !=
+        2) {
+      final response1 = await ApiProvider.instance.fetchMyBooks();
+      if (response1.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setMyBooks(response1.books ?? []);
+        Navigation.instance.goBack();
+      } else {
+        Navigation.instance.goBack();
+      }
+    } else {
+      final response1 = await ApiProvider.instance.getEnoteMyList();
+      if (response1.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setMyBooks(response1.books ?? []);
+        Navigation.instance.goBack();
+      } else {
+        Navigation.instance.goBack();
+      }
+    }
   }
 }

@@ -21,6 +21,8 @@ class BookFormat {
   int? id;
   String? name, productFormat;
 
+  BookFormat(this.id, this.name, this.productFormat);
+
   BookFormat.fromJson(json) {
     id = json['id'] ?? 0;
     name = json['name'] ?? "";

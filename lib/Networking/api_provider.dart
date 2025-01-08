@@ -19,10 +19,20 @@ import '../Model/bookmark.dart';
 import '../Model/cart_item.dart';
 import '../Model/check_valid_response.dart';
 import '../Model/discount.dart';
+import '../Model/enote_banner.dart';
+import '../Model/enote_category.dart';
+import '../Model/enote_list.dart';
+import '../Model/enote_reviews.dart';
+import '../Model/enote_section.dart';
+import '../Model/enotes_chapter.dart';
+import '../Model/enotes_details.dart';
+import '../Model/enotes_reviews.dart';
 import '../Model/filter.dart';
 import '../Model/generic_response.dart';
 import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
+import '../Model/library.dart';
+import '../Model/library_book_details.dart';
 import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
 import '../Model/magazine_plan.dart';
@@ -82,12 +92,12 @@ class ApiProvider {
       }
     } on DioError catch (e) {
       debugPrint("add Subscriber response: ${e.response}");
-      return GenericResponse.withError(e.response??e.message.toString());
+      return GenericResponse.withError(e.response ?? e.message.toString());
     }
   }
 
   Future<LoginResponse> socialLogin(
-      fname, lname, email, password, provider, mobile,apple_id) async {
+      fname, lname, email, password, provider, mobile, apple_id) async {
     var data = {
       "provider": provider,
       "f_name": fname,
@@ -95,7 +105,7 @@ class ApiProvider {
       "email": email,
       "password": password,
       "mobile": mobile,
-      "apple_id":apple_id,
+      "apple_id": apple_id,
     };
     BaseOptions option = BaseOptions(
         connectTimeout: const Duration(seconds: 10),
@@ -293,11 +303,13 @@ class ApiProvider {
         return GenericResponse.fromJson(response?.data);
       } else {
         debugPrint("profile error: ${response?.data}");
-        return GenericResponse.withError(response?.data['message']??"Something went wrong");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
       }
     } on DioError catch (e) {
       debugPrint("profile response: ${e.response}");
-      return GenericResponse.withError(e.response?.data['message']??e.message);
+      return GenericResponse.withError(
+          e.response?.data['message'] ?? e.message);
     }
   }
 
@@ -703,6 +715,34 @@ class ApiProvider {
     }
   }
 
+  Future<BookmarkResponse> fetchNoteBookmark() async {
+    var url = "$baseUrl/enote/bookmark/list";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("bookmark response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return BookmarkResponse.fromJson(response?.data);
+      } else {
+        debugPrint("bookmark error: ${response?.data}");
+        return BookmarkResponse.withError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("bookmark response: ${e.response}");
+      return BookmarkResponse.withError(e.message);
+    }
+  }
+
   Future<MagazinePlanResponse> fetchMagazinePlan(String id) async {
     var url = "${baseUrl}/magazines/plans/${id}";
     BaseOptions option = BaseOptions(
@@ -795,6 +835,40 @@ class ApiProvider {
       }
     } on DioError catch (e) {
       debugPrint("Bookmark response: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
+
+  Future<GenericResponse> addNoteBookmark(int id) async {
+    // var url = "${baseUrl}$path/bookmark/${id}";
+    var url = "$baseUrl/enote/bookmark/${id}";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    // var data = {
+    //   'book_id': id,
+    // };
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.post(
+        url.toString(),
+      );
+      debugPrint("enote Bookmark response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("enote Bookmark error: ${response?.data}");
+        return GenericResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("enote Bookmark response: ${e.response}");
       return GenericResponse.withError(e.message);
     }
   }
@@ -1302,7 +1376,7 @@ class ApiProvider {
     dio = Dio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     var data = {
-      'order_id': id??0,
+      'order_id': id ?? 0,
     };
     debugPrint(url.toString());
     debugPrint(data.toString());
@@ -1327,7 +1401,465 @@ class ApiProvider {
     }
   }
 
-// Future download2(int id) async {
+  Future<LibraryList> getLibraryList() async {
+    var url = "${baseUrl}/libraries";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("LibraryList response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryList.fromJson(response?.data);
+      } else {
+        debugPrint("order error: ${response?.data}");
+        return LibraryList.fromError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("LibraryList error: ${e.response}");
+      return LibraryList.fromError(e.message ?? "");
+    }
+  }
+
+  Future<LibraryBookDetailsResponse> getLibraryBookList(id) async {
+    var url = "$baseUrl/libraries/book-list/$id";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("BookDetailsResponse response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryBookDetailsResponse.fromJson(response?.data);
+      } else {
+        debugPrint("order error: ${response?.data}");
+        return LibraryBookDetailsResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("BookDetailsResponse error: ${e.response}");
+      return LibraryBookDetailsResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<CategoryResponse> getEnoteCategory() async {
+    var url = "$baseUrl/enote/categories";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("enote/categories response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CategoryResponse.fromJson(response?.data);
+      } else {
+        debugPrint("enote/categories error: ${response?.data}");
+        return CategoryResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("enote/categories error: ${e.response}");
+      return CategoryResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<EnoteBannerResponse> getEnoteBanner() async {
+    var url = "$baseUrl/enote/home-banners";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("home-banners response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return EnoteBannerResponse.fromJson(response?.data);
+      } else {
+        debugPrint("home-banners error: ${response?.data}");
+        return EnoteBannerResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("home-banners error: ${e.response}");
+      return EnoteBannerResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<EnoteSectionResponse> getEnoteSection() async {
+    var url = "$baseUrl/enote/home-sections";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    debugPrint('Bearer ${Storage.instance.token}');
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("enotes home-sections response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return EnoteSectionResponse.fromJson(response?.data);
+      } else {
+        debugPrint("enotes home-sections error: ${response?.data}");
+        return EnoteSectionResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("enotes home-sections error: ${e.response}");
+      return EnoteSectionResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<EnoteListResponse> getEnoteList() async {
+    var url = "$baseUrl/enote/list";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("list response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return EnoteListResponse.fromJson(response?.data);
+      } else {
+        debugPrint("list error: ${response?.data}");
+        return EnoteListResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("list error: ${e.response}");
+      return EnoteListResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<ENotesDetailsResponse> getEnoteDetails(id) async {
+    var url = "$baseUrl/enote/detail/$id";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("ENotesDetailsResponse response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return ENotesDetailsResponse.fromJson(response?.data);
+      } else {
+        debugPrint("ENotesDetailsResponse error: ${response?.data}");
+        return ENotesDetailsResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("ENotesDetailsResponse error: ${e.response}");
+      return ENotesDetailsResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<EnotesChapterListResponse> getEnoteChapter(id) async {
+    var url = "$baseUrl/enote/chapters/$id";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("EnotesChapterListResponse response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return EnotesChapterListResponse.fromJson(response?.data);
+      } else {
+        debugPrint("EnotesChapterListResponse error: ${response?.data}");
+        return EnotesChapterListResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("EnotesChapterListResponse error: ${e.response}");
+      return EnotesChapterListResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<EnotesReviewsResponse> getEnoteReviews(id) async {
+    var url = "$baseUrl/enote/reviews/$id";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("reviews response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return EnotesReviewsResponse.fromJson(response?.data);
+      } else {
+        debugPrint("reviews error: ${response?.data}");
+        return EnotesReviewsResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("reviews error: ${e.response}");
+      return EnotesReviewsResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<MyBooksResponse> getEnoteMyList() async {
+    var url = "$baseUrl/enote/my-list";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("EnoteListResponse response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return MyBooksResponse.fromJson(response?.data);
+      } else {
+        debugPrint("EnoteListResponse error: ${response?.data}");
+        return MyBooksResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("EnoteListResponse error: ${e.response}");
+      return MyBooksResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<GenericResponse> addNoteReview(Add_Review review, int id) async {
+    var url = "${baseUrl}enotes/reviews/${id}";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    var data = {
+      'subscriber_id': review.subscriber_id,
+      'content': review.content,
+      'rating': review.rating,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response =
+          await dio?.post(url.toString(), data: jsonEncode(data));
+      debugPrint("enote reviews response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("enote reviews error: ${response?.data}");
+        return GenericResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("enote reviews response: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
+
+// Future<MyBooksResponse> fetchMyBooks() async {
+  //   var url = "${baseUrl}${path}/my-list";
+  //   BaseOptions option = BaseOptions(
+  //       connectTimeout: Duration(seconds: 10),
+  //       receiveTimeout: Duration(seconds: 10),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer ${Storage.instance.token}',
+  //         // 'APP-KEY': ConstanceData.app_key
+  //       });
+  //   dio = Dio(option);
+  //   debugPrint(url.toString());
+  //   try {
+  //     Response? response = await dio?.get(url.toString());
+  //     debugPrint("my books list response: ${response?.data}");
+  //     if (response?.statusCode == 200 || response?.statusCode == 201) {
+  //       return MyBooksResponse.fromJson(response?.data);
+  //     } else {
+  //       debugPrint("my books list error: ${response?.data}");
+  //       return MyBooksResponse.withError("Something Went Wrong");
+  //     }
+  //   } on DioError catch (e) {
+  //     debugPrint("my books list error: ${e.response}");
+  //     return MyBooksResponse.withError(e.message);
+  //   }
+  // }
+  // Future<EnoteReviewListResponse> getEnoteReviewsList(id) async {
+  //   var url = "$baseUrl/enote/reviews/$id";
+  //   BaseOptions option = BaseOptions(
+  //       connectTimeout: const Duration(seconds: 10),
+  //       receiveTimeout: const Duration(seconds: 10),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer ${Storage.instance.token}',
+  //         // 'APP-KEY': ConstanceData.app_key
+  //       });
+  //   dio = Dio(option);
+  //   debugPrint("Bearer ${Storage.instance.token}");
+  //   debugPrint(url.toString());
+  //   // debugPrint(data.toString());
+  //   try {
+  //     Response? response;
+  //
+  //     response = await dio!.get(
+  //       url.toString(),
+  //       // queryParameters: data,
+  //     );
+  //
+  //     debugPrint("reviews response: ${response?.data}");
+  //     if (response?.statusCode == 200 || response?.statusCode == 201) {
+  //       return EnotesReviewsResponse.fromJson(response?.data);
+  //     } else {
+  //       debugPrint("reviews error: ${response?.data}");
+  //       return EnotesReviewsResponse.withError("Something Went Wrong");
+  //     }
+  //   } on DioError catch (e) {
+  //     debugPrint("reviews error: ${e.response}");
+  //     return EnotesReviewsResponse.withError(e.message ?? "");
+  //   }
+  // }
+
+  // Future download2(int id) async {
 //   var url = '${baseUrl}/sales/invoice/${id}';
 //   Navigation.instance.goBack();
 //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();

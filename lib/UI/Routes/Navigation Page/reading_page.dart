@@ -7,8 +7,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+
+// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
@@ -50,7 +51,6 @@ class _ReadingPageState extends State<ReadingPage> {
       Colors.white,
       Colors.black,
     ),
-
     ReadingTheme(
       Colors.black,
       Colors.grey.shade300,
@@ -114,8 +114,8 @@ class _ReadingPageState extends State<ReadingPage> {
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
               .textTheme
-              .headline1
-              ?.copyWith(color: getTextColor()),
+              .displayLarge
+              ?.copyWith(color: getTextColor(), fontSize: 14.sp),
         ),
         backgroundColor: getBackGroundColor(),
         actions: [
@@ -151,9 +151,10 @@ class _ReadingPageState extends State<ReadingPage> {
                     ),
                     Text(
                       'Add bookmark',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: getBackGroundColor(),
+                              ),
                     ),
                   ],
                 ),
@@ -172,9 +173,10 @@ class _ReadingPageState extends State<ReadingPage> {
                     ),
                     Text(
                       'Finished',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            color: getBackGroundColor(),
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: getBackGroundColor(),
+                              ),
                     ),
                   ],
                 ),
@@ -200,7 +202,7 @@ class _ReadingPageState extends State<ReadingPage> {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context)
                         .textTheme
-                        .headline1
+                        .displayLarge
                         ?.copyWith(color: getBackGroundColor()),
                   ),
                   SizedBox(
@@ -281,7 +283,7 @@ class _ReadingPageState extends State<ReadingPage> {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.copyWith(color: getBackGroundColor()),
               ),
               SizedBox(
@@ -352,11 +354,11 @@ class _ReadingPageState extends State<ReadingPage> {
   handleClick(int item) {}
 
   void setScreenshotDisable() async {
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   void removeScreenshotDisable() async {
-    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   AlertDialog buildAlertDialog() {
@@ -372,9 +374,10 @@ class _ReadingPageState extends State<ReadingPage> {
             children: [
               Text(
                 "Theme",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               SizedBox(
                 height: 1.h,
@@ -416,9 +419,10 @@ class _ReadingPageState extends State<ReadingPage> {
               ),
               Text(
                 "Font Size",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -446,9 +450,10 @@ class _ReadingPageState extends State<ReadingPage> {
               ),
               Text(
                 "Brightness",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               Slider(
                   value: brightness_lvl,
@@ -456,7 +461,7 @@ class _ReadingPageState extends State<ReadingPage> {
                     _(() {
                       setState(() {
                         brightness_lvl = value;
-                        FlutterScreenWake.setBrightness(brightness_lvl);
+                        // FlutterScreenWake.setBrightness(brightness_lvl);
                       });
                       // setBrightness(value);
                     });
@@ -498,9 +503,10 @@ class _ReadingPageState extends State<ReadingPage> {
               children: [
                 Text(
                   "Page Slider",
-                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
                       ),
                 ),
                 Slider(
@@ -530,15 +536,21 @@ class _ReadingPageState extends State<ReadingPage> {
                   children: [
                     Text(
                       "Current: ${page_no.toInt()}",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                              ),
                     ),
                     Text(
                       "Total: ${total}",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                              ),
                     ),
                   ],
                 ),
@@ -588,8 +600,8 @@ class ThemeItem extends StatelessWidget {
           'Aa',
           style: Theme.of(context)
               .textTheme
-              .headline5
-              ?.copyWith(color: data.color1),
+              .headlineSmall
+              ?.copyWith(color: data.color1, fontSize: 13.sp),
         ),
       ),
     );

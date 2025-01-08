@@ -17,20 +17,16 @@ class DynamicBooksSection extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemBuilder: (cont, index) {
-          return Consumer<DataProvider>(
-              builder: (context, data, _) {
-                return BooksSection(
-                  title:
-                  data.homeSection![data.currentTab][index].title ??
-                      'Bestselling Books',
-                  list:
-                  data.homeSection![data.currentTab][index].book ??
-                      [],
-                  show: (data) {
-                    ConstanceData.show(context, data);
-                  },
-                );
-              });
+          return Consumer<DataProvider>(builder: (context, data, _) {
+            return BooksSection(
+              title: data.homeSection![data.currentTab][index].title ??
+                  'Bestselling Books',
+              list: data.homeSection![data.currentTab][index].book ?? [],
+              show: (data) {
+                ConstanceData.show(context, data);
+              },
+            );
+          });
         },
         separatorBuilder: (cont, ind) {
           return SizedBox(
@@ -38,8 +34,37 @@ class DynamicBooksSection extends StatelessWidget {
           );
         },
         itemCount: Provider.of<DataProvider>(context)
-            .homeSection![
-        Provider.of<DataProvider>(context).currentTab]
+            .homeSection![Provider.of<DataProvider>(context).currentTab]
             .length);
+  }
+}
+
+class DynamicEnotesSection extends StatelessWidget {
+  const DynamicEnotesSection({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemBuilder: (cont, index) {
+          return Consumer<DataProvider>(builder: (context, data, _) {
+            return BooksSection(
+              title: data.enotesSection[index].title ?? 'Bestselling Books',
+              list: data.enotesSection[index].books ?? [],
+              show: (data) {
+                ConstanceData.show(context, data);
+              },
+            );
+          });
+        },
+        separatorBuilder: (cont, ind) {
+          return SizedBox(
+            height: 0.1.h,
+          );
+        },
+        itemCount: Provider.of<DataProvider>(context).enotesSection.length);
   }
 }

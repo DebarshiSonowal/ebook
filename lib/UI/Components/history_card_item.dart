@@ -1,4 +1,4 @@
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 // import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
@@ -32,35 +32,30 @@ class HistoryCardItem extends StatelessWidget {
                 Text(
                   '${current.voucher_no}',
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2
-                      ?.copyWith(
-                    // fontSize: 2.5.h,
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      // fontSize: 2.5.h,
                       color: Colors.black,
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '${current.order_date}',
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline5
-                      ?.copyWith(
-                    // fontSize: 2.5.h,
-                    color: Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        // fontSize: 2.5.h,
+                        color: Colors.black,
+                      ),
                 ),
               ],
             ),
             Text(
-              current.total.toString().trim()=="0.0"?"FREE":'₹${current.total}',
+              current.total.toString().trim() == "0.0"
+                  ? "FREE"
+                  : '₹${current.total}',
               overflow: TextOverflow.ellipsis,
-              style:
-              Theme.of(context).textTheme.headline3?.copyWith(
-                // fontSize: 2.5.h,
-                color: Colors.green,
-              ),
+              style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    // fontSize: 2.5.h,
+                    color: Colors.green,
+                  ),
             ),
           ],
         ),
@@ -71,8 +66,7 @@ class HistoryCardItem extends StatelessWidget {
           ),
           ElevatedButton(
             style: ButtonStyle(
-              backgroundColor:
-              MaterialStateProperty.all(Colors.black),
+              backgroundColor: MaterialStateProperty.all(Colors.black),
             ),
             onPressed: () async {
               Navigation.instance.navigate('/loadingDialog');
@@ -100,11 +94,10 @@ class HistoryCardItem extends StatelessWidget {
             },
             child: Text(
               'Download',
-              style:
-              Theme.of(context).textTheme.headline5?.copyWith(
-                color: Colors.white,
-                fontSize: 14.5.sp,
-              ),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontSize: 14.5.sp,
+                  ),
             ),
           ),
         ],

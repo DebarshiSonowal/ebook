@@ -13,16 +13,14 @@ class Tag_BookDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(5),
-      margin: EdgeInsets.symmetric(
-          horizontal: 1.w, vertical: 0.5.h),
+      margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 0.5.h),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white),
-        borderRadius:
-        BorderRadius.all(Radius.circular(5)),
+        borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: Text(
         i.name ?? "",
-        style: Theme.of(context).textTheme.headline5,
+        style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
   }

@@ -14,8 +14,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
@@ -106,7 +106,7 @@ class _BookDetailsState extends State<BookDetails>
   void initState() {
     super.initState();
 
-    Future.delayed(Duration.zero,()=>fetchData());
+    Future.delayed(Duration.zero, () => fetchData());
   }
 
   Future<double> get systemBrightness async {
@@ -138,8 +138,8 @@ class _BookDetailsState extends State<BookDetails>
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
                     .textTheme
-                    .headline2
-                    ?.copyWith(color: getTextColor()),
+                    .displayMedium
+                    ?.copyWith(color: getTextColor(), fontSize: 14.sp),
               ),
               backgroundColor: getBackGroundColor(),
               actions: [
@@ -285,9 +285,10 @@ class _BookDetailsState extends State<BookDetails>
             children: [
               Text(
                 "Theme",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               SizedBox(
                 height: 1.h,
@@ -324,8 +325,8 @@ class _BookDetailsState extends State<BookDetails>
                             'Aa',
                             style: Theme.of(context)
                                 .textTheme
-                                .headline5
-                                ?.copyWith(color: data.color1),
+                                .headlineSmall
+                                ?.copyWith(color: data.color1, fontSize: 12.sp),
                           ),
                         ),
                       ),
@@ -343,9 +344,10 @@ class _BookDetailsState extends State<BookDetails>
               ),
               Text(
                 "Font Size",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -384,9 +386,10 @@ class _BookDetailsState extends State<BookDetails>
               ),
               Text(
                 "Brightness",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               Slider(
                   value: brightness,
@@ -394,7 +397,7 @@ class _BookDetailsState extends State<BookDetails>
                     _(() {
                       setState(() {
                         brightness = value;
-                        FlutterScreenWake.setBrightness(brightness);
+                        // FlutterScreenWake.setBrightness(brightness);
                       });
                       // setBrightness(value);
                     });
@@ -449,11 +452,11 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   void setScreenshotDisable() async {
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   void removeScreenshotDisable() async {
-    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   Future<void> fetchBookDetails() async {
@@ -542,13 +545,14 @@ class _BookDetailsState extends State<BookDetails>
               children: [
                 Text(
                   "Page Slider",
-                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
+                        fontSize: 15.sp,
                       ),
                 ),
                 Slider(
-                  value: pageController.page??1,
+                  value: pageController.page ?? 1,
                   onChanged: (value) {
                     _(() {
                       page_no = value;
@@ -574,15 +578,21 @@ class _BookDetailsState extends State<BookDetails>
                   children: [
                     Text(
                       "Current: ${pageController.page?.toInt()}",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                              ),
                     ),
                     Text(
                       "Total: ${total}",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                              ),
                     ),
                   ],
                 ),

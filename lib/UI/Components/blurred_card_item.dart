@@ -73,7 +73,8 @@ class BlurredItemCard extends StatelessWidget {
                 ),
               ]);
         } else {
-          Fluttertoast.showToast(msg: "You will have to buy this magazine before reading");
+          Fluttertoast.showToast(
+              msg: "You will have to buy this magazine before reading");
         }
       },
       child: ClipRect(
@@ -105,7 +106,7 @@ class BlurredItemCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style:
-                              Theme.of(context).textTheme.headline6?.copyWith(
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: Colors.white,
                                   ),
                         ),
@@ -113,11 +114,13 @@ class BlurredItemCard extends StatelessWidget {
                           current?.title ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.headline4?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         // SizedBox(
                         //   height: 0.5.h,
@@ -126,11 +129,13 @@ class BlurredItemCard extends StatelessWidget {
                           current?.short_note ?? '',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    color: Colors.white,
-                                    // fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                color: Colors.white,
+                                // fontWeight: FontWeight.bold,
+                              ),
                         ),
                         // Spacer(),
                       ],

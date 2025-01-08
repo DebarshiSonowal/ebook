@@ -25,7 +25,7 @@ class EmptyWidget extends StatelessWidget {
           ),
           Text(
             text ?? "Oops! You haven't started reading",
-            style: Theme.of(context).textTheme.headline5?.copyWith(
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: color ?? Colors.white,
                 ),
           ),

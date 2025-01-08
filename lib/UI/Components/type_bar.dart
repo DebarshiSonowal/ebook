@@ -1,11 +1,10 @@
-
-
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import '../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../Helper/navigator.dart';
-class TypeBar extends  StatefulWidget {
+
+class TypeBar extends StatefulWidget {
   const TypeBar({Key? key}) : super(key: key);
 
   @override
@@ -13,7 +12,6 @@ class TypeBar extends  StatefulWidget {
 }
 
 class _TypeBarState extends State<TypeBar> {
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -35,14 +33,14 @@ class _TypeBarState extends State<TypeBar> {
                     ),
                     child: Text(
                       i,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
               ],
             ),
           ),
           GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigation.instance.navigate('/categories');
             },
             child: Container(
@@ -54,7 +52,7 @@ class _TypeBarState extends State<TypeBar> {
               ),
               child: Text(
                 'All Categories',
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
           ),

@@ -35,15 +35,15 @@ class EmbeddedLinkExtension extends HtmlExtension {
           ? EmbededAdvertise(context: context)
           : GestureDetector(
               onTap: () {
-                _launchUrl(Uri.parse(context.attributes['href'] ??
-                    "https://tratri.in/"));
+                _launchUrl(Uri.parse(
+                    context.attributes['href'] ?? "https://tratri.in/"));
               },
               child: Text(
-                context.innerHtml.replaceAll(";", "").replaceAll("&nbsp",""),
+                context.innerHtml.replaceAll(";", "").replaceAll("&nbsp", ""),
                 style:
                     Theme.of(Navigation.instance.navigatorKey.currentContext!)
                         .textTheme
-                        .headline5
+                        .headlineSmall
                         ?.copyWith(
                           color: ConstanceData.primaryColor,
                           fontWeight: FontWeight.bold,

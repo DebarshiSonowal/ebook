@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:awesome_icons/awesome_icons.dart';
-import 'package:cool_alert/cool_alert.dart';
+
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
@@ -21,7 +22,7 @@ import '../../../Storage/data_provider.dart';
 extension EmailValidator on String {
   bool isValidEmail() {
     return RegExp(
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(this);
   }
 }
@@ -48,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -62,9 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: Theme
-              .of(context)
-              .primaryColor,
+          color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -82,13 +82,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Text(
                   "Login",
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .headline3
-                      ?.copyWith(
-                    color: Colors.white,
-                  ),
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 20.sp,
+                      ),
                 ),
                 SizedBox(
                   height: 4.h,
@@ -101,54 +98,47 @@ class _LoginPageState extends State<LoginPage> {
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _emailController,
                       cursorColor: Colors.white,
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline5,
+                      // style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your email',
                         hintText: "Email Address",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
-                            ?.copyWith(fontSize: 10.sp),
+                            .titleLarge
+                            ?.copyWith(fontSize: 14.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                  fontSize: 13.sp,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 2),
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontSize: 14.sp),
                     ),
                   ),
                 ),
@@ -162,53 +152,45 @@ class _LoginPageState extends State<LoginPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .headline5
-                          ?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
                       obscureText: true,
-                      style: Theme
-                          .of(context)
+                      style: Theme.of(context)
                           .textTheme
-                          .headline5,
+                          .titleLarge
+                          ?.copyWith(fontSize: 14.sp),
                       decoration: InputDecoration(
                         labelText: 'Enter your password',
                         hintText: "password",
-                        labelStyle: Theme
-                            .of(context)
+                        labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
-                            ?.copyWith(fontSize: 10.sp),
+                            .titleLarge
+                            ?.copyWith(fontSize: 14.sp),
                         hintStyle:
-                        Theme
-                            .of(context)
-                            .textTheme
-                            .headline5
-                            ?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                  fontSize: 13.sp,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 2),
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -232,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(
                   width: double.infinity,
-                  height: 6.5.h,
+                  height: 5.h,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: ElevatedButton(
@@ -242,28 +224,28 @@ class _LoginPageState extends State<LoginPage> {
                               _emailController.text.isValidEmail()) {
                             Login();
                           } else {
-                            CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.warning,
-                              text: "Enter proper credentials",
-                            );
+                            // CoolAlert.show(
+                            //   context: context,
+                            //   type: CoolAlertType.warning,
+                            //   text: "Enter proper credentials",
+                            // );
                           }
                         },
-                        style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
-                        ),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            )),
                         child: Text(
                           'Login',
-                          style:
-                          Theme
-                              .of(context)
+                          style: Theme.of(context)
                               .textTheme
-                              .headline5
+                              .headlineSmall
                               ?.copyWith(
-                            fontSize: 3.h,
-                            color: Colors.black,
-                          ),
+                                fontSize: 18.sp,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
                         )),
                   ),
                 ),
@@ -277,13 +259,9 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text(
                     "Forgot Password",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5
-                        ?.copyWith(
-                      fontSize: 9.sp,
-                    ),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontSize: 13.sp,
+                        ),
                   ),
                 ),
                 SizedBox(
@@ -304,39 +282,39 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   height: 3.h,
                 ),
-                Platform.isIOS
+                Platform.isAndroid
                     ? SizedBox(
-                  width: 60.w,
-                  child: SocialLoginButton(
-                    backgroundColor: Colors.white70,
-                    height: 40,
-                    text: 'Sign in',
-                    borderRadius: 5,
-                    fontSize: 15.sp,
-                    buttonType: SocialLoginButtonType.google,
-                    // imageWidth: 20,
-                    // imagepath: "assets/file.png",
-                    // imageURL: "URL",
-                    onPressed: () async {
-                      final response = await signInWithGoogle();
-                      loginSocial(
-                          response.user?.displayName?.split(" ")[0] ?? "",
-                          ((response.user?.displayName
-                              ?.split(" ")
-                              .length ??
-                              0) >
-                              1)
-                              ? response.user?.displayName?.split(" ")[1]
-                              : "",
-                          response.user?.email ?? "",
-                          "",
-                          "google",
-                          response.user?.phoneNumber ?? "",
-                          "");
-                      // loginEmail();
-                    },
-                  ),
-                )
+                        width: 60.w,
+                        child: SocialLoginButton(
+                          backgroundColor: Colors.white70,
+                          height: 40,
+                          text: 'Sign in',
+                          borderRadius: 5,
+                          fontSize: 15.sp,
+                          buttonType: SocialLoginButtonType.google,
+                          // imageWidth: 20,
+                          // imagepath: "assets/file.png",
+                          // imageURL: "URL",
+                          onPressed: () async {
+                            final response = await signInWithGoogle();
+                            loginSocial(
+                                response.user?.displayName?.split(" ")[0] ?? "",
+                                ((response.user?.displayName
+                                                ?.split(" ")
+                                                .length ??
+                                            0) >
+                                        1)
+                                    ? response.user?.displayName?.split(" ")[1]
+                                    : "",
+                                response.user?.email ?? "",
+                                "",
+                                "google",
+                                response.user?.phoneNumber ?? "",
+                                "");
+                            // loginEmail();
+                          },
+                        ),
+                      )
                     : Container(),
                 SizedBox(
                   height: Platform.isIOS ? 1.h : 0,
@@ -359,42 +337,42 @@ class _LoginPageState extends State<LoginPage> {
                 // ),
                 Platform.isIOS
                     ? SizedBox(
-                  width: 60.w,
-                  child: SocialLoginButton(
-                    backgroundColor: Colors.white70,
-                    height: 40,
-                    text: 'Sign in',
-                    borderRadius: 5,
-                    fontSize: 15.sp,
-                    buttonType: SocialLoginButtonType.apple,
-                    // imageWidth: 20,
-                    // imagepath: "assets/file.png",
-                    // imageURL: "URL",
-                    onPressed: () async {
-                      await signInWithApple();
-                      //
-                      // print(response);
-                      // print(response.user);
-                      // print(response.additionalUserInfo);
-                      // print(response.credential);
+                        width: 60.w,
+                        child: SocialLoginButton(
+                          backgroundColor: Colors.white70,
+                          height: 40,
+                          text: 'Sign in',
+                          borderRadius: 5,
+                          fontSize: 15.sp,
+                          buttonType: SocialLoginButtonType.apple,
+                          // imageWidth: 20,
+                          // imagepath: "assets/file.png",
+                          // imageURL: "URL",
+                          onPressed: () async {
+                            await signInWithApple();
+                            //
+                            // print(response);
+                            // print(response.user);
+                            // print(response.additionalUserInfo);
+                            // print(response.credential);
 
-                      // print(credential);
-                      // Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
-                      // loginSocial(
-                      //   response.user?.displayName?.split(" ")[0] ?? "",
-                      //   ((response.user?.displayName?.split(" ").length ?? 0) >
-                      //           1)
-                      //       ? response.user?.displayName?.split(" ")[1]
-                      //       : "",
-                      //   response.user?.email ?? "",
-                      //   "",
-                      //   "google",
-                      //   response.user?.phoneNumber ?? "",
-                      // );
-                      // loginEmail();
-                    },
-                  ),
-                )
+                            // print(credential);
+                            // Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
+                            // loginSocial(
+                            //   response.user?.displayName?.split(" ")[0] ?? "",
+                            //   ((response.user?.displayName?.split(" ").length ?? 0) >
+                            //           1)
+                            //       ? response.user?.displayName?.split(" ")[1]
+                            //       : "",
+                            //   response.user?.email ?? "",
+                            //   "",
+                            //   "google",
+                            //   response.user?.phoneNumber ?? "",
+                            // );
+                            // loginEmail();
+                          },
+                        ),
+                      )
                     : Container(),
                 SizedBox(
                   height: 3.h,
@@ -412,24 +390,18 @@ class _LoginPageState extends State<LoginPage> {
 
   void Login() async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance.socialLogin(
-        "",
-        "",
-        _emailController.text,
-        _passwordController.text,
-        "normal",
-        "",
-        "");
+    final response = await ApiProvider.instance.socialLogin("", "",
+        _emailController.text, _passwordController.text, "normal", "", "");
     if (response.status ?? false) {
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: response.message ?? "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: response.message ?? "Something went wrong",
+      // );
     }
   }
 
@@ -437,18 +409,18 @@ class _LoginPageState extends State<LoginPage> {
     final response = await ApiProvider.instance.getProfile();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext ?? context,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
           .setProfile(response.profile!);
       Navigation.instance.goBack();
       Navigation.instance.navigate('/main');
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -458,29 +430,22 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void loginSocial(fname, lname, email, password, provider, mobile,
-      apple_id) async {
+  void loginSocial(
+      fname, lname, email, password, provider, mobile, apple_id) async {
     Navigation.instance.navigate("/loadingDialog");
     final response = await ApiProvider.instance
-        .socialLogin(
-        fname,
-        lname,
-        email,
-        password,
-        provider,
-        mobile,
-        apple_id);
+        .socialLogin(fname, lname, email, password, provider, mobile, apple_id);
     if (response.status ?? false) {
       Navigation.instance.goBack();
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: response.message ?? "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: response.message ?? "Something went wrong",
+      // );
     }
   }
 
@@ -505,18 +470,18 @@ class _LoginPageState extends State<LoginPage> {
         context,
         "Please Enter Your Credentials",
         "We need your details to provide you better services",
-        credential.givenName == null ? "" : credential.familyName == null
-            ? credential.givenName
-            : "${credential.givenName} ${credential.familyName}",
+        credential.givenName == null
+            ? ""
+            : credential.familyName == null
+                ? credential.givenName
+                : "${credential.givenName} ${credential.familyName}",
         credential.email,
         "",
-            (String? name, String? email, String mobile) {
-          if (mobile.isNotEmpty&&mobile.length==10) {
+        (String? name, String? email, String mobile) {
+          if (mobile.isNotEmpty && mobile.length == 10) {
             loginSocial(
               name?.split(" ")[0] ?? "",
-              ((name
-                  ?.split(" ")
-                  .length ?? 0) > 1) ? name?.split(" ")[1] : "",
+              ((name?.split(" ").length ?? 0) > 1) ? name?.split(" ")[1] : "",
               email ?? "",
               "",
               "ios",
@@ -525,11 +490,11 @@ class _LoginPageState extends State<LoginPage> {
             );
           } else {
             Navigation.instance.goBack();
-            CoolAlert.show(
-              context: context,
-              type: CoolAlertType.error,
-              text: "Please Enter Details",
-            );
+            // CoolAlert.show(
+            //   context: context,
+            //   type: CoolAlertType.error,
+            //   text: "Please Enter Details",
+            // );
           }
         },
       );
@@ -538,7 +503,8 @@ class _LoginPageState extends State<LoginPage> {
     // if(credential)
   }
 
-  void showTextFieldDialog(BuildContext context,
+  void showTextFieldDialog(
+      BuildContext context,
       String title,
       String hintText,
       String? nameText,
@@ -547,15 +513,14 @@ class _LoginPageState extends State<LoginPage> {
       Function(String? name, String? email, String mobile) onSubmit) {
     showDialog(
       context: context,
-      builder: (context) =>
-          TextFieldDialog(
-            title: title,
-            hintText: hintText,
-            nameText: nameText,
-            emailText: emailText,
-            mobileText: mobileText,
-            onSubmit: onSubmit,
-          ),
+      builder: (context) => TextFieldDialog(
+        title: title,
+        hintText: hintText,
+        nameText: nameText,
+        emailText: emailText,
+        mobileText: mobileText,
+        onSubmit: onSubmit,
+      ),
     );
   }
 
@@ -565,7 +530,7 @@ class _LoginPageState extends State<LoginPage> {
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(
@@ -628,14 +593,10 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
     return AlertDialog(
       title: Text(
         widget.title,
-        style: Theme
-            .of(context)
-            .textTheme
-            .headline5
-            ?.copyWith(
-          fontSize: 15.sp,
-          color: Colors.white,
-        ),
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontSize: 15.sp,
+              color: Colors.white,
+            ),
       ),
       content: Container(
         width: 80.w,
@@ -648,14 +609,10 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
           children: [
             Text(
               widget.hintText,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline5
-                  ?.copyWith(
-                fontSize: 11.sp,
-                color: Colors.white70,
-              ),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontSize: 11.sp,
+                    color: Colors.white70,
+                  ),
             ),
             SizedBox(
               height: 1.h,
@@ -669,25 +626,18 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   labelText: "Please enter your name (optional)",
-                  labelStyle: Theme
-                      .of(context)
-                      .textTheme
-                      .headline5
-                      ?.copyWith(
-                    fontSize: 10.sp,
-                    color: Colors.black45,
-                  ),
+                  labelStyle:
+                      Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontSize: 10.sp,
+                            color: Colors.black45,
+                          ),
                   fillColor: Colors.white,
                   filled: true,
                 ),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(
-                  fontSize: 12.sp,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontSize: 12.sp,
+                      color: Colors.black,
+                    ),
               ),
             ),
             SizedBox(
@@ -703,25 +653,18 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   labelText: "Please enter your email (optional)",
-                  labelStyle: Theme
-                      .of(context)
-                      .textTheme
-                      .headline5
-                      ?.copyWith(
-                    fontSize: 10.sp,
-                    color: Colors.black45,
-                  ),
+                  labelStyle:
+                      Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontSize: 10.sp,
+                            color: Colors.black45,
+                          ),
                   fillColor: Colors.white,
                   filled: true,
                 ),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(
-                  fontSize: 12.sp,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontSize: 12.sp,
+                      color: Colors.black,
+                    ),
               ),
             ),
             SizedBox(
@@ -738,25 +681,18 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     labelText: "Please enter your mobile number ",
-                    labelStyle: Theme
-                        .of(context)
-                        .textTheme
-                        .headline5
-                        ?.copyWith(
-                      fontSize: 10.sp,
-                      color: Colors.black45,
-                    ),
+                    labelStyle:
+                        Theme.of(context).textTheme.headlineSmall?.copyWith(
+                              fontSize: 10.sp,
+                              color: Colors.black45,
+                            ),
                     fillColor: Colors.white,
                     filled: true,
                     counterText: ""),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(
-                  fontSize: 12.sp,
-                  color: Colors.black,
-                ),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontSize: 12.sp,
+                      color: Colors.black,
+                    ),
               ),
             ),
           ],
@@ -767,14 +703,10 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(
             'Cancel',
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline5
-                ?.copyWith(
-              fontSize: 10.sp,
-              color: Colors.white54,
-            ),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontSize: 10.sp,
+                  color: Colors.white54,
+                ),
           ),
         ),
         TextButton(
@@ -784,14 +716,10 @@ class _TextFieldDialogState extends State<TextFieldDialog> {
           },
           child: Text(
             'Submit',
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline5
-                ?.copyWith(
-              fontSize: 10.sp,
-              color: Colors.white,
-            ),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontSize: 10.sp,
+                  color: Colors.white,
+                ),
           ),
         ),
       ],

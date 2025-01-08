@@ -7,8 +7,8 @@ import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
 
 // import 'package:flutter_html/style.dart';
-import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
+// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
+// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
@@ -176,8 +176,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                               ? ''
                               : 'Oops No Data available here',
                           style: TextStyle(
-                            color: getBackGroundColor(),
-                          ),
+                              color: getBackGroundColor(), fontSize: 14.sp),
                         ),
                       )
                     : PageView.builder(
@@ -253,7 +252,6 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                                       ),
                                     },
                                     extensions: const [
-
                                       IframeHtmlExtension(),
                                       TableHtmlExtension(),
                                       VideoHtmlExtension(),
@@ -282,7 +280,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
         overflow: TextOverflow.ellipsis,
         style: Theme.of(context)
             .textTheme
-            .headline1
+            .displayLarge
             ?.copyWith(color: getTextColor()),
       ),
       backgroundColor: getBackGroundColor(),
@@ -344,9 +342,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             children: [
               Text(
                 "Theme",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               SizedBox(
                 height: 1.h,
@@ -383,8 +382,8 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                             'Aa',
                             style: Theme.of(context)
                                 .textTheme
-                                .headline5
-                                ?.copyWith(color: data.color1),
+                                .headlineSmall
+                                ?.copyWith(color: data.color1, fontSize: 12.sp),
                           ),
                         ),
                       ),
@@ -402,9 +401,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               ),
               Text(
                 "Font Size",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -468,9 +468,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               ),
               Text(
                 "Brightness",
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      color: getBackGroundColor(),
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
               ),
               Slider(
                   value: brightness,
@@ -478,7 +479,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                     _(() {
                       setState(() {
                         brightness = value;
-                        FlutterScreenWake.setBrightness(brightness);
+                        // FlutterScreenWake.setBrightness(brightness);
                       });
                       // setBrightness(value);
                     });
@@ -520,13 +521,13 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               children: [
                 Text(
                   "Page Slider",
-                  style: Theme.of(context).textTheme.headline3?.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp),
                 ),
                 Slider(
-                  value: pageController.page??1,
+                  value: pageController.page ?? 1,
                   onChanged: (value) {
                     _(() {
                       page_no = value;
@@ -552,15 +553,21 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                   children: [
                     Text(
                       "Current: ${pageController.page}",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                              ),
                     ),
                     Text(
                       "Total: ${total}",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12.sp,
+                              ),
                     ),
                   ],
                 ),
@@ -611,11 +618,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   handleClick(int item) {}
 
   void setScreenshotDisable() async {
-    await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   void removeScreenshotDisable() async {
-    await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+    // await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
 
   void fetchBookDetails() async {

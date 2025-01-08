@@ -7,6 +7,7 @@ import '../../Constants/constance_data.dart';
 import '../../Helper/navigator.dart';
 import '../../Model/bookmark.dart';
 import 'buttons_pop_up_info.dart';
+import 'buttons_popup_info_bookmark.dart';
 
 class BookInfoSectionBookmark extends StatelessWidget {
   const BookInfoSectionBookmark({
@@ -46,7 +47,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                       data.title ?? "NA",
                       style: Theme.of(context)
                           .textTheme
-                          .headline1
+                          .displayLarge
                           ?.copyWith(color: Colors.white),
                     ),
                   ),
@@ -92,7 +93,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                         " (${data.total_rating})",
                         style: Theme.of(context)
                             .textTheme
-                            .headline5
+                            .headlineSmall
                             ?.copyWith(color: Colors.white),
                       ),
                     ],
@@ -106,7 +107,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                             : "${data.length} pages",
                         style: Theme.of(context)
                             .textTheme
-                            .headline5
+                            .headlineSmall
                             ?.copyWith(color: Colors.white),
                       ),
                       Container(
@@ -120,7 +121,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                       ),
                       Text(
                         "${data.language}",
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ],
                   ),
@@ -140,7 +141,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                             : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headline6?.copyWith(
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontSize: 1.5.h,
                               color: data.selling_price
                                           ?.toStringAsFixed(2)
@@ -158,7 +159,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                   data.awards!.isNotEmpty
                       ? Text(
                           "${data.awards![0].name} Winner",
-                          style: Theme.of(context).textTheme.headline5,
+                          style: Theme.of(context).textTheme.headlineSmall,
                         )
                       : Container(),
                   SizedBox(height: 0.7.h),
@@ -166,7 +167,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                     "${(data.short_description ?? "").trim()}",
                     maxLines: 2,
                     overflow: TextOverflow.fade,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   SizedBox(height: 0.8.h),
                   data.book_format == "magazine"
@@ -182,7 +183,8 @@ class BookInfoSectionBookmark extends StatelessWidget {
                                       args: data.id ?? 0);
                                 } else {
                                   Navigation.instance.navigate('/bookDetails',
-                                      args: '${data.id ?? 0},${data.profile_pic}');
+                                      args:
+                                          '${data.id ?? 0},${data.profile_pic}');
                                   // Navigation.instance.navigate('/reading',
                                   //     args: data.id ?? 0);
                                 }
@@ -199,7 +201,7 @@ class BookInfoSectionBookmark extends StatelessWidget {
                                         : 'Preview',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     ?.copyWith(
                                       fontSize: 2.h,
                                       color: Colors.black,

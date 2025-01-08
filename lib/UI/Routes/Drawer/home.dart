@@ -1,6 +1,7 @@
 // import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sizer/sizer.dart';
-import 'package:uni_links/uni_links.dart';
+
+// import 'package:uni_links/uni_links.dart';
 import '../../../Storage/app_storage.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
@@ -34,7 +36,6 @@ class _HomeState extends State<Home> {
   final ScrollController controller = ScrollController();
 
   void _onRefresh() async {
-
     // monitor network fetch
     fetchHomeBanner();
     fetchHomeSection();
@@ -44,39 +45,48 @@ class _HomeState extends State<Home> {
   Future<void> initUniLinks() async {
     debugPrint("deeplink start initial");
     // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      final initialLink = await getInitialLink();
-      if (initialLink == null) {
-        debugPrint("deeplink start $initialLink");
-
+    // try {
+    //   final initialLink = await getInitialLink();
+    //   if (initialLink == null) {
+    //     debugPrint("deeplink start $initialLink");
+    //
+    //     initUniLinksAlive();
+    //   } else {
+    //     debugPrint("deeplink $initialLink");
+    //     await fetchBookDetails(initialLink);
+    //     goToUrl(initialLink);
+    //   }
+    // } on PlatformException {
+    //   debugPrint("deeplink1");
+    //   // Handle exception by warning the user their action did not succeed
+    //   // return?
+    // }
+    final appLinks = AppLinks(); // AppLinks is singleton
+    final sub = appLinks.uriLinkStream.listen((uri) async {
+      if (uri == null) {
         initUniLinksAlive();
       } else {
-        debugPrint("deeplink $initialLink");
-        await fetchBookDetails(initialLink);
-        goToUrl(initialLink);
+        await fetchBookDetails(uri.toString());
+        goToUrl(uri.toString());
       }
-    } on PlatformException {
-      debugPrint("deeplink1");
-      // Handle exception by warning the user their action did not succeed
-      // return?
-    }
+    });
   }
 
   Future<void> initUniLinksAlive() async {
     // ... check initialLink
 
     // Attach a listener to the stream
-    _sub = linkStream.listen((String? link) async {
-      debugPrint("deep linking start not $link");
-      if (link != null) {
-        debugPrint("deep linking $link");
-        await fetchBookDetails(link);
-        goToUrlSecond(link);
-      }
-    }, onError: (err) {
-      debugPrint("deep linking $err");
-      // Handle exception by warning the user their action did not succeed
-    });
+    // _sub = linkStream.listen((String? link) async {
+    //   debugPrint("deep linking start not $link");
+    //   if (link != null) {
+    //     debugPrint("deep linking $link");
+    //     await fetchBookDetails(link);
+    //     goToUrlSecond(link);
+    //   }
+    // }, onError: (err) {
+    //   debugPrint("deep linking $err");
+    //   // Handle exception by warning the user their action did not succeed
+    // });
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
@@ -145,22 +155,32 @@ class _HomeState extends State<Home> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           // color: Colors.grey,
-          child: SingleChildScrollView(
-            controller: controller,
-            child: Column(
-              children: [
-                BuildBookBarSection(
-                  show: (data) {
-                    ConstanceData.show(context, data);
-                  },
-                ),
-                const DynamicBooksSection(),
-                SizedBox(
-                  height: 35.h,
-                ),
-              ],
-            ),
-          ),
+          child: Consumer<DataProvider>(builder: (context, data, _) {
+            return SingleChildScrollView(
+              controller: controller,
+              child: Column(
+                children: [
+                  data.currentTab == 2
+                      ? BuildEnoteBarSection(
+                          show: (data) {
+                            ConstanceData.showEnotes(context, data);
+                          },
+                        )
+                      : BuildBookBarSection(
+                          show: (data) {
+                            ConstanceData.show(context, data);
+                          },
+                        ),
+                  data.currentTab == 2
+                      ? DynamicEnotesSection()
+                      : const DynamicBooksSection(),
+                  SizedBox(
+                    height: 35.h,
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -220,9 +240,7 @@ class _HomeState extends State<Home> {
                 Navigation.instance.navigatorKey.currentContext!,
                 listen: false)
             .addBannerList(response.banners!);
-      }else{
-
-      }
+      } else {}
     }
   }
 

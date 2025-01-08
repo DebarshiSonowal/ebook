@@ -86,7 +86,8 @@ class _SubscriptionBuyPageState extends State<SubscriptionBuyPage> {
                             itemBuilder: (context, index) {
                               var item = data.bannerList![data.currentTab]
                                   .toList()
-                                  .firstWhere((element) => element.id == widget.id)
+                                  .firstWhere(
+                                      (element) => element.id == widget.id)
                                   .subscriptions[index];
                               return RadioListTile(
                                   activeColor: Colors.white,
@@ -108,7 +109,7 @@ class _SubscriptionBuyPageState extends State<SubscriptionBuyPage> {
                                         "₹${item.amount!.toInt()}",
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline5
+                                            .headlineSmall
                                             ?.copyWith(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
@@ -139,27 +140,30 @@ class _SubscriptionBuyPageState extends State<SubscriptionBuyPage> {
                           ),
                           SizedBox(
                             width: double.infinity,
-                           child: Divider(
-                             thickness: 0.2.h,
-                           ),
+                            child: Divider(
+                              thickness: 0.2.h,
+                            ),
                           ),
                           ElevatedButton(
                             onPressed: () {
-                                if(groupValue!=null){
-
-                                }else{
-                                  Fluttertoast.showToast(msg: "Select a plan");
-                                }
+                              if (groupValue != null) {
+                              } else {
+                                Fluttertoast.showToast(msg: "Select a plan");
+                              }
                             },
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.blue),
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.blue),
                             ),
                             child: Text(
                               "Buy Subscription",
-                              style: Theme.of(context).textTheme.headline5?.copyWith(
-                                fontSize: 2.h,
-                                color: Colors.black,
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontSize: 2.h,
+                                    color: Colors.black,
+                                  ),
                             ),
                           ),
                         ],

@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Networking/api_provider.dart';
@@ -43,7 +43,10 @@ class _SearchPageState extends State<SearchPage> {
     Future.delayed(Duration.zero, () => fetchFilter());
     Future.delayed(Duration.zero, () {
       setState(() {
-        _value = Provider.of<DataProvider>(context,listen: false).currentTab==0?"e-book":"magazine";
+        _value =
+            Provider.of<DataProvider>(context, listen: false).currentTab == 0
+                ? "e-book"
+                : "magazine";
       });
       if (widget.tags != null && widget.tags != "") {
         search_it("", "", widget.tags, "", "");
@@ -61,8 +64,9 @@ class _SearchPageState extends State<SearchPage> {
         title: Text(
           "Search",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.headline1?.copyWith(
-                color: Colors.white,
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: Colors.black,
+                fontSize: 18.sp,
               ),
         ),
       ),
@@ -120,18 +124,23 @@ class _SearchPageState extends State<SearchPage> {
                         }
                       },
                       cursorColor: Colors.grey,
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                                fontSize: 17.sp,
+                              ),
                       decoration: InputDecoration(
                         focusedBorder: InputBorder.none,
                         fillColor: Colors.white,
                         filled: true,
                         hintText: 'Search',
-                        hintStyle:
-                            Theme.of(context).textTheme.headline4?.copyWith(
-                                  color: Colors.black26,
-                                ),
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              color: Colors.black54,
+                              fontSize: 15.sp,
+                            ),
                         suffixIcon: IconButton(
                           onPressed: () {
                             if (search.text.isEmpty) {
@@ -186,8 +195,11 @@ class _SearchPageState extends State<SearchPage> {
                                   'Formats',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline6
-                                      ?.copyWith(color: Colors.black),
+                                      .titleLarge
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                        fontSize: 13.5.sp,
+                                      ),
                                 ),
                                 const Icon(
                                   Icons.arrow_drop_down,
@@ -220,9 +232,10 @@ class _SearchPageState extends State<SearchPage> {
                                   'Categories',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline6
+                                      .titleLarge
                                       ?.copyWith(
                                         color: Colors.black,
+                                        fontSize: 13.5.sp,
                                       ),
                                 ),
                                 const Icon(
@@ -256,9 +269,10 @@ class _SearchPageState extends State<SearchPage> {
                                   'Authors',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline6
+                                      .titleLarge
                                       ?.copyWith(
                                         color: Colors.black,
+                                        fontSize: 13.5.sp,
                                       ),
                                 ),
                                 const Icon(
@@ -292,9 +306,10 @@ class _SearchPageState extends State<SearchPage> {
                                   'Awards',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline6
+                                      .titleLarge
                                       ?.copyWith(
                                         color: Colors.black,
+                                        fontSize: 13.5.sp,
                                       ),
                                 ),
                                 const Icon(
@@ -318,9 +333,11 @@ class _SearchPageState extends State<SearchPage> {
                 data.search_results.isEmpty
                     ? Text(
                         'No Results Found',
-                        style: Theme.of(context).textTheme.headline1?.copyWith(
-                              color: Colors.white,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.displayLarge?.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                ),
                       )
                     : ListView.separated(
                         physics: const NeverScrollableScrollPhysics(),
@@ -363,11 +380,11 @@ class _SearchPageState extends State<SearchPage> {
     } else {
       setSearchEmpty();
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 
@@ -419,7 +436,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     Text(
                       'Select a formats',
-                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: ConstanceData.primaryColor,
                             fontSize: 2.h,
                             fontWeight: FontWeight.bold,
@@ -450,7 +467,7 @@ class _SearchPageState extends State<SearchPage> {
                         Text(
                           'E-book',
                           style:
-                              Theme.of(context).textTheme.headline6?.copyWith(
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: ConstanceData.primaryColor,
                                     fontSize: 1.8.h,
                                     fontWeight: FontWeight.bold,
@@ -481,7 +498,7 @@ class _SearchPageState extends State<SearchPage> {
                         Text(
                           'Magazine',
                           style:
-                              Theme.of(context).textTheme.headline6?.copyWith(
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
                                     color: ConstanceData.primaryColor,
                                     fontSize: 1.8.h,
                                     fontWeight: FontWeight.bold,
@@ -537,7 +554,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     Text(
                       'Select categories',
-                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: ConstanceData.primaryColor,
                             fontSize: 2.h,
                             fontWeight: FontWeight.bold,
@@ -575,7 +592,7 @@ class _SearchPageState extends State<SearchPage> {
                                   categories![current] ?? "",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline5
+                                      .headlineSmall
                                       ?.copyWith(color: Colors.black),
                                 ),
                               ),
@@ -599,11 +616,13 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Text(
                             'Close',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 14.5.sp,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.5.sp,
+                                ),
                           ),
                         ),
                         SizedBox(
@@ -619,11 +638,13 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Text(
                             'Apply Filters',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 14.5.sp,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.5.sp,
+                                ),
                           ),
                         ),
                       ],
@@ -662,7 +683,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     Text(
                       'Select Authors',
-                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: ConstanceData.primaryColor,
                             fontSize: 2.h,
                             fontWeight: FontWeight.bold,
@@ -700,7 +721,7 @@ class _SearchPageState extends State<SearchPage> {
                                   authors![current] ?? "",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline5
+                                      .headlineSmall
                                       ?.copyWith(color: Colors.black),
                                 ),
                               ),
@@ -724,11 +745,13 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Text(
                             'Close',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 14.5.sp,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.5.sp,
+                                ),
                           ),
                         ),
                         SizedBox(
@@ -744,11 +767,13 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Text(
                             'Apply Filters',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 14.5.sp,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.5.sp,
+                                ),
                           ),
                         ),
                       ],
@@ -787,7 +812,7 @@ class _SearchPageState extends State<SearchPage> {
                   children: [
                     Text(
                       'Select Awards',
-                      style: Theme.of(context).textTheme.headline6?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: ConstanceData.primaryColor,
                             fontSize: 2.h,
                             fontWeight: FontWeight.bold,
@@ -824,7 +849,7 @@ class _SearchPageState extends State<SearchPage> {
                                   awards![current] ?? "",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline5
+                                      .headlineSmall
                                       ?.copyWith(color: Colors.black),
                                 ),
                               ),
@@ -848,11 +873,13 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Text(
                             'Close',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 14.5.sp,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.5.sp,
+                                ),
                           ),
                         ),
                         SizedBox(
@@ -870,11 +897,13 @@ class _SearchPageState extends State<SearchPage> {
                           },
                           child: Text(
                             'Apply Filters',
-                            style:
-                                Theme.of(context).textTheme.headline5?.copyWith(
-                                      color: Colors.black,
-                                      fontSize: 14.5.sp,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.5.sp,
+                                ),
                           ),
                         ),
                       ],
@@ -948,7 +977,7 @@ class SearchItem extends StatelessWidget {
                   child: Text(
                     current.title ?? "",
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headline2?.copyWith(
+                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
@@ -960,7 +989,7 @@ class SearchItem extends StatelessWidget {
                 Text(
                   current.writer ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.black,
                         // fontWeight: FontWeight.bold,
                       ),
@@ -973,9 +1002,10 @@ class SearchItem extends StatelessWidget {
                   children: [
                     Text(
                       '${current.average_rating}' ?? "NA",
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Colors.black,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.black,
+                              ),
                     ),
                     const Icon(
                       Icons.star,
@@ -990,7 +1020,7 @@ class SearchItem extends StatelessWidget {
                   current.selling_price.toString() == "0.0"
                       ? "Free"
                       : '₹${current.selling_price}' ?? "NA",
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
                       ),

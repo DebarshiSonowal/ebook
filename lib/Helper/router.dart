@@ -18,6 +18,7 @@ import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
 import '../UI/Routes/Navigation Page/reading_page.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
+import '../UI/Routes/Navigation Page/specific_library_screen.dart';
 import '../UI/Routes/Navigation Page/subscription_buy_page.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
@@ -37,7 +38,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/loginReturn':
       return FadeTransitionPageRouteBuilder(page: const LoginPageReturn());
     case '/verifyOtpSignup':
-      return FadeTransitionPageRouteBuilder(page: const RegisterationOTPVerify());
+      return FadeTransitionPageRouteBuilder(
+          page: const RegisterationOTPVerify());
     case '/bookDetails':
       return FadeTransitionPageRouteBuilder(
           page: BookDetails(settings.arguments as String));
@@ -50,6 +52,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/magazineArticles':
       return FadeTransitionPageRouteBuilder(
           page: MagazineArticles(settings.arguments as int));
+    case '/libraryBooks':
+      return FadeTransitionPageRouteBuilder(
+          page: SpecificLibraryPage(id: settings.arguments as int));
 
     case '/bookInfo':
       return FadeTransitionPageRouteBuilder(

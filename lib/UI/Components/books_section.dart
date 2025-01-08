@@ -6,7 +6,8 @@ import 'book_item.dart';
 
 class BooksSection extends StatelessWidget {
   final Function(Book data) show;
-  const BooksSection({required this.title, required this.list, required this.show});
+  const BooksSection(
+      {required this.title, required this.list, required this.show});
 
   final String title;
   final List<Book> list;
@@ -15,7 +16,7 @@ class BooksSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // color: ConstanceData.secondaryColor,
-      padding: EdgeInsets.symmetric(vertical: 0.h,horizontal: 2.w),
+      padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 2.w),
       height: 37.h,
       width: double.infinity,
       child: Column(
@@ -23,7 +24,7 @@ class BooksSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height:6.h,
+            height: 6.h,
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -31,8 +32,9 @@ class BooksSection extends StatelessWidget {
                 Text(
                   title,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
+                        fontSize: 17.sp,
                       ),
                 ),
               ],
@@ -45,15 +47,11 @@ class BooksSection extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder: (cont, count) {
                   var data = list[count];
-                  return BookItem(data: data,index:count,show:show);
+                  return BookItem(data: data, index: count, show: show);
                 }),
           ),
         ],
       ),
     );
-
   }
-
-
 }
-

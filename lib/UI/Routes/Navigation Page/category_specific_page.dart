@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
@@ -27,8 +27,6 @@ class CategorySpecificPage extends StatefulWidget {
 }
 
 class _CategorySpecificPageState extends State<CategorySpecificPage> {
-
-
   @override
   void initState() {
     super.initState();
@@ -42,14 +40,15 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
         title: Text(
           widget.content.split(",")[0] ?? "",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.headline1?.copyWith(
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
               ),
         ),
         actions: [
           IconButton(
             onPressed: () {
-              Share.share('https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+              Share.share(
+                  'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
             },
             icon: const Icon(Icons.share),
           ),
@@ -73,7 +72,7 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
               return BookItem(
                 data: book,
                 index: index,
-                show: (bookData){
+                show: (bookData) {
                   ConstanceData.show(context, bookData);
                 },
               );
@@ -112,11 +111,11 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
               Navigation.instance.navigatorKey.currentContext!,
               listen: false)
           .setSearchResult([]);
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.warning,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.warning,
+      //   text: "Something went wrong",
+      // );
     }
   }
 

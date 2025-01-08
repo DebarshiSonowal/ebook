@@ -24,7 +24,7 @@ class _CouponPageState extends State<CouponPage> {
         title: Text(
           "Apply Coupon",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.headline1?.copyWith(
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
               ),
         ),
@@ -43,7 +43,7 @@ class _CouponPageState extends State<CouponPage> {
                   itemBuilder: (cont, count) {
                     var current = data.cupons[count];
                     return GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.pop(context, current.coupon);
                       },
                       child: CouponCard(
@@ -64,7 +64,7 @@ class _CouponPageState extends State<CouponPage> {
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1
+                                        .displayLarge
                                         ?.copyWith(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -83,7 +83,7 @@ class _CouponPageState extends State<CouponPage> {
                                     overflow: TextOverflow.ellipsis,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headlineMedium
                                         ?.copyWith(
                                           color: Colors.white,
                                         ),
@@ -128,5 +128,3 @@ class _CouponPageState extends State<CouponPage> {
     }
   }
 }
-
-

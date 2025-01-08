@@ -52,27 +52,32 @@ class NewSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          (Platform.isAndroid&&!Storage.instance.isLoggedIn)?GestureDetector(
-            onTap: () {
-              // _launchUrl(Uri.parse('https://tratri.in/login/contributor'));
-              // _launchUrl(Uri.parse('https://tratri.in'));
-              Navigation.instance.navigate("/login");
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                  // color: ConstanceData.cardColor,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(15),
+          (Platform.isAndroid && !Storage.instance.isLoggedIn)
+              ? GestureDetector(
+                  onTap: () {
+                    // _launchUrl(Uri.parse('https://tratri.in/login/contributor'));
+                    // _launchUrl(Uri.parse('https://tratri.in'));
+                    Navigation.instance.navigate("/login");
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        // color: ConstanceData.cardColor,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                        border: Border.all(color: Colors.white)),
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
+                    child: Text(
+                      'Login/Register',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontSize: 14.sp,
+                          ),
+                    ),
                   ),
-                  border: Border.all(color: Colors.white)),
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 1.h),
-              child: Text(
-                'Login/Register',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-          ):Container(),
+                )
+              : Container(),
           SizedBox(
             width: 1.w,
           ),
@@ -126,12 +131,12 @@ class NewSearchBar extends StatelessWidget {
             return GestureDetector(
               onTap: () {
                 if ((Provider.of<DataProvider>(
-                    Navigation.instance.navigatorKey
-                        .currentContext ??
-                        context,
-                    listen: false)
-                    .profile !=
-                    null) &&
+                                Navigation
+                                        .instance.navigatorKey.currentContext ??
+                                    context,
+                                listen: false)
+                            .profile !=
+                        null) &&
                     Storage.instance.isLoggedIn) {
                   Navigation.instance.navigate('/cartPage');
                 } else {
@@ -150,11 +155,13 @@ class NewSearchBar extends StatelessWidget {
                         // badgeColor: ConstanceData.primaryColor,
                         badgeContent: Text(
                           '${data.cartData?.items.length ?? ""}',
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         child: const Icon(
                           ConstanceData.storeIcon,

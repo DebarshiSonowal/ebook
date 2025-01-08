@@ -1,20 +1,24 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:sizer/sizer.dart';
 
+import '../../Constants/constance_data.dart';
 import '../../Helper/navigator.dart';
+import '../../Storage/app_storage.dart';
 
 class ReadButton extends StatelessWidget {
   final int id;
-  final String format,profile_pic;
+  final String format, profile_pic;
   final bool isBought;
 
   const ReadButton(
       {super.key,
       required this.id,
       required this.format,
-      required this.isBought, required this.profile_pic});
+      required this.isBought,
+      required this.profile_pic});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +30,16 @@ class ReadButton extends StatelessWidget {
           // Navigation.instance.navigate('/bookInfo');
           // Navigation.instance.navigate('/bookDetails', args: id ?? 0);
           // Navigation.instance.navigate('/reading', args: id ?? 0);
-          if (format == "magazine") {
-            Navigation.instance.navigate('/magazineArticles', args: id ?? 0);
+          if ((Platform.isAndroid) ||
+              (Platform.isIOS && Storage.instance.isLoggedIn)) {
+            if (format == "magazine") {
+              Navigation.instance.navigate('/magazineArticles', args: id ?? 0);
+            } else {
+              Navigation.instance
+                  .navigate('/bookDetails', args: '${id ?? 0},${profile_pic}');
+            }
           } else {
-            Navigation.instance.navigate('/bookDetails', args: '${id ?? 0},${profile_pic}');
-            // Navigation.instance.navigate('/reading',
-            //     args: data.id ?? 0);
+            ConstanceData.showAlertDialog(context);
           }
         },
         style: ButtonStyle(
@@ -49,7 +57,7 @@ class ReadButton extends StatelessWidget {
               : isBought
                   ? 'Read Book'
                   : 'Read Preview',
-          style: Theme.of(context).textTheme.headline3?.copyWith(
+          style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 // fontSize: 2.5.h,
                 color: Colors.blue,
               ),

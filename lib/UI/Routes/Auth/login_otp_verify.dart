@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:awesome_icons/awesome_icons.dart';
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
@@ -72,7 +72,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                 ),
                 Text(
                   "Login",
-                  style: Theme.of(context).textTheme.headline3?.copyWith(
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.white,
                       ),
                 ),
@@ -87,20 +87,20 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                     child: TextField(
                       keyboardType: TextInputType.phone,
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _phoneController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your registered phone number',
                         hintText: "Mobile number",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: Colors.grey.shade400,
                                 ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
@@ -136,21 +136,21 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                          Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
                       obscureText: true,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your password',
                         hintText: "password",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                            Theme.of(context).textTheme.headline5?.copyWith(
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: Colors.grey.shade400,
                                 ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
@@ -204,11 +204,11 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                               _passwordController.text.isNotEmpty) {
                             Login();
                           } else {
-                            CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.warning,
-                              text: "Enter proper credentials",
-                            );
+                            // CoolAlert.show(
+                            //   context: context,
+                            //   type: CoolAlertType.warning,
+                            //   text: "Enter proper credentials",
+                            // );
                           }
                         },
                         style: ButtonStyle(
@@ -217,11 +217,13 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                         ),
                         child: Text(
                           'Login',
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    fontSize: 3.h,
-                                    color: Colors.black,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontSize: 3.h,
+                                color: Colors.black,
+                              ),
                         )),
                   ),
                 ),
@@ -235,7 +237,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                   },
                   child: Text(
                     "Forgot Password",
-                    style: Theme.of(context).textTheme.headline5?.copyWith(
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontSize: 9.sp,
                         ),
                   ),
@@ -249,42 +251,45 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
                   },
                   child: Text(
                     "Don't have an account? Signup",
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
                 SizedBox(
                   height: 3.h,
                 ),
-                Platform.isAndroid?SizedBox(
-                  width: 60.w,
-                  child: SocialLoginButton(
-                    backgroundColor: Colors.white70,
-                    height: 40,
-                    text: 'Sign in',
-                    borderRadius: 5,
-                    fontSize: 15.sp,
-                    buttonType: SocialLoginButtonType.google,
-                    // imageWidth: 20,
-                    // imagepath: "assets/file.png",
-                    // imageURL: "URL",
-                    onPressed: () async {
-                      final response = await signInWithGoogle();
-                      loginSocial(
-                        response.user?.displayName?.split(" ")[0] ?? "",
-                        ((response.user?.displayName?.split(" ").length ?? 0) >
-                            1)
-                            ? response.user?.displayName?.split(" ")[1]
-                            : "",
-                        response.user?.email ?? "",
-                        "",
-                        "google",
-                        response.user?.phoneNumber ?? "",
-                        "",
-                      );
-                      // loginEmail();
-                    },
-                  ),
-                ):Container(),
+                Platform.isAndroid
+                    ? SizedBox(
+                        width: 60.w,
+                        child: SocialLoginButton(
+                          backgroundColor: Colors.white70,
+                          height: 40,
+                          text: 'Sign in',
+                          borderRadius: 5,
+                          fontSize: 15.sp,
+                          buttonType: SocialLoginButtonType.google,
+                          // imageWidth: 20,
+                          // imagepath: "assets/file.png",
+                          // imageURL: "URL",
+                          onPressed: () async {
+                            final response = await signInWithGoogle();
+                            loginSocial(
+                              response.user?.displayName?.split(" ")[0] ?? "",
+                              ((response.user?.displayName?.split(" ").length ??
+                                          0) >
+                                      1)
+                                  ? response.user?.displayName?.split(" ")[1]
+                                  : "",
+                              response.user?.email ?? "",
+                              "",
+                              "google",
+                              response.user?.phoneNumber ?? "",
+                              "",
+                            );
+                            // loginEmail();
+                          },
+                        ),
+                      )
+                    : Container(),
                 SizedBox(
                   height: 5.h,
                 ),
@@ -305,11 +310,11 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       fetchProfile();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: response.message ?? "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: response.message ?? "Something went wrong",
+      // );
     }
   }
 
@@ -324,28 +329,30 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       // Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: "Something went wrong",
+      // );
     }
   }
-  void loginSocial(fname, lname, email, password, provider, mobile,apple_id) async {
+
+  void loginSocial(
+      fname, lname, email, password, provider, mobile, apple_id) async {
     Navigation.instance.navigate("/loadingDialog");
     final response = await ApiProvider.instance
-        .socialLogin(fname, lname, email, password, provider, mobile,apple_id);
+        .socialLogin(fname, lname, email, password, provider, mobile, apple_id);
     if (response.status ?? false) {
       Navigation.instance.goBack();
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
     } else {
       Navigation.instance.goBack();
-      CoolAlert.show(
-        context: context,
-        type: CoolAlertType.error,
-        text: response.message ?? "Something went wrong",
-      );
+      // CoolAlert.show(
+      //   context: context,
+      //   type: CoolAlertType.error,
+      //   text: response.message ?? "Something went wrong",
+      // );
     }
   }
 
@@ -354,13 +361,14 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       throw 'Could not launch $_url';
     }
   }
+
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
-    await googleUser?.authentication;
+        await googleUser?.authentication;
 
     // Create a new credential
     final credential = GoogleAuthProvider.credential(

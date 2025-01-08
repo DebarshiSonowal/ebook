@@ -1,6 +1,8 @@
 import 'package:ebook/Model/bookmark.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/home_section.dart';
+import 'package:ebook/Model/library.dart';
+import 'package:ebook/Model/library_book_details.dart';
 import 'package:ebook/Model/order_history.dart';
 import 'package:ebook/Model/writer.dart';
 import 'package:ebook/UI/Routes/Drawer/history.dart';
@@ -11,7 +13,14 @@ import '../Model/book_category.dart';
 import '../Model/book_details.dart';
 import '../Model/book_format.dart';
 import '../Model/cart_item.dart';
+
+// import '../Model/category.dart';
 import '../Model/discount.dart';
+import '../Model/enote_banner.dart';
+import '../Model/enote_category.dart';
+import '../Model/enote_section.dart';
+import '../Model/enotes_chapter.dart';
+import '../Model/enotes_details.dart';
 import '../Model/profile.dart';
 
 class DataProvider extends ChangeNotifier {
@@ -20,10 +29,12 @@ class DataProvider extends ChangeNotifier {
   List<List<Book>>? bannerList = [];
   List<List<HomeSection>>? homeSection = [];
   List<Book> cartBooks = [], myBooks = [], search_results = [];
+  List<LibraryBookDetailsModel> library = [];
   List<BookmarkItem> bookmarks = [];
   List<CartItem> items = [];
   List<Discount> cupons = [];
   List<OrderHistory> orders = [];
+  List<Library> libraries = [];
   Cart? cartData;
   Profile? profile;
   int currentIndex = 0;
@@ -33,21 +44,33 @@ class DataProvider extends ChangeNotifier {
   String title = '';
   Book? details;
   writer? writerDetails;
+  List<EnotesCategory> enotes = [];
+  List<EnoteBanner> enotesBanner = [];
+  List<EnotesSection> enotesSection = [];
+  List<Book> enotesList = [];
+  List<Chapter> enotesChapterList = [];
+  // List<Chapter> enotesChapterList = [];
+  EnotesDetails? enotesDetails;
 
-  clearAllData(){
+  clearAllData() {
     // formats=[];
     // categoryList=[];
     // bannerList=[];
     // homeSection=[];
-    cartBooks=[];
-    myBooks=[];
-    search_results=[];
-    bookmarks=[];
-    items=[];
+    cartBooks = [];
+    myBooks = [];
+    search_results = [];
+    bookmarks = [];
+    items = [];
     // cupons=[];
-    orders=[];
-    cartData=null;
-    profile=null;
+    orders = [];
+    cartData = null;
+    profile = null;
+    notifyListeners();
+  }
+
+  setEnotesDetails(EnotesDetails data) {
+    enotesDetails = data;
     notifyListeners();
   }
 
@@ -80,6 +103,41 @@ class DataProvider extends ChangeNotifier {
 
   setMyBooks(List<Book> list) {
     myBooks = list;
+    notifyListeners();
+  }
+
+  setEnotesCategories(List<EnotesCategory> list) {
+    enotes = list;
+    notifyListeners();
+  }
+
+  setEnotesBanner(List<EnoteBanner> list) {
+    enotesBanner = list;
+    notifyListeners();
+  }
+
+  setEnotesSection(List<EnotesSection> list) {
+    enotesSection = list;
+    notifyListeners();
+  }
+
+  setEnotesList(List<Book> list) {
+    enotesList = list;
+    notifyListeners();
+  }
+
+  setEnotesChapterList(List<Chapter> list) {
+    enotesChapterList = list;
+    notifyListeners();
+  }
+
+  setLibraryBooks(List<LibraryBookDetailsModel> list) {
+    library = list;
+    notifyListeners();
+  }
+
+  setLibraries(List<Library> list) {
+    libraries = list;
     notifyListeners();
   }
 
@@ -141,8 +199,8 @@ class DataProvider extends ChangeNotifier {
   }
 
   setFormats(List<BookFormat> list) {
-    print(list);
     formats = list ?? [];
+    formats?.add(BookFormat(3, "E-Notes", "E-Notes"));
     notifyListeners();
   }
 

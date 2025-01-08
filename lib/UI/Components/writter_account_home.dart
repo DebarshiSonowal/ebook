@@ -25,10 +25,10 @@ class WriterAccountHome extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Image.network(
-                  picture,
-                  height: 10.h,
-                  width: 20.w,
-                ) ??
+                      picture,
+                      height: 10.h,
+                      width: 20.w,
+                    ) ??
                     Image.asset(
                       'assets/images/user.png',
                       fit: BoxFit.fill,
@@ -41,7 +41,7 @@ class WriterAccountHome extends StatelessWidget {
                 color: Colors.white,
                 child: Text(
                   contributor ?? 'AUTHOR',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontSize: 1.5.h,
                       color: Colors.black,
                       fontWeight: FontWeight.bold),
@@ -54,18 +54,18 @@ class WriterAccountHome extends StatelessWidget {
           ),
           Text(
             "${saluation} ${name}" ?? 'Simon & Schuster',
-            style: Theme.of(context).textTheme.headline5?.copyWith(
-              fontSize: 2.h,
-            ),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontSize: 2.h,
+                ),
           ),
           SizedBox(
             height: 1.h,
           ),
           Text(
             '1 TITLE',
-            style: Theme.of(context).textTheme.headline5?.copyWith(
-              fontSize: 1.5.h,
-            ),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontSize: 1.5.h,
+                ),
           ),
         ],
       ),

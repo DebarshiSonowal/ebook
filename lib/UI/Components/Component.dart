@@ -3,7 +3,8 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 
 import '../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
-class Component{
+
+class Component {
   static Container CategoryBar() {
     return Container(
       color: ConstanceData.secondaryColor,
@@ -37,7 +38,7 @@ class Component{
                 ),
                 Text(
                   i.name ?? "",
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
             ),
@@ -78,7 +79,7 @@ class Component{
               ),
               child: Text(
                 i,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
         ],

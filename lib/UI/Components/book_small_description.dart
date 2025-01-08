@@ -74,7 +74,7 @@ class bookSmallDescription extends StatelessWidget {
                             data.title ?? "NA",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline1
+                                .displayLarge
                                 ?.copyWith(color: Colors.white),
                           ),
                         ),
@@ -87,20 +87,23 @@ class bookSmallDescription extends StatelessWidget {
                                     "by ",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         ?.copyWith(color: Colors.white),
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      print("Contributor 1 is ${data.magazine_id}");
-                                      Navigation.instance
-                                          .navigate('/writerInfo', args: '${data.contributor_id},${data.magazine_id}');
+                                      print(
+                                          "Contributor 1 is ${data.magazine_id}");
+                                      Navigation.instance.navigate(
+                                          '/writerInfo',
+                                          args:
+                                              '${data.contributor_id},${data.magazine_id}');
                                     },
                                     child: Text(
                                       data.writer ?? "NA",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5
+                                          .headlineSmall
                                           ?.copyWith(color: Colors.blue),
                                     ),
                                   ),
@@ -132,7 +135,7 @@ class bookSmallDescription extends StatelessWidget {
                               " (${data.total_rating})",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   ?.copyWith(color: Colors.white),
                             ),
                           ],
@@ -146,7 +149,7 @@ class bookSmallDescription extends StatelessWidget {
                                   : "${data.articles?.length} articles",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   ?.copyWith(color: Colors.white),
                             ),
                             Container(
@@ -160,7 +163,7 @@ class bookSmallDescription extends StatelessWidget {
                             ),
                             Text(
                               "${data.language}",
-                              style: Theme.of(context).textTheme.headline5,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ],
                         ),
@@ -179,7 +182,7 @@ class bookSmallDescription extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline6
+                                  .titleLarge
                                   ?.copyWith(
                                     fontSize: 1.5.h,
                                     color: Colors.black,
@@ -223,7 +226,7 @@ class bookSmallDescription extends StatelessWidget {
                                               i.name ?? "",
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline5,
+                                                  .headlineSmall,
                                             ),
                                           ),
                                         ),
@@ -261,7 +264,8 @@ class bookSmallDescription extends StatelessWidget {
                         data.awards!.isNotEmpty
                             ? Text(
                                 "${data.awards![0].name} Winner",
-                                style: Theme.of(context).textTheme.headline5,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               )
                             : Container(),
                         SizedBox(height: 2.h),
@@ -269,7 +273,7 @@ class bookSmallDescription extends StatelessWidget {
                           "${data.short_description}",
                           maxLines: 3,
                           overflow: TextOverflow.fade,
-                          style: Theme.of(context).textTheme.headline5,
+                          style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         SizedBox(height: 1.h),
                         SizedBox(
@@ -283,7 +287,8 @@ class bookSmallDescription extends StatelessWidget {
                                       args: data.id ?? 0);
                                 } else {
                                   Navigation.instance.navigate('/bookDetails',
-                                      args:'${data.id ?? 0},${data.profile_pic}');
+                                      args:
+                                          '${data.id ?? 0},${data.profile_pic}');
                                   // Navigation.instance.navigate('/reading',
                                   //     args: data.id ?? 0);
                                 }
@@ -298,7 +303,7 @@ class bookSmallDescription extends StatelessWidget {
                                     : 'Preview',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     ?.copyWith(
                                       fontSize: 2.h,
                                       color: Colors.black,
@@ -326,7 +331,7 @@ class bookSmallDescription extends StatelessWidget {
                                     'View Details',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         ?.copyWith(
                                           fontSize: 2.h,
                                           color: Colors.black,
@@ -344,14 +349,16 @@ class bookSmallDescription extends StatelessWidget {
                                     //     .navigate('/bookInfo', args: data.id);
 
                                     if ((Provider.of<DataProvider>(
-                                        Navigation.instance.navigatorKey
-                                            .currentContext ??
-                                            context,
-                                        listen: false)
-                                        .profile !=
-                                        null) &&
+                                                    Navigation
+                                                            .instance
+                                                            .navigatorKey
+                                                            .currentContext ??
+                                                        context,
+                                                    listen: false)
+                                                .profile !=
+                                            null) &&
                                         Storage.instance.isLoggedIn) {
-                                      addtocart(context,data.id);
+                                      addtocart(context, data.id);
                                     } else {
                                       ConstanceData.showAlertDialog(context);
                                     }
@@ -364,7 +371,7 @@ class bookSmallDescription extends StatelessWidget {
                                     'Add To Cart',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         ?.copyWith(
                                           fontSize: 2.h,
                                           color: Colors.black,
@@ -408,19 +415,19 @@ class bookSmallDescription extends StatelessWidget {
         ],
       ),
     );
-
   }
-  void addtocart(context,id) async {
+
+  void addtocart(context, id) async {
     Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.addToCart(id!, '1');
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext ?? context,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
           .setToCart(response.cart?.items ?? []);
       Provider.of<DataProvider>(
-          Navigation.instance.navigatorKey.currentContext!,
-          listen: false)
+              Navigation.instance.navigatorKey.currentContext!,
+              listen: false)
           .setCartData(response.cart!);
       Navigation.instance.goBack();
       Navigation.instance.goBack();
@@ -431,6 +438,7 @@ class bookSmallDescription extends StatelessWidget {
       showError(context);
     }
   }
+
   void showSuccess(context) {
     // var snackBar = SnackBar(
     //   elevation: 0,

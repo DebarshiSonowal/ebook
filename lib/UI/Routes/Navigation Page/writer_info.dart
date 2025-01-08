@@ -44,7 +44,7 @@ class _WriterInfoState extends State<WriterInfo> {
                 ),
                 Text(
                   'About',
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontSize: 2.5.h,
                       // color: Colors.black,
                       fontWeight: FontWeight.bold),
@@ -62,10 +62,12 @@ class _WriterInfoState extends State<WriterInfo> {
                           data.writerDetails?.about ??
                               'Simon & Schuster is the author of Macmillan Dictionary for Children,'
                                   ' a Simon & Schuster book',
-                          style:
-                              Theme.of(context).textTheme.headline5?.copyWith(
-                                    color: Colors.white,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                color: Colors.white,
+                              ),
                         ),
                       ),
                 SizedBox(
@@ -84,7 +86,7 @@ class _WriterInfoState extends State<WriterInfo> {
                                 'Tags',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     ?.copyWith(
                                       fontSize: 2.h,
                                       // color: Colors.grey.shade200,
@@ -120,8 +122,9 @@ class _WriterInfoState extends State<WriterInfo> {
                                   ),
                                   child: Text(
                                     i.name ?? "",
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
                                   ),
                                 ),
                               ),
@@ -144,7 +147,7 @@ class _WriterInfoState extends State<WriterInfo> {
                                 'Awards',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     ?.copyWith(
                                       fontSize: 2.h,
                                       // color: Colors.grey.shade200,
@@ -182,8 +185,9 @@ class _WriterInfoState extends State<WriterInfo> {
                                   ),
                                   child: Text(
                                     i.name ?? "",
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
                                   ),
                                 ),
                               ),
@@ -211,7 +215,7 @@ class _WriterInfoState extends State<WriterInfo> {
                                 'Books',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline5
+                                    .headlineSmall
                                     ?.copyWith(
                                       fontSize: 2.h,
                                       // color: Colors.grey.shade200,
@@ -223,7 +227,7 @@ class _WriterInfoState extends State<WriterInfo> {
                                   'More >',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline5
+                                      .headlineSmall
                                       ?.copyWith(
                                         fontSize: 1.5.h,
                                         color: Colors.blueAccent,
@@ -277,47 +281,48 @@ class _WriterInfoState extends State<WriterInfo> {
                 SizedBox(
                   height: 2.h,
                 ),
-                (data.writerDetails?.books
-                                .where((element) =>
-                                    element.book_format == "magazine")
-                                .toList() ??
-                            [])
-                        .isEmpty
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Magazines',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline5
-                                    ?.copyWith(
-                                      fontSize: 2.h,
-                                      // color: Colors.grey.shade200,
-                                    ),
-                              ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  'More >',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5
-                                      ?.copyWith(
-                                        fontSize: 1.5.h,
-                                        color: Colors.blueAccent,
-                                      ),
+                if ((data.writerDetails?.books
+                            .where(
+                                (element) => element.book_format == "magazine")
+                            .toList() ??
+                        [])
+                    .isEmpty)
+                  Container()
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Magazines',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontSize: 2.h,
+                                  // color: Colors.grey.shade200,
                                 ),
-                              ),
-                            ],
                           ),
-                        ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Text(
+                              'More >',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontSize: 1.5.h,
+                                    color: Colors.blueAccent,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ),
+                    ),
+                  ),
                 (data.writerDetails?.books
                                 .where((element) =>
                                     element.book_format == "magazine")

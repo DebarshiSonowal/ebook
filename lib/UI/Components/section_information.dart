@@ -25,46 +25,49 @@ class SectionInformation extends StatelessWidget {
       children: [
         Text(
           name,
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontSize: 15.sp,
+              ),
         ),
         SizedBox(
           height: (type == 0 || type == 1 || type == 2) ? 0.2.h : 0.5.h,
         ),
-        (type == 0 || type == 1 || type == 2)
-            ? TextField(
-                controller: controller,
-                keyboardType: type == 0
-                    ? TextInputType.name
-                    : (type == 1
-                        ? TextInputType.emailAddress
-                        : TextInputType.phone),
-                cursorColor: Colors.white,
-                style: Theme.of(context).textTheme.headline5?.copyWith(
-                      fontSize: 17.sp,
-                    ),
-              )
-            : GestureDetector(
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    fieldHintText: "",
-                    helpText: "",
-                    context: context,
-                    initialDate: DateTime.now(),
-                    initialEntryMode: DatePickerEntryMode.input,
-                    //get today's date
-                    firstDate: DateTime(1900, 1, 1),
-                    //DateTime.now() - not to allow to choose before today.
-                    lastDate: DateTime.now(),
-                  );
-                  dateChanged(DateFormat('dd-MM-yyyy').format(pickedDate!));
-                },
-                child: Text(
-                  data,
-                  style: Theme.of(context).textTheme.headline5?.copyWith(
-                        fontSize: 17.sp,
-                      ),
+        if (type == 0 || type == 1 || type == 2)
+          TextField(
+            controller: controller,
+            keyboardType: type == 0
+                ? TextInputType.name
+                : (type == 1
+                    ? TextInputType.emailAddress
+                    : TextInputType.phone),
+            cursorColor: Colors.white,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontSize: 18.sp,
                 ),
-              ),
+          )
+        else
+          GestureDetector(
+            onTap: () async {
+              DateTime? pickedDate = await showDatePicker(
+                fieldHintText: "",
+                helpText: "",
+                context: context,
+                initialDate: DateTime.now(),
+                initialEntryMode: DatePickerEntryMode.input,
+                //get today's date
+                firstDate: DateTime(1900, 1, 1),
+                //DateTime.now() - not to allow to choose before today.
+                lastDate: DateTime.now(),
+              );
+              dateChanged(DateFormat('dd-MM-yyyy').format(pickedDate!));
+            },
+            child: Text(
+              data,
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontSize: 18.sp,
+                  ),
+            ),
+          ),
         SizedBox(
           height: (type == 0 || type == 1 || type == 2) ? 0.2.h : 1.h,
         ),

@@ -1,4 +1,4 @@
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Model/order_history.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -12,7 +12,8 @@ import 'history_item_section.dart';
 
 class HistoryPageInfo extends StatelessWidget {
   const HistoryPageInfo({
-    Key? key, required this.data,
+    Key? key,
+    required this.data,
   }) : super(key: key);
   final DataProvider data;
   @override
@@ -31,4 +32,3 @@ class HistoryPageInfo extends StatelessWidget {
         itemCount: data.orders.length);
   }
 }
-

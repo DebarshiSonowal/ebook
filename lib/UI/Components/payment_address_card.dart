@@ -5,7 +5,12 @@ import '../../Model/cart_item.dart';
 import '../../Storage/data_provider.dart';
 
 class PaymentAddressCard extends StatelessWidget {
-  const PaymentAddressCard({Key? key, required this.data, required this.getTotalAmount, required this.initiatePaymentProcess}) : super(key: key);
+  const PaymentAddressCard(
+      {Key? key,
+      required this.data,
+      required this.getTotalAmount,
+      required this.initiatePaymentProcess})
+      : super(key: key);
   final DataProvider data;
   final Function(Cart data) getTotalAmount;
   final Function(int amount) initiatePaymentProcess;
@@ -29,53 +34,50 @@ class PaymentAddressCard extends StatelessWidget {
             Expanded(
               child: Container(
                 child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                    getTotalAmount(data.cartData!).toString()=="0"?"Free":'₹${getTotalAmount(data.cartData!)}',
+                          getTotalAmount(data.cartData!).toString() == "0"
+                              ? "Free"
+                              : '₹${getTotalAmount(data.cartData!)}',
                           style: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
+                              ),
                         ),
                         Text(
                           'View Detailed Bill',
                           style: Theme.of(context)
                               .textTheme
-                              .headline3
+                              .displaySmall
                               ?.copyWith(
-                            color: Colors.white,
-                            // fontWeight: FontWeight.bold,
-                          ),
+                                color: Colors.white,
+                                // fontWeight: FontWeight.bold,
+                              ),
                         ),
                       ],
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        initiatePaymentProcess(int.parse(getTotalAmount(data.cartData!)));
+                        initiatePaymentProcess(
+                            int.parse(getTotalAmount(data.cartData!)));
                       },
                       style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all(
-                            Colors.green),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
+                            MaterialStateProperty.all(Colors.green),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(5.0),
-                            side:
-                            BorderSide(color: Colors.green),
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: Colors.green),
                           ),
                         ),
                       ),

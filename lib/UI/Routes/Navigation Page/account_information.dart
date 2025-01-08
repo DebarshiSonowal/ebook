@@ -77,7 +77,10 @@ class _AccountInformationState extends State<AccountInformation> {
         centerTitle: false,
         title: Text(
           'Account',
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context)
+              .textTheme
+              .displaySmall
+              ?.copyWith(color: Colors.black, fontSize: 17.sp),
         ),
         actions: [
           GestureDetector(
@@ -93,7 +96,7 @@ class _AccountInformationState extends State<AccountInformation> {
                 ),
                 child: Text(
                   'Sign Out',
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
             ),
@@ -163,18 +166,19 @@ class _AccountInformationState extends State<AccountInformation> {
                       // padding: const EdgeInsets.symmetric(
                       //     horizontal: 50, vertical: 20),
                       textStyle:
-                          Theme.of(context).textTheme.headline5?.copyWith(
-                                fontSize: 17.sp,
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontSize: 18.sp,
                                 color: Colors.black,
                               ),
                     ),
                     child: Text(
                       'Update',
-                      style: Theme.of(context).textTheme.headline5?.copyWith(
-                            fontSize: 15.sp,
-                            color: Colors.black,
-                            // fontWeight: FontWeight.bold,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontSize: 15.sp,
+                                color: Colors.black,
+                                // fontWeight: FontWeight.bold,
+                              ),
                     ),
                   ),
                 ),

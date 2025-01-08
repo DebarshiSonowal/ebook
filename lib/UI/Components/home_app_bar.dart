@@ -8,7 +8,7 @@ import 'package:search_page/search_page.dart';
 
 import '../../Constants/constance_data.dart';
 
-class HomeAppBar extends  StatefulWidget {
+class HomeAppBar extends StatefulWidget {
   const HomeAppBar(BuildContext context, {Key? key}) : super(key: key);
 
   @override
@@ -44,11 +44,11 @@ class _HomeAppBarState extends State<HomeAppBar> {
             children: [
               Text(
                 'Register as',
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               Text(
                 'WRITER',
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
           ),

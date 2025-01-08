@@ -40,7 +40,7 @@ class _EmbededAdvertiseState extends State<EmbededAdvertise> {
                   'Ad ',
                   style: Theme.of(widget.context.buildContext!)
                       .textTheme
-                      .headline3
+                      .displaySmall
                       ?.copyWith(
                         fontSize: 7.sp,
                         color: Colors.white,

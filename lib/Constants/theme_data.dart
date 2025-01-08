@@ -13,7 +13,6 @@ class AppTheme {
     );
     final ThemeData base = ThemeData.dark();
     return base.copyWith(
-      colorScheme: colorScheme,
       primaryColor: primaryColor,
       // buttonColor: primaryColor,
       indicatorColor: Colors.white,
@@ -21,7 +20,6 @@ class AppTheme {
       splashFactory: InkRipple.splashFactory,
       // accentColor: secondaryColor,
       canvasColor: Colors.white,
-      backgroundColor: Colors.grey[850],
       scaffoldBackgroundColor: Colors.black,
       buttonTheme: ButtonThemeData(
         colorScheme: colorScheme,
@@ -32,74 +30,75 @@ class AppTheme {
       primaryTextTheme: _buildTextTheme(base.primaryTextTheme),
       // accentTextTheme: _buildTextTheme(base.accentTextTheme),
       platform: TargetPlatform.iOS,
+      colorScheme: colorScheme.copyWith(background: Colors.grey[850]),
     );
   }
 
   static TextTheme _buildTextTheme(TextTheme base) {
     return base.copyWith(
-      headline6: TextStyle(
+      titleLarge: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.headline6?.color,
+        color: base.titleLarge?.color,
         fontSize: 7.sp,
         fontWeight: FontWeight.w500,
       ),
-      headline5: TextStyle(
+      headlineSmall: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.headline5?.color,
+        color: base.headlineSmall?.color,
         fontSize: 10.sp,
       ),
-      headline4: TextStyle(
+      headlineMedium: TextStyle(
           fontFamily: ConstanceData.fontFamily,
-          color: base.headline4?.color,
+          color: base.headlineMedium?.color,
           fontSize: 11.sp),
-      headline3: TextStyle(
+      displaySmall: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.headline3?.color,
+        color: base.displaySmall?.color,
         fontSize: 12.sp,
       ),
-      headline2: TextStyle(
+      displayMedium: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.headline2?.color,
+        color: base.displayMedium?.color,
         fontSize: 13.sp,
       ),
-      headline1: TextStyle(
+      displayLarge: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.headline1?.color,
+        color: base.displayLarge?.color,
         fontSize: 14.sp,
       ),
-      subtitle1: TextStyle(
+      titleMedium: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.subtitle1?.color,
+        color: base.titleMedium?.color,
         fontSize: 20.sp,
       ),
-      subtitle2: TextStyle(
+      titleSmall: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.subtitle2?.color,
+        color: base.titleSmall?.color,
         fontSize: 18.sp,
         fontWeight: FontWeight.w500,
       ),
-      bodyText2: TextStyle(
+      bodyMedium: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.bodyText2?.color,
+        color: base.bodyMedium?.color,
         fontSize: 15.sp,
       ),
-      bodyText1: TextStyle(
+      bodyLarge: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.bodyText1?.color,
+        color: base.bodyLarge?.color,
         fontSize: 12.sp,
       ),
-      button: TextStyle(
+      labelLarge: TextStyle(
           fontFamily: ConstanceData.fontFamily,
-          color: base.button?.color,
+          color: base.labelLarge?.color,
           fontSize: 14.sp,
           fontWeight: FontWeight.w600),
-      caption: TextStyle(
+      bodySmall: TextStyle(
           fontFamily: ConstanceData.fontFamily,
-          color: base.caption?.color,
+          color: base.bodySmall?.color,
           fontSize: 10.sp),
-      overline: TextStyle(
+      labelSmall: TextStyle(
         fontFamily: ConstanceData.fontFamily,
-        color: base.overline?.color,
+        color: base.labelSmall?.color,
         fontSize: 6.h,
       ),
     );

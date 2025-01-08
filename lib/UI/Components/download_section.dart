@@ -1,4 +1,4 @@
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +15,8 @@ class DownloadSection extends StatelessWidget {
   final int id;
   final bool isBookmarked;
   final String format;
-  DownloadSection(this.id,this.isBookmarked, this.format);
+
+  DownloadSection(this.id, this.isBookmarked, this.format);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,8 @@ class DownloadSection extends StatelessWidget {
           GestureDetector(
             onTap: () {
               String page = "details";
-              Share.share('https://tratri.in/link?format=$format&id=$id&details=$page');
+              Share.share(
+                  'https://tratri.in/link?format=$format&id=$id&details=$page');
             },
             child: SizedBox(
               height: 15.h,
@@ -42,10 +44,10 @@ class DownloadSection extends StatelessWidget {
                   const Icon(Icons.share),
                   Text(
                     'Share',
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.white,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          // fontSize: 2.h,
+                          color: Colors.white,
+                        ),
                   ),
                 ],
               ),
@@ -57,11 +59,11 @@ class DownloadSection extends StatelessWidget {
           GestureDetector(
             onTap: () async {
               if ((Provider.of<DataProvider>(
-                  Navigation.instance.navigatorKey.currentContext ??
-                      context,
-                  listen: false)
-                  .profile !=
-                  null) &&
+                              Navigation.instance.navigatorKey.currentContext ??
+                                  context,
+                              listen: false)
+                          .profile !=
+                      null) &&
                   Storage.instance.isLoggedIn) {
                 addBookmark(id, context);
               } else {
@@ -74,13 +76,13 @@ class DownloadSection extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(!isBookmarked?Icons.bookmark_border:Icons.bookmark),
+                  Icon(!isBookmarked ? Icons.bookmark_border : Icons.bookmark),
                   Text(
-                    isBookmarked?'Remove':'Add',
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                      // fontSize: 2.h,
-                      color: Colors.white,
-                    ),
+                    isBookmarked ? 'Remove' : 'Add',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          // fontSize: 2.h,
+                          color: Colors.white,
+                        ),
                   ),
                 ],
               ),
@@ -96,28 +98,59 @@ class DownloadSection extends StatelessWidget {
 
   void addBookmark(int id, context) async {
     Navigation.instance.navigate('/loadingDialog');
-    final reponse = await ApiProvider.instance.addBookmark(id ?? 0);
-    if (reponse.status ?? false) {
-      Fluttertoast.showToast(msg: reponse.message!);
-      final response = await ApiProvider.instance.fetchBookmark();
-      if (response.status ?? false) {
-        Provider.of<DataProvider>(
-            Navigation.instance.navigatorKey.currentContext ?? context,
-            listen: false)
-            .setToBookmarks(response.items ?? []);
-        Navigation.instance.goBack();
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.success,
-          text: "Bookmark added successfully",
-        );
-      } else {
-        Navigation.instance.goBack();
-        CoolAlert.show(
-          context: context,
-          type: CoolAlertType.warning,
-          text: "Something went wrong",
-        );
+    if (Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .currentTab !=
+        2) {
+      final reponse = await ApiProvider.instance.addBookmark(id ?? 0);
+      if (reponse.status ?? false) {
+        Fluttertoast.showToast(msg: reponse.message!);
+        final response = await ApiProvider.instance.fetchBookmark();
+        if (response.status ?? false) {
+          Provider.of<DataProvider>(
+                  Navigation.instance.navigatorKey.currentContext ?? context,
+                  listen: false)
+              .setToBookmarks(response.items ?? []);
+          Navigation.instance.goBack();
+          // CoolAlert.show(
+          //   context: context,
+          //   type: CoolAlertType.success,
+          //   text: "Bookmark added successfully",
+          // );
+        } else {
+          Navigation.instance.goBack();
+          // CoolAlert.show(
+          //   context: context,
+          //   type: CoolAlertType.warning,
+          //   text: "Something went wrong",
+          // );
+        }
+      }
+    } else {
+      final reponse = await ApiProvider.instance.addNoteBookmark(id ?? 0);
+      if (reponse.status ?? false) {
+        Fluttertoast.showToast(msg: reponse.message!);
+        final response = await ApiProvider.instance.fetchNoteBookmark();
+        if (response.status ?? false) {
+          Provider.of<DataProvider>(
+                  Navigation.instance.navigatorKey.currentContext ?? context,
+                  listen: false)
+              .setToBookmarks(response.items ?? []);
+          Navigation.instance.goBack();
+          // CoolAlert.show(
+          //   context: context,
+          //   type: CoolAlertType.success,
+          //   text: "Bookmark added successfully",
+          // );
+        } else {
+          Navigation.instance.goBack();
+          // CoolAlert.show(
+          //   context: context,
+          //   type: CoolAlertType.warning,
+          //   text: "Something went wrong",
+          // );
+        }
       }
     }
   }

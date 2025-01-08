@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 
 import '../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
+
 class CategoryBar extends StatefulWidget {
   const CategoryBar({Key? key}) : super(key: key);
 
@@ -44,7 +45,7 @@ class _CategoryBarState extends State<CategoryBar> {
                 ),
                 Text(
                   i.name ?? "",
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
             ),

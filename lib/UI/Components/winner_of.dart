@@ -12,21 +12,15 @@ class winnerOf extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text("# Winner of ",
-            style: Theme.of(context)
-                .textTheme
-                .headline5
-          // ?.copyWith(fontSize: 11.sp),
-        ),
+        Text("# Winner of ", style: Theme.of(context).textTheme.headlineSmall
+            // ?.copyWith(fontSize: 11.sp),
+            ),
         Text(
           i.name ?? "",
-          style: Theme.of(context)
-              .textTheme
-              .headline5
-              ?.copyWith(
-            color: Colors.blueAccent,
-            // fontSize: 11.sp,
-          ),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.blueAccent,
+                // fontSize: 11.sp,
+              ),
         ),
       ],
     );

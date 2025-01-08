@@ -2,6 +2,7 @@ import 'package:awesome_icons/awesome_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/bookmark.dart';
+import 'package:ebook/Model/enote_banner.dart';
 import 'package:ebook/Model/review.dart';
 
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -15,9 +16,11 @@ import 'package:sizer/sizer.dart';
 import '../Model/book.dart';
 import '../Model/category.dart';
 import '../Model/home_banner.dart';
+import '../Model/library_book_details.dart';
 import '../Networking/api_provider.dart';
 import '../Storage/data_provider.dart';
 import '../UI/Components/pop_up_information.dart';
+import '../UI/Routes/Navigation Page/book_details.dart';
 
 class ConstanceData {
   static const primaryColor = Colors.black;
@@ -200,7 +203,7 @@ class ConstanceData {
         "Sign Up",
         style: Theme.of(context)
             .textTheme
-            .headline5
+            .headlineSmall
             ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       onPressed: () {
@@ -212,7 +215,7 @@ class ConstanceData {
         "Cancel",
         style: Theme.of(context)
             .textTheme
-            .headline5
+            .headlineSmall
             ?.copyWith(color: Colors.white54),
       ),
       onPressed: () {
@@ -224,7 +227,7 @@ class ConstanceData {
         "Log In",
         style: Theme.of(context)
             .textTheme
-            .headline5
+            .headlineSmall
             ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
       ),
       onPressed: () {
@@ -236,11 +239,11 @@ class ConstanceData {
     AlertDialog alert = AlertDialog(
       title: Text(
         "Oops!",
-        style: Theme.of(context).textTheme.headline2,
+        style: Theme.of(context).textTheme.displayMedium,
       ),
       content: Text(
         "You have not logged in yet.\nPlease Log in",
-        style: Theme.of(context).textTheme.headline3,
+        style: Theme.of(context).textTheme.displaySmall,
       ),
       actions: [
         cancelButton,
@@ -269,6 +272,34 @@ class ConstanceData {
       closeProgressThreshold: 10,
       context: Navigation.instance.navigatorKey.currentContext ?? context,
       builder: (context) => PopUpInformation(data: data),
+    );
+  }
+
+  static showEnotes(context, EnoteBanner data) {
+    showCupertinoModalBottomSheet(
+      enableDrag: true,
+      // expand: true,
+      elevation: 15,
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
+      topRadius: const Radius.circular(15),
+      closeProgressThreshold: 10,
+      context: Navigation.instance.navigatorKey.currentContext ?? context,
+      builder: (context) => PopUpEnoteInformation(data: data),
+    );
+  }
+
+  static showBookDetails(context, LibraryBookDetailsModel data) {
+    showCupertinoModalBottomSheet(
+      enableDrag: true,
+      // expand: true,
+      elevation: 15,
+      clipBehavior: Clip.antiAlias,
+      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
+      topRadius: const Radius.circular(15),
+      closeProgressThreshold: 10,
+      context: Navigation.instance.navigatorKey.currentContext ?? context,
+      builder: (context) => PopUpDetailsInformation(data: data),
     );
   }
 

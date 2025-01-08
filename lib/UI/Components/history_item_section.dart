@@ -21,48 +21,43 @@ class HistoryItemsSection extends StatelessWidget {
           return Card(
             color: Colors.grey.shade100,
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 4.w, vertical: 1.h),
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
               child: Row(
-                mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       CachedNetworkImage(
-                        imageUrl:
-                        data.book?.profile_pic ?? "",
+                        imageUrl: data.book?.profile_pic ?? "",
                         height: 5.h,
                       ),
                       SizedBox(
                         width: 2.w,
                       ),
                       Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             '${data.book?.title}',
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2
+                                .displayMedium
                                 ?.copyWith(
-                              // fontSize: 2.5.h,
-                                color: Colors.black,
-                                fontWeight:
-                                FontWeight.bold),
+                                    // fontSize: 2.5.h,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '${data.book?.writer}',
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline5
+                                .headlineSmall
                                 ?.copyWith(
-                              // fontSize: 2.5.h,
-                              color: Colors.black,
-                            ),
+                                  // fontSize: 2.5.h,
+                                  color: Colors.black,
+                                ),
                           ),
                         ],
                       ),
@@ -71,13 +66,10 @@ class HistoryItemsSection extends StatelessWidget {
                   Text(
                     '₹${data.selling_unit_price}',
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3
-                        ?.copyWith(
-                      // fontSize: 2.5.h,
-                      color: Colors.green,
-                    ),
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          // fontSize: 2.5.h,
+                          color: Colors.green,
+                        ),
                   ),
                 ],
               ),

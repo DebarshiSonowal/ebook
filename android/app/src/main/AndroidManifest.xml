@@ -24,6 +24,7 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="Tratri"
+        android:extractNativeLibs="true"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"

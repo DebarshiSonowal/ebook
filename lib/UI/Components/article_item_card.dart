@@ -28,14 +28,13 @@ class articleitemcard extends StatelessWidget {
         Navigation.instance.navigate('/magazineDetails',
             args: "${bookDetails?.id},${count},${bookDetails?.profile_pic}");
       },
-      child:  Container(
+      child: Container(
         width: double.infinity,
         // height: 10.h,
         decoration: BoxDecoration(
           border: Border.all(
             width: 0.5,
-            color:
-            Colors.white, //                   <--- border width here
+            color: Colors.white, //                   <--- border width here
           ),
         ),
         padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 2.5.w),
@@ -53,20 +52,18 @@ class articleitemcard extends StatelessWidget {
                     bookDetails?.title ?? '',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:
-                    Theme.of(context).textTheme.headline6?.copyWith(
-                      color: Colors.white,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                        ),
                   ),
                   Text(
                     current?.title ?? '',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style:
-                    Theme.of(context).textTheme.headline4?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   // SizedBox(
                   //   height: 0.5.h,
@@ -75,13 +72,10 @@ class articleitemcard extends StatelessWidget {
                     current?.short_note ?? '',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        ?.copyWith(
-                      color: Colors.white,
-                      // fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Colors.white,
+                          // fontWeight: FontWeight.bold,
+                        ),
                   ),
                   // Spacer(),
                 ],

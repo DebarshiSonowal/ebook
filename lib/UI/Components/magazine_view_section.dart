@@ -46,9 +46,10 @@ class magazineViewSection extends StatelessWidget {
                     children: [
                       Text(
                         bookDetails?.title ?? '',
-                        style: Theme.of(context).textTheme.headline1?.copyWith(
-                              color: Colors.white,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.displayLarge?.copyWith(
+                                  color: Colors.white,
+                                ),
                       ),
                       SizedBox(
                         height: 2.h,
@@ -57,9 +58,10 @@ class magazineViewSection extends StatelessWidget {
                         bookDetails?.description ?? '',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 4,
-                        style: Theme.of(context).textTheme.headline5?.copyWith(
-                              color: Colors.white,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.white,
+                                ),
                       ),
                     ],
                   ),
@@ -85,13 +87,13 @@ class magazineViewSection extends StatelessWidget {
               itemBuilder: (cont, count) {
                 var current = bookDetails?.articles![count];
                 return count >= 0 &&
-                        (Provider.of<DataProvider>(
-                                    Navigation.instance.navigatorKey
-                                            .currentContext ??
-                                        context,
-                                    listen: true)
-                                .profile ==
-                            null) ||
+                            (Provider.of<DataProvider>(
+                                        Navigation.instance.navigatorKey
+                                                .currentContext ??
+                                            context,
+                                        listen: true)
+                                    .profile ==
+                                null) ||
                         !(bookDetails?.is_bought ?? false)
                     ? BlurredItemCard(
                         bookDetails: bookDetails,

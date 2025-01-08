@@ -1,16 +1,18 @@
-import 'package:cool_alert/cool_alert.dart';
+// import 'package:cool_alert/cool_alert.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Helper/navigator.dart';
+
 extension EmailValidator on String {
   bool isValidEmail() {
     return RegExp(
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(this);
   }
 }
+
 class AppleSignInPage extends StatefulWidget {
   const AppleSignInPage({super.key, required this.token});
   final String token;
@@ -90,22 +92,22 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                      Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _fnameController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your first name',
                         hintText: "Firstname",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -116,13 +118,13 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -138,22 +140,22 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     child: TextField(
                       cursorHeight:
-                      Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _lnameController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your Last name',
                         hintText: "Lastname",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -164,13 +166,13 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -187,22 +189,22 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     child: TextField(
                       keyboardType: TextInputType.number,
                       cursorHeight:
-                      Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _phoneController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your phone number',
                         hintText: "Mobile Number",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
@@ -213,13 +215,13 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          BorderSide(color: Colors.white, width: 1.5),
+                              BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -236,39 +238,40 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     child: TextField(
                       keyboardType: TextInputType.emailAddress,
                       cursorHeight:
-                      Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _emailController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your Email',
                         hintText: "qwerty@gmail.com",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                          borderSide:
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -285,39 +288,40 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
                       cursorHeight:
-                      Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _passwordController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Enter your password',
                         hintText: "Password",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                          borderSide:
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -334,39 +338,40 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     child: TextField(
                       keyboardType: TextInputType.visiblePassword,
                       cursorHeight:
-                      Theme.of(context).textTheme.headline5?.fontSize,
+                          Theme.of(context).textTheme.headlineSmall?.fontSize,
                       autofocus: false,
                       controller: _confirmPasswordController,
                       cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                       decoration: InputDecoration(
                         labelText: 'Confirm your password',
                         hintText: "Password",
                         labelStyle: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 10.sp),
                         hintStyle:
-                        Theme.of(context).textTheme.headline5?.copyWith(
-                          color: Colors.grey.shade400,
-                        ),
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.grey.shade400,
+                                ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
-                          borderSide: const BorderSide(color: Colors.white, width: 2),
+                          borderSide:
+                              const BorderSide(color: Colors.white, width: 2),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           gapPadding: 0.0,
                           borderRadius: BorderRadius.circular(5),
                           borderSide:
-                          const BorderSide(color: Colors.white, width: 1.5),
+                              const BorderSide(color: Colors.white, width: 1.5),
                         ),
                       ),
                     ),
@@ -390,7 +395,7 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     children: [
                       Text(
                         'DOB:',
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
                       SizedBox(
                         width: 2.w,
@@ -403,7 +408,7 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                             // dateLabelText:
                             style: Theme.of(context)
                                 .textTheme
-                                .headline4
+                                .headlineMedium
                                 ?.copyWith(color: Colors.white),
                             // calendarTitle: 'Select a date',
                             // dateHintText: 'Write a date',
@@ -442,7 +447,7 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                     child: ElevatedButton(
                         onPressed: () {
                           if (_phoneController.text.isNotEmpty &&
-                              _phoneController.text.length>7 &&
+                              _phoneController.text.length > 7 &&
                               _passwordController.text.isNotEmpty &&
                               _confirmPasswordController.text.isNotEmpty &&
                               _fnameController.text.isNotEmpty &&
@@ -460,31 +465,33 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                                   current,
                                   _passwordController.text);
                             } else {
-                              CoolAlert.show(
-                                context: context,
-                                type: CoolAlertType.warning,
-                                text: "Confirm Password field is wrong",
-                              );
+                              // CoolAlert.show(
+                              //   context: context,
+                              //   type: CoolAlertType.warning,
+                              //   text: "Confirm Password field is wrong",
+                              // );
                             }
                           } else {
-                            CoolAlert.show(
-                              context: context,
-                              type: CoolAlertType.warning,
-                              text: "Enter proper credentials",
-                            );
+                            // CoolAlert.show(
+                            //   context: context,
+                            //   type: CoolAlertType.warning,
+                            //   text: "Enter proper credentials",
+                            // );
                           }
                         },
                         style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Colors.white),
+                              MaterialStateProperty.all(Colors.white),
                         ),
                         child: Text(
                           'Sign up',
-                          style:
-                          Theme.of(context).textTheme.headline5?.copyWith(
-                            fontSize: 3.h,
-                            color: Colors.black,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontSize: 3.h,
+                                color: Colors.black,
+                              ),
                         )),
                   ),
                 ),
@@ -497,7 +504,7 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                   },
                   child: Text(
                     "Already have an account? Login",
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
               ],
@@ -508,5 +515,6 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
     );
   }
 
-  void CreateAccount(String text, String text2, String text3, String text4, String current, String text5) {}
+  void CreateAccount(String text, String text2, String text3, String text4,
+      String current, String text5) {}
 }

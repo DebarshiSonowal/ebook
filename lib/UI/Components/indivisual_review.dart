@@ -21,18 +21,17 @@ class IndivisualReview extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment:
-            MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 '${data.subscriber}',
                 style: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headlineMedium
                     ?.copyWith(color: Colors.white
-                  // fontSize: 2.h,
-                  // color: Colors.grey.shade200,
-                ),
+                        // fontSize: 2.h,
+                        // color: Colors.grey.shade200,
+                        ),
               ),
               IgnorePointer(
                 child: RatingBar.builder(
@@ -45,10 +44,10 @@ class IndivisualReview extends StatelessWidget {
                     // itemPadding:
                     //     EdgeInsets.symmetric(horizontal: 4.0),
                     itemBuilder: (context, _) => const Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: 10,
-                    ),
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 10,
+                        ),
                     onRatingUpdate: (rating) {}),
               ),
             ],
@@ -60,13 +59,10 @@ class IndivisualReview extends StatelessWidget {
             '${data.content}',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context)
-                .textTheme
-                .headline5
-                ?.copyWith(
-              // fontSize: 2.h,
-              // color: Colors.grey.shade200,
-            ),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                // fontSize: 2.h,
+                // color: Colors.grey.shade200,
+                ),
           ),
         ],
       ),
