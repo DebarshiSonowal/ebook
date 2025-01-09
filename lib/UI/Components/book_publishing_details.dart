@@ -31,6 +31,7 @@ class BookPublishinDetails extends StatelessWidget {
                   'RATINGS',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         // fontSize: 2.h,
+                        fontSize: 14.sp,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -59,6 +60,7 @@ class BookPublishinDetails extends StatelessWidget {
                 '(${bookDetails.average_rating?.toInt()})',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       // fontSize: 2.h,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -76,6 +78,7 @@ class BookPublishinDetails extends StatelessWidget {
                   'LENGTH',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         // fontSize: 2.h,
+                        fontSize: 15.sp,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -89,6 +92,7 @@ class BookPublishinDetails extends StatelessWidget {
                     : '${bookDetails.length} pages | ${bookDetails.total_chapters} chapters',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       // fontSize: 2.h,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -106,6 +110,7 @@ class BookPublishinDetails extends StatelessWidget {
                   'LANGUAGE',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         // fontSize: 2.h,
+                        fontSize: 15.sp,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -117,6 +122,7 @@ class BookPublishinDetails extends StatelessWidget {
                 '${bookDetails.language}',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       // fontSize: 2.h,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -134,6 +140,7 @@ class BookPublishinDetails extends StatelessWidget {
                   'FORMAT',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         // fontSize: 2.h,
+                        fontSize: 15.sp,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -145,6 +152,7 @@ class BookPublishinDetails extends StatelessWidget {
                 '${bookDetails.book_format}',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       // fontSize: 2.h,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade200,
                     ),
               ),
@@ -162,6 +170,7 @@ class BookPublishinDetails extends StatelessWidget {
                   'PUBLISHER',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         // fontSize: 2.h,
+                        fontSize: 15.sp,
                         color: Colors.grey.shade400,
                       ),
                 ),
@@ -178,6 +187,7 @@ class BookPublishinDetails extends StatelessWidget {
                   '${bookDetails.publisher}',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         // fontSize: 2.h,
+                        fontSize: 14.sp,
                         // color: Colors.blueAccent,
                         color: Colors.grey.shade200,
                       ),
@@ -208,6 +218,7 @@ class BookPublishinDetails extends StatelessWidget {
                 bookDetails.released_date ?? "",
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       // fontSize: 2.h,
+                      fontSize: 14.sp,
                       color: Colors.grey.shade200,
                     ),
               ),

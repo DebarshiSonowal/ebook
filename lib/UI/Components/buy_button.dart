@@ -49,7 +49,7 @@ class BuyButton extends StatelessWidget {
                 child: Text(
                   'Buy Now',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontSize: 2.h,
+                        fontSize: 15.sp,
                         color: Colors.black,
                       ),
                 ),
@@ -114,7 +114,7 @@ class BuyButton extends StatelessWidget {
                             : 'Add To Cart',
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontSize: 2.h,
+                                  fontSize: 15.sp,
                                   color: Colors.black,
                                 ),
                       ),

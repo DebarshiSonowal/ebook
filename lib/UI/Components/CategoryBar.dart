@@ -61,7 +61,7 @@ class CategoryBar extends StatelessWidget {
                                     .textTheme
                                     .headlineSmall
                                     ?.copyWith(
-                                      fontSize: 15.sp,
+                                      fontSize: 16.sp,
                                       // color: selected == count
                                       //     ? const Color(0xffffd400)
                                       //     : Colors.white,
@@ -96,7 +96,7 @@ class CategoryBar extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                fontSize: 15.sp,
+                                fontSize: 16.sp,
                                 color: Colors.white,
                               ),
                         ),
@@ -156,7 +156,7 @@ class EnotesCategoryBar extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                fontSize: 15.sp,
+                                fontSize: 17.sp,
                                 // color: selected == count
                                 //     ? const Color(0xffffd400)
                                 //     : Colors.white,
@@ -179,7 +179,7 @@ class EnotesCategoryBar extends StatelessWidget {
                 Navigation.instance.navigate('/categories');
               },
               child: Container(
-                width: 13.w,
+                width: 17.w,
                 height: 3.h,
                 padding: EdgeInsets.all(0.2.h),
                 margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -188,7 +188,7 @@ class EnotesCategoryBar extends StatelessWidget {
                     'More ->',
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontSize: 15.sp,
+                          fontSize: 17.sp,
                           color: Colors.white,
                         ),
                   ),

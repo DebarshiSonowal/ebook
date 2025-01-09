@@ -20,7 +20,9 @@ class Tag_BookDetails extends StatelessWidget {
       ),
       child: Text(
         i.name ?? "",
-        style: Theme.of(context).textTheme.headlineSmall,
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontSize: 14.sp,
+            ),
       ),
     );
   }

@@ -59,6 +59,7 @@ class ReadButton extends StatelessWidget {
                   : 'Read Preview',
           style: Theme.of(context).textTheme.displaySmall?.copyWith(
                 // fontSize: 2.5.h,
+                fontSize: 15.sp,
                 color: Colors.blue,
               ),
         ),

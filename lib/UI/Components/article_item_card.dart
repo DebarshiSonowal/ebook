@@ -54,6 +54,7 @@ class articleitemcard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Colors.white,
+                          fontSize: 15.sp,
                         ),
                   ),
                   Text(
@@ -61,7 +62,8 @@ class articleitemcard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white,
+                          color: Colors.white60,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.bold,
                         ),
                   ),

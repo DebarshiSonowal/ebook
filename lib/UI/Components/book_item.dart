@@ -94,7 +94,7 @@ class _BookItemState extends State<BookItem> {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
-                      fontSize: 15.sp,
+                      fontSize: 17.sp,
                     ),
               ),
             ),
@@ -107,7 +107,7 @@ class _BookItemState extends State<BookItem> {
                 widget.data.writer ?? "",
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 15.sp,
                     ),
               ),
             ),
@@ -199,7 +199,7 @@ class _BookItemState extends State<BookItem> {
                           // selected
                           ? Icons.bookmark
                           : Icons.bookmark_border,
-                      size: 12.sp,
+                      size: 18.sp,
                       color: Colors.grey.shade200,
                     ),
                   );

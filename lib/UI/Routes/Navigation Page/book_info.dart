@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+
 // import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/add_review.dart';
@@ -68,7 +69,8 @@ class _BookInfoState extends State<BookInfo>
           bookDetails?.title ?? "",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: Colors.white,
+                color: Colors.black,
+                fontSize: 19.sp,
               ),
         ),
         // actions: [
@@ -125,10 +127,11 @@ class _BookInfoState extends State<BookInfo>
                                       .displayMedium
                                       ?.copyWith(
                                         color: Colors.white,
+                                        fontSize: 20.sp,
                                       ),
                                 ),
                                 SizedBox(
-                                  height: 2.h,
+                                  height: 1.h,
                                 ),
                                 bookDetails?.book_format != "magazine"
                                     ? Row(
@@ -137,7 +140,10 @@ class _BookInfoState extends State<BookInfo>
                                             "by",
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headlineMedium,
+                                                .headlineMedium
+                                                ?.copyWith(
+                                                  fontSize: 16.sp,
+                                                ),
                                           ),
                                           SizedBox(
                                             width: 1.h,
@@ -155,7 +161,9 @@ class _BookInfoState extends State<BookInfo>
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: Colors.blueAccent),
+                                                    color: Colors.blueAccent,
+                                                    fontSize: 16.sp,
+                                                  ),
                                             ),
                                           ),
                                         ],
@@ -184,7 +192,9 @@ class _BookInfoState extends State<BookInfo>
                                                   .textTheme
                                                   .headlineMedium
                                                   ?.copyWith(
-                                                      color: Colors.blueAccent),
+                                                    color: Colors.blueAccent,
+                                                    fontSize: 16.sp,
+                                                  ),
                                             ),
                                           ),
                                         ],
@@ -194,6 +204,9 @@ class _BookInfoState extends State<BookInfo>
                                 ),
                                 for (var i in bookDetails?.awards ?? [])
                                   winnerOf(i: i),
+                                SizedBox(
+                                  height: 1.5.h,
+                                ),
                                 Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(3.0),
@@ -215,7 +228,7 @@ class _BookInfoState extends State<BookInfo>
                                           .textTheme
                                           .titleLarge
                                           ?.copyWith(
-                                            fontSize: 9.sp,
+                                            fontSize: 15.sp,
                                             color: bookDetails?.selling_price
                                                         ?.toStringAsFixed(2)
                                                         .toString() ==
@@ -317,6 +330,7 @@ class _BookInfoState extends State<BookInfo>
                       'Description:',
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
                             // fontSize: 2.5.h,
+                            fontSize: 17.sp,
                             color: Colors.white,
                           ),
                     ),
@@ -338,7 +352,10 @@ class _BookInfoState extends State<BookInfo>
                       expandText: 'show more',
                       collapseText: 'show less',
                       maxLines: 3,
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontSize: 15.sp,
+                              ),
                       linkColor: Colors.blue,
                     ),
                     SizedBox(
@@ -359,6 +376,7 @@ class _BookInfoState extends State<BookInfo>
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
                             // fontSize: 2.5.h,
                             // color: Colors.grey.shade200,
+                            fontSize: 15.sp,
                             color: Colors.white,
                           ),
                     ),
@@ -399,10 +417,11 @@ class _BookInfoState extends State<BookInfo>
                       },
                       child: Text(
                         "Write a Review",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall
-                            ?.copyWith(color: Colors.blueAccent),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  color: Colors.blueAccent,
+                                  fontSize: 14.sp,
+                                ),
                       ),
                     ),
                     SizedBox(
@@ -430,6 +449,7 @@ class _BookInfoState extends State<BookInfo>
                                 .textTheme
                                 .displayLarge
                                 ?.copyWith(
+                                  fontSize: 15.sp,
                                   // fontSize: 2.5.h,
                                   // color: Colors.grey.shade200,
                                   color: Colors.white,
@@ -506,7 +526,8 @@ class _BookInfoState extends State<BookInfo>
           'Give us rating',
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 19.sp,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -514,16 +535,14 @@ class _BookInfoState extends State<BookInfo>
         message: Text(
           'Give a review to this book',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 12.sp,
-          ),
+          style: TextStyle(fontSize: 17.sp, color: Colors.black54),
         ),
         // your app's logo?
         // image: const FlutterLogo(size: 100),
         submitButtonText: 'Submit',
         submitButtonTextStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 12.sp,
+          color: Colors.black,
+          fontSize: 18.sp,
         ),
         commentHint: '',
         // commentHint: 'Set your custom comment hint',

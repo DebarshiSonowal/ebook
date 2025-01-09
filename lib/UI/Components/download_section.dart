@@ -46,6 +46,7 @@ class DownloadSection extends StatelessWidget {
                     'Share',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           // fontSize: 2.h,
+                          fontSize: 15.sp,
                           color: Colors.white,
                         ),
                   ),
@@ -82,6 +83,7 @@ class DownloadSection extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           // fontSize: 2.h,
                           color: Colors.white,
+                          fontSize: 15.sp,
                         ),
                   ),
                 ],

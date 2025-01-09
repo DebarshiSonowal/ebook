@@ -25,13 +25,11 @@ class IndivisualReview extends StatelessWidget {
             children: [
               Text(
                 '${data.subscriber}',
-                style: Theme.of(context)
-                    .textTheme
-                    .headlineMedium
-                    ?.copyWith(color: Colors.white
-                        // fontSize: 2.h,
-                        // color: Colors.grey.shade200,
-                        ),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Colors.white, fontSize: 15.sp,
+                      // fontSize: 2.h,
+                      // color: Colors.grey.shade200,
+                    ),
               ),
               IgnorePointer(
                 child: RatingBar.builder(
@@ -60,8 +58,9 @@ class IndivisualReview extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                // fontSize: 2.h,
-                // color: Colors.grey.shade200,
+                  fontSize: 14.sp,
+                  // fontSize: 2.h,
+                  // color: Colors.grey.shade200,
                 ),
           ),
         ],

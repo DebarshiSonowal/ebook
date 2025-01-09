@@ -45,10 +45,10 @@ class _MagazineArticlesState extends State<MagazineArticles> {
         title: Text(
           bookDetails?.title ?? "",
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context)
-              .textTheme
-              .displayLarge
-              ?.copyWith(color: Colors.white),
+          style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: Colors.white,
+                fontSize: 15.sp,
+              ),
         ),
         backgroundColor: Colors.black,
       ),

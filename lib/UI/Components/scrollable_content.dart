@@ -35,7 +35,7 @@ class ScrollableContent extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
-                    ?.copyWith(color: Colors.white, fontSize: 18.sp),
+                    ?.copyWith(color: Colors.white, fontSize: 20.sp),
               ),
             ),
             SizedBox(height: 0.5.h),
@@ -50,10 +50,10 @@ class ScrollableContent extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: Colors.blue, fontSize: 15.sp),
+                    ?.copyWith(color: Colors.blue, fontSize: 16.sp),
               ),
             ),
-
+            SizedBox(height: 0.5.h),
             Row(
               children: [
                 IgnorePointer(
@@ -81,7 +81,7 @@ class ScrollableContent extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .headlineSmall
-                      ?.copyWith(color: Colors.white, fontSize: 15.sp),
+                      ?.copyWith(color: Colors.white, fontSize: 16.sp),
                 ),
               ],
             ),
@@ -140,7 +140,7 @@ class ScrollableContent extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 0.7.h),
+            SizedBox(height: 1.h),
             TagsSection(data: data),
             SizedBox(height: 0.7.h),
             data.awards!.isNotEmpty

@@ -83,7 +83,7 @@ class _BookDetailsState extends State<BookDetails>
   List<BookChapter> chapters = [];
   List<ReadingChapter> reading = [];
   String read = '', reviewUrl = "";
-  var _counterValue = 13.sp;
+  var _counterValue = 15.sp;
   PageController pageController = PageController(
     initialPage: 0,
   );
@@ -139,7 +139,7 @@ class _BookDetailsState extends State<BookDetails>
                 style: Theme.of(context)
                     .textTheme
                     .displayMedium
-                    ?.copyWith(color: getTextColor(), fontSize: 14.sp),
+                    ?.copyWith(color: getTextColor(), fontSize: 16.sp),
               ),
               backgroundColor: getBackGroundColor(),
               actions: [
@@ -288,7 +288,7 @@ class _BookDetailsState extends State<BookDetails>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 16.sp),
               ),
               SizedBox(
                 height: 1.h,
@@ -326,7 +326,7 @@ class _BookDetailsState extends State<BookDetails>
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall
-                                ?.copyWith(color: data.color1, fontSize: 12.sp),
+                                ?.copyWith(color: data.color1, fontSize: 14.sp),
                           ),
                         ),
                       ),
@@ -347,7 +347,7 @@ class _BookDetailsState extends State<BookDetails>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -355,8 +355,8 @@ class _BookDetailsState extends State<BookDetails>
               ToggleSwitch(
                 minWidth: 15.w,
                 minHeight: 4.h,
-                fontSize: 12.sp,
-                initialLabelIndex: (_counterValue == 13.sp
+                fontSize: 14.sp,
+                initialLabelIndex: (_counterValue == 15.sp
                         ? 0
                         : _counterValue == 17.sp
                             ? 1
@@ -367,7 +367,7 @@ class _BookDetailsState extends State<BookDetails>
                 inactiveBgColor: Colors.grey,
                 inactiveFgColor: Colors.grey[900],
                 totalSwitches: 3,
-                labels: const ['13', '17', '20'],
+                labels: const ['15', '17', '20'],
                 onToggle: (index) {
                   switch (index) {
                     case 1:
@@ -377,7 +377,7 @@ class _BookDetailsState extends State<BookDetails>
                       updateFont(20.sp);
                       break;
                     default:
-                      updateFont(13.sp);
+                      updateFont(15.sp);
                   }
                 },
               ),
@@ -389,7 +389,7 @@ class _BookDetailsState extends State<BookDetails>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
               ),
               Slider(
                   value: brightness,
@@ -548,7 +548,7 @@ class _BookDetailsState extends State<BookDetails>
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15.sp,
+                        fontSize: 18.sp,
                       ),
                 ),
                 Slider(
@@ -582,7 +582,7 @@ class _BookDetailsState extends State<BookDetails>
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 12.sp,
+                                fontSize: 15.sp,
                               ),
                     ),
                     Text(
@@ -591,7 +591,7 @@ class _BookDetailsState extends State<BookDetails>
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 12.sp,
+                                fontSize: 15.sp,
                               ),
                     ),
                   ],

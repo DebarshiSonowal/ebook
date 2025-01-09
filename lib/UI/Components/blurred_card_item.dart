@@ -119,6 +119,7 @@ class BlurredItemCard extends StatelessWidget {
                               .headlineMedium
                               ?.copyWith(
                                 color: Colors.white,
+                                fontSize: 15.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
@@ -133,7 +134,8 @@ class BlurredItemCard extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                color: Colors.white,
+                                color: Colors.white60,
+                                fontSize: 13.sp,
                                 // fontWeight: FontWeight.bold,
                               ),
                         ),

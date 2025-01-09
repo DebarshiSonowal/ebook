@@ -75,7 +75,7 @@ class bookBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: 16.sp,
+                                fontSize: 18.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -88,7 +88,7 @@ class bookBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontSize: 14.sp,
+                                fontSize: 16.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -229,7 +229,7 @@ class enoteBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: 16.sp,
+                                fontSize: 18.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -242,7 +242,7 @@ class enoteBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontSize: 14.sp,
+                                fontSize: 16.sp,
                                 color: Colors.white,
                               ),
                     ),

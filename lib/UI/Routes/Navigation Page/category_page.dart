@@ -48,7 +48,10 @@ class _CategoryPageState extends State<CategoryPage> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineMedium
-                                    ?.copyWith(color: Colors.white),
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 15.sp,
+                                    ),
                               ),
                             ),
                           ),

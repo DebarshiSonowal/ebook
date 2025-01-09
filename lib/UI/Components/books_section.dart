@@ -34,7 +34,7 @@ class BooksSection extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
-                        fontSize: 17.sp,
+                        fontSize: 19.sp,
                       ),
                 ),
               ],

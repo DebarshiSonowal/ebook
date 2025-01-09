@@ -36,7 +36,7 @@ class NewTabBar extends StatelessWidget {
                     (count) => Tab(
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            vertical: 1.h, horizontal: 5.w),
+                            vertical: 1.h, horizontal: 3.w),
                         decoration: BoxDecoration(
                           border: (count) == data.currentTab
                               ? const Border(
@@ -54,7 +54,7 @@ class NewTabBar extends StatelessWidget {
                               .textTheme
                               .displaySmall
                               ?.copyWith(
-                                fontSize: 15.sp,
+                                fontSize: 16.sp,
                                 color: (count) == data.currentTab
                                     ? Colors.white
                                     : Colors.grey.shade600,
