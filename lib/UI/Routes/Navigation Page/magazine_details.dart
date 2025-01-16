@@ -81,7 +81,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   );
   List<BookChapter> chapters = [];
 
-  var _counterValue = 11.sp;
+  var _counterValue = 17.sp;
 
   var test = '''''', text = "";
   DynamicSize _dynamicSize = DynamicSizeImpl();
@@ -281,7 +281,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
         style: Theme.of(context)
             .textTheme
             .displayLarge
-            ?.copyWith(color: getTextColor()),
+            ?.copyWith(color: getTextColor(), fontSize: 16.sp),
       ),
       backgroundColor: getBackGroundColor(),
       actions: [
@@ -345,7 +345,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
               ),
               SizedBox(
                 height: 1.h,
@@ -383,7 +383,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall
-                                ?.copyWith(color: data.color1, fontSize: 12.sp),
+                                ?.copyWith(color: data.color1, fontSize: 17.sp),
                           ),
                         ),
                       ),
@@ -404,7 +404,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
               ),
               SizedBox(
                 height: 0.5.h,
@@ -437,10 +437,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               ToggleSwitch(
                 minWidth: 15.w,
                 minHeight: 4.h,
-                fontSize: 12.sp,
-                initialLabelIndex: (_counterValue == 11.sp
+                fontSize: 14.sp,
+                initialLabelIndex: (_counterValue == 17.sp
                         ? 0
-                        : _counterValue == 14.sp
+                        : _counterValue == 17.sp
                             ? 1
                             : 2) ??
                     0,
@@ -449,17 +449,17 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 inactiveBgColor: Colors.grey,
                 inactiveFgColor: Colors.grey[900],
                 totalSwitches: 3,
-                labels: ['11', '14', '17'],
+                labels: ['17', '19', '22'],
                 onToggle: (index) {
                   switch (index) {
                     case 1:
-                      updateFont(14.sp);
+                      updateFont(19.sp);
                       break;
                     case 2:
-                      updateFont(17.sp);
+                      updateFont(22.sp);
                       break;
                     default:
-                      updateFont(11.sp);
+                      updateFont(17.sp);
                   }
                 },
               ),
@@ -471,9 +471,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 13.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
               ),
               Slider(
+                  inactiveColor: Colors.grey.shade800,
                   value: brightness,
                   onChanged: (value) {
                     _(() {

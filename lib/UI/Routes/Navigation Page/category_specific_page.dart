@@ -41,7 +41,8 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
           widget.content.split(",")[0] ?? "",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: Colors.white,
+                fontSize: 19.sp,
+                color: Colors.black,
               ),
         ),
         actions: [
@@ -55,6 +56,9 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
         ],
       ),
       body: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: 1.h,
+        ),
         height: double.infinity,
         width: double.infinity,
         color: ConstanceData.primaryColor,

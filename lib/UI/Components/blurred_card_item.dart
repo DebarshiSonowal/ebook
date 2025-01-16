@@ -105,10 +105,10 @@ class BlurredItemCard extends StatelessWidget {
                           bookDetails?.title ?? '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    color: Colors.white,
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: Colors.white, fontSize: 17.sp),
                         ),
                         Text(
                           current?.title ?? '',

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+
 // import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/home_banner.dart';
@@ -60,12 +61,15 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.grey.shade200,
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
         title: Text(
           "Search",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 18.sp,
               ),
         ),
@@ -73,7 +77,7 @@ class _SearchPageState extends State<SearchPage> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        color: Colors.black,
+        color: Colors.black12,
         padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 3.w),
         child: Consumer<DataProvider>(builder: (context, data, _) {
           return SingleChildScrollView(
@@ -354,7 +358,7 @@ class _SearchPageState extends State<SearchPage> {
                         },
                         separatorBuilder: (cont, count) {
                           return SizedBox(
-                            height: 2.h,
+                            height: 0.5.h,
                           );
                         },
                         itemCount: data.search_results.length,
@@ -973,13 +977,14 @@ class SearchItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 60.w,
+                  width: 57.w,
                   child: Text(
                     current.title ?? "",
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.displayMedium?.copyWith(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
+                          fontSize: 18.sp,
                         ),
                   ),
                 ),
@@ -989,10 +994,12 @@ class SearchItem extends StatelessWidget {
                 Text(
                   current.writer ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: Colors.black,
-                        // fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium
+                      ?.copyWith(color: Colors.black, fontSize: 16.sp
+                          // fontWeight: FontWeight.bold,
+                          ),
                 ),
                 SizedBox(
                   height: 1.5.h,
@@ -1005,11 +1012,13 @@ class SearchItem extends StatelessWidget {
                       style:
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: Colors.black,
+                                fontSize: 15.sp,
                               ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.star,
                       color: Colors.yellow,
+                      size: 19.sp,
                     ),
                   ],
                 ),
@@ -1023,6 +1032,7 @@ class SearchItem extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.green,
                         fontWeight: FontWeight.bold,
+                        fontSize: 15.sp,
                       ),
                 ),
               ],

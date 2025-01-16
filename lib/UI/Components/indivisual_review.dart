@@ -58,7 +58,7 @@ class IndivisualReview extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontSize: 14.sp,
+                  fontSize: 17.sp,
                   // fontSize: 2.h,
                   // color: Colors.grey.shade200,
                 ),

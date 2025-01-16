@@ -49,7 +49,7 @@ class magazineViewSection extends StatelessWidget {
                         style:
                             Theme.of(context).textTheme.displayLarge?.copyWith(
                                   color: Colors.white,
-                                  fontSize: 15.sp,
+                                  fontSize: 17.sp,
                                 ),
                       ),
                       SizedBox(
@@ -62,7 +62,7 @@ class magazineViewSection extends StatelessWidget {
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: Colors.white,
-                                  fontSize: 13.sp,
+                                  fontSize: 16.sp,
                                 ),
                       ),
                     ],

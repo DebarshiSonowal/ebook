@@ -83,7 +83,7 @@ class _BookDetailsState extends State<BookDetails>
   List<BookChapter> chapters = [];
   List<ReadingChapter> reading = [];
   String read = '', reviewUrl = "";
-  var _counterValue = 15.sp;
+  var _counterValue = 17.sp;
   PageController pageController = PageController(
     initialPage: 0,
   );
@@ -244,7 +244,7 @@ class _BookDetailsState extends State<BookDetails>
                                           '#': Style(
                                             fontSize: FontSize(_counterValue),
 
-                                            // maxLines: 20,
+                                            // maxLines: 22,
                                             color: getBackGroundColor(),
                                             // textOverflow: TextOverflow.ellipsis,
                                           ),
@@ -277,7 +277,7 @@ class _BookDetailsState extends State<BookDetails>
       // title: Text('Welcome'),
       content: StatefulBuilder(builder: (context, _) {
         return SizedBox(
-          // height: 20.h,
+          // height: 22.h,
           width: 50.w,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -347,18 +347,18 @@ class _BookDetailsState extends State<BookDetails>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 17.sp),
               ),
               SizedBox(
                 height: 0.5.h,
               ),
               ToggleSwitch(
-                minWidth: 15.w,
+                minWidth: 17.w,
                 minHeight: 4.h,
                 fontSize: 14.sp,
-                initialLabelIndex: (_counterValue == 15.sp
+                initialLabelIndex: (_counterValue == 17.sp
                         ? 0
-                        : _counterValue == 17.sp
+                        : _counterValue == 20.sp
                             ? 1
                             : 2) ??
                     0,
@@ -367,17 +367,17 @@ class _BookDetailsState extends State<BookDetails>
                 inactiveBgColor: Colors.grey,
                 inactiveFgColor: Colors.grey[900],
                 totalSwitches: 3,
-                labels: const ['15', '17', '20'],
+                labels: const ['17', '20', '22'],
                 onToggle: (index) {
                   switch (index) {
                     case 1:
-                      updateFont(17.sp);
-                      break;
-                    case 2:
                       updateFont(20.sp);
                       break;
+                    case 2:
+                      updateFont(22.sp);
+                      break;
                     default:
-                      updateFont(15.sp);
+                      updateFont(17.sp);
                   }
                 },
               ),
@@ -389,7 +389,7 @@ class _BookDetailsState extends State<BookDetails>
                 style: Theme.of(context)
                     .textTheme
                     .headlineSmall
-                    ?.copyWith(color: getBackGroundColor(), fontSize: 15.sp),
+                    ?.copyWith(color: getBackGroundColor(), fontSize: 17.sp),
               ),
               Slider(
                   value: brightness,
@@ -528,16 +528,16 @@ class _BookDetailsState extends State<BookDetails>
     showCupertinoModalBottomSheet(
       enableDrag: true,
       // expand: true,
-      elevation: 15,
+      elevation: 17,
       clipBehavior: Clip.antiAlias,
       backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
-      topRadius: const Radius.circular(15),
+      topRadius: const Radius.circular(17),
       closeProgressThreshold: 10,
       context: Navigation.instance.navigatorKey.currentContext ?? context,
       builder: (context) => Material(
         child: StatefulBuilder(builder: (context, _) {
           return Container(
-            height: 14.h,
+            height: 16.h,
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
             child: Column(
@@ -552,6 +552,7 @@ class _BookDetailsState extends State<BookDetails>
                       ),
                 ),
                 Slider(
+                  inactiveColor: Colors.black12,
                   value: pageController.page ?? 1,
                   onChanged: (value) {
                     _(() {
@@ -582,7 +583,7 @@ class _BookDetailsState extends State<BookDetails>
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 15.sp,
+                                fontSize: 17.sp,
                               ),
                     ),
                     Text(
@@ -591,7 +592,7 @@ class _BookDetailsState extends State<BookDetails>
                           Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
-                                fontSize: 15.sp,
+                                fontSize: 17.sp,
                               ),
                     ),
                   ],

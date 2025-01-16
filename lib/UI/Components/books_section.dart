@@ -17,25 +17,29 @@ class BooksSection extends StatelessWidget {
     return Container(
       // color: ConstanceData.secondaryColor,
       padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 2.w),
-      height: 37.h,
+      height: 39.5.h,
       width: double.infinity,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: 6.h,
+            height: 9.h,
             width: double.infinity,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
-                        fontSize: 19.sp,
-                      ),
+                SizedBox(
+                  width: 80.w,
+                  child: Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.white,
+                          fontSize: 19.sp,
+                        ),
+                  ),
                 ),
               ],
             ),

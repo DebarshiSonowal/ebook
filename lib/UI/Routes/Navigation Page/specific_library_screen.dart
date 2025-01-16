@@ -37,6 +37,15 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
             fontSize: 17.sp,
           ),
         ),
+        actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Icon(Icons.search),
+          ),
+          SizedBox(
+            width: 2.w,
+          ),
+        ],
       ),
       body: Container(
         color: ConstanceData.primaryColor,
@@ -44,31 +53,118 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 0.7.h, horizontal: 2.w),
         child: Consumer<DataProvider>(builder: (cont, data, _) {
-          return GridView.builder(
-              itemCount: data.library.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2 / 2.5,
-                crossAxisSpacing: 10.w,
+          return Column(
+            children: [
+              TabBar(
+                controller: _controller,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white54,
+                tabs: [
+                  Tab(text: 'E-Book'),
+                  Tab(text: 'Magazine'),
+                  Tab(text: 'E-Notes'),
+                ],
               ),
-              itemBuilder: (context, count) {
-                var current = data.library[count];
-                return GestureDetector(
-                  onTap: () {
-                    // Navigation.instance.navigate('/reading',
-                    //     args: (data.myBooks[count].id) ?? 0);
-                    // Navigation.instance
-                    //     .navigate('/bookDetails', args: current.id ?? 0);
-                    ConstanceData.showBookDetails(context, current);
-                  },
-                  child: Card(
-                    child: CachedNetworkImage(
-                      imageUrl: current.profile_pic ?? "",
-                      fit: BoxFit.fill,
+              SizedBox(
+                height: 1.h,
+              ),
+              SizedBox(
+                height: 80.h,
+                child: TabBarView(
+                  controller: _controller,
+                  children: [
+                    GridView.builder(
+                      itemCount: data.library
+                          .where(
+                              (e) => e.book_format?.toLowerCase() == "e-book")
+                          .toList()
+                          .length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 2.5,
+                        crossAxisSpacing: 10.w,
+                      ),
+                      itemBuilder: (context, count) {
+                        var current = data.library
+                            .where(
+                                (e) => e.book_format?.toLowerCase() == "e-book")
+                            .toList()[count];
+                        return GestureDetector(
+                          onTap: () {
+                            ConstanceData.showBookDetails(context, current);
+                          },
+                          child: Card(
+                            child: CachedNetworkImage(
+                              imageUrl: current.profile_pic ?? "",
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                );
-              });
+                    GridView.builder(
+                      itemCount: data.library
+                          .where(
+                              (e) => e.book_format?.toLowerCase() == "magazine")
+                          .toList()
+                          .length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 2.5,
+                        crossAxisSpacing: 10.w,
+                      ),
+                      itemBuilder: (context, count) {
+                        var current = data.library
+                            .where((e) =>
+                                e.book_format?.toLowerCase() == "magazine")
+                            .toList()[count];
+                        return GestureDetector(
+                          onTap: () {
+                            ConstanceData.showBookDetails(context, current);
+                          },
+                          child: Card(
+                            child: CachedNetworkImage(
+                              imageUrl: current.profile_pic ?? "",
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    GridView.builder(
+                      itemCount: data.library
+                          .where(
+                              (e) => e.book_format?.toLowerCase() == "e-note")
+                          .toList()
+                          .length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 2 / 2.5,
+                        crossAxisSpacing: 10.w,
+                      ),
+                      itemBuilder: (context, count) {
+                        var current = data.library
+                            .where(
+                                (e) => e.book_format?.toLowerCase() == "e-note")
+                            .toList()[count];
+                        return GestureDetector(
+                          onTap: () {
+                            ConstanceData.showBookDetails(context, current);
+                          },
+                          child: Card(
+                            child: CachedNetworkImage(
+                              imageUrl: current.profile_pic ?? "",
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
         }),
       ),
     );
@@ -79,11 +175,12 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
     super.initState();
 
     _controller = TabController(
-      length: 2,
+      length: 3,
       vsync: this,
     );
     Future.delayed(Duration.zero, () {
       fetchData();
+      setState(() {});
     });
   }
 

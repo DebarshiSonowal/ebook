@@ -9,6 +9,7 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 // import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -216,7 +217,7 @@ class ConstanceData {
         style: Theme.of(context)
             .textTheme
             .headlineSmall
-            ?.copyWith(color: Colors.white54),
+            ?.copyWith(color: Colors.black87, fontSize: 14.sp),
       ),
       onPressed: () {
         Navigation.instance.goBack();
@@ -225,10 +226,8 @@ class ConstanceData {
     Widget launchButton = TextButton(
       child: Text(
         "Log In",
-        style: Theme.of(context)
-            .textTheme
-            .headlineSmall
-            ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14.sp),
       ),
       onPressed: () {
         Navigation.instance.navigate('/login');
@@ -239,12 +238,16 @@ class ConstanceData {
     AlertDialog alert = AlertDialog(
       title: Text(
         "Oops!",
-        style: Theme.of(context).textTheme.displayMedium,
+        style: Theme.of(context).textTheme.displayMedium?.copyWith(
+              color: Colors.black,
+              fontSize: 18.sp,
+            ),
       ),
-      content: Text(
-        "You have not logged in yet.\nPlease Log in",
-        style: Theme.of(context).textTheme.displaySmall,
-      ),
+      content: Text("You have not logged in yet.\nPlease Log in",
+          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                color: Colors.black,
+                fontSize: 16.sp,
+              )),
       actions: [
         cancelButton,
         // signUpButton,

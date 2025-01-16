@@ -112,6 +112,7 @@ class _HomePageState extends State<HomePage>
                     NewTabBar(controller: _controller),
                     const NewSearchBar(),
                     data.currentTab == 2
+                        // ? Container()
                         ? EnotesCategoryBar()
                         : const CategoryBar(),
                     Expanded(

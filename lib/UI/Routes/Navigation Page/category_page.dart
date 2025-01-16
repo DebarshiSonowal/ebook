@@ -41,16 +41,22 @@ class _CategoryPageState extends State<CategoryPage> {
                                 args: '${data.title},${data.id}');
                           },
                           child: Container(
-                            height: 10.h,
+                            padding: EdgeInsets.symmetric(
+                              vertical: 1.h,
+                            ),
+                            // height: 10.h,
                             child: Center(
                               child: Text(
-                                data.title ?? "",
+                                (data.title ?? "")
+                                        .substring(0, 1)
+                                        .toUpperCase() +
+                                    (data.title ?? "").substring(1),
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineMedium
                                     ?.copyWith(
                                       color: Colors.white,
-                                      fontSize: 15.sp,
+                                      fontSize: 18.sp,
                                     ),
                               ),
                             ),

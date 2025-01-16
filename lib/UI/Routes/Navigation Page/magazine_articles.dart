@@ -47,7 +47,7 @@ class _MagazineArticlesState extends State<MagazineArticles> {
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
                 color: Colors.white,
-                fontSize: 15.sp,
+                fontSize: 17.sp,
               ),
         ),
         backgroundColor: Colors.black,

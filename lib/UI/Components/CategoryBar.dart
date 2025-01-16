@@ -34,7 +34,9 @@ class CategoryBar extends StatelessWidget {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount:
-                          current.categoryList[current.currentTab].length ~/ 2,
+                          current.categoryList[current.currentTab].length > 3
+                              ? 3
+                              : current.categoryList[current.currentTab].length,
                       itemBuilder: (cont, count) {
                         var data =
                             current.categoryList[current.currentTab][count];
@@ -74,7 +76,7 @@ class CategoryBar extends StatelessWidget {
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return SizedBox(
-                          width: 10.w,
+                          width: 2.w,
                         );
                       },
                     ),
@@ -84,7 +86,7 @@ class CategoryBar extends StatelessWidget {
                       Navigation.instance.navigate('/categories');
                     },
                     child: Container(
-                      width: 13.w,
+                      width: 20.w,
                       height: 3.h,
                       padding: EdgeInsets.all(0.2.h),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -135,7 +137,8 @@ class EnotesCategoryBar extends StatelessWidget {
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                itemCount: current.enotes.length,
+                itemCount:
+                    current.enotes.length > 3 ? 3 : current.enotes.length,
                 itemBuilder: (cont, count) {
                   var data = current.enotes[count];
                   return GestureDetector(
@@ -169,7 +172,7 @@ class EnotesCategoryBar extends StatelessWidget {
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return SizedBox(
-                    width: 10.w,
+                    width: 2.w,
                   );
                 },
               ),
@@ -179,7 +182,7 @@ class EnotesCategoryBar extends StatelessWidget {
                 Navigation.instance.navigate('/categories');
               },
               child: Container(
-                width: 17.w,
+                width: 20.w,
                 height: 3.h,
                 padding: EdgeInsets.all(0.2.h),
                 margin: const EdgeInsets.symmetric(horizontal: 5),
