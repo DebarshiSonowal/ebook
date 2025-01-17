@@ -463,6 +463,9 @@ class _BookDetailsState extends State<BookDetails>
     final response = await ApiProvider.instance
         .fetchBookDetails(widget.input.toString().split(',')[0].toString());
     if (response.status ?? false) {
+      if (response.details?.flip_book_url?.isNotEmpty ?? true) {
+        _launchUrl(response.details?.flip_book_url);
+      }
       bookDetails = response.details;
 
       if (mounted) {

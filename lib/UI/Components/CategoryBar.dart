@@ -119,88 +119,93 @@ class EnotesCategoryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, current, _) {
-      return Container(
-        padding: EdgeInsets.only(top: .5.h),
-        decoration: const BoxDecoration(
-          color: const Color(0xff121212),
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.black,
-              width: 1,
-            ),
-          ),
-        ),
-        height: 4.5.h,
-        width: double.infinity,
-        child: Row(
-          children: [
-            Expanded(
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount:
-                    current.enotes.length > 3 ? 3 : current.enotes.length,
-                itemBuilder: (cont, count) {
-                  var data = current.enotes[count];
-                  return GestureDetector(
+      return current.currentIndex == 0
+          ? Container(
+              padding: EdgeInsets.only(top: .5.h),
+              decoration: const BoxDecoration(
+                color: const Color(0xff121212),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                ),
+              ),
+              height: 4.5.h,
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount:
+                          current.enotes.length > 3 ? 3 : current.enotes.length,
+                      itemBuilder: (cont, count) {
+                        var data = current.enotes[count];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigation.instance.navigate('/selectCategories',
+                                args: '${data.title},${data.id}');
+                          },
+                          child: Container(
+                            // width: 18.w,
+                            padding: EdgeInsets.all(0.2.h),
+                            margin: const EdgeInsets.symmetric(horizontal: 5),
+
+                            child: Center(
+                              child: Text(
+                                data.title ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      fontSize: 17.sp,
+                                      // color: selected == count
+                                      //     ? const Color(0xffffd400)
+                                      //     : Colors.white,
+                                      color: Colors.white,
+                                    ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(
+                          width: 2.w,
+                        );
+                      },
+                    ),
+                  ),
+                  GestureDetector(
                     onTap: () {
-                      Navigation.instance.navigate('/selectCategories',
-                          args: '${data.title},${data.id}');
+                      Navigation.instance.navigate('/categories');
                     },
                     child: Container(
-                      // width: 18.w,
+                      width: 20.w,
+                      height: 3.h,
                       padding: EdgeInsets.all(0.2.h),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
-
                       child: Center(
                         child: Text(
-                          data.title ?? "",
+                          'More ->',
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
                                 fontSize: 17.sp,
-                                // color: selected == count
-                                //     ? const Color(0xffffd400)
-                                //     : Colors.white,
                                 color: Colors.white,
                               ),
                         ),
                       ),
                     ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return SizedBox(
-                    width: 2.w,
-                  );
-                },
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigation.instance.navigate('/categories');
-              },
-              child: Container(
-                width: 20.w,
-                height: 3.h,
-                padding: EdgeInsets.all(0.2.h),
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                child: Center(
-                  child: Text(
-                    'More ->',
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontSize: 17.sp,
-                          color: Colors.white,
-                        ),
                   ),
-                ),
+                ],
               ),
-            ),
-          ],
-        ),
-      );
+            )
+          : Container();
     });
   }
 }

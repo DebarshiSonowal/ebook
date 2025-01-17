@@ -41,7 +41,9 @@ class Book {
       contributor,
       publication_name,
       publisher,
-      released_date,review_url;
+      released_date,
+      review_url,
+      flip_book_url;
   double? selling_price, base_price, discount, average_rating;
   List<Tag>? tags, awards;
   bool? is_bookmarked, is_bought;
@@ -81,6 +83,7 @@ class Book {
     released_date = json['released_date'] ?? "";
     publisher = json['publisher'] ?? "";
     review_url = json['review_url'] ?? "";
+    flip_book_url = json['flip_book_url'] ?? "";
 
     tags = json['tags'] == null
         ? []

@@ -44,10 +44,12 @@ class _SearchPageState extends State<SearchPage> {
     Future.delayed(Duration.zero, () => fetchFilter());
     Future.delayed(Duration.zero, () {
       setState(() {
-        _value =
-            Provider.of<DataProvider>(context, listen: false).currentTab == 0
-                ? "e-book"
-                : "magazine";
+        _value = Provider.of<DataProvider>(context, listen: false).currentTab ==
+                0
+            ? "e-book"
+            : Provider.of<DataProvider>(context, listen: false).currentTab == 1
+                ? "magazine"
+                : "e-note";
       });
       if (widget.tags != null && widget.tags != "") {
         search_it("", "", widget.tags, "", "");
@@ -510,6 +512,37 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ],
                     ),
+                    Row(
+                      children: [
+                        Radio(
+                          focusColor: ConstanceData.primaryColor,
+                          // overlayColor: MaterialStateProperty,
+                          groupValue: _value,
+                          value: 'e-note',
+                          fillColor: MaterialStateProperty.all(
+                            ConstanceData.primaryColor,
+                          ),
+                          onChanged: (String? value) {
+                            _(() {
+                              setState(() {
+                                _value = value ?? "";
+                              });
+                            });
+                            Navigation.instance.goBack();
+                          },
+                          activeColor: ConstanceData.primaryColor,
+                        ),
+                        Text(
+                          'E-note',
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: ConstanceData.primaryColor,
+                                    fontSize: 1.8.h,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -597,7 +630,9 @@ class _SearchPageState extends State<SearchPage> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall
-                                      ?.copyWith(color: Colors.black),
+                                      ?.copyWith(
+                                          color: Colors.black,
+                                          fontSize: 14.5.sp),
                                 ),
                               ),
                             );
@@ -726,7 +761,10 @@ class _SearchPageState extends State<SearchPage> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall
-                                      ?.copyWith(color: Colors.black),
+                                      ?.copyWith(
+                                        color: Colors.black,
+                                        fontSize: 14.5.sp,
+                                      ),
                                 ),
                               ),
                             );
@@ -854,7 +892,9 @@ class _SearchPageState extends State<SearchPage> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineSmall
-                                      ?.copyWith(color: Colors.black),
+                                      ?.copyWith(
+                                          color: Colors.black,
+                                          fontSize: 14.5.sp),
                                 ),
                               ),
                             );
