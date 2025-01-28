@@ -39,7 +39,9 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Navigation.instance.navigate("/search");
+            },
             child: Icon(Icons.search),
           ),
           SizedBox(

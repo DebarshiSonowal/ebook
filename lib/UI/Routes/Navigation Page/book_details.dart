@@ -464,6 +464,7 @@ class _BookDetailsState extends State<BookDetails>
         .fetchBookDetails(widget.input.toString().split(',')[0].toString());
     if (response.status ?? false) {
       if (response.details?.flip_book_url?.isNotEmpty ?? true) {
+        Navigation.instance.goBack();
         _launchUrl(response.details?.flip_book_url);
       }
       bookDetails = response.details;

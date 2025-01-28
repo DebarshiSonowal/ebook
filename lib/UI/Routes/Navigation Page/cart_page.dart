@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+
 // import 'package:cool_alert/cool_alert.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:ebook/Model/cart_item.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 // import 'package:quantity_input/quantity_input.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../Helper/navigator.dart';
 import '../../../Networking/api_provider.dart';
@@ -31,9 +33,11 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   String cupon = '';
+  int coins = 0;
   final _razorpay = Razorpay();
   double tempTotal = 1.0;
   String temp_order_id = "";
+  bool loading = false;
 
   @override
   void dispose() {
@@ -46,13 +50,28 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       appBar: AppBar(
         // backgroundColor: Colors.grey.shade200,
+        centerTitle: true,
         title: Text(
           "Cart",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: Colors.white,
+                color: Colors.black,
+                fontSize: 18.sp,
               ),
         ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Navigation.instance.navigate("/wallet");
+            },
+            child: Icon(
+              Icons.wallet,
+            ),
+          ),
+          SizedBox(
+            width: 2.w,
+          ),
+        ],
       ),
       body: Container(
         height: double.infinity,
@@ -61,71 +80,157 @@ class _CartPageState extends State<CartPage> {
         child: Consumer<DataProvider>(builder: (cont, data, _) {
           return data.cartData == null
               ? Container()
-              : Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 0.5.h, horizontal: 3.w),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            // shrinkWrap: true,
-                            children: [
-                              data.items.isEmpty
-                                  ? SizedBox(
-                                      height: 40.h,
-                                      child: EmptyWidget(
-                                        color: Colors.white,
-                                        text:
-                                            "You have not bought anything yet",
-                                      ),
-                                    )
-                                  : CuponsCard(
-                                      cupon: cupon,
-                                      ontap: () async {
-                                        final response = await Navigation
-                                            .instance
-                                            .navigate('/couponPage');
-                                        if (response != null) {
+              : Skeletonizer(
+                  enabled: loading,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 0.5.h, horizontal: 3.w),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              // shrinkWrap: true,
+                              children: [
+                                data.items.isEmpty
+                                    ? SizedBox(
+                                        height: 40.h,
+                                        child: EmptyWidget(
+                                          color: Colors.white,
+                                          text:
+                                              "You have not bought anything yet",
+                                        ),
+                                      )
+                                    : CuponsCard(
+                                        cupon: cupon,
+                                        coins: coins,
+                                        onCouponTap: () async {
+                                          if (cupon == "" || cupon.isEmpty) {
+                                            final response = await Navigation
+                                                .instance
+                                                .navigate('/couponPage');
+                                            if (response != null) {
+                                              setState(() {
+                                                cupon = cupon == response
+                                                    ? ''
+                                                    : response;
+                                              });
+                                              if (cupon.isNotEmpty) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                    ),
+                                                    title: Column(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.check_circle,
+                                                          color: Colors.green,
+                                                          size: 50,
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                          'Coupon Applied!',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors.black,
+                                                            fontSize: 19.sp,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    content: Text(
+                                                      'Coupon code $cupon has been applied to your purchase.',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16.sp,
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        child: Text('OK'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          } else {
+                                            setState(() {
+                                              cupon = "";
+                                            });
+                                          }
+                                        },
+                                        onCoinsTap: () {
                                           setState(() {
-                                            cupon = response;
+                                            coins = coins == 0
+                                                ? (data.rewardResult
+                                                                ?.totalPoints ??
+                                                            0) >
+                                                        int.parse(data.cartData
+                                                                ?.total_price ??
+                                                            "0")
+                                                    ? int.parse(data.cartData
+                                                            ?.total_price ??
+                                                        "0")
+                                                    : data.rewardResult
+                                                            ?.totalPoints ??
+                                                        0
+                                                : 0;
                                           });
-                                        }
-                                      }),
-                              data.items.isEmpty
-                                  ? const shopNowButton()
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: data.items.length,
-                                      itemBuilder: (cont, count) {
-                                        var simpleIntInput = 1;
-                                        var current = data.items[count];
-                                        return CartPageItem(
-                                          data: data,
-                                          current: current,
-                                          simpleIntInput: simpleIntInput,
-                                          removeItem: (int id) {
-                                            removeItem(id);
-                                          },
-                                        );
-                                      })
-                            ],
+                                          if (coins > 0) {
+                                            showCoinsAppliedDialog();
+                                          }
+                                        },
+                                      ),
+                                data.items.isEmpty
+                                    ? const shopNowButton()
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: data.items.length,
+                                        itemBuilder: (cont, count) {
+                                          var simpleIntInput = 1;
+                                          var current = data.items[count];
+                                          return CartPageItem(
+                                            data: data,
+                                            current: current,
+                                            simpleIntInput: simpleIntInput,
+                                            removeItem: (int id) {
+                                              removeItem(id);
+                                            },
+                                          );
+                                        })
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    data.items.isEmpty
-                        ? Container()
-                        : PaymentAddressCard(
-                            data: data,
-                            getTotalAmount: (data) => getTotalAmount(data),
-                            initiatePaymentProcess: (amount) => amount <= 0
-                                ? freeItemsProcess()
-                                : initiatePaymentProcess(),
-                          ),
-                  ],
+                      data.items.isEmpty
+                          ? Container()
+                          : PaymentAddressCard(
+                              data: data,
+                              cupon: cupon,
+                              coins: coins,
+                              getTotalAmount: (data) => getTotalAmount(data),
+                              initiatePaymentProcess: (amount) => amount <= 0
+                                  ? freeItemsProcess()
+                                  : initiatePaymentProcess(),
+                            ),
+                    ],
+                  ),
                 );
         }),
       ),
@@ -146,6 +251,7 @@ class _CartPageState extends State<CartPage> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     Future.delayed(Duration.zero, () {
       fetchCartItems();
+      fetchData();
     });
   }
 
@@ -346,5 +452,66 @@ class _CartPageState extends State<CartPage> {
       //   text: "Something went wrong",
       // );
     }
+  }
+
+  fetchData() async {
+    setState(() {
+      loading = true;
+    });
+    final response = await ApiProvider.instance.getRewards();
+    if (response.success ?? false) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setRewards(response.result!);
+      setState(() {
+        loading = false;
+      });
+    } else {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void showCoinsAppliedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        title: Column(
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 50,
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Coins Applied!',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 19.sp,
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          '$coins coins have been applied to your purchase.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16.sp,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }

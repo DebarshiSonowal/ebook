@@ -27,7 +27,10 @@ class secondPartCard extends StatelessWidget {
                   "Coupon Code",
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.black, fontWeight: FontWeight.bold),
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13.sp,
+                      ),
                 ),
                 SizedBox(
                   height: 1.h,
@@ -38,6 +41,7 @@ class secondPartCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         color: Color(0xff358f8b),
                         fontWeight: FontWeight.bold,
+                        fontSize: 17.sp,
                       ),
                 ),
               ],
@@ -51,6 +55,7 @@ class secondPartCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.black,
+                        fontSize: 14.sp,
                       ),
                 ),
                 Text(
@@ -58,6 +63,7 @@ class secondPartCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         color: Colors.black,
+                        fontSize: 14.sp,
                       ),
                 ),
               ],

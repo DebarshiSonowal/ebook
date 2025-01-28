@@ -43,6 +43,7 @@ import '../Model/order_history.dart';
 import '../Model/profile.dart';
 import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
+import '../Model/reward_response.dart';
 import '../Model/search_response.dart';
 import '../Model/writer.dart';
 
@@ -1793,6 +1794,68 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("enote reviews response: ${e.response}");
       return GenericResponse.withError(e.message);
+    }
+  }
+
+  Future<RewardResponse> getRewards() async {
+    var url = "${baseUrl}/subscribers/rewards";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("enote reviews response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return RewardResponse.fromJson(response?.data);
+      } else {
+        debugPrint("enote reviews error: ${response?.data}");
+        return RewardResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("enote reviews response: ${e.response}");
+      return RewardResponse.withError(e.message ?? "");
+    }
+  }
+
+  Future<RewardResponse> transferRewards(to_account, tranfer_points) async {
+    var url = "$baseUrl/subscribers/rewards/transfer";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    var data = {
+      "to_account": to_account,
+      "tranfer_points": tranfer_points,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response =
+          await dio?.post(url.toString(), data: json.encode(data));
+      debugPrint("transferRewards response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return RewardResponse.fromJson(response?.data);
+      } else {
+        debugPrint("transferRewards error: ${response?.data}");
+        return RewardResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("transferRewards response: ${e.response}");
+      return RewardResponse.withError(e.response?.data['message'] ?? "");
     }
   }
 

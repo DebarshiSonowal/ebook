@@ -25,7 +25,8 @@ class _CouponPageState extends State<CouponPage> {
           "Apply Coupon",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                color: Colors.white,
+                color: Colors.black,
+                fontSize: 18.sp,
               ),
         ),
       ),
@@ -67,6 +68,7 @@ class _CouponPageState extends State<CouponPage> {
                                         .displayLarge
                                         ?.copyWith(
                                           color: Colors.white,
+                                          fontSize: 18.sp,
                                           fontWeight: FontWeight.bold,
                                         ),
                                   ),
@@ -86,6 +88,7 @@ class _CouponPageState extends State<CouponPage> {
                                         .headlineMedium
                                         ?.copyWith(
                                           color: Colors.white,
+                                          fontSize: 14.sp,
                                         ),
                                   ),
                                 ),

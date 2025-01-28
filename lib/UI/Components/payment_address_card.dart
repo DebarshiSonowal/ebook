@@ -5,15 +5,23 @@ import '../../Model/cart_item.dart';
 import '../../Storage/data_provider.dart';
 
 class PaymentAddressCard extends StatelessWidget {
-  const PaymentAddressCard(
-      {Key? key,
-      required this.data,
-      required this.getTotalAmount,
-      required this.initiatePaymentProcess})
-      : super(key: key);
+  const PaymentAddressCard({
+    Key? key,
+    required this.data,
+    required this.getTotalAmount,
+    required this.initiatePaymentProcess,
+    this.cupon,
+    this.coins = 0,
+    this.onUseCoinsTap,
+  }) : super(key: key);
+
   final DataProvider data;
+  final String? cupon;
+  final int coins;
   final Function(Cart data) getTotalAmount;
   final Function(int amount) initiatePaymentProcess;
+  final VoidCallback? onUseCoinsTap;
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -27,7 +35,7 @@ class PaymentAddressCard extends StatelessWidget {
       ),
       child: Container(
         padding: EdgeInsets.all(1.h),
-        height: 10.h,
+        height: 12.h,
         width: double.infinity,
         child: Column(
           children: [
@@ -40,18 +48,67 @@ class PaymentAddressCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          getTotalAmount(data.cartData!).toString() == "0"
-                              ? "Free"
-                              : '₹${getTotalAmount(data.cartData!)}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displaySmall
-                              ?.copyWith(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.sp,
+                        Row(
+                          children: [
+                            if ((cupon != null && cupon!.isNotEmpty) ||
+                                coins != 0)
+                              Text(
+                                '₹${data.cartData!.total_price}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displaySmall
+                                    ?.copyWith(
+                                      decoration: TextDecoration.lineThrough,
+                                      color: Colors.grey,
+                                      fontSize: 16.sp,
+                                    ),
                               ),
+                            SizedBox(width: 1.w),
+                            Text(
+                              getTotalAmount(data.cartData!).toString() == "0"
+                                  ? "Free"
+                                  : '₹${int.parse(getTotalAmount(data.cartData!).toString()) - (cupon != null && cupon!.isNotEmpty ? data.cupons.firstWhere((e) => e.coupon == cupon).value ?? 0 : 0) - (coins != 0 ? coins : 0)}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall
+                                  ?.copyWith(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22.sp,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 0.5.h,
+                        ),
+                        if (cupon != null && (cupon?.isNotEmpty ?? false))
+                          Text(
+                            'Coupon Applied: $cupon',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall
+                                ?.copyWith(
+                                  color: Colors.amber,
+                                  fontSize: 12.sp,
+                                ),
+                          )
+                        else if (coins != 0)
+                          GestureDetector(
+                            onTap: () => onUseCoinsTap,
+                            child: Text(
+                              'Using $coins Coins',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displaySmall
+                                  ?.copyWith(
+                                    color: Colors.amber,
+                                    fontSize: 16.sp,
+                                  ),
+                            ),
+                          ),
+                        SizedBox(
+                          height: 0.5.h,
                         ),
                         Text(
                           'View Detailed Bill',
@@ -60,7 +117,7 @@ class PaymentAddressCard extends StatelessWidget {
                               .displaySmall
                               ?.copyWith(
                                 color: Colors.white,
-                                // fontWeight: FontWeight.bold,
+                                fontSize: 16.sp,
                               ),
                         ),
                       ],
@@ -81,9 +138,13 @@ class PaymentAddressCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Text('Proceed to Pay'),
+                        child: Text(
+                          'Proceed to Pay',
+                          style:
+                              TextStyle(fontSize: 15.sp, color: Colors.white),
+                        ),
                       ),
                     ),
                   ],

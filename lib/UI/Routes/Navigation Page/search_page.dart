@@ -882,7 +882,7 @@ class _SearchPageState extends State<SearchPage> {
                                 value:
                                     selectedAwards[int.parse(current)] ?? false,
                                 onChanged: (value) => _(() {
-                                  print(value);
+                                  debugPrint("${value}");
                                   setState(() {
                                     selectedAwards[int.parse(current)] = value!;
                                   });

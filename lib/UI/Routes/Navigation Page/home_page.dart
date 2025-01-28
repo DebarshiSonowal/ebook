@@ -49,9 +49,11 @@ class _HomePageState extends State<HomePage>
               context: context,
               titleStyle: Theme.of(context).textTheme.displayMedium!.copyWith(
                     color: Colors.black,
+                    fontSize: 18.sp,
                   ),
               msgStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     color: Colors.black,
+                    fontSize: 16.sp,
                   ),
               actions: [
                 IconsOutlineButton(

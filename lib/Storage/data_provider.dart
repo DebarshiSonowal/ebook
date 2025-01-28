@@ -22,6 +22,7 @@ import '../Model/enote_section.dart';
 import '../Model/enotes_chapter.dart';
 import '../Model/enotes_details.dart';
 import '../Model/profile.dart';
+import '../Model/reward_response.dart';
 
 class DataProvider extends ChangeNotifier {
   List<BookFormat>? formats = [];
@@ -49,8 +50,10 @@ class DataProvider extends ChangeNotifier {
   List<EnotesSection> enotesSection = [];
   List<Book> enotesList = [];
   List<Chapter> enotesChapterList = [];
+
   // List<Chapter> enotesChapterList = [];
   EnotesDetails? enotesDetails;
+  RewardResult? rewardResult;
 
   clearAllData() {
     // formats=[];
@@ -103,6 +106,11 @@ class DataProvider extends ChangeNotifier {
 
   setMyBooks(List<Book> list) {
     myBooks = list;
+    notifyListeners();
+  }
+
+  setRewards(RewardResult data) {
+    rewardResult = data;
     notifyListeners();
   }
 

@@ -2,6 +2,8 @@ import 'package:ebook/UI/Routes/Auth/registration_page.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/account_page.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/book_info.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/home_page.dart';
+import 'package:ebook/UI/Routes/Navigation%20Page/transfer_screen.dart';
+import 'package:ebook/UI/Routes/Navigation%20Page/wallet_screen.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 
 import '../UI/Components/loading_dialog.dart';
@@ -105,6 +107,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         authors: (settings.arguments as String),
       ));
     //Main
+    case '/wallet':
+      return FadeTransitionPageRouteBuilder(page: WalletScreen());
+    case '/transfer':
+      return FadeTransitionPageRouteBuilder(page: TransferScreen());
     case '/main':
       return FadeTransitionPageRouteBuilder(page: HomePage());
 

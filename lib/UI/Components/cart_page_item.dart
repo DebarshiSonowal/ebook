@@ -83,15 +83,23 @@ class CartPageItem extends StatelessWidget {
                               .displaySmall
                               ?.copyWith(
                                 color: Colors.white,
+                                fontSize: 16.sp,
                               ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 0.5.h,
                       ),
                       Text(
                         '${current.item_code == null || current.item_code == "" ? 'NA' : current.item_code}',
                         style:
                             Theme.of(context).textTheme.displaySmall?.copyWith(
                                   color: Colors.white,
+                                  fontSize: 14.sp,
                                 ),
+                      ),
+                      SizedBox(
+                        height: 0.5.h,
                       ),
                       Text(
                         ((current.item_unit_cost ?? 1) * simpleIntInput) == 0
@@ -104,7 +112,8 @@ class CartPageItem extends StatelessWidget {
                                           0
                                       ? Colors.green
                                       : Colors.white,
-                                  // fontWeight: FontWeight.bold,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
                                 ),
                       ),
                     ],
@@ -118,6 +127,9 @@ class CartPageItem extends StatelessWidget {
             const DottedLine(
               dashColor: Colors.white60,
             ),
+            SizedBox(
+              height: 0.5.w,
+            ),
             GestureDetector(
               onTap: () {
                 removeItem(current.item_id!);
@@ -129,6 +141,7 @@ class CartPageItem extends StatelessWidget {
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: Colors.red,
                         fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
                       ),
                 ),
               ),
