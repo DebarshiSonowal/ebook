@@ -1859,6 +1859,41 @@ class ApiProvider {
     }
   }
 
+  Future<CartResponse> applyDiscountAPI(
+      discount_for, request_for, coupon_code) async {
+    var url = "$baseUrl/sales/order/apply-discount";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    var data = {
+      "discount_for": discount_for,
+      "request_for": request_for,
+      "coupon_code": coupon_code,
+    };
+    debugPrint(url.toString());
+    try {
+      Response? response =
+          await dio?.get(url.toString(), data: json.encode(data));
+      debugPrint("apply_discount response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return CartResponse.fromJson(response?.data);
+      } else {
+        debugPrint("apply_discount error: ${response?.data}");
+        return CartResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("apply_discount response: ${e.response}");
+      return CartResponse.withError(e.response?.data['message'] ?? "");
+    }
+  }
+
 // Future<MyBooksResponse> fetchMyBooks() async {
   //   var url = "${baseUrl}${path}/my-list";
   //   BaseOptions option = BaseOptions(

@@ -30,7 +30,9 @@ class Cart {
   int? count;
   double? final_amount;
   String? total_price;
-  bool? has_change_exist;
+  int? discount_amount;
+  String? sub_text_msg;
+  bool? has_change_exist, can_use_reward;
   List<CartItem> items = [];
 
   Cart.fromJson(json) {
@@ -44,7 +46,9 @@ class Cart {
         : double.parse(json['final_amount'].toString());
     //bool
     has_change_exist = json['has_change_exist'] ?? false;
-
+    can_use_reward = json['can_use_reward'] ?? false;
+    sub_text_msg = json['sub_text_msg'] ?? "";
+    discount_amount = json['discount_amount'] ?? 0;
     //list
     print(json['items']);
     items = json['items'] == null

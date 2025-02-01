@@ -274,8 +274,12 @@ class _WalletScreenState extends State<WalletScreen> {
                             Row(
                               children: [
                                 Icon(
-                                  FontAwesomeIcons.plus,
-                                  color: Colors.green,
+                                  (item?.is_reward_in == "in" ?? false)
+                                      ? FontAwesomeIcons.plus
+                                      : FontAwesomeIcons.minus,
+                                  color: (item?.is_reward_in == "in" ?? false)
+                                      ? Colors.green
+                                      : Colors.red,
                                   size: 16.sp,
                                 ),
                                 SizedBox(

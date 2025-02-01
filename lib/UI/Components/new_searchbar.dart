@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:awesome_icons/awesome_icons.dart';
 import 'package:badges/badges.dart' as badge;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Storage/data_provider.dart';
@@ -51,6 +52,33 @@ class NewSearchBar extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          SizedBox(width: 4.w),
+          GestureDetector(
+            onTap: () {
+              Navigation.instance.navigate("/wallet");
+            },
+            child: Icon(
+              FontAwesomeIcons.coins,
+              color: Colors.amber,
+              size: 20.sp,
+            ),
+          ),
+          SizedBox(width: 2.w),
+          GestureDetector(
+            onTap: () {
+              Navigation.instance.navigate("/wallet");
+            },
+            child: Consumer<DataProvider>(builder: (context, data, _) {
+              return Text(
+                "${data.rewardResult?.totalPoints ?? 0}",
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      color: Colors.white,
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+              );
+            }),
           ),
           (Platform.isAndroid && !Storage.instance.isLoggedIn)
               ? GestureDetector(

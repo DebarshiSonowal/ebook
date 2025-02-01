@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage>
           child: Scaffold(
             // appBar: buildAppBar(context),
             // backgroundColor: const Color(0xff121212),
-            body: Container(
+            body: SizedBox(
               height: double.infinity,
               width: double.infinity,
               // color: Colors.white30,
@@ -182,6 +182,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
+    fetchData();
     fetchDetails();
     _controller = TabController(
       length: Provider.of<DataProvider>(
@@ -312,5 +313,23 @@ class _HomePageState extends State<HomePage>
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesDetails(response.result);
     } else {}
+  }
+
+  fetchData() async {
+    // setState(() {
+    //   loading = true;
+    // });
+    final response = await ApiProvider.instance.getRewards();
+    if (response.success ?? false) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setRewards(response.result!);
+      // setState(() {
+      //   loading = false;
+      // });
+    } else {
+      // setState(() {
+      //   loading = false;
+      // });
+    }
   }
 }

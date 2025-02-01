@@ -38,7 +38,7 @@ class _CartPageState extends State<CartPage> {
   double tempTotal = 1.0;
   String temp_order_id = "";
   bool loading = false;
-
+  String discount = "0";
   @override
   void dispose() {
     _razorpay.clear(); // Removes all listeners
@@ -92,16 +92,8 @@ class _CartPageState extends State<CartPage> {
                             child: Column(
                               // shrinkWrap: true,
                               children: [
-                                data.items.isEmpty
-                                    ? SizedBox(
-                                        height: 40.h,
-                                        child: EmptyWidget(
-                                          color: Colors.white,
-                                          text:
-                                              "You have not bought anything yet",
-                                        ),
-                                      )
-                                    : CuponsCard(
+                                data.cartData?.can_use_reward ?? false
+                                    ? CuponsCard(
                                         cupon: cupon,
                                         coins: coins,
                                         onCouponTap: () async {
@@ -116,59 +108,26 @@ class _CartPageState extends State<CartPage> {
                                                     : response;
                                               });
                                               if (cupon.isNotEmpty) {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      AlertDialog(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                    ),
-                                                    title: Column(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.check_circle,
-                                                          color: Colors.green,
-                                                          size: 50,
-                                                        ),
-                                                        SizedBox(height: 10),
-                                                        Text(
-                                                          'Coupon Applied!',
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: Colors.black,
-                                                            fontSize: 19.sp,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    content: Text(
-                                                      'Coupon code $cupon has been applied to your purchase.',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 16.sp,
-                                                      ),
-                                                    ),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                context),
-                                                        child: Text('OK'),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
+                                                applyDiscount(
+                                                    "coupon", "add", cupon);
+                                              } else {
+                                                applyDiscount(
+                                                    "coupon", "remove", cupon);
                                               }
+                                            } else {
+                                              setState(() {
+                                                cupon = "";
+                                              });
+                                              setState(() {
+                                                discount = "0";
+                                              });
                                             }
                                           } else {
                                             setState(() {
                                               cupon = "";
+                                            });
+                                            setState(() {
+                                              discount = "0";
                                             });
                                           }
                                         },
@@ -190,10 +149,14 @@ class _CartPageState extends State<CartPage> {
                                                 : 0;
                                           });
                                           if (coins > 0) {
-                                            showCoinsAppliedDialog();
+                                            applyDiscount("reward", "add", "");
+                                          } else {
+                                            applyDiscount(
+                                                "reward", "remove", "");
                                           }
                                         },
-                                      ),
+                                      )
+                                    : Container(),
                                 data.items.isEmpty
                                     ? const shopNowButton()
                                     : ListView.builder(
@@ -224,6 +187,7 @@ class _CartPageState extends State<CartPage> {
                               data: data,
                               cupon: cupon,
                               coins: coins,
+                              discount: discount,
                               getTotalAmount: (data) => getTotalAmount(data),
                               initiatePaymentProcess: (amount) => amount <= 0
                                   ? freeItemsProcess()
@@ -278,9 +242,12 @@ class _CartPageState extends State<CartPage> {
     final response = await ApiProvider.instance.fetchRazorpay();
     if (response.status ?? false) {
       if (cupon == null || cupon == "") {
-        initateOrder(response.razorpay!);
+        initateOrder(response.razorpay!, "REWARDCOIN");
+      } else if (coins != null && coins != 0) {
+        initateOrder(response.razorpay!, cupon);
       } else {
-        applyCoupon(cupon, response.razorpay!);
+        // applyCoupon(cupon, response.razorpay!);
+        initateOrder(response.razorpay!, "");
       }
     } else {
       Navigation.instance.goBack();
@@ -292,7 +259,7 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  void initateOrder(RazorpayKey razorpay) async {
+  void initateOrder(RazorpayKey razorpay, cupon) async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
     if (response.status ?? false) {
       tempTotal = response.order?.grand_total ?? 0;
@@ -412,28 +379,28 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  void applyCoupon(String coupon, RazorpayKey razorpayKey) async {
-    final response =
-        await ApiProvider.instance.applyDiscount(coupon, tempTotal);
-    if (response.success ?? false) {
-      if (mounted) {
-        setState(() {
-          tempTotal = response.amount ?? tempTotal;
-        });
-        initateOrder(razorpayKey);
-      } else {
-        tempTotal = response.amount ?? tempTotal;
-        initateOrder(razorpayKey);
-      }
-    } else {
-      Navigation.instance.goBack();
-      // CoolAlert.show(
-      //   context: context,
-      //   type: CoolAlertType.warning,
-      //   text: "Something went wrong",
-      // );
-    }
-  }
+  // void applyCoupon(String coupon, RazorpayKey razorpayKey) async {
+  //   final response =
+  //       await ApiProvider.instance.applyDiscount(coupon, tempTotal);
+  //   if (response.success ?? false) {
+  //     if (mounted) {
+  //       setState(() {
+  //         tempTotal = response.amount ?? tempTotal;
+  //       });
+  //       initateOrder(razorpayKey);
+  //     } else {
+  //       tempTotal = response.amount ?? tempTotal;
+  //       initateOrder(razorpayKey);
+  //     }
+  //   } else {
+  //     Navigation.instance.goBack();
+  //     // CoolAlert.show(
+  //     //   context: context,
+  //     //   type: CoolAlertType.warning,
+  //     //   text: "Something went wrong",
+  //     // );
+  //   }
+  // }
 
   freeItemsProcess() async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
@@ -513,5 +480,116 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
     );
+  }
+
+  void applyDiscount(discount_for, request_for, coupon_code) async {
+    final response = await ApiProvider.instance
+        .applyDiscountAPI(discount_for, request_for, coupon_code);
+    if (response.status ?? false) {
+      if (discount_for == "reward") {
+        if (coins > 0) {
+          showCoinsAppliedDialog();
+          debugPrint("${response.cart?.discount_amount}");
+          setState(() {
+            discount = "${response.cart?.discount_amount}";
+          });
+        } else {
+          setState(() {
+            discount = "0";
+          });
+        }
+      } else {
+        if (cupon != "") {
+          setState(() {
+            discount = "${response.cart?.discount_amount}";
+          });
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              title: Column(
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 50,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Coupon Applied!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 19.sp,
+                    ),
+                  ),
+                ],
+              ),
+              content: Text(
+                'Coupon code $cupon has been applied to your purchase.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.sp,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          setState(() {
+            discount = "0";
+          });
+        }
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Column(
+            children: [
+              Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 50,
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Error',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 19.sp,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            response.message ?? 'Something went wrong',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16.sp,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

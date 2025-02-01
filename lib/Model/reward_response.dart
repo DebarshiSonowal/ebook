@@ -93,6 +93,7 @@ class RewardList {
   int? isDownloadable;
   bool? isBought;
   String? sellingPrice;
+  String? is_reward_in;
   int? isFree;
   String? basePrice;
   String? discount;
@@ -101,40 +102,42 @@ class RewardList {
   String? chapterUpdatedAt;
   int? rewardPoint;
 
-  RewardList(
-      {this.id,
-      this.code,
-      this.title,
-      this.bookCategoryId,
-      this.contributorId,
-      this.contributor,
-      this.bookFormat,
-      this.category,
-      this.userId,
-      this.approvedRejectedBy,
-      this.publishDate,
-      this.status,
-      this.isCompleted,
-      this.profilePic,
-      this.totalReview,
-      this.totalRating,
-      this.averageRating,
-      this.totalChapters,
-      this.languageId,
-      this.language,
-      this.length,
-      this.shortDescription,
-      this.description,
-      this.isDownloadable,
-      this.isBought,
-      this.sellingPrice,
-      this.isFree,
-      this.basePrice,
-      this.discount,
-      this.flipBookUrl,
-      this.lekhikaCode,
-      this.chapterUpdatedAt,
-      this.rewardPoint});
+  RewardList({
+    this.id,
+    this.code,
+    this.title,
+    this.bookCategoryId,
+    this.contributorId,
+    this.contributor,
+    this.bookFormat,
+    this.category,
+    this.userId,
+    this.approvedRejectedBy,
+    this.publishDate,
+    this.status,
+    this.isCompleted,
+    this.profilePic,
+    this.totalReview,
+    this.totalRating,
+    this.averageRating,
+    this.totalChapters,
+    this.languageId,
+    this.language,
+    this.length,
+    this.shortDescription,
+    this.description,
+    this.isDownloadable,
+    this.isBought,
+    this.sellingPrice,
+    this.isFree,
+    this.basePrice,
+    this.discount,
+    this.flipBookUrl,
+    this.lekhikaCode,
+    this.chapterUpdatedAt,
+    this.rewardPoint,
+    this.is_reward_in,
+  });
 
   RewardList.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -170,6 +173,7 @@ class RewardList {
     lekhikaCode = json['lekhika_code'];
     chapterUpdatedAt = json['chapter_updated_at'];
     rewardPoint = json['reward_point'];
+    is_reward_in = json['is_reward_in'] ?? "out";
   }
 
   Map<String, dynamic> toJson() {
@@ -207,6 +211,7 @@ class RewardList {
     data['lekhika_code'] = this.lekhikaCode;
     data['chapter_updated_at'] = this.chapterUpdatedAt;
     data['reward_point'] = this.rewardPoint;
+    data['is_reward_in'] = this.is_reward_in;
     return data;
   }
 }

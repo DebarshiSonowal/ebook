@@ -455,14 +455,6 @@ class _BookInfoState extends State<BookInfo>
                                   color: Colors.white,
                                 ),
                           ),
-                          // Text(
-                          //   'More >',
-                          //   style:
-                          //       Theme.of(context).textTheme.headline5?.copyWith(
-                          //             // fontSize: 1.5.h,
-                          //             color: Colors.blueAccent,
-                          //           ),
-                          // ),
                         ],
                       ),
                     ),
@@ -558,11 +550,12 @@ class _BookInfoState extends State<BookInfo>
     Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.fetchRazorpay();
     if (response.status ?? false) {
-      if (cupon == null || cupon == "") {
-        initateOrder(response.razorpay!, id);
-      } else {
-        // applyCoupon(cupon, response.razorpay!);
-      }
+      // if (cupon == null || cupon == "") {
+      //
+      // } else {
+      //   // applyCoupon(cupon, response.razorpay!);
+      // }
+      initateOrder(response.razorpay!, id);
     } else {
       Navigation.instance.goBack();
       // CoolAlert.show(

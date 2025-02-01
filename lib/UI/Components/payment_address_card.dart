@@ -13,10 +13,12 @@ class PaymentAddressCard extends StatelessWidget {
     this.cupon,
     this.coins = 0,
     this.onUseCoinsTap,
+    required this.discount,
   }) : super(key: key);
 
   final DataProvider data;
   final String? cupon;
+  final String discount;
   final int coins;
   final Function(Cart data) getTotalAmount;
   final Function(int amount) initiatePaymentProcess;
@@ -67,7 +69,7 @@ class PaymentAddressCard extends StatelessWidget {
                             Text(
                               getTotalAmount(data.cartData!).toString() == "0"
                                   ? "Free"
-                                  : '₹${int.parse(getTotalAmount(data.cartData!).toString()) - (cupon != null && cupon!.isNotEmpty ? data.cupons.firstWhere((e) => e.coupon == cupon).value ?? 0 : 0) - (coins != 0 ? coins : 0)}',
+                                  : '₹${int.parse(getTotalAmount(data.cartData!).toString()) - int.parse(discount)}',
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -82,9 +84,9 @@ class PaymentAddressCard extends StatelessWidget {
                         SizedBox(
                           height: 0.5.h,
                         ),
-                        if (cupon != null && (cupon?.isNotEmpty ?? false))
+                        if (discount != null && (discount != "0"))
                           Text(
-                            'Coupon Applied: $cupon',
+                            'Discount Applied: $discount',
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall
@@ -92,21 +94,33 @@ class PaymentAddressCard extends StatelessWidget {
                                   color: Colors.amber,
                                   fontSize: 12.sp,
                                 ),
-                          )
-                        else if (coins != 0)
-                          GestureDetector(
-                            onTap: () => onUseCoinsTap,
-                            child: Text(
-                              'Using $coins Coins',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displaySmall
-                                  ?.copyWith(
-                                    color: Colors.amber,
-                                    fontSize: 16.sp,
-                                  ),
-                            ),
                           ),
+
+                        // if (cupon != null && (cupon?.isNotEmpty ?? false))
+                        //   Text(
+                        //     'Coupon Applied: $cupon',
+                        //     style: Theme.of(context)
+                        //         .textTheme
+                        //         .displaySmall
+                        //         ?.copyWith(
+                        //           color: Colors.amber,
+                        //           fontSize: 12.sp,
+                        //         ),
+                        //   )
+                        // else if (coins != 0)
+                        //   GestureDetector(
+                        //     onTap: () => onUseCoinsTap,
+                        //     child: Text(
+                        //       'Using $coins Coins',
+                        //       style: Theme.of(context)
+                        //           .textTheme
+                        //           .displaySmall
+                        //           ?.copyWith(
+                        //             color: Colors.amber,
+                        //             fontSize: 16.sp,
+                        //           ),
+                        //     ),
+                        //   ),
                         SizedBox(
                           height: 0.5.h,
                         ),
