@@ -2,6 +2,7 @@ import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
+import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -131,10 +132,22 @@ class _SplashScreenState extends State<SplashScreen> {
       final response =
           await ApiProvider.instance.fetchHomeSections(i.productFormat ?? '');
       if (response.status ?? false) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext!,
-                listen: false)
-            .addHomeSection(response.sections!);
+        if (i.productFormat == 'ebook') {
+          Provider.of<CommonProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: false)
+              .setEbookHomeSections(response.sections!);
+        } else if (i.productFormat == 'magazine') {
+          Provider.of<CommonProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: false)
+              .setMagazineHomeSections(response.sections!);
+        } else if (i.productFormat == 'enotes') {
+          Provider.of<CommonProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: false)
+              .setEnotesHomeSections(response.sections!);
+        }
       }
     }
   }

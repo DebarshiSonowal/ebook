@@ -116,4 +116,40 @@ class Book {
             .map((e) => Article.fromJson(e))
             .toList();
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'book_category_id': book_category_id,
+      'length': length,
+      'total_rating': total_rating,
+      'contributor_id': contributor_id,
+      'no_of_articles': no_of_articles,
+      'total_chapters': total_chapters,
+      'magazine_id': magazine_id,
+      'title': title,
+      'writer': writer,
+      'book_format': book_format,
+      'category': category,
+      'profile_pic': profile_pic,
+      'language': language,
+      'short_description': short_description,
+      'description': description,
+      'contributor': contributor,
+      'publication_name': publication_name,
+      'publisher': publisher,
+      'released_date': released_date,
+      'review_url': review_url,
+      'flip_book_url': flip_book_url,
+      'selling_price': selling_price,
+      'base_price': base_price,
+      'discount': discount,
+      'average_rating': average_rating,
+      'tags': tags?.map((e) => e.toJson()).toList(),
+      'awards': awards?.map((e) => e.toJson()).toList(),
+      'is_bookmarked': is_bookmarked,
+      'is_bought': is_bought,
+      'articles': articles?.map((e) => e.toJson()).toList(),
+      'subscriptions': subscriptions.map((e) => e.toJson()).toList(),
+    };
+  }
 }

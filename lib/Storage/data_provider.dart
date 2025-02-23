@@ -1,6 +1,4 @@
 import 'package:ebook/Model/bookmark.dart';
-import 'package:ebook/Model/home_banner.dart';
-import 'package:ebook/Model/home_section.dart';
 import 'package:ebook/Model/library.dart';
 import 'package:ebook/Model/library_book_details.dart';
 import 'package:ebook/Model/order_history.dart';
@@ -13,217 +11,134 @@ import '../Model/book_category.dart';
 import '../Model/book_details.dart';
 import '../Model/book_format.dart';
 import '../Model/cart_item.dart';
-
-// import '../Model/category.dart';
 import '../Model/discount.dart';
 import '../Model/enote_banner.dart';
 import '../Model/enote_category.dart';
 import '../Model/enote_section.dart';
 import '../Model/enotes_chapter.dart';
 import '../Model/enotes_details.dart';
+import '../Model/home_banner.dart';
+import '../Model/notification_model.dart';
 import '../Model/profile.dart';
 import '../Model/reward_response.dart';
 
 class DataProvider extends ChangeNotifier {
+  // Book data
+  Book? details;
+  final List<Book> cartBooks = [];
+  List<Book> myBooks = [];
+  List<Book> searchResults = [];
+  List<Book> enotesList = [];
   List<BookFormat>? formats = [];
-  List<List<BookCategory>> categoryList = [];
   List<List<Book>>? bannerList = [];
-  List<List<HomeSection>>? homeSection = [];
-  List<Book> cartBooks = [], myBooks = [], search_results = [];
+
+  // Categories
+  final List<List<BookCategory>> categoryList = [];
+  List<EnotesCategory> enotes = [];
+
+  // Library
   List<LibraryBookDetailsModel> library = [];
-  List<BookmarkItem> bookmarks = [];
-  List<CartItem> items = [];
-  List<Discount> cupons = [];
-  List<OrderHistory> orders = [];
   List<Library> libraries = [];
+  List<BookmarkItem> bookmarks = [];
+
+  // Cart
+  List<CartItem> items = [];
   Cart? cartData;
+  List<Discount> coupons = [];
+  List<OrderHistory> orders = [];
+
+  // E-notes
+  List<EnoteBanner> enotesBanner = [];
+  List<EnotesSection> enotesSection = [];
+  List<Chapter> enotesChapterList = [];
+  EnotesDetails? enotesDetails;
+
+  // User
   Profile? profile;
+  writer? writerDetails;
+  List<NotificationItem> notifications = [];
+  RewardResult? rewardResult;
+
+  // UI state
   int currentIndex = 0;
   int currentCategory = 0;
   int currentTab = 0;
   int libraryTab = 0;
   String title = '';
-  Book? details;
-  writer? writerDetails;
-  List<EnotesCategory> enotes = [];
-  List<EnoteBanner> enotesBanner = [];
-  List<EnotesSection> enotesSection = [];
-  List<Book> enotesList = [];
-  List<Chapter> enotesChapterList = [];
 
-  // List<Chapter> enotesChapterList = [];
-  EnotesDetails? enotesDetails;
-  RewardResult? rewardResult;
-
-  clearAllData() {
-    // formats=[];
-    // categoryList=[];
-    // bannerList=[];
-    // homeSection=[];
-    cartBooks = [];
-    myBooks = [];
-    search_results = [];
-    bookmarks = [];
-    items = [];
-    // cupons=[];
-    orders = [];
+  void clearAllData() {
+    cartBooks.clear();
+    myBooks.clear();
+    searchResults.clear();
+    bookmarks.clear();
+    items.clear();
+    orders.clear();
+    notifications.clear();
     cartData = null;
     profile = null;
     notifyListeners();
   }
 
-  setEnotesDetails(EnotesDetails data) {
-    enotesDetails = data;
+  void _notifyChange<T>(T Function() action) {
+    action();
     notifyListeners();
   }
 
-  setBookDetails(Book data) {
-    print("Book details ${details?.title}");
-    details = data;
-    notifyListeners();
-  }
+  // Optimized setters using _notifyChange
+  void setEnotesDetails(EnotesDetails data) =>
+      _notifyChange(() => enotesDetails = data);
+  void setBookDetails(Book data) => _notifyChange(() => details = data);
+  void setTitle(String txt) => _notifyChange(() => title = txt);
+  void setCurrentTab(int i) => _notifyChange(() => currentTab = i);
+  void setProfile(Profile data) => _notifyChange(() => profile = data);
+  void setProfileClear() => _notifyChange(() => profile = null);
+  void setMyBooks(List<Book> list) => _notifyChange(() => myBooks = list);
+  void setRewards(RewardResult data) =>
+      _notifyChange(() => rewardResult = data);
+  void setEnotesCategories(List<EnotesCategory> list) =>
+      _notifyChange(() => enotes = list);
+  void setEnotesBanner(List<EnoteBanner> list) =>
+      _notifyChange(() => enotesBanner = list);
+  void setEnotesSection(List<EnotesSection> list) =>
+      _notifyChange(() => enotesSection = list);
+  void setEnotesList(List<Book> list) => _notifyChange(() => enotesList = list);
+  void setEnotesChapterList(List<Chapter> list) =>
+      _notifyChange(() => enotesChapterList = list);
+  void setLibraryBooks(List<LibraryBookDetailsModel> list) =>
+      _notifyChange(() => library = list);
+  void setLibraries(List<Library> list) =>
+      _notifyChange(() => libraries = list);
+  void setSearchResult(List<Book> list) =>
+      _notifyChange(() => searchResults = list);
+  void setHistory(List<OrderHistory> list) =>
+      _notifyChange(() => orders = list);
+  void setCartData(Cart data) => _notifyChange(() => cartData = data);
+  void setLibraryTab(int i) => _notifyChange(() => libraryTab = i);
+  void setToCart(List<CartItem> list) => _notifyChange(() => items = list);
+  void setCupons(List<Discount> list) => _notifyChange(() => coupons = list);
+  void setIndex(int i) => _notifyChange(() => currentIndex = i);
+  void setCategory(int i) => _notifyChange(() => currentCategory = i);
+  void setWriterDetails(writer? writer) =>
+      _notifyChange(() => writerDetails = writer);
+  void setNotifications(List<NotificationItem> data) =>
+      _notifyChange(() => notifications = data);
 
-  setTitle(String txt) {
-    title = txt;
-    notifyListeners();
-  }
+  void addToCart(Book book) => _notifyChange(() {
+        cartBooks.add(book);
+        Fluttertoast.showToast(msg: "Added to Cart");
+      });
 
-  setCurrentTab(int i) {
-    print('current tab ${i}');
-    currentTab = i;
-    notifyListeners();
-  }
+  void setToBookmarks(List<BookmarkItem> books) =>
+      _notifyChange(() => bookmarks = books);
 
-  setProfile(Profile data) {
-    profile = data;
-    notifyListeners();
-  }
+  void addCategoryList(List<BookCategory> list) =>
+      _notifyChange(() => categoryList.add(list));
 
-  setProfileClear() {
-    profile = null;
-    notifyListeners();
-  }
+  void addBannerList(List<Book> list) =>
+      _notifyChange(() => bannerList?.add(list));
 
-  setMyBooks(List<Book> list) {
-    myBooks = list;
-    notifyListeners();
-  }
-
-  setRewards(RewardResult data) {
-    rewardResult = data;
-    notifyListeners();
-  }
-
-  setEnotesCategories(List<EnotesCategory> list) {
-    enotes = list;
-    notifyListeners();
-  }
-
-  setEnotesBanner(List<EnoteBanner> list) {
-    enotesBanner = list;
-    notifyListeners();
-  }
-
-  setEnotesSection(List<EnotesSection> list) {
-    enotesSection = list;
-    notifyListeners();
-  }
-
-  setEnotesList(List<Book> list) {
-    enotesList = list;
-    notifyListeners();
-  }
-
-  setEnotesChapterList(List<Chapter> list) {
-    enotesChapterList = list;
-    notifyListeners();
-  }
-
-  setLibraryBooks(List<LibraryBookDetailsModel> list) {
-    library = list;
-    notifyListeners();
-  }
-
-  setLibraries(List<Library> list) {
-    libraries = list;
-    notifyListeners();
-  }
-
-  setSearchResult(List<Book> list) {
-    search_results = list;
-    notifyListeners();
-  }
-
-  setHistory(List<OrderHistory> list) {
-    orders = list;
-    notifyListeners();
-  }
-
-  setCartData(Cart data) {
-    cartData = data;
-    notifyListeners();
-  }
-
-  setLibraryTab(int i) {
-    libraryTab = i;
-    notifyListeners();
-  }
-
-  setToCart(List<CartItem> list) {
-    items = list;
-    notifyListeners();
-  }
-
-  setCupons(List<Discount> list) {
-    cupons = list;
-    notifyListeners();
-  }
-
-  addToCart(Book book) {
-    cartBooks.add(book);
-    notifyListeners();
-    Fluttertoast.showToast(msg: "Added to Cart");
-  }
-
-  setToBookmarks(List<BookmarkItem> books) {
-    bookmarks = books;
-    notifyListeners();
-    // Fluttertoast.showToast(msg: "Bookmarked");
-  }
-
-  addCategoryList(List<BookCategory> list) {
-    categoryList.add(list);
-    notifyListeners();
-  }
-
-  addBannerList(List<Book> list) {
-    bannerList?.add(list);
-    notifyListeners();
-  }
-
-  addHomeSection(List<HomeSection> list) {
-    homeSection?.add(list);
-    notifyListeners();
-  }
-
-  setFormats(List<BookFormat> list) {
-    formats = list ?? [];
-    formats?.add(BookFormat(3, "E-Notes", "E-Notes"));
-    notifyListeners();
-  }
-
-  setIndex(int i) {
-    currentIndex = i;
-    notifyListeners();
-  }
-
-  setCategory(int i) {
-    currentCategory = i;
-    notifyListeners();
-  }
-
-  setWriterDetails(writer? writer) {
-    writerDetails = writer;
-    notifyListeners();
-  }
+  void setFormats(List<BookFormat> list) => _notifyChange(() {
+        formats = list ?? [];
+        formats?.add(BookFormat(3, "E-Notes", "E-Notes"));
+      });
 }

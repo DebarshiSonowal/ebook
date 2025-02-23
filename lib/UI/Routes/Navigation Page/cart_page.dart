@@ -7,6 +7,7 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:ebook/Model/cart_item.dart';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/razorpay_key.dart';
+import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Components/empty_widget.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 
 // import 'package:quantity_input/quantity_input.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:sizer/sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -39,6 +41,7 @@ class _CartPageState extends State<CartPage> {
   String temp_order_id = "";
   bool loading = false;
   String discount = "0";
+
   @override
   void dispose() {
     _razorpay.clear(); // Removes all listeners
@@ -189,9 +192,10 @@ class _CartPageState extends State<CartPage> {
                               coins: coins,
                               discount: discount,
                               getTotalAmount: (data) => getTotalAmount(data),
-                              initiatePaymentProcess: (amount) => amount <= 0
-                                  ? freeItemsProcess()
-                                  : initiatePaymentProcess(),
+                              freeItemsProcess: (cupon) =>
+                                  freeItemsProcess(cupon),
+                              initiatePaymentProcess: (amount) =>
+                                  initiatePaymentProcess(),
                             ),
                     ],
                   ),
@@ -220,7 +224,9 @@ class _CartPageState extends State<CartPage> {
   }
 
   void fetchCartItems() async {
-    Navigation.instance.navigate('/loadingDialog');
+    setState(() {
+      loading = true;
+    });
     final response = await ApiProvider.instance.fetchCart();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
@@ -231,17 +237,23 @@ class _CartPageState extends State<CartPage> {
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
           .setCartData(response.cart!);
-      Navigation.instance.goBack();
+      setState(() {
+        loading = false;
+      });
     } else {
-      Navigation.instance.goBack();
+      setState(() {
+        loading = false;
+      });
     }
   }
 
   void initiatePaymentProcess() async {
-    Navigation.instance.navigate('/loadingDialog');
+    setState(() {
+      loading = true;
+    });
     final response = await ApiProvider.instance.fetchRazorpay();
     if (response.status ?? false) {
-      if (cupon == null || cupon == "") {
+      if ((cupon == null || cupon == "") && coins != 0) {
         initateOrder(response.razorpay!, "REWARDCOIN");
       } else if (coins != null && coins != 0) {
         initateOrder(response.razorpay!, cupon);
@@ -249,8 +261,14 @@ class _CartPageState extends State<CartPage> {
         // applyCoupon(cupon, response.razorpay!);
         initateOrder(response.razorpay!, "");
       }
+      setState(() {
+        loading = false;
+      });
     } else {
-      Navigation.instance.goBack();
+      setState(() {
+        loading = false;
+      });
+      // Navigation.instance.goBack();
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.warning,
@@ -267,7 +285,7 @@ class _CartPageState extends State<CartPage> {
       startPayment(razorpay, response.order?.grand_total,
           response.order?.order_id, response.order?.subscriber_id);
     } else {
-      Navigation.instance.goBack();
+      // Navigation.instance.goBack();
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.warning,
@@ -287,14 +305,14 @@ class _CartPageState extends State<CartPage> {
     try {
       var resp = json.decode(response.message!);
       debugPrint('error ${resp['error']['description']} ${response.code} ');
-      Navigation.instance.goBack();
+      // Navigation.instance.goBack();
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.error,
       //   text: resp['error']['description'] ?? "Something went wrong",
       // );
     } catch (e) {
-      Navigation.instance.goBack();
+      // Navigation.instance.goBack();
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.error,
@@ -333,7 +351,7 @@ class _CartPageState extends State<CartPage> {
         'order_id': id,
       },
     };
-
+    debugPrint("Options ${options}");
     try {
       _razorpay.open(options);
     } catch (e) {
@@ -342,13 +360,20 @@ class _CartPageState extends State<CartPage> {
   }
 
   void removeItem(int id) async {
-    Navigation.instance.navigate('/loadingDialog');
+    // Navigation.instance.navigate('/loadingDialog');
+    setState(() {
+      loading = true;
+    });
     final response = await ApiProvider.instance.deleteCart(id);
     if (response.status ?? false) {
-      Navigation.instance.goBack();
+      setState(() {
+        loading = false;
+      });
       fetchCartItems();
     } else {
-      Navigation.instance.goBack();
+      setState(() {
+        loading = false;
+      });
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.warning,
@@ -358,24 +383,23 @@ class _CartPageState extends State<CartPage> {
   }
 
   void handleSuccess(PaymentSuccessResponse response) async {
+    setState(() {
+      loading = true;
+    });
     final response1 = await ApiProvider.instance
         .verifyPayment(temp_order_id, response.paymentId, tempTotal ?? 1);
     if (response1.status ?? false) {
-      Navigation.instance.goBack();
-      // CoolAlert.show(
-      //   context: context,
-      //   type: CoolAlertType.success,
-      //   text: "Payment received Successfully",
-      // );
+      setState(() {
+        loading = false;
+      });
       fetchCartItems();
-      Navigation.instance.goBack();
+      fetchData();
+      fetchHomeBanner();
+      fetchHomeSection();
     } else {
-      Navigation.instance.goBack();
-      // CoolAlert.show(
-      //   context: context,
-      //   type: CoolAlertType.warning,
-      //   text: "Something went wrong",
-      // );
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -402,7 +426,7 @@ class _CartPageState extends State<CartPage> {
   //   }
   // }
 
-  freeItemsProcess() async {
+  void freeItemsProcess(cupon) async {
     final response = await ApiProvider.instance.createOrder(cupon, null);
     if (response.status ?? false) {
       // CoolAlert.show(
@@ -410,14 +434,60 @@ class _CartPageState extends State<CartPage> {
       //   type: CoolAlertType.success,
       //   text: "Payment received Successfully",
       // );
+      debugPrint("responseHome1");
       fetchCartItems();
-      Navigation.instance.goBack();
+      debugPrint("responseHome2");
+      fetchData();
+      debugPrint("responseHome3");
+      fetchHomeBanner();
+      debugPrint("responseHome4");
+      fetchHomeSection();
     } else {
       // CoolAlert.show(
       //   context: context,
       //   type: CoolAlertType.warning,
       //   text: "Something went wrong",
       // );
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Column(
+            children: [
+              Icon(
+                Icons.error,
+                color: Colors.red,
+                size: 50,
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Error',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontSize: 19.sp,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            response.message ?? 'Something went wrong',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16.sp,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -499,6 +569,7 @@ class _CartPageState extends State<CartPage> {
           });
         }
       } else {
+        debugPrint("Cupons Applied");
         if (cupon != "") {
           setState(() {
             discount = "${response.cart?.discount_amount}";
@@ -590,6 +661,59 @@ class _CartPageState extends State<CartPage> {
           ],
         ),
       );
+    }
+  }
+
+  void fetchHomeBanner() async {
+    final dataProvider = Provider.of<DataProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+
+    await Future.wait(dataProvider.formats!.map((format) async {
+      final response = await ApiProvider.instance
+          .fetchHomeBanner(format.productFormat ?? '');
+      if (response.status ?? false) {
+        dataProvider.addBannerList(response.banners!);
+      }
+    }));
+  }
+
+  void fetchHomeSection() async {
+    final dataProvider = Provider.of<CommonProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+
+    try {
+      await Future.wait(Provider.of<DataProvider>(context, listen: false)
+          .formats!
+          .map((format) async {
+        final response = await ApiProvider.instance
+            .fetchHomeSections(format.productFormat ?? '');
+        debugPrint("responseHome5");
+        if (response.status ?? false) {
+          switch (format.productFormat) {
+            case 'ebook':
+              dataProvider.setEbookHomeSections(response.sections!);
+              break;
+            case 'magazine':
+              dataProvider.setMagazineHomeSections(response.sections!);
+              break;
+            case 'enotes':
+              dataProvider.setEnotesHomeSections(response.sections!);
+              break;
+          }
+        }
+      }));
+    } finally {
+      // Restart.restartApp(
+      //   /// In Web Platform, Fill webOrigin only when your new origin is different than the app's origin
+      //   // webOrigin: 'http://example.com',
+      //
+      //   // Customizing the restart notification message (only needed on iOS)
+      //   notificationTitle: 'Restarting App',
+      //   notificationBody: 'Please tap here to open the app again.',
+      // );
+      Navigation.instance.navigateAndRemoveUntil("/main");
     }
   }
 }

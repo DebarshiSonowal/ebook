@@ -12,7 +12,7 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:rating_dialog/rating_dialog.dart';
+// import 'package:rating_dialog/rating_dialog.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -29,6 +29,7 @@ import '../../../Storage/data_provider.dart';
 import '../../Components/book_publishing_details.dart';
 import '../../Components/buy_button.dart';
 import '../../Components/download_section.dart';
+import '../../Components/rating_dialog.dart';
 import '../../Components/read_button.dart';
 import '../../Components/review_section.dart';
 import '../../Components/tag_bookdetails.dart';

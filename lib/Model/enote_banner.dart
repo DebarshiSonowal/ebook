@@ -46,21 +46,21 @@ class EnoteBanner {
   final String bookFormat;
   final String category;
   final String profilePic;
-  final String sellingPrice;
-  final String basePrice;
-  final String discount;
+  final int sellingPrice;
+  final int basePrice;
+  final int discount;
   final int totalRating;
   final String averageRating;
   final int totalChapters;
   final int languageId;
   final String language;
-  final String description;
-  final String shortDescription;
-  final String length;
+  final String? description;
+  final String? shortDescription;
+  final String? length;
   final int status;
   final bool isBookmarked;
   final bool isBought;
-  final String lengtha;
+  // final String lengtha;
   final int noOfArticles;
   final List<Tag> tags;
   final List<Award> awards;
@@ -90,7 +90,7 @@ class EnoteBanner {
     required this.status,
     required this.isBookmarked,
     required this.isBought,
-    required this.lengtha,
+    // required this.lengtha,
     required this.noOfArticles,
     required this.tags,
     required this.awards,
@@ -122,7 +122,7 @@ class EnoteBanner {
       status: json['status'],
       isBookmarked: json['is_bookmarked'],
       isBought: json['is_bought'],
-      lengtha: json['lengtha'],
+      // lengtha: json['lengtha'],
       noOfArticles: json['no_of_articles'],
       tags: List<Tag>.from(json['tags'].map((x) => Tag.fromJson(x))),
       awards: List<Award>.from(json['awards'].map((x) => Award.fromJson(x))),
@@ -155,7 +155,7 @@ class EnoteBanner {
         'status': status,
         'is_bookmarked': isBookmarked,
         'is_bought': isBought,
-        'lengtha': lengtha,
+        // 'lengtha': lengtha,
         'no_of_articles': noOfArticles,
         'tags': tags.map((x) => x.toJson()).toList(),
         'awards': awards.map((x) => x.toJson()).toList(),

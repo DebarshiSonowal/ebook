@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:ebook/Helper/navigator.dart';
+import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Routes/Drawer/library.dart';
 import 'package:ebook/UI/Routes/Drawer/more.dart';
@@ -34,7 +35,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   TabController? _controller;
 
   @override
@@ -88,28 +89,7 @@ class _HomePageState extends State<HomePage>
               width: double.infinity,
               // color: Colors.white30,
               child: Consumer<DataProvider>(builder: (context, data, _) {
-                return
-                    // data.currentTab == 2
-                    //   ? SingleChildScrollView(
-                    //       child: Column(
-                    //         children: [
-                    //
-                    //           Expanded(
-                    //             child: Consumer<DataProvider>(
-                    //               builder: (context, current, _) {
-                    //                 return Padding(
-                    //                   padding: EdgeInsets.only(top: 1.h),
-                    //                   child: bodyNoteWidget(current.currentIndex,
-                    //                       current.currentTab),
-                    //                 );
-                    //               },
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     )
-                    //   :
-                    Column(
+                return Column(
                   children: [
                     NewTabBar(controller: _controller),
                     const NewSearchBar(),
@@ -331,5 +311,66 @@ class _HomePageState extends State<HomePage>
       //   loading = false;
       // });
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    debugPrint("didChangeAppLifecycleState $state}");
+    if (state == AppLifecycleState.resumed) {
+      fetchHomeBanner();
+      fetchHomeSection();
+    } else {
+      fetchHomeBanner();
+      fetchHomeSection();
+    }
+  }
+
+  void fetchHomeBanner() async {
+    for (var i in Provider.of<DataProvider>(
+            Navigation.instance.navigatorKey.currentContext!,
+            listen: false)
+        .formats!) {
+      final response =
+          await ApiProvider.instance.fetchHomeBanner(i.productFormat ?? '');
+      if (response.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext!,
+                listen: false)
+            .addBannerList(response.banners!);
+      } else {}
+    }
+  }
+
+  Future<void> fetchHomeSection() async {
+    try {
+      final dataProvider = Provider.of<CommonProvider>(
+        context,
+        listen: false,
+      );
+      for (final format
+          in Provider.of<DataProvider>(context, listen: true).formats ?? []) {
+        final response = await ApiProvider.instance
+            .fetchHomeSections(format.productFormat ?? '');
+
+        if (response.status ?? false) {
+          switch (format.productFormat) {
+            case 'ebook':
+              dataProvider.setEbookHomeSections(response.sections!);
+              break;
+            case 'magazine':
+              dataProvider.setMagazineHomeSections(response.sections!);
+              break;
+            case 'enotes':
+              dataProvider.setEnotesHomeSections(response.sections!);
+              break;
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching home sections: $e');
+    }
+
+    // _refreshController.refreshCompleted();
   }
 }

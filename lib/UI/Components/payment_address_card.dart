@@ -14,6 +14,7 @@ class PaymentAddressCard extends StatelessWidget {
     this.coins = 0,
     this.onUseCoinsTap,
     required this.discount,
+    required this.freeItemsProcess,
   }) : super(key: key);
 
   final DataProvider data;
@@ -21,6 +22,7 @@ class PaymentAddressCard extends StatelessWidget {
   final String discount;
   final int coins;
   final Function(Cart data) getTotalAmount;
+  final Function(String cupon) freeItemsProcess;
   final Function(int amount) initiatePaymentProcess;
   final VoidCallback? onUseCoinsTap;
 
@@ -67,9 +69,18 @@ class PaymentAddressCard extends StatelessWidget {
                               ),
                             SizedBox(width: 1.w),
                             Text(
-                              getTotalAmount(data.cartData!).toString() == "0"
+                              getTotalAmount(data.cartData!).toString() ==
+                                          "0" ||
+                                      getTotalAmount(data.cartData!)
+                                              .toString() ==
+                                          "0.0"
                                   ? "Free"
-                                  : '₹${int.parse(getTotalAmount(data.cartData!).toString()) - int.parse(discount)}',
+                                  : (double.parse(getTotalAmount(data.cartData!)
+                                                  .toString()) -
+                                              double.parse(discount)) ==
+                                          0.0
+                                      ? "Free"
+                                      : "₹${double.parse(getTotalAmount(data.cartData!).toString()) - double.parse(discount)}",
                               style: Theme.of(context)
                                   .textTheme
                                   .displaySmall
@@ -138,8 +149,16 @@ class PaymentAddressCard extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        initiatePaymentProcess(
-                            int.parse(getTotalAmount(data.cartData!)));
+                        if (double.parse(
+                                    getTotalAmount(data.cartData!).toString()) -
+                                double.parse(discount) !=
+                            0.0) {
+                          initiatePaymentProcess(
+                              int.parse(getTotalAmount(data.cartData!)));
+                        } else {
+                          debugPrint("My Cupon $cupon");
+                          freeItemsProcess(coins > 0 ? "REWARDCOIN" : cupon!);
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor:
@@ -155,7 +174,12 @@ class PaymentAddressCard extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
-                          'Proceed to Pay',
+                          double.parse(getTotalAmount(data.cartData!)
+                                          .toString()) -
+                                      double.parse(discount) ==
+                                  0.0
+                              ? 'Confirm'
+                              : 'Proceed to Pay',
                           style:
                               TextStyle(fontSize: 15.sp, color: Colors.white),
                         ),

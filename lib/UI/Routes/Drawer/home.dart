@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:ebook/Model/home_banner.dart';
+import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -28,15 +29,16 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   late StreamSubscription _sub;
   int selected = 0;
   final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+      RefreshController(initialRefresh: true);
   final ScrollController controller = ScrollController();
 
   void _onRefresh() async {
     // monitor network fetch
+
     fetchHomeBanner();
     fetchHomeSection();
     // if failed,use refreshFailed()
@@ -90,6 +92,22 @@ class _HomeState extends State<Home> {
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    debugPrint("didChangeAppLifecycleState $state}");
+    if (state == AppLifecycleState.resumed) {
+      _refreshController.requestRefresh();
+    } else {
+      _refreshController.requestRefresh();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   void _onLoading() async {
     // monitor network fetch
@@ -100,6 +118,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     Future.delayed(const Duration(seconds: 0), () {
       controller.addListener(() {
         if (controller.position.atEdge) {
@@ -112,6 +131,7 @@ class _HomeState extends State<Home> {
         }
       });
       initUniLinks();
+      fetchNotifications();
     });
   }
 
@@ -245,6 +265,7 @@ class _HomeState extends State<Home> {
   }
 
   void fetchHomeSection() async {
+    debugPrint("Data Cleared Here");
     for (var i in Provider.of<DataProvider>(
             Navigation.instance.navigatorKey.currentContext!,
             listen: false)
@@ -252,12 +273,46 @@ class _HomeState extends State<Home> {
       final response =
           await ApiProvider.instance.fetchHomeSections(i.productFormat ?? '');
       if (response.status ?? false) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext!,
-                listen: false)
-            .addHomeSection(response.sections!);
+        if (i.productFormat == 'e-book') {
+          Provider.of<CommonProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: false)
+              .setEbookHomeSections(response.sections!);
+        } else if (i.productFormat == 'magazine') {
+          Provider.of<CommonProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: false)
+              .setMagazineHomeSections(response.sections!);
+        } else if (i.productFormat == 'e-notes') {
+          Provider.of<CommonProvider>(
+                  Navigation.instance.navigatorKey.currentContext!,
+                  listen: false)
+              .setEnotesHomeSections(response.sections!);
+        }
       }
+      // Provider.of<CommonProvider>(
+      //   Navigation.instance.navigatorKey.currentContext!,
+      //   listen: false,
+      // ).clearData();
+      // final currentFormat = Provider.of<DataProvider>(
+      //         Navigation.instance.navigatorKey.currentContext!,
+      //         listen: false)
+      //     .formats![Provider.of<DataProvider>(
+      //             Navigation.instance.navigatorKey.currentContext!,
+      //             listen: false)
+      //         .currentTab]
+      //     .productFormat;
+      // debugPrint("currentFormat $currentFormat");
+      // final response =
+      //     await ApiProvider.instance.fetchHomeSections(currentFormat ?? '');
+      // if (response.status ?? false) {
+      //   Provider.of<CommonProvider>(
+      //           Navigation.instance.navigatorKey.currentContext!,
+      //           listen: false)
+      //       .addHomeSection(response.sections!);
+      setState(() {});
     }
+
     _refreshController.refreshCompleted();
   }
 
@@ -381,6 +436,15 @@ class _HomeState extends State<Home> {
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
           .setBookDetails(response.details!);
+    }
+  }
+
+  fetchNotifications() async {
+    final response = await ApiProvider.instance
+        .fetchNotification(Storage.instance.isLoggedIn);
+    if (response.success ?? false) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setNotifications(response.result ?? []);
     }
   }
 }

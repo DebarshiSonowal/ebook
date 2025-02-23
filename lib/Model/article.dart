@@ -12,6 +12,16 @@ class Article {
     short_note = json['short_note'] ?? "";
     profile_pic = json['profile_pic'] ?? "";
   }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'sequence': sequence,
+      'title': title,
+      'slug': slug,
+      'short_note': short_note,
+      'profile_pic': profile_pic,
+    };
+  }
 }
 // class ArticleResponse{
 //   bool? status;

@@ -2,6 +2,7 @@ import 'package:ebook/UI/Routes/Auth/registration_page.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/account_page.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/book_info.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/home_page.dart';
+import 'package:ebook/UI/Routes/Navigation%20Page/notification_book_list_screen.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/transfer_screen.dart';
 import 'package:ebook/UI/Routes/Navigation%20Page/wallet_screen.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -18,6 +19,7 @@ import '../UI/Routes/Navigation Page/category_specific_page.dart';
 import '../UI/Routes/Navigation Page/coupon_page.dart';
 import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
+import '../UI/Routes/Navigation Page/notifications_page.dart';
 import '../UI/Routes/Navigation Page/reading_page.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
 import '../UI/Routes/Navigation Page/specific_library_screen.dart';
@@ -61,8 +63,14 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/bookInfo':
       return FadeTransitionPageRouteBuilder(
           page: BookInfo(settings.arguments as int));
+    case '/notificationBookList':
+      return FadeTransitionPageRouteBuilder(
+          page: NotificationBookListScreen(id: settings.arguments as int));
     case '/categories':
-      return FadeTransitionPageRouteBuilder(page: const CategoryPage());
+      return FadeTransitionPageRouteBuilder(
+          page: CategoryPage(
+        type: settings.arguments as String,
+      ));
     case '/selectCategories':
       return FadeTransitionPageRouteBuilder(
           page: CategorySpecificPage(
@@ -89,6 +97,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: const CartPage());
     case '/search':
       return FadeTransitionPageRouteBuilder(page: SearchPage());
+    case '/notifications':
+      return FadeTransitionPageRouteBuilder(page: NotificationsPage());
     case '/subscription_pop_up':
       return FadeTransitionPageRouteBuilder(
           page: SubscriptionBuyPage(

@@ -74,7 +74,7 @@ class CartPageItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 60.w,
+                        width: 55.w,
                         child: Text(
                           '${current.name}',
                           overflow: TextOverflow.ellipsis,

@@ -54,32 +54,6 @@ class NewSearchBar extends StatelessWidget {
             ),
           ),
           SizedBox(width: 4.w),
-          GestureDetector(
-            onTap: () {
-              Navigation.instance.navigate("/wallet");
-            },
-            child: Icon(
-              FontAwesomeIcons.coins,
-              color: Colors.amber,
-              size: 20.sp,
-            ),
-          ),
-          SizedBox(width: 2.w),
-          GestureDetector(
-            onTap: () {
-              Navigation.instance.navigate("/wallet");
-            },
-            child: Consumer<DataProvider>(builder: (context, data, _) {
-              return Text(
-                "${data.rewardResult?.totalPoints ?? 0}",
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      color: Colors.white,
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-              );
-            }),
-          ),
           (Platform.isAndroid && !Storage.instance.isLoggedIn)
               ? GestureDetector(
                   onTap: () {
@@ -199,6 +173,84 @@ class NewSearchBar extends StatelessWidget {
               ),
             );
           }),
+          GestureDetector(
+            onTap: () {
+              Navigation.instance.navigate('/notifications');
+            },
+            child: Consumer<DataProvider>(
+              builder: (context, data, _) {
+                if (data.notifications.isNotEmpty) {
+                  return badge.Badge(
+                    position: badge.BadgePosition.topEnd(),
+                    badgeContent: Text(
+                      '${data.notifications.length}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                          ),
+                    ),
+                    child: const Icon(
+                      Icons.notifications,
+                      color: Colors.white,
+                    ),
+                  );
+                } else {
+                  return const Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                  );
+                }
+              },
+            ),
+          ),
+          SizedBox(
+            width: 1.5.w,
+          ),
+          Storage.instance.isLoggedIn
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigation.instance.navigate("/wallet");
+                        },
+                        child: Icon(
+                          FontAwesomeIcons.coins,
+                          color: Colors.amber,
+                          size: 16.sp,
+                        ),
+                      ),
+                      SizedBox(width: 2.w),
+                      GestureDetector(
+                        onTap: () {
+                          Navigation.instance.navigate("/wallet");
+                        },
+                        child:
+                            Consumer<DataProvider>(builder: (context, data, _) {
+                          return Text(
+                            "${data.rewardResult?.totalPoints ?? 0}",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayMedium
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
+          SizedBox(
+            width: 2.w,
+          ),
         ],
       ),
     );

@@ -441,17 +441,17 @@ class ScrollableEnoteContent extends StatelessWidget {
                 padding: const EdgeInsets.all(5),
                 // decoration: ,
                 child: Text(
-                  double.parse(data.sellingPrice)
+                  double.parse(data.sellingPrice.toString())
                               .toStringAsFixed(2)
                               .toString() ==
                           '0.00'
                       ? 'FREE'
-                      : 'Rs. ${double.parse(data.sellingPrice).toStringAsFixed(2)}',
+                      : 'Rs. ${double.parse(data.sellingPrice.toString()).toStringAsFixed(2)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontSize: 1.5.h,
-                        color: double.parse(data.sellingPrice)
+                        color: double.parse(data.sellingPrice.toString())
                                     .toStringAsFixed(2)
                                     .toString() ==
                                 '0.00'

@@ -336,7 +336,7 @@ class _SearchPageState extends State<SearchPage> {
                 SizedBox(
                   height: 1.h,
                 ),
-                data.search_results.isEmpty
+                data.searchResults.isEmpty
                     ? Text(
                         'No Results Found',
                         style:
@@ -349,7 +349,7 @@ class _SearchPageState extends State<SearchPage> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (cont, count) {
-                          var current = data.search_results[count];
+                          var current = data.searchResults[count];
                           return GestureDetector(
                             onTap: () {
                               Navigation.instance
@@ -363,7 +363,7 @@ class _SearchPageState extends State<SearchPage> {
                             height: 0.5.h,
                           );
                         },
-                        itemCount: data.search_results.length,
+                        itemCount: data.searchResults.length,
                       )
               ],
             ),

@@ -83,7 +83,7 @@ class CategoryBar extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigation.instance.navigate('/categories');
+                      Navigation.instance.navigate('/categories', args: "");
                     },
                     child: Container(
                       width: 20.w,
@@ -180,7 +180,8 @@ class EnotesCategoryBar extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigation.instance.navigate('/categories');
+                      Navigation.instance
+                          .navigate('/categories', args: "enotes");
                     },
                     child: Container(
                       width: 20.w,

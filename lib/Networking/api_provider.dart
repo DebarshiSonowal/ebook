@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:ebook/Model/add_review.dart';
+import 'package:ebook/Model/notification_model.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:http/http.dart' as http;
 
 import '../Helper/navigator.dart';
+import '../Model/NotificationBookListResponse.dart';
 import '../Model/apply_cupon.dart';
 import '../Model/book_category.dart';
 import '../Model/book_chapter.dart';
@@ -1533,15 +1535,15 @@ class ApiProvider {
         // queryParameters: data,
       );
 
-      debugPrint("home-banners response: ${response?.data}");
+      debugPrint("enotes-home-banners response: ${response?.data}");
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return EnoteBannerResponse.fromJson(response?.data);
       } else {
-        debugPrint("home-banners error: ${response?.data}");
+        debugPrint("enotes error: ${response?.data}");
         return EnoteBannerResponse.withError("Something Went Wrong");
       }
     } on DioError catch (e) {
-      debugPrint("home-banners error: ${e.response}");
+      debugPrint("enotes-home-banners error: ${e.response}");
       return EnoteBannerResponse.withError(e.message ?? "");
     }
   }
@@ -1891,6 +1893,113 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("apply_discount response: ${e.response}");
       return CartResponse.withError(e.response?.data['message'] ?? "");
+    }
+  }
+
+  Future<NotificationResponseModel> fetchNotification(type) async {
+    var url = type
+        ? "$baseUrl/notifications/subscribers"
+        : "$baseUrl/notifications/subscribers/unregistered";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    debugPrint('Bearer ${Storage.instance.token}');
+    try {
+      Response? response = await dio?.get(
+        url.toString(),
+      );
+      debugPrint("NotificationResponseModel response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return NotificationResponseModel.fromJson(response?.data);
+      } else {
+        debugPrint("NotificationResponseModel error: ${response?.data}");
+        return NotificationResponseModel.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("NotificationResponseModel response: ${e.response}");
+      return NotificationResponseModel.withError(
+          e.response?.data['message'] ?? "");
+    }
+  }
+
+  Future<GenericResponse> markAsRead(id) async {
+    var url = "$baseUrl/notifications/subscribers/mark-as-read";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    var data = {
+      'id': id,
+    };
+    debugPrint(json.encode(data));
+    debugPrint(url.toString());
+    debugPrint('Bearer ${Storage.instance.token}');
+    try {
+      Response? response = await dio?.post(
+        url.toString(),
+        data: data,
+      );
+      debugPrint("NotificationRead response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("NotificationRead error: ${response?.data}");
+        return GenericResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("NotificationRead response: ${e.response}");
+      return GenericResponse.withError(e.response?.data['message'] ?? "");
+    }
+  }
+
+  Future<NotificationBookListResponse> getNotificationBookList(id) async {
+    // https://tratri.in/api/notifications/subscribers/book-list/%3Cid%3E
+    var url = "$baseUrl/notifications/subscribers/book-list/$id";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    var data = {
+      'id': id,
+    };
+    debugPrint(json.encode(data));
+    debugPrint(url.toString());
+    debugPrint('Bearer ${Storage.instance.token}');
+    try {
+      Response? response = await dio?.get(
+        url.toString(),
+      );
+      debugPrint("NotificationBookList response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return NotificationBookListResponse.fromJson(response?.data);
+      } else {
+        debugPrint("NotificationBookList error: ${response?.data}");
+        return NotificationBookListResponse.withError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("NotificationBookList response: ${e.response}");
+      return NotificationBookListResponse.withError(
+          e.response?.data['message'] ?? "");
     }
   }
 

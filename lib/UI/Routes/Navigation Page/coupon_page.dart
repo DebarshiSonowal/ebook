@@ -36,13 +36,13 @@ class _CouponPageState extends State<CouponPage> {
         color: Colors.black45,
         padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
         child: Consumer<DataProvider>(builder: (context, data, _) {
-          return data.cupons.isEmpty
+          return data.coupons.isEmpty
               ? Container()
               : ListView.builder(
                   shrinkWrap: true,
-                  itemCount: data.cupons.length,
+                  itemCount: data.coupons.length,
                   itemBuilder: (cont, count) {
-                    var current = data.cupons[count];
+                    var current = data.coupons[count];
                     return GestureDetector(
                       onTap: () {
                         Navigator.pop(context, current.coupon);

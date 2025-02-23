@@ -65,14 +65,14 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
         child: Consumer<DataProvider>(builder: (context, data, _) {
           return GridView.builder(
             shrinkWrap: true,
-            itemCount: data.search_results.length,
+            itemCount: data.searchResults.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 childAspectRatio: 0.4.sp,
                 crossAxisCount: 2,
                 crossAxisSpacing: 10.w,
                 mainAxisSpacing: 2.h),
             itemBuilder: (BuildContext context, int index) {
-              var book = data.search_results[index];
+              var book = data.searchResults[index];
               return BookItem(
                 data: book,
                 index: index,

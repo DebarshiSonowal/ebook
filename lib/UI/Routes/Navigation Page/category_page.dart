@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 class CategoryPage extends StatefulWidget {
-  const CategoryPage({Key? key}) : super(key: key);
-
+  const CategoryPage({Key? key, this.type}) : super(key: key);
+  final type;
   @override
   State<CategoryPage> createState() => _CategoryPageState();
 }
@@ -26,44 +26,81 @@ class _CategoryPageState extends State<CategoryPage> {
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                Center(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount:
-                          current.categoryList[current.currentTab].length,
-                      itemBuilder: (cont, ind) {
-                        var data =
-                            current.categoryList[current.currentTab][ind];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigation.instance.navigateAndReplace(
-                                '/selectCategories',
-                                args: '${data.title},${data.id}');
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 1.h,
-                            ),
-                            // height: 10.h,
-                            child: Center(
-                              child: Text(
-                                (data.title ?? "")
-                                        .substring(0, 1)
-                                        .toUpperCase() +
-                                    (data.title ?? "").substring(1),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium
-                                    ?.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
+                widget.type == "enotes"
+                    ? Center(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: current.enotes.length,
+                            itemBuilder: (cont, ind) {
+                              var data = current.enotes[ind];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigation.instance.navigateAndReplace(
+                                      '/selectCategories',
+                                      args: '${data.title},${data.id}');
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 1.h,
+                                  ),
+                                  // height: 10.h,
+                                  child: Center(
+                                    child: Text(
+                                      (data.title ?? "")
+                                              .substring(0, 1)
+                                              .toUpperCase() +
+                                          (data.title ?? "").substring(1),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 18.sp,
+                                          ),
                                     ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                ),
+                                  ),
+                                ),
+                              );
+                            }),
+                      )
+                    : Center(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount:
+                                current.categoryList[current.currentTab].length,
+                            itemBuilder: (cont, ind) {
+                              var data =
+                                  current.categoryList[current.currentTab][ind];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigation.instance.navigateAndReplace(
+                                      '/selectCategories',
+                                      args: '${data.title},${data.id}');
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 1.h,
+                                  ),
+                                  // height: 10.h,
+                                  child: Center(
+                                    child: Text(
+                                      (data.title ?? "")
+                                              .substring(0, 1)
+                                              .toUpperCase() +
+                                          (data.title ?? "").substring(1),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium
+                                          ?.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 18.sp,
+                                          ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
                 GestureDetector(
                   onTap: () {
                     Navigation.instance.goBack();
