@@ -95,71 +95,64 @@ class _CartPageState extends State<CartPage> {
                             child: Column(
                               // shrinkWrap: true,
                               children: [
-                                data.cartData?.can_use_reward ?? false
-                                    ? CuponsCard(
-                                        cupon: cupon,
-                                        coins: coins,
-                                        onCouponTap: () async {
-                                          if (cupon == "" || cupon.isEmpty) {
-                                            final response = await Navigation
-                                                .instance
-                                                .navigate('/couponPage');
-                                            if (response != null) {
-                                              setState(() {
-                                                cupon = cupon == response
-                                                    ? ''
-                                                    : response;
-                                              });
-                                              if (cupon.isNotEmpty) {
-                                                applyDiscount(
-                                                    "coupon", "add", cupon);
-                                              } else {
-                                                applyDiscount(
-                                                    "coupon", "remove", cupon);
-                                              }
-                                            } else {
-                                              setState(() {
-                                                cupon = "";
-                                              });
-                                              setState(() {
-                                                discount = "0";
-                                              });
-                                            }
-                                          } else {
-                                            setState(() {
-                                              cupon = "";
-                                            });
-                                            setState(() {
-                                              discount = "0";
-                                            });
-                                          }
-                                        },
-                                        onCoinsTap: () {
-                                          setState(() {
-                                            coins = coins == 0
-                                                ? (data.rewardResult
-                                                                ?.totalPoints ??
-                                                            0) >
-                                                        int.parse(data.cartData
-                                                                ?.total_price ??
-                                                            "0")
-                                                    ? int.parse(data.cartData
-                                                            ?.total_price ??
-                                                        "0")
-                                                    : data.rewardResult
-                                                            ?.totalPoints ??
-                                                        0
-                                                : 0;
-                                          });
-                                          if (coins > 0) {
-                                            applyDiscount("reward", "add", "");
-                                          } else {
-                                            applyDiscount(
-                                                "reward", "remove", "");
-                                          }
-                                        },
-                                      )
-                                    : Container(),
+                                CuponsCard(
+                                  canUseCoin:
+                                      data.cartData?.can_use_reward ?? false,
+                                  cupon: cupon,
+                                  coins: coins,
+                                  onCouponTap: () async {
+                                    if (cupon == "" || cupon.isEmpty) {
+                                      final response = await Navigation.instance
+                                          .navigate('/couponPage');
+                                      if (response != null) {
+                                        setState(() {
+                                          cupon =
+                                              cupon == response ? '' : response;
+                                        });
+                                        if (cupon.isNotEmpty) {
+                                          applyDiscount("coupon", "add", cupon);
+                                        } else {
+                                          applyDiscount(
+                                              "coupon", "remove", cupon);
+                                        }
+                                      } else {
+                                        setState(() {
+                                          cupon = "";
+                                        });
+                                        setState(() {
+                                          discount = "0";
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        cupon = "";
+                                      });
+                                      setState(() {
+                                        discount = "0";
+                                      });
+                                    }
+                                  },
+                                  onCoinsTap: () {
+                                    setState(() {
+                                      if (coins == 0) {
+                                        final totalPoints =
+                                            data.rewardResult?.totalPoints ?? 0;
+                                        final totalPrice = int.parse(
+                                            data.cartData?.total_price ?? "0");
+                                        coins = totalPoints > totalPrice
+                                            ? totalPrice
+                                            : totalPoints;
+                                      } else {
+                                        coins = 0;
+                                      }
+                                    });
+                                    if (coins > 0) {
+                                      applyDiscount("reward", "add", "");
+                                    } else {
+                                      applyDiscount("reward", "remove", "");
+                                    }
+                                  },
+                                ),
                                 data.items.isEmpty
                                     ? const shopNowButton()
                                     : ListView.builder(
@@ -509,7 +502,7 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  void showCoinsAppliedDialog() {
+  void showCoinsAppliedDialog(String? msg) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -535,7 +528,7 @@ class _CartPageState extends State<CartPage> {
           ],
         ),
         content: Text(
-          '$coins coins have been applied to your purchase.',
+          '$msg',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Colors.black,
@@ -553,12 +546,18 @@ class _CartPageState extends State<CartPage> {
   }
 
   void applyDiscount(discount_for, request_for, coupon_code) async {
+    setState(() {
+      loading = true;
+    });
     final response = await ApiProvider.instance
         .applyDiscountAPI(discount_for, request_for, coupon_code);
     if (response.status ?? false) {
+      setState(() {
+        loading = false;
+      });
       if (discount_for == "reward") {
         if (coins > 0) {
-          showCoinsAppliedDialog();
+          showCoinsAppliedDialog(response.message);
           debugPrint("${response.cart?.discount_amount}");
           setState(() {
             discount = "${response.cart?.discount_amount}";
@@ -621,6 +620,9 @@ class _CartPageState extends State<CartPage> {
         }
       }
     } else {
+      setState(() {
+        loading = false;
+      });
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

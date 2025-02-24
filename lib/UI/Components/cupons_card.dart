@@ -11,11 +11,13 @@ class CuponsCard extends StatelessWidget {
       required this.onCouponTap,
       required this.cupon,
       required this.coins,
-      required this.onCoinsTap})
+      required this.onCoinsTap,
+      required this.canUseCoin})
       : super(key: key);
   final Function onCouponTap, onCoinsTap;
   final String cupon;
   final int coins;
+  final bool canUseCoin;
 
   @override
   Widget build(BuildContext context) {
@@ -63,46 +65,49 @@ class CuponsCard extends StatelessWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () => !isCuponApplied ? onCoinsTap() : null,
-              child: Opacity(
-                opacity: isCuponApplied ? 0.5 : 1.0,
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        FontAwesomeIcons.coins,
-                        color: Colors.amber,
-                        size: 18.sp,
+            canUseCoin
+                ? GestureDetector(
+                    onTap: () => !isCuponApplied ? onCoinsTap() : null,
+                    child: Opacity(
+                      opacity: isCuponApplied ? 0.5 : 1.0,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 3.w, vertical: 1.h),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              FontAwesomeIcons.coins,
+                              color: Colors.amber,
+                              size: 18.sp,
+                            ),
+                            SizedBox(
+                              width: 2.w,
+                            ),
+                            Consumer<DataProvider>(builder: (context, data, _) {
+                              return Text(
+                                "${(data.rewardResult?.totalPoints ?? 0) - coins}",
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayMedium
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              );
+                            }),
+                          ],
+                        ),
                       ),
-                      SizedBox(
-                        width: 2.w,
-                      ),
-                      Consumer<DataProvider>(builder: (context, data, _) {
-                        return Text(
-                          "${(data.rewardResult?.totalPoints ?? 0) - coins}",
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
-            )
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

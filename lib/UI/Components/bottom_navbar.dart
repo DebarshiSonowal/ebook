@@ -195,109 +195,118 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
 
   void showLibrary() {
     debugPrint("This");
-    showModalBottomSheet(
-      context: context,
-      barrierColor: Colors.white.withOpacity(0.6),
-      backgroundColor: Colors.black,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
-      builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                'Select Library',
-                style: TextStyle(fontSize: 18.sp, color: Colors.white),
-              ),
-              SizedBox(
-                height: 2.h,
-              ),
-              InkWell(
-                onTap: () {
-                  debugPrint("Select Library");
-                  Navigator.of(context).pop();
-                  Provider.of<DataProvider>(
-                          Navigation.instance.navigatorKey.currentContext ??
-                              context,
-                          listen: false)
-                      .setIndex(1);
-                  // Navigation.instance.navigate('/myLibrary');
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 1.w,
-                    vertical: 0.02.h,
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.menu_book_sharp,
-                        color: Colors.white60,
-                      ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        'My Library',
-                        style: TextStyle(fontSize: 15.sp, color: Colors.white),
-                      ),
-                    ],
+    if (Provider.of<DataProvider>(context, listen: false).libraries.length >=
+        2) {
+      showModalBottomSheet(
+        context: context,
+        barrierColor: Colors.white.withOpacity(0.6),
+        backgroundColor: Colors.black,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+        builder: (BuildContext context) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Select Library',
+                  style: TextStyle(fontSize: 18.sp, color: Colors.white),
+                ),
+                SizedBox(
+                  height: 2.h,
+                ),
+                InkWell(
+                  onTap: () {
+                    debugPrint("Select Library");
+                    Navigator.of(context).pop();
+                    Provider.of<DataProvider>(
+                            Navigation.instance.navigatorKey.currentContext ??
+                                context,
+                            listen: false)
+                        .setIndex(1);
+                    // Navigation.instance.navigate('/myLibrary');
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 1.w,
+                      vertical: 0.02.h,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.menu_book_sharp,
+                          color: Colors.white60,
+                        ),
+                        SizedBox(width: 2.w),
+                        Text(
+                          'My Library',
+                          style:
+                              TextStyle(fontSize: 15.sp, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Divider(
-                color: Colors.white54,
-              ),
-              Consumer<DataProvider>(builder: (context, data, _) {
-                return ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    var item = data.libraries[index];
-                    return InkWell(
-                      onTap: () {
-                        // Navigator.of(context).pop();
-                        Navigation.instance
-                            .navigate('/libraryBooks', args: item.id);
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 1.w,
-                          vertical: 0.05.h,
+                Divider(
+                  color: Colors.white54,
+                ),
+                Consumer<DataProvider>(builder: (context, data, _) {
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      var item = data.libraries[index];
+                      return InkWell(
+                        onTap: () {
+                          // Navigator.of(context).pop();
+                          Navigation.instance
+                              .navigate('/libraryBooks', args: item.id);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 1.w,
+                            vertical: 0.05.h,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.menu_book_sharp,
+                                color: Colors.white60,
+                              ),
+                              SizedBox(width: 2.w),
+                              Text(
+                                item.title,
+                                style: TextStyle(
+                                    fontSize: 15.sp, color: Colors.white),
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.menu_book_sharp,
-                              color: Colors.white60,
-                            ),
-                            SizedBox(width: 2.w),
-                            Text(
-                              item.title,
-                              style: TextStyle(
-                                  fontSize: 15.sp, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return Divider(
-                      color: Colors.white54,
-                    );
-                  },
-                  itemCount: data.libraries.length,
-                );
-              }),
-              SizedBox(
-                height: 2.h,
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        color: Colors.white54,
+                      );
+                    },
+                    itemCount: data.libraries.length,
+                  );
+                }),
+                SizedBox(
+                  height: 2.h,
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      Provider.of<DataProvider>(
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setIndex(1);
+    }
   }
 }
