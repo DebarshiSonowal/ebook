@@ -662,6 +662,36 @@ class ApiProvider {
     }
   }
 
+  Future<BookChapterWithAdsResponse> fetchBookChaptersWithAds(String id) async {
+    var url = "${baseUrl}$path/chapters-new/${id}";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+          'platform': Platform.isAndroid ? "android" : "ios",
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("chapters new response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return BookChapterWithAdsResponse.fromJson(response?.data);
+      } else {
+        debugPrint("chapters new error: ${response?.data}");
+        return BookChapterWithAdsResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("chapters new response: ${e.response}");
+      return BookChapterWithAdsResponse.withError(e.message.toString());
+    }
+  }
+
   Future<ReviewResponse> fetchReview(String id) async {
     var url = "${baseUrl}$path/reviews/${id}";
     BaseOptions option = BaseOptions(
