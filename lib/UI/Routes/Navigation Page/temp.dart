@@ -1,301 +1,321 @@
-// import 'dart:convert';
+// import 'dart:io';
 //
-// import 'package:cached_network_image/cached_network_image.dart';
-//
+// import 'package:awesome_icons/awesome_icons.dart';
 // // import 'package:cool_alert/cool_alert.dart';
-// import 'package:dotted_line/dotted_line.dart';
-// import 'package:ebook/Model/cart_item.dart';
-// import 'package:ebook/Model/home_banner.dart';
-// import 'package:ebook/Model/razorpay_key.dart';
-// import 'package:ebook/Storage/data_provider.dart';
-// import 'package:ebook/UI/Components/empty_widget.dart';
+// import 'package:ebook/Constants/constance_data.dart';
+// import 'package:ebook/Helper/navigator.dart';
+// import 'package:ebook/Networking/api_provider.dart';
+// import 'package:ebook/Storage/app_storage.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+// import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:provider/provider.dart';
-//
-// // import 'package:quantity_input/quantity_input.dart';
-// import 'package:razorpay_flutter/razorpay_flutter.dart';
 // import 'package:sizer/sizer.dart';
-// import 'package:skeletonizer/skeletonizer.dart';
+// import 'package:social_login_buttons/social_login_buttons.dart';
+// import 'package:url_launcher/url_launcher.dart';
 //
-// import '../../../Helper/navigator.dart';
-// import '../../../Networking/api_provider.dart';
-// import '../../Components/cart_page_item.dart';
-// import '../../Components/cupons_card.dart';
-// import '../../Components/payment_address_card.dart';
-// import '../../Components/shop_now_button.dart';
+// import '../../../Storage/data_provider.dart';
 //
-// class CartPage extends StatefulWidget {
-//   const CartPage({Key? key}) : super(key: key);
+// class LoginPageReturn extends StatefulWidget {
+//   const LoginPageReturn({
+//     Key? key,
+//   }) : super(key: key);
 //
 //   @override
-//   State<CartPage> createState() => _CartPageState();
+//   State<LoginPageReturn> createState() => _LoginPageReturnState();
 // }
 //
-// class _CartPageState extends State<CartPage> {
-//   String cupon = '';
-//   int coins = 0;
-//   final _razorpay = Razorpay();
-//   double tempTotal = 1.0;
-//   String temp_order_id = "";
-//   bool loading = false;
-//   String discount = "0";
+// class _LoginPageReturnState extends State<LoginPageReturn> {
+//   final _phoneController = TextEditingController();
+//   final _passwordController = TextEditingController();
 //
 //   @override
 //   void dispose() {
-//     _razorpay.clear(); // Removes all listeners
 //     super.dispose();
+//     _phoneController.dispose();
+//     _passwordController.dispose();
 //   }
 //
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         // backgroundColor: Colors.grey.shade200,
-//         centerTitle: true,
-//         title: Text(
-//           "Cart",
-//           overflow: TextOverflow.ellipsis,
-//           style: Theme.of(context).textTheme.displayLarge?.copyWith(
-//             color: Colors.black,
-//             fontSize: 18.sp,
+//         leading: IconButton(
+//           icon: const Icon(
+//             Icons.arrow_back,
+//             color: Colors.white,
 //           ),
+//           onPressed: () {
+//             Navigation.instance.goBack();
+//           },
 //         ),
-//         actions: [
-//           GestureDetector(
-//             onTap: () {
-//               Navigation.instance.navigate("/wallet");
-//             },
-//             child: Icon(
-//               Icons.wallet,
-//             ),
-//           ),
-//           SizedBox(
-//             width: 2.w,
-//           ),
-//         ],
 //       ),
-//       body: Container(
-//         height: double.infinity,
-//         width: double.infinity,
-//         color: Colors.black,
-//         child: Consumer<DataProvider>(builder: (cont, data, _) {
-//           return data.cartData == null
-//               ? Container()
-//               : Skeletonizer(
-//             enabled: loading,
+//       body: SafeArea(
+//         child: Container(
+//           height: double.infinity,
+//           width: double.infinity,
+//           color: Theme.of(context).primaryColor,
+//           child: SingleChildScrollView(
 //             child: Column(
 //               children: [
-//                 Expanded(
-//                   child: Container(
-//                     padding: EdgeInsets.symmetric(
-//                         vertical: 0.5.h, horizontal: 3.w),
-//                     child: SingleChildScrollView(
-//                       child: Column(
-//                         // shrinkWrap: true,
-//                         children: [
-//                           data.cartData?.can_use_reward ?? false
-//                               ? CuponsCard(
-//                             cupon: cupon,
-//                             coins: coins,
-//                             onCouponTap: () async {
-//                               if (cupon == "" || cupon.isEmpty) {
-//                                 final response = await Navigation
-//                                     .instance
-//                                     .navigate('/couponPage');
-//                                 if (response != null) {
-//                                   setState(() {
-//                                     cupon = cupon == response
-//                                         ? ''
-//                                         : response;
-//                                   });
-//                                   if (cupon.isNotEmpty) {
-//                                     applyDiscount(
-//                                         "coupon", "add", cupon);
-//                                   } else {
-//                                     applyDiscount(
-//                                         "coupon", "remove", cupon);
-//                                   }
-//                                 } else {
-//                                   setState(() {
-//                                     cupon = "";
-//                                   });
-//                                   setState(() {
-//                                     discount = "0";
-//                                   });
-//                                 }
-//                               } else {
-//                                 setState(() {
-//                                   cupon = "";
-//                                 });
-//                                 setState(() {
-//                                   discount = "0";
-//                                 });
-//                               }
-//                             },
-//                             onCoinsTap: () {
-//                               setState(() {
-//                                 coins = coins == 0
-//                                     ? (data.rewardResult
-//                                     ?.totalPoints ??
-//                                     0) >
-//                                     int.parse(data.cartData
-//                                         ?.total_price ??
-//                                         "0")
-//                                     ? int.parse(data.cartData
-//                                     ?.total_price ??
-//                                     "0")
-//                                     : data.rewardResult
-//                                     ?.totalPoints ??
-//                                     0
-//                                     : 0;
-//                               });
-//                               if (coins > 0) {
-//                                 applyDiscount("reward", "add", "");
-//                               } else {
-//                                 applyDiscount(
-//                                     "reward", "remove", "");
-//                               }
-//                             },
-//                           )
-//                               : Container(),
-//                           data.items.isEmpty
-//                               ? const shopNowButton()
-//                               : ListView.builder(
-//                               shrinkWrap: true,
-//                               physics:
-//                               const NeverScrollableScrollPhysics(),
-//                               itemCount: data.items.length,
-//                               itemBuilder: (cont, count) {
-//                                 var simpleIntInput = 1;
-//                                 var current = data.items[count];
-//                                 return CartPageItem(
-//                                   data: data,
-//                                   current: current,
-//                                   simpleIntInput: simpleIntInput,
-//                                   removeItem: (int id) {
-//                                     removeItem(id);
-//                                   },
-//                                 );
-//                               })
-//                         ],
+//                 SizedBox(
+//                   height: 6.h,
+//                 ),
+//                 Image.asset(
+//                   ConstanceData.primaryIcon,
+//                   fit: BoxFit.fill,
+//                   height: 20.h,
+//                   width: 34.w,
+//                 ),
+//                 SizedBox(
+//                   height: 6.h,
+//                 ),
+//                 Text(
+//                   "Login",
+//                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
+//                     color: Colors.white,
+//                     fontSize: 18.sp,
+//                   ),
+//                 ),
+//                 SizedBox(
+//                   height: 6.h,
+//                 ),
+//                 SizedBox(
+//                   width: double.infinity,
+//                   height: 6.5.h,
+//                   child: Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
+//                     child: TextField(
+//                       keyboardType: TextInputType.phone,
+//                       cursorHeight:
+//                       Theme.of(context).textTheme.headlineSmall?.fontSize,
+//                       autofocus: false,
+//                       controller: _phoneController,
+//                       cursorColor: Colors.white,
+//                       style:
+//                       Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                         fontSize: 14.sp,
+//                       ),
+//                       decoration: InputDecoration(
+//                         labelText: 'Enter your registered phone number',
+//                         hintText: "Mobile number",
+//                         labelStyle: Theme.of(context)
+//                             .textTheme
+//                             .titleLarge
+//                             ?.copyWith(fontSize: 12.sp),
+//                         hintStyle:
+//                         Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                           color: Colors.grey.shade400,
+//                         ),
+//                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
+//                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+//                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(5),
+//                           borderSide:
+//                           const BorderSide(color: Colors.white, width: 2),
+//                         ),
+//                         enabledBorder: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(5),
+//                           borderSide:
+//                           const BorderSide(color: Colors.white, width: 1.5),
+//                         ),
+//                         focusedBorder: OutlineInputBorder(
+//                           gapPadding: 0.0,
+//                           borderRadius: BorderRadius.circular(5),
+//                           borderSide:
+//                           const BorderSide(color: Colors.white, width: 1.5),
+//                         ),
 //                       ),
 //                     ),
 //                   ),
 //                 ),
-//                 data.items.isEmpty
-//                     ? Container()
-//                     : PaymentAddressCard(
-//                   data: data,
-//                   cupon: cupon,
-//                   coins: coins,
-//                   discount: discount,
-//                   getTotalAmount: (data) => getTotalAmount(data),
-//                   freeItemsProcess: (cupon) =>
-//                       freeItemsProcess(cupon),
-//                   initiatePaymentProcess: (amount) =>
-//                       initiatePaymentProcess(),
+//                 SizedBox(
+//                   height: 1.5.h,
+//                 ),
+//                 SizedBox(
+//                   width: double.infinity,
+//                   height: 6.5.h,
+//                   child: Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
+//                     child: TextField(
+//                       cursorHeight:
+//                       Theme.of(context).textTheme.headlineSmall?.fontSize,
+//                       autofocus: false,
+//                       controller: _passwordController,
+//                       cursorColor: Colors.white,
+//                       obscureText: true,
+//                       style: Theme.of(context)
+//                           .textTheme
+//                           .headlineSmall
+//                           ?.copyWith(fontSize: 14.sp),
+//                       decoration: InputDecoration(
+//                         labelText: 'Enter your password',
+//                         hintText: "password",
+//                         labelStyle: Theme.of(context)
+//                             .textTheme
+//                             .titleLarge
+//                             ?.copyWith(fontSize: 12.sp),
+//                         hintStyle:
+//                         Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                           color: Colors.grey.shade400,
+//                         ),
+//                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
+//                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+//                         // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(5),
+//                           borderSide:
+//                           const BorderSide(color: Colors.white, width: 2),
+//                         ),
+//                         enabledBorder: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(5),
+//                           borderSide:
+//                           const BorderSide(color: Colors.white, width: 1.5),
+//                         ),
+//                         focusedBorder: OutlineInputBorder(
+//                           gapPadding: 0.0,
+//                           borderRadius: BorderRadius.circular(5),
+//                           borderSide:
+//                           const BorderSide(color: Colors.white, width: 1.5),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//                 // Container(
+//                 //   padding: const EdgeInsets.symmetric(horizontal: 30.0),
+//                 //   width: double.infinity,
+//                 //   child: Row(
+//                 //     mainAxisAlignment: MainAxisAlignment.end,
+//                 //     children: [
+//                 //       Text(
+//                 //         "Forgot Password ?",
+//                 //         style: Theme.of(context).textTheme.headline6,
+//                 //       ),
+//                 //     ],
+//                 //   ),
+//                 // ),
+//                 SizedBox(
+//                   height: 4.h,
+//                 ),
+//                 SizedBox(
+//                   width: double.infinity,
+//                   height: 6.5.h,
+//                   child: Padding(
+//                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
+//                     child: ElevatedButton(
+//                         onPressed: () {
+//                           if (_phoneController.text.isNotEmpty &&
+//                               _phoneController.text.length == 10 &&
+//                               _passwordController.text.isNotEmpty) {
+//                             Login();
+//                           } else {
+//                             // CoolAlert.show(
+//                             //   context: context,
+//                             //   type: CoolAlertType.warning,
+//                             //   text: "Enter proper credentials",
+//                             // );
+//                           }
+//                         },
+//                         style: ButtonStyle(
+//                           backgroundColor:
+//                           MaterialStateProperty.all(Colors.white),
+//                         ),
+//                         child: Text(
+//                           'Login',
+//                           style: Theme.of(context)
+//                               .textTheme
+//                               .headlineSmall
+//                               ?.copyWith(
+//                             fontSize: 14.sp,
+//                             color: Colors.black,
+//                           ),
+//                         )),
+//                   ),
+//                 ),
+//                 SizedBox(
+//                   height: 2.h,
+//                 ),
+//                 GestureDetector(
+//                   onTap: () {
+//                     _launchUrl(
+//                         Uri.parse("https://tratri.in/app-forget-password"));
+//                   },
+//                   child: Text(
+//                     "Forgot Password",
+//                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                       fontSize: 9.sp,
+//                     ),
+//                   ),
+//                 ),
+//                 SizedBox(
+//                   height: 2.h,
+//                 ),
+//                 GestureDetector(
+//                   onTap: () {
+//                     Navigation.instance.navigate('/signup');
+//                   },
+//                   child: Text(
+//                     "Don't have an account? Signup",
+//                     style: Theme.of(context).textTheme.headlineSmall,
+//                   ),
+//                 ),
+//                 SizedBox(
+//                   height: 3.h,
+//                 ),
+//                 Platform.isAndroid
+//                     ? SizedBox(
+//                   width: 60.w,
+//                   child: SocialLoginButton(
+//                     backgroundColor: Colors.white70,
+//                     height: 40,
+//                     text: 'Sign in',
+//                     borderRadius: 5,
+//                     fontSize: 15.sp,
+//                     buttonType: SocialLoginButtonType.google,
+//                     // imageWidth: 20,
+//                     // imagepath: "assets/file.png",
+//                     // imageURL: "URL",
+//                     onPressed: () async {
+//                       final response = await signInWithGoogle();
+//                       loginSocial(
+//                         response.user?.displayName?.split(" ")[0] ?? "",
+//                         ((response.user?.displayName?.split(" ").length ??
+//                             0) >
+//                             1)
+//                             ? response.user?.displayName?.split(" ")[1]
+//                             : "",
+//                         response.user?.email ?? "",
+//                         "",
+//                         "google",
+//                         response.user?.phoneNumber ?? "",
+//                         "",
+//                       );
+//                       // loginEmail();
+//                     },
+//                   ),
+//                 )
+//                     : Container(),
+//                 SizedBox(
+//                   height: 5.h,
 //                 ),
 //               ],
 //             ),
-//           );
-//         }),
+//           ),
+//         ),
 //       ),
 //     );
 //   }
 //
-//   getTotalAmount(Cart data) {
-//     // double price = 0;
-//
-//     return data.total_price;
-//   }
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-//     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-//     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-//     Future.delayed(Duration.zero, () {
-//       fetchCartItems();
-//       fetchData();
-//     });
-//   }
-//
-//   void fetchCartItems() async {
+//   void Login() async {
 //     Navigation.instance.navigate('/loadingDialog');
-//     final response = await ApiProvider.instance.fetchCart();
+//     final response = await ApiProvider.instance
+//         .loginSubscriber(_phoneController.text, _passwordController.text);
 //     if (response.status ?? false) {
-//       Provider.of<DataProvider>(
-//           Navigation.instance.navigatorKey.currentContext ?? context,
-//           listen: false)
-//           .setToCart(response.cart?.items ?? []);
-//       Provider.of<DataProvider>(
-//           Navigation.instance.navigatorKey.currentContext ?? context,
-//           listen: false)
-//           .setCartData(response.cart!);
-//       Navigation.instance.goBack();
+//       await Storage.instance.setUser(response.access_token ?? "");
+//       fetchProfile();
 //     } else {
-//       Navigation.instance.goBack();
-//     }
-//   }
-//
-//   void initiatePaymentProcess() async {
-//     Navigation.instance.navigate('/loadingDialog');
-//     final response = await ApiProvider.instance.fetchRazorpay();
-//     if (response.status ?? false) {
-//       if ((cupon == null || cupon == "") && coins != 0) {
-//         initateOrder(response.razorpay!, "REWARDCOIN");
-//       } else if (coins != null && coins != 0) {
-//         initateOrder(response.razorpay!, cupon);
-//       } else {
-//         // applyCoupon(cupon, response.razorpay!);
-//         initateOrder(response.razorpay!, "");
-//       }
-//     } else {
-//       Navigation.instance.goBack();
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.warning,
-//       //   text: "Something went wrong",
-//       // );
-//     }
-//   }
-//
-//   void initateOrder(RazorpayKey razorpay, cupon) async {
-//     final response = await ApiProvider.instance.createOrder(cupon, null);
-//     if (response.status ?? false) {
-//       tempTotal = response.order?.grand_total ?? 0;
-//       temp_order_id = response.order?.order_id.toString() ?? "";
-//       startPayment(razorpay, response.order?.grand_total,
-//           response.order?.order_id, response.order?.subscriber_id);
-//     } else {
-//       Navigation.instance.goBack();
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.warning,
-//       //   text: "Something went wrong",
-//       // );
-//     }
-//   }
-//
-//   void _handlePaymentSuccess(PaymentSuccessResponse response) {
-//     print(
-//         'success ${response.paymentId} ${response.orderId} ${response.signature}');
-//     handleSuccess(response);
-//   }
-//
-//   void _handlePaymentError(PaymentFailureResponse response) {
-//     // Do something when payment fails
-//     try {
-//       var resp = json.decode(response.message!);
-//       debugPrint('error ${resp['error']['description']} ${response.code} ');
-//       Navigation.instance.goBack();
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.error,
-//       //   text: resp['error']['description'] ?? "Something went wrong",
-//       // );
-//     } catch (e) {
 //       Navigation.instance.goBack();
 //       // CoolAlert.show(
 //       //   context: context,
@@ -305,330 +325,65 @@
 //     }
 //   }
 //
-//   void _handleExternalWallet(ExternalWalletResponse response) {
-//     // Do something when an external wallet was selected
-//   }
-//
-//   void startPayment(RazorpayKey razorpay, double? total, id, customer_id) {
-//     var options = {
-//       'key': razorpay.api_key,
-//       'amount': total! * 100,
-//       // 'order_id': id,
-//       "image": "https://tratri.in/assets/assets/images/logos/logo-razorpay.jpg",
-//       'name':
-//       '${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name} ${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.l_name}',
-//       'description': 'Books',
-//       'prefill': {
-//         'contact': Provider.of<DataProvider>(
-//             Navigation.instance.navigatorKey.currentContext ?? context,
-//             listen: false)
-//             .profile
-//             ?.mobile,
-//         'email': Provider.of<DataProvider>(
-//             Navigation.instance.navigatorKey.currentContext ?? context,
-//             listen: false)
-//             .profile
-//             ?.email
-//       },
-//       'note': {
-//         'customer_id': customer_id,
-//         'order_id': id,
-//       },
-//     };
-//     debugPrint("Options ${options}");
-//     try {
-//       _razorpay.open(options);
-//     } catch (e) {
-//       print(e);
-//     }
-//   }
-//
-//   void removeItem(int id) async {
-//     Navigation.instance.navigate('/loadingDialog');
-//     final response = await ApiProvider.instance.deleteCart(id);
+//   void fetchProfile() async {
+//     final response = await ApiProvider.instance.getProfile();
 //     if (response.status ?? false) {
+//       Provider.of<DataProvider>(
+//           Navigation.instance.navigatorKey.currentContext ?? context,
+//           listen: false)
+//           .setProfile(response.profile!);
 //       Navigation.instance.goBack();
-//       fetchCartItems();
+//       // Navigation.instance.goBack();
 //     } else {
 //       Navigation.instance.goBack();
 //       // CoolAlert.show(
 //       //   context: context,
-//       //   type: CoolAlertType.warning,
-//       //   text: "Enter proper credentials",
-//       // );
-//     }
-//   }
-//
-//   void handleSuccess(PaymentSuccessResponse response) async {
-//     final response1 = await ApiProvider.instance
-//         .verifyPayment(temp_order_id, response.paymentId, tempTotal ?? 1);
-//     if (response1.status ?? false) {
-//       Navigation.instance.goBack();
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.success,
-//       //   text: "Payment received Successfully",
-//       // );
-//       fetchCartItems();
-//       fetchData();
-//       fetchHomeSection();
-//       fetchHomeBanner();
-//     } else {
-//       Navigation.instance.goBack();
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.warning,
+//       //   type: CoolAlertType.error,
 //       //   text: "Something went wrong",
 //       // );
 //     }
 //   }
 //
-//   // void applyCoupon(String coupon, RazorpayKey razorpayKey) async {
-//   //   final response =
-//   //       await ApiProvider.instance.applyDiscount(coupon, tempTotal);
-//   //   if (response.success ?? false) {
-//   //     if (mounted) {
-//   //       setState(() {
-//   //         tempTotal = response.amount ?? tempTotal;
-//   //       });
-//   //       initateOrder(razorpayKey);
-//   //     } else {
-//   //       tempTotal = response.amount ?? tempTotal;
-//   //       initateOrder(razorpayKey);
-//   //     }
-//   //   } else {
-//   //     Navigation.instance.goBack();
-//   //     // CoolAlert.show(
-//   //     //   context: context,
-//   //     //   type: CoolAlertType.warning,
-//   //     //   text: "Something went wrong",
-//   //     // );
-//   //   }
-//   // }
-//
-//   void freeItemsProcess(cupon) async {
-//     final response = await ApiProvider.instance.createOrder(cupon, null);
-//     if (response.status ?? false) {
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.success,
-//       //   text: "Payment received Successfully",
-//       // );
-//       fetchCartItems();
-//       Navigation.instance.goBack();
-//     } else {
-//       // CoolAlert.show(
-//       //   context: context,
-//       //   type: CoolAlertType.warning,
-//       //   text: "Something went wrong",
-//       // );
-//     }
-//   }
-//
-//   fetchData() async {
-//     setState(() {
-//       loading = true;
-//     });
-//     final response = await ApiProvider.instance.getRewards();
-//     if (response.success ?? false) {
-//       Provider.of<DataProvider>(context, listen: false)
-//           .setRewards(response.result!);
-//       setState(() {
-//         loading = false;
-//       });
-//     } else {
-//       setState(() {
-//         loading = false;
-//       });
-//     }
-//   }
-//
-//   void showCoinsAppliedDialog() {
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(15),
-//         ),
-//         title: Column(
-//           children: [
-//             Icon(
-//               Icons.check_circle,
-//               color: Colors.green,
-//               size: 50,
-//             ),
-//             SizedBox(height: 10),
-//             Text(
-//               'Coins Applied!',
-//               style: TextStyle(
-//                 fontWeight: FontWeight.bold,
-//                 color: Colors.black,
-//                 fontSize: 19.sp,
-//               ),
-//             ),
-//           ],
-//         ),
-//         content: Text(
-//           '$coins coins have been applied to your purchase.',
-//           textAlign: TextAlign.center,
-//           style: TextStyle(
-//             color: Colors.black,
-//             fontSize: 16.sp,
-//           ),
-//         ),
-//         actions: [
-//           TextButton(
-//             onPressed: () => Navigator.pop(context),
-//             child: Text('OK'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void applyDiscount(discount_for, request_for, coupon_code) async {
+//   void loginSocial(
+//       fname, lname, email, password, provider, mobile, apple_id) async {
+//     Navigation.instance.navigate("/loadingDialog");
 //     final response = await ApiProvider.instance
-//         .applyDiscountAPI(discount_for, request_for, coupon_code);
+//         .socialLogin(fname, lname, email, password, provider, mobile, apple_id);
 //     if (response.status ?? false) {
-//       if (discount_for == "reward") {
-//         if (coins > 0) {
-//           showCoinsAppliedDialog();
-//           debugPrint("${response.cart?.discount_amount}");
-//           setState(() {
-//             discount = "${response.cart?.discount_amount}";
-//           });
-//         } else {
-//           setState(() {
-//             discount = "0";
-//           });
-//         }
-//       } else {
-//         debugPrint("Cupons Applied");
-//         if (cupon != "") {
-//           setState(() {
-//             discount = "${response.cart?.discount_amount}";
-//           });
-//           showDialog(
-//             context: context,
-//             builder: (context) => AlertDialog(
-//               shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(15),
-//               ),
-//               title: Column(
-//                 children: [
-//                   Icon(
-//                     Icons.check_circle,
-//                     color: Colors.green,
-//                     size: 50,
-//                   ),
-//                   SizedBox(height: 10),
-//                   Text(
-//                     'Coupon Applied!',
-//                     style: TextStyle(
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.black,
-//                       fontSize: 19.sp,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               content: Text(
-//                 'Coupon code $cupon has been applied to your purchase.',
-//                 textAlign: TextAlign.center,
-//                 style: TextStyle(
-//                   color: Colors.black,
-//                   fontSize: 16.sp,
-//                 ),
-//               ),
-//               actions: [
-//                 TextButton(
-//                   onPressed: () => Navigator.pop(context),
-//                   child: Text('OK'),
-//                 ),
-//               ],
-//             ),
-//           );
-//         } else {
-//           setState(() {
-//             discount = "0";
-//           });
-//         }
-//       }
+//       Navigation.instance.goBack();
+//       await Storage.instance.setUser(response.access_token ?? "");
+//       fetchProfile();
 //     } else {
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(15),
-//           ),
-//           title: Column(
-//             children: [
-//               Icon(
-//                 Icons.error,
-//                 color: Colors.red,
-//                 size: 50,
-//               ),
-//               SizedBox(height: 10),
-//               Text(
-//                 'Error',
-//                 style: TextStyle(
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.black,
-//                   fontSize: 19.sp,
-//                 ),
-//               ),
-//             ],
-//           ),
-//           content: Text(
-//             response.message ?? 'Something went wrong',
-//             textAlign: TextAlign.center,
-//             style: TextStyle(
-//               color: Colors.black,
-//               fontSize: 16.sp,
-//             ),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () => Navigator.pop(context),
-//               child: Text('OK'),
-//             ),
-//           ],
-//         ),
-//       );
+//       Navigation.instance.goBack();
+//       // CoolAlert.show(
+//       //   context: context,
+//       //   type: CoolAlertType.error,
+//       //   text: response.message ?? "Something went wrong",
+//       // );
 //     }
 //   }
 //
-//   void fetchHomeBanner() async {
-//     for (var i in Provider.of<DataProvider>(
-//         Navigation.instance.navigatorKey.currentContext!,
-//         listen: false)
-//         .formats!) {
-//       final response =
-//       await ApiProvider.instance.fetchHomeBanner(i.productFormat ?? '');
-//       if (response.status ?? false) {
-//         Provider.of<DataProvider>(
-//             Navigation.instance.navigatorKey.currentContext!,
-//             listen: false)
-//             .addBannerList(response.banners!);
-//       } else {}
+//   Future<void> _launchUrl(_url) async {
+//     if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
+//       throw 'Could not launch $_url';
 //     }
-//     Navigation.instance.goBack();
 //   }
 //
-//   void fetchHomeSection() async {
-//     for (var i in Provider.of<DataProvider>(
-//         Navigation.instance.navigatorKey.currentContext!,
-//         listen: false)
-//         .formats!) {
-//       final response =
-//       await ApiProvider.instance.fetchHomeSections(i.productFormat ?? '');
-//       if (response.status ?? false) {
-//         Provider.of<DataProvider>(
-//             Navigation.instance.navigatorKey.currentContext!,
-//             listen: false)
-//             .addHomeSection(response.sections!);
-//       }
-//     }
-//     // _refreshController.refreshCompleted();
+//   Future<UserCredential> signInWithGoogle() async {
+//     // Trigger the authentication flow
+//     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+//
+//     // Obtain the auth details from the request
+//     final GoogleSignInAuthentication? googleAuth =
+//     await googleUser?.authentication;
+//
+//     // Create a new credential
+//     final credential = GoogleAuthProvider.credential(
+//       accessToken: googleAuth?.accessToken,
+//       idToken: googleAuth?.idToken,
+//     );
+//
+//     // Once signed in, return the UserCredential
+//     return await FirebaseAuth.instance.signInWithCredential(credential);
 //   }
 // }

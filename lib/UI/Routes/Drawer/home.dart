@@ -44,54 +44,69 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     // if failed,use refreshFailed()
   }
 
+  // Future<void> initUniLinks() async {
+  //   debugPrint("deeplink start initial");
+  //   // Platform messages may fail, so we use a try/catch PlatformException.
+  //   // try {
+  //   //   final initialLink = await getInitialLink();
+  //   //   if (initialLink == null) {
+  //   //     debugPrint("deeplink start $initialLink");
+  //   //
+  //   //     initUniLinksAlive();
+  //   //   } else {
+  //   //     debugPrint("deeplink $initialLink");
+  //   //     await fetchBookDetails(initialLink);
+  //   //     goToUrl(initialLink);
+  //   //   }
+  //   // } on PlatformException {
+  //   //   debugPrint("deeplink1");
+  //   //   // Handle exception by warning the user their action did not succeed
+  //   //   // return?
+  //   // }
+  //   final appLinks = AppLinks(); // AppLinks is singleton
+  //   final sub = appLinks.uriLinkStream.listen((uri) async {
+  //     debugPrint("URI: $uri");
+  //     if (uri == null) {
+  //       initUniLinksAlive(uri);
+  //     } else {
+  //       await fetchBookDetails(uri.toString());
+  //       goToUrl(uri.toString());
+  //     }
+  //   });
+  // }
+
   Future<void> initUniLinks() async {
-    debugPrint("deeplink start initial");
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // try {
-    //   final initialLink = await getInitialLink();
-    //   if (initialLink == null) {
-    //     debugPrint("deeplink start $initialLink");
-    //
-    //     initUniLinksAlive();
-    //   } else {
-    //     debugPrint("deeplink $initialLink");
-    //     await fetchBookDetails(initialLink);
-    //     goToUrl(initialLink);
-    //   }
-    // } on PlatformException {
-    //   debugPrint("deeplink1");
-    //   // Handle exception by warning the user their action did not succeed
-    //   // return?
-    // }
-    final appLinks = AppLinks(); // AppLinks is singleton
-    final sub = appLinks.uriLinkStream.listen((uri) async {
-      if (uri == null) {
-        initUniLinksAlive();
-      } else {
-        await fetchBookDetails(uri.toString());
-        goToUrl(uri.toString());
-      }
-    });
+    print("deeplink start initial");
+    final appLinks = AppLinks();
+
+    // Handle initial/background links
+    final uri = await appLinks.getInitialLink();
+    if (uri == null) {
+      print("No initial deeplink");
+      initUniLinksAlive(appLinks);
+    } else {
+      print("Initial deeplink: $uri");
+      await fetchBookDetails(uri.toString());
+      goToUrl(uri.toString());
+    }
   }
 
-  Future<void> initUniLinksAlive() async {
-    // ... check initialLink
-
-    // Attach a listener to the stream
-    // _sub = linkStream.listen((String? link) async {
-    //   debugPrint("deep linking start not $link");
-    //   if (link != null) {
-    //     debugPrint("deep linking $link");
-    //     await fetchBookDetails(link);
-    //     goToUrlSecond(link);
-    //   }
-    // }, onError: (err) {
-    //   debugPrint("deep linking $err");
-    //   // Handle exception by warning the user their action did not succeed
-    // });
+  Future<void> initUniLinksAlive(AppLinks appLinks) async {
+    // Listen to app links while app is in foreground
+    _sub = appLinks.uriLinkStream.listen((Uri? uri) async {
+      print("Foreground deeplink: $uri");
+      if (uri != null) {
+        await fetchBookDetails(uri.toString());
+        goToUrlSecond(uri.toString());
+      }
+    }, onError: (err) {
+      print("Deeplink error: $err");
+      // Handle exception by warning the user their action did not succeed
+    });
 
     // NOTE: Don't forget to call _sub.cancel() in dispose()
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -317,6 +332,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void goToUrl(String initialLink) async {
+    debugPrint("GoToUrl: " + initialLink);
     final uri = Uri.parse(initialLink);
     if (uri.queryParameters['details'] == "reading") {
       checkByFormat(uri, initialLink);
@@ -340,7 +356,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 int.parse(uri.queryParameters['page'] ?? "0"));
             Navigation.instance.navigate('/bookDetails',
                 args:
-                    "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image'] ?? ""}");
+                    "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image']}");
           } else {
             Navigation.instance.navigate('/bookInfo',
                 args: int.parse(uri.queryParameters['id'] ?? "0"));
@@ -360,14 +376,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 int.parse(uri.queryParameters['page'] ?? "0"));
             Navigation.instance.navigate('/bookDetails',
                 args:
-                    "${int.parse(uri.queryParameters['id'] ?? "0")},${int.parse(uri.queryParameters['count'] ?? "0")}");
+                    "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image']}");
           } else {
             Navigation.instance.navigate('/bookInfo',
                 args: int.parse(uri.queryParameters['id'] ?? "0"));
           }
         } else {
           await Navigation.instance.navigate('/loginReturn');
-          initUniLinksAlive();
         }
       }
     } else {
@@ -402,7 +417,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           .setReadingBookPage(int.parse(uri.queryParameters['page'] ?? "0"));
       Navigation.instance.navigate('/bookDetails',
           args:
-              "${int.parse(uri.queryParameters['id'] ?? "0")},${int.parse(uri.queryParameters['count'] ?? "0")}");
+              "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image']}");
     } else {
       Navigation.instance.navigate('/bookInfo',
           args: int.parse(uri.queryParameters['id'] ?? "0"));
@@ -423,7 +438,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         "0.00") {
       return true;
     }
-
     return false;
   }
 

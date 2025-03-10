@@ -68,7 +68,7 @@ class _ReadingPageState extends State<ReadingPage> {
   bool toggle = false;
   double sliderVal = 0;
   String title = '';
-  List<BookChapter> chapters = [];
+  List<BookWithAdsChapter> chapters = [];
   PageController pageController = PageController(
     initialPage: 0,
   );
@@ -223,7 +223,7 @@ class _ReadingPageState extends State<ReadingPage> {
                 child: PageView.builder(
                   controller: pageController,
                   itemBuilder: (cont, index) {
-                    var current = chapters[index];
+                    BookWithAdsChapter current = chapters[index];
                     return GestureDetector(
                       onTap: () {
                         Navigation.instance.navigate('/bookDetails',
@@ -239,7 +239,7 @@ class _ReadingPageState extends State<ReadingPage> {
                         height: 60.h,
                         width: 50.w,
                         child: Html(
-                          data: current.pages![0],
+                          data: current.pages![0].content,
 
                           // tagsList: [
                           //   'img','p','!DOCTYPE html','body'
@@ -319,7 +319,7 @@ class _ReadingPageState extends State<ReadingPage> {
       }
     }
     final response1 = await ApiProvider.instance
-        .fetchBookChapters(widget.id.toString() ?? '3');
+        .fetchBookChaptersWithAds(widget.id.toString() ?? '3');
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];

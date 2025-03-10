@@ -27,7 +27,7 @@ class MagazineArticles extends StatefulWidget {
 
 class _MagazineArticlesState extends State<MagazineArticles> {
   Book? bookDetails;
-  List<BookChapter> chapters = [];
+  List<BookWithAdsChapter> chapters = [];
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _MagazineArticlesState extends State<MagazineArticles> {
       }
     }
     final response1 = await ApiProvider.instance
-        .fetchBookChapters(widget.id.toString() ?? '3');
+        .fetchBookChaptersWithAds(widget.id.toString() ?? '3');
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];

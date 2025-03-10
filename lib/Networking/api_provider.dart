@@ -632,35 +632,35 @@ class ApiProvider {
     }
   }
 
-  Future<BookChapterResponse> fetchBookChapters(String id) async {
-    var url = "${baseUrl}$path/chapters/${id}";
-    BaseOptions option = BaseOptions(
-        connectTimeout: Duration(seconds: 10),
-        receiveTimeout: Duration(seconds: 10),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${Storage.instance.token}',
-          // 'APP-KEY': ConstanceData.app_key
-          'platform': Platform.isAndroid ? "android" : "ios",
-        });
-    dio = Dio(option);
-    debugPrint(url.toString());
-    try {
-      Response? response = await dio?.get(url.toString());
-      debugPrint("chapters response: ${response?.data}");
-      if (response?.statusCode == 200 || response?.statusCode == 201) {
-        return BookChapterResponse.fromJson(response?.data);
-      } else {
-        debugPrint("chapters error: ${response?.data}");
-        return BookChapterResponse.withError(
-            response?.data['message'] ?? "Something went wrong");
-      }
-    } on DioError catch (e) {
-      debugPrint("chapters response: ${e.response}");
-      return BookChapterResponse.withError(e.message.toString());
-    }
-  }
+  // Future<BookChapterResponse> fetchBookChapters(String id) async {
+  //   var url = "${baseUrl}$path/chapters/${id}";
+  //   BaseOptions option = BaseOptions(
+  //       connectTimeout: Duration(seconds: 10),
+  //       receiveTimeout: Duration(seconds: 10),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Accept': 'application/json',
+  //         'Authorization': 'Bearer ${Storage.instance.token}',
+  //         // 'APP-KEY': ConstanceData.app_key
+  //         'platform': Platform.isAndroid ? "android" : "ios",
+  //       });
+  //   dio = Dio(option);
+  //   debugPrint(url.toString());
+  //   try {
+  //     Response? response = await dio?.get(url.toString());
+  //     debugPrint("chapters response: ${response?.data}");
+  //     if (response?.statusCode == 200 || response?.statusCode == 201) {
+  //       return BookChapterResponse.fromJson(response?.data);
+  //     } else {
+  //       debugPrint("chapters error: ${response?.data}");
+  //       return BookChapterResponse.withError(
+  //           response?.data['message'] ?? "Something went wrong");
+  //     }
+  //   } on DioError catch (e) {
+  //     debugPrint("chapters response: ${e.response}");
+  //     return BookChapterResponse.withError(e.message.toString());
+  //   }
+  // }
 
   Future<BookChapterWithAdsResponse> fetchBookChaptersWithAds(String id) async {
     var url = "${baseUrl}$path/chapters-new/${id}";

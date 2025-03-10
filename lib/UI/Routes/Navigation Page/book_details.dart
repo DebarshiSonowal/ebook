@@ -30,6 +30,7 @@ import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
+import '../../../Utility/ads_popup.dart';
 import '../../../Utility/embeded_link_extenion.dart';
 import '../../../Utility/image_extension.dart';
 import '../../../Utility/spaceExtension.dart';
@@ -80,7 +81,7 @@ class _BookDetailsState extends State<BookDetails>
   double brightness = 0.0, page_no = 1;
   bool toggle = false;
   double sliderVal = 0;
-  List<BookChapter> chapters = [];
+  List<BookWithAdsChapter> chapters = [];
   List<ReadingChapter> reading = [];
   String read = '', reviewUrl = "";
   var _counterValue = 17.sp;
@@ -212,6 +213,11 @@ class _BookDetailsState extends State<BookDetails>
                           scrollDirection: Axis.horizontal,
                           physics: const ClampingScrollPhysics(),
                           itemCount: reading.length,
+                          onPageChanged: (val) {
+                            if (reading[val].viewAds ?? false) {
+                              showAds(reading[val].ads_number);
+                            } else {}
+                          },
                           itemBuilder: (context, index) {
                             test = reading[index].desc!;
                             debugPrint(test);
@@ -458,51 +464,69 @@ class _BookDetailsState extends State<BookDetails>
   void removeScreenshotDisable() async {
     // await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
-
   Future<void> fetchBookDetails() async {
-    final response = await ApiProvider.instance
-        .fetchBookDetails(widget.input.toString().split(',')[0].toString());
-    if (response.status ?? false) {
-      if (response.details?.flip_book_url?.isNotEmpty ?? true) {
-        Navigation.instance.goBack();
-        _launchUrl(response.details?.flip_book_url);
-      }
-      bookDetails = response.details;
+    try {
+      final bookId = widget.input.toString().split(',')[0];
 
-      if (mounted) {
+      // Fetch book details and chapters
+      final bookResponse = await ApiProvider.instance.fetchBookDetails(bookId);
+      if (!mounted) return;
+
+      // Handle flip book URL if present
+      if (bookResponse.status ?? false) {
+        final flipBookUrl = bookResponse.details?.flip_book_url;
+        if (flipBookUrl?.isNotEmpty ?? false) {
+          Navigation.instance.goBack();
+          _launchUrl(flipBookUrl);
+          return;
+        }
+
         setState(() {
+          bookDetails = bookResponse.details;
           title = bookDetails?.title ?? "";
         });
       }
-    }
-    final response1 = await ApiProvider.instance
-        .fetchBookChapters(widget.input.toString().split(',')[0] ?? '3');
-    // .fetchBookChapters('3');
-    if (response1.status ?? false) {
-      chapters = response1.chapters ?? [];
-      setState(() {
-        reviewUrl = response1.chapters![0].review_url ?? "";
-        debugPrint("ReviewUrl: $reviewUrl");
-      });
-      for (var i in chapters) {
-        for (var j in i.pages!) {
-          reading.add(ReadingChapter('', j, i.review_url));
-          read = read + j;
-        }
-      }
 
-      if (mounted) {
+      // Fetch and process chapters
+      final chaptersResponse =
+          await ApiProvider.instance.fetchBookChaptersWithAds(bookId);
+      if (!mounted) return;
+
+      if (chaptersResponse.status ?? false) {
+        chapters = chaptersResponse.chapters ?? [];
+
+        reading.clear();
+        read = "";
+
+        // Process each chapter and page
+        for (final chapter in chapters) {
+          if (chapter.pages == null) continue;
+
+          for (final page in chapter.pages!) {
+            final content = page.content;
+            if (content != null) {
+              reading.add(ReadingChapter('', content, chapter.review_url,
+                  page.view_ad, page.view_ad_count));
+              read += content;
+            }
+          }
+        }
+
         setState(() {
+          reviewUrl = chapters.isNotEmpty ? chapters[0].review_url ?? "" : "";
           getSplitedText(
               TextStyle(
                   color: getBackGroundColor(),
                   fontSize: FontSize(_counterValue).value),
               read);
-          // setPages(FontSize(_counterValue).size?.toInt());
         });
       }
+
+      Navigation.instance.goBack();
+    } catch (e) {
+      debugPrint('Error fetching book details: $e');
+      Navigation.instance.goBack();
     }
-    Navigation.instance.goBack();
   }
 
   getSizeFromBloc(GlobalKey pagekey) {
@@ -618,41 +642,70 @@ class _BookDetailsState extends State<BookDetails>
     }
   }
 
-  void fetchData() async {
-    // print("here we are");
-    Navigation.instance.navigate('/readingDialog',
-        args: widget.input.toString().split(',')[1]);
-    await fetchBookDetails();
-    // print("here we are");
-    Future.delayed(Duration.zero, () async {
+  Future<void> fetchData() async {
+    try {
+      final bookId = widget.input.toString().split(',')[0];
+      final dialogArg = widget.input.toString().split(',')[1];
+
+      Navigation.instance.navigate('/readingDialog', args: dialogArg);
+
+      await fetchBookDetails();
+
+      // Initialize brightness and size
       brightness = await systemBrightness;
       getSizeFromBloc(pageKey);
 
+      // Set reading book in storage
       setState(() {
-        Storage.instance
-            .setReadingBook(int.parse(widget.input.toString().split(',')[0]));
+        Storage.instance.setReadingBook(int.parse(bookId));
       });
-    });
-    Future.delayed(const Duration(seconds: 3), () {
-      debugPrint(
-          "Executed ${Storage.instance.readingBook} ${widget.input.toString().split(',')[0]}");
-      if (Storage.instance.readingBook.toString() ==
-          widget.input.toString().split(',')[0].toString()) {
-        debugPrint("Scroll ${Storage.instance.readingBookPage}");
-        pageController.jumpToPage(Storage.instance.readingBookPage);
-        pageController.addListener(() {
-          setState(() {
-            page_no = pageController.page ?? 1;
-            reviewUrl = reading[pageController.page!.toInt()].url ?? "";
-          });
-          Storage.instance.setReadingBookPage(page_no.toInt());
-        });
+
+      // Setup page controller after brief delay
+      await Future.delayed(const Duration(seconds: 3));
+
+      final storedBookId = Storage.instance.readingBook.toString();
+      if (storedBookId == bookId) {
+        final storedPage = Storage.instance.readingBookPage;
+        pageController.jumpToPage(storedPage);
+
+        // Add listener for stored book
+        pageController.addListener(_storedBookListener);
       } else {
-        pageController.addListener(() {
-          page_no = pageController.page ?? 1;
-        });
+        // Add basic listener for new book
+        pageController.addListener(_basicPageListener);
       }
-      // Navigation.instance.goBack();
+    } catch (e) {
+      debugPrint('Error in fetchData: $e');
+    }
+  }
+
+  void _storedBookListener() {
+    setState(() {
+      page_no = pageController.page ?? 1;
+      reviewUrl = reading[pageController.page!.toInt()].url ?? "";
     });
+    Storage.instance.setReadingBookPage(page_no.toInt());
+  }
+
+  void _basicPageListener() {
+    page_no = pageController.page ?? 1;
+  }
+
+  void showAds(int? adCount) {
+    if (adCount == null || adCount <= 0) return;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: EdgeInsets.symmetric(horizontal: 2.w),
+          child: AdsPopup(
+            adCount: adCount,
+          ),
+        );
+      },
+    );
   }
 }

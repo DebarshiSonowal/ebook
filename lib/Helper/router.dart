@@ -125,6 +125,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: HomePage());
 
     default:
+      print("Unknown ${settings.arguments}");
       return MaterialPageRoute(builder: (_) {
         return const Scaffold(
           body: Center(

@@ -30,6 +30,7 @@ import '../../../Model/reading_theme.dart';
 import '../../../Networking/api_provider.dart';
 import '../../../Storage/app_storage.dart';
 import '../../../Storage/data_provider.dart';
+import '../../../Utility/ads_popup.dart';
 import '../../../Utility/blockquote_extention.dart';
 import '../../../Utility/embeded_link_extenion.dart';
 import '../../../Utility/image_extension.dart';
@@ -79,7 +80,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   PageController pageController = PageController(
     initialPage: 0,
   );
-  List<BookChapter> chapters = [];
+  List<BookWithAdsChapter> chapters = [];
 
   var _counterValue = 17.sp;
 
@@ -185,6 +186,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                         scrollDirection: Axis.horizontal,
                         physics: const ClampingScrollPhysics(),
                         itemCount: reading.length,
+                        onPageChanged: (val) {
+                          if (reading[val].viewAds ?? false) {
+                            showAds(reading[val].ads_number);
+                          } else {}
+                        },
                         itemBuilder: (context, index) {
                           test = reading[index].desc ?? "";
                           reviewUrl = reading[index].url ?? "";
@@ -636,7 +642,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       }
     }
     final response1 = await ApiProvider.instance
-        .fetchBookChapters(widget.id.toString().split(',')[0] ?? '3');
+        .fetchBookChaptersWithAds(widget.id.toString().split(',')[0] ?? '3');
     // .fetchBookChapters('3');
     if (response1.status ?? false) {
       chapters = response1.chapters ?? [];
@@ -651,9 +657,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           //   text = text + j;
           // }
           if (i >= int.parse(widget.id.toString().split(',')[1])) {
-            reading.add(
-                ReadingChapter(chapters[i].title, j, chapters[i].review_url));
-            text = text + j;
+            reading.add(ReadingChapter(chapters[i].title, j.content,
+                chapters[i].review_url, j.view_ad, j.view_ad_count));
+            text = text + j.content!;
           }
         }
       }
@@ -685,5 +691,23 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
     if (!await launchUrl(Uri.parse(_url), mode: LaunchMode.inAppWebView)) {
       throw 'Could not launch $_url';
     }
+  }
+
+  void showAds(int? adCount) {
+    if (adCount == null || adCount <= 0) return;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: EdgeInsets.symmetric(horizontal: 2.w),
+          child: AdsPopup(
+            adCount: adCount,
+          ),
+        );
+      },
+    );
   }
 }
