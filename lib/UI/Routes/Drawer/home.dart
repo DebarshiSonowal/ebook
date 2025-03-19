@@ -21,6 +21,7 @@ import '../../../Helper/navigator.dart';
 import '../../../Networking/api_provider.dart';
 import '../../Components/buildbook_section.dart';
 import '../../Components/dynamic_books_section.dart';
+import '../../Components/library_section.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -206,6 +207,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                             ConstanceData.show(context, data);
                           },
                         ),
+                  LibrarySection(),
                   data.currentTab == 2
                       ? DynamicEnotesSection()
                       : const DynamicBooksSection(),

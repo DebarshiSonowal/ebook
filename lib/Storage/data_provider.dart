@@ -38,7 +38,7 @@ class DataProvider extends ChangeNotifier {
 
   // Library
   List<LibraryBookDetailsModel> library = [];
-  List<Library> libraries = [];
+  List<Library> libraries = [], publicLibraries = [];
   List<BookmarkItem> bookmarks = [];
 
   // Cart
@@ -108,6 +108,9 @@ class DataProvider extends ChangeNotifier {
       _notifyChange(() => library = list);
   void setLibraries(List<Library> list) =>
       _notifyChange(() => libraries = list);
+
+  void setPublicLibraries(List<Library> list) =>
+      _notifyChange(() => publicLibraries = list);
   void setSearchResult(List<Book> list) =>
       _notifyChange(() => searchResults = list);
   void setHistory(List<OrderHistory> list) =>

@@ -164,6 +164,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
     fetchData();
     fetchDetails();
+    fetchPublicLibraries();
     _controller = TabController(
       length: Provider.of<DataProvider>(
                   Navigation.instance.navigatorKey.currentContext!,
@@ -372,5 +373,13 @@ class _HomePageState extends State<HomePage>
     }
 
     // _refreshController.refreshCompleted();
+  }
+
+  fetchPublicLibraries() async {
+    final response = await ApiProvider.instance.getPublicLibraryList();
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setPublicLibraries(response.result ?? []);
+    } else {}
   }
 }

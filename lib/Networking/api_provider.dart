@@ -35,6 +35,7 @@ import '../Model/home_banner.dart';
 import '../Model/home_section.dart';
 import '../Model/library.dart';
 import '../Model/library_book_details.dart';
+import '../Model/library_model.dart';
 import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
 import '../Model/magazine_plan.dart';
@@ -1467,6 +1468,78 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("LibraryList error: ${e.response}");
       return LibraryList.fromError(e.message ?? "");
+    }
+  }
+
+  Future<LibraryList> getPublicLibraryList() async {
+    var url = "${baseUrl}/libraries/all";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("LibraryListAll response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryList.fromJson(response?.data);
+      } else {
+        debugPrint("LibraryListAll error: ${response?.data}");
+        return LibraryList.fromError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("LibraryListAll error: ${e.response}");
+      return LibraryList.fromError(e.message ?? "");
+    }
+  }
+
+  Future<LibraryModel> getPublicLibraryDetails(id) async {
+    var url = "${baseUrl}/libraries/detail/$id";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          // 'APP-KEY': ConstanceData.app_key
+        });
+    dio = Dio(option);
+    debugPrint("Bearer ${Storage.instance.token}");
+    debugPrint(url.toString());
+    // debugPrint(data.toString());
+    try {
+      Response? response;
+
+      response = await dio!.get(
+        url.toString(),
+        // queryParameters: data,
+      );
+
+      debugPrint("LibraryModel response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryModel.fromJson(response?.data);
+      } else {
+        debugPrint("LibraryModel error: ${response?.data}");
+        return LibraryModel.fromError("Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("LibraryModel error: ${e.response}");
+      return LibraryModel.fromError(e.message ?? "");
     }
   }
 
