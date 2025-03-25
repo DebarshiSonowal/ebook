@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                         hintStyle:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: Colors.grey.shade400,
-                                  fontSize: 13.sp,
+                                  fontSize: 15.sp,
                                 ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge
-                          ?.copyWith(fontSize: 14.sp),
+                          ?.copyWith(fontSize: 16.sp),
                     ),
                   ),
                 ),
@@ -160,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: Theme.of(context)
                           .textTheme
                           .titleLarge
-                          ?.copyWith(fontSize: 14.sp),
+                          ?.copyWith(fontSize: 16.sp),
                       decoration: InputDecoration(
                         labelText: 'Enter your password',
                         hintText: "password",
@@ -171,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                         hintStyle:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: Colors.grey.shade400,
-                                  fontSize: 13.sp,
+                                  fontSize: 15.sp,
                                 ),
                         // prefixIcon: Icon(Icons.star,color: Colors.white,),
                         // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
@@ -335,45 +335,45 @@ class _LoginPageState extends State<LoginPage> {
                 //     // after they have been validated with Apple (see `Integration` section for more information on how to do this)
                 //   },
                 // ),
-                Platform.isIOS
-                    ? SizedBox(
-                        width: 60.w,
-                        child: SocialLoginButton(
-                          backgroundColor: Colors.white70,
-                          height: 40,
-                          text: 'Sign in',
-                          borderRadius: 5,
-                          fontSize: 15.sp,
-                          buttonType: SocialLoginButtonType.apple,
-                          // imageWidth: 20,
-                          // imagepath: "assets/file.png",
-                          // imageURL: "URL",
-                          onPressed: () async {
-                            await signInWithApple();
-                            //
-                            // print(response);
-                            // print(response.user);
-                            // print(response.additionalUserInfo);
-                            // print(response.credential);
-
-                            // print(credential);
-                            // Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
-                            // loginSocial(
-                            //   response.user?.displayName?.split(" ")[0] ?? "",
-                            //   ((response.user?.displayName?.split(" ").length ?? 0) >
-                            //           1)
-                            //       ? response.user?.displayName?.split(" ")[1]
-                            //       : "",
-                            //   response.user?.email ?? "",
-                            //   "",
-                            //   "google",
-                            //   response.user?.phoneNumber ?? "",
-                            // );
-                            // loginEmail();
-                          },
-                        ),
-                      )
-                    : Container(),
+                // Platform.isIOS
+                //     ? SizedBox(
+                //         width: 60.w,
+                //         child: SocialLoginButton(
+                //           backgroundColor: Colors.white70,
+                //           height: 40,
+                //           text: 'Sign in',
+                //           borderRadius: 5,
+                //           fontSize: 15.sp,
+                //           buttonType: SocialLoginButtonType.apple,
+                //           // imageWidth: 20,
+                //           // imagepath: "assets/file.png",
+                //           // imageURL: "URL",
+                //           onPressed: () async {
+                //             await signInWithApple();
+                //             //
+                //             // print(response);
+                //             // print(response.user);
+                //             // print(response.additionalUserInfo);
+                //             // print(response.credential);
+                //
+                //             // print(credential);
+                //             // Fluttertoast.showToast(msg: "${response.user} ${response.additionalUserInfo} ${response.credential} ${credential}");
+                //             // loginSocial(
+                //             //   response.user?.displayName?.split(" ")[0] ?? "",
+                //             //   ((response.user?.displayName?.split(" ").length ?? 0) >
+                //             //           1)
+                //             //       ? response.user?.displayName?.split(" ")[1]
+                //             //       : "",
+                //             //   response.user?.email ?? "",
+                //             //   "",
+                //             //   "google",
+                //             //   response.user?.phoneNumber ?? "",
+                //             // );
+                //             // loginEmail();
+                //           },
+                //         ),
+                //       )
+                //     : Container(),
                 SizedBox(
                   height: 3.h,
                 ),

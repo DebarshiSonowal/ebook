@@ -42,6 +42,7 @@ class LibraryResult {
   final String email;
   final String? address;
   final int cityId;
+  final int is_member;
   final int districtId;
   final int stateId;
   final String? pinCode;
@@ -50,9 +51,12 @@ class LibraryResult {
   final String? about;
   final int status;
   final String libraryType;
+  final String memberRequestUrl;
+  final String bookPublishRequestUrl;
 
   LibraryResult({
     required this.id,
+    required this.is_member,
     required this.code,
     required this.title,
     required this.ownerName,
@@ -72,11 +76,14 @@ class LibraryResult {
     this.about,
     required this.status,
     required this.libraryType,
+    required this.memberRequestUrl,
+    required this.bookPublishRequestUrl,
   });
 
   factory LibraryResult.fromJson(Map<String, dynamic> json) {
     return LibraryResult(
       id: json['id'] ?? 0,
+      is_member: json['is_member'] ?? 0,
       code: json['code'] ?? '',
       title: json['title'] ?? '',
       ownerName: json['owner_name'] ?? '',
@@ -96,6 +103,9 @@ class LibraryResult {
       about: json['about'],
       status: json['status'] ?? 0,
       libraryType: json['library_type'] ?? '',
+      memberRequestUrl: json['member_request_url'] ?? 'https://tratri.in/',
+      bookPublishRequestUrl:
+          json['book_publish_request_url'] ?? 'https://tratri.in/',
     );
   }
 }

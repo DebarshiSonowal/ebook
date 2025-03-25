@@ -1,5 +1,6 @@
 // import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:ebook/Model/home_banner.dart';
@@ -36,7 +37,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: true);
   final ScrollController controller = ScrollController();
-
+  // final bool isIos = ;
   void _onRefresh() async {
     // monitor network fetch
 
@@ -207,7 +208,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                             ConstanceData.show(context, data);
                           },
                         ),
-                  LibrarySection(),
+                  const LibrarySection(), // Show for Android
                   data.currentTab == 2
                       ? DynamicEnotesSection()
                       : const DynamicBooksSection(),

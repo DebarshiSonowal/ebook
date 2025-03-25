@@ -274,6 +274,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
     if (response.status ?? false) {
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
+      Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
       Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
@@ -288,7 +289,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         listen: false,
       ).setProfile(response.profile!);
       Navigation.instance.goBack();
-      Navigation.instance.navigate('/main');
+      Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
       Fluttertoast.showToast(msg: "Something went wrong");
@@ -348,45 +349,89 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   }
 
   Future<void> signInWithApple() async {
-    final credential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-    );
-    if (credential.userIdentifier?.isNotEmpty ?? false) {
-      if (!mounted) return;
-      showTextFieldDialog(
-        context,
-        "Please Enter Your Credentials",
-        "We need your details to provide you better services",
-        credential.givenName == null
-            ? ""
-            : credential.familyName == null
-                ? credential.givenName
-                : "${credential.givenName} ${credential.familyName}",
-        credential.email,
-        "",
-        (String? name, String? email, String mobile) {
-          if (mobile.isNotEmpty && mobile.length == 10) {
-            loginSocial(
-              name?.split(" ")[0] ?? "",
-              name?.split(" ").length != null && name!.split(" ").length > 1
-                  ? name.split(" ")[1]
-                  : "",
-              email ?? "",
-              "",
-              "ios",
-              mobile,
-              credential.userIdentifier ?? "",
-            );
-          } else {
-            Navigation.instance.goBack();
-            Fluttertoast.showToast(msg: "Please enter valid mobile number");
-          }
-        },
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Check if we received a valid user identifier
+      if (credential.userIdentifier?.isNotEmpty ?? false) {
+        if (!mounted) return;
+
+        // Format the name correctly from Apple credentials
+        final fullName = _formatAppleFullName(credential);
+
+        // Show dialog to collect additional user information
+        showTextFieldDialog(
+          context,
+          "Complete Your Profile",
+          "Please verify your information to continue",
+          fullName,
+          credential.email,
+          "",
+          (String? name, String? email, String mobile) {
+            if (_isValidMobile(mobile)) {
+              // Process the social login
+              _processSocialLogin(
+                  name, email, mobile, credential.userIdentifier);
+            } else {
+              Navigation.instance.goBack();
+              Fluttertoast.showToast(
+                msg: "Please enter a valid 10-digit mobile number",
+                toastLength: Toast.LENGTH_SHORT,
+              );
+            }
+          },
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Sign in failed. Please try again.",
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Sign in with Apple failed: ${e.toString()}",
+        toastLength: Toast.LENGTH_SHORT,
       );
     }
+  }
+
+  // Helper method to format Apple name credentials
+  String _formatAppleFullName(AuthorizationCredentialAppleID credential) {
+    if (credential.givenName == null) return "";
+
+    return credential.familyName == null
+        ? credential.givenName!
+        : "${credential.givenName} ${credential.familyName}";
+  }
+
+  // Validate mobile number
+  bool _isValidMobile(String mobile) {
+    return mobile.isNotEmpty &&
+        mobile.length == 10 &&
+        int.tryParse(mobile) != null;
+  }
+
+  // Process the social login with user information
+  void _processSocialLogin(
+      String? name, String? email, String mobile, String? appleId) {
+    final firstName = name?.split(" ")[0] ?? "";
+    final lastName =
+        (name?.split(" ").length ?? 0) > 1 ? name!.split(" ")[1] : "";
+
+    loginSocial(
+      firstName,
+      lastName,
+      email ?? "",
+      "",
+      "ios",
+      mobile,
+      appleId ?? "",
+    );
   }
 
   Future<UserCredential> signInWithGoogle() async {
