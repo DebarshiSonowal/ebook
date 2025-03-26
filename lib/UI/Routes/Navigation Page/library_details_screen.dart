@@ -106,20 +106,22 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
   Widget _buildDetails() {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
+      // decoration: BoxDecoration(
+      //   color: Colors.grey.shade900,
+      //   borderRadius: BorderRadius.circular(20),
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.black.withOpacity(0.3),
+      //       spreadRadius: 5,
+      //       blurRadius: 7,
+      //       offset: const Offset(0, 3),
+      //     ),
+      //   ],
+      // ),
+      margin: EdgeInsets.symmetric(
+        horizontal: 2.w,
       ),
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -131,12 +133,13 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   color: Colors.white,
                 ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 2.h),
           _buildInfoCard(
             icon: Icons.library_books,
             title: 'Library Type',
             content: data?.libraryType ?? '',
           ),
+          SizedBox(height: 1.h),
           _buildInfoCard(
             icon: Icons.person,
             title: 'Owner',
@@ -158,8 +161,11 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     if (content.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 1.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: 4.w,
+        vertical: 1.5.h,
+      ),
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
         borderRadius: BorderRadius.circular(12),
@@ -174,7 +180,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
             ),
             child: Icon(icon, color: Colors.white70),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 4.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -261,8 +267,8 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   Widget _buildAboutSection() {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(top: 20),
-      padding: const EdgeInsets.all(20),
+      margin: EdgeInsets.only(top: 1.h),
+      padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
         borderRadius: BorderRadius.circular(12),
@@ -278,14 +284,81 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   color: Colors.white,
                 ),
           ),
-          const SizedBox(height: 12),
-          Text(
-            data?.about ?? '',
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.grey.shade300,
-              height: 1.6,
-            ),
+          SizedBox(height: 1.h),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data?.about ?? '',
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade300,
+                  height: 1.6,
+                ),
+              ),
+              if ((data?.about?.length ?? 0) > 100)
+                Padding(
+                  padding: EdgeInsets.only(top: 1.h),
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: Colors.black,
+                          title: Text(
+                            'About',
+                            style: TextStyle(
+                              fontSize: 19.sp,
+                              height: 1.6,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          content: SingleChildScrollView(
+                            child: Text(
+                              data?.about ?? '',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                height: 1.6,
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue.shade300,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(color: Colors.blue.shade300),
+                                ),
+                              ),
+                              child: Text(
+                                'Close',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Read more',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.blue.shade300,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
@@ -316,7 +389,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                 children: [
                   _buildHeader(),
                   _buildDetails(),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 1.h),
                   Consumer<DataProvider>(
                     builder: (context, data, _) {
                       if (data.libraries.isEmpty) {
@@ -338,18 +411,44 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              'Library Collection',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            padding: EdgeInsets.symmetric(horizontal: 4.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Library Collection',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // Navigate to view all books
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'View All Books',
+                                        style: TextStyle(
+                                          color: Colors.blue.shade300,
+                                          fontSize: 16.sp,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Icon(
+                                        Icons.arrow_forward,
+                                        size: 16.sp,
+                                        color: Colors.blue.shade300,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          SizedBox(height: 1.h),
 
                           // E-Books Section
                           _buildBookSection(
@@ -422,8 +521,9 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
               final book = books[index];
               return GestureDetector(
                 onTap: () {
-                  Navigation.instance
-                      .navigate('/bookDetailsScreen', args: book.id);
+                  // Navigation.instance
+                  //     .navigate('/bookDetailsScreen', args: book.id);
+                  Navigation.instance.navigate('/bookInfo', args: book.id);
                 },
                 child: Container(
                   width: 120,
@@ -514,21 +614,16 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
   Widget _buildButtons() {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
+      margin: EdgeInsets.symmetric(vertical: 1.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(
-            'Services',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-          ),
-          const SizedBox(height: 16),
           Row(
             children: [
-              (data?.memberRequestUrl != null && (data?.is_member ?? 0) == 0)
+              (data?.memberRequestUrl != null &&
+                      data?.memberRequestUrl.isNotEmpty == true &&
+                      (data?.is_member ?? 0) == 0)
                   ? Expanded(
                       child: _buildActionButton(
                         icon: Icons.person_add,
@@ -545,7 +640,8 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                     )
                   : Container(),
               const SizedBox(width: 12),
-              data?.bookPublishRequestUrl != null
+              data?.bookPublishRequestUrl != null &&
+                      data!.bookPublishRequestUrl.isNotEmpty
                   ? Expanded(
                       child: _buildActionButton(
                         icon: Icons.upload_file,
@@ -577,7 +673,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 2.h),
+        padding: EdgeInsets.symmetric(vertical: 1.h),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(12),
@@ -592,12 +688,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
         alignment: Alignment.center,
         child: Column(
           children: [
-            Icon(
-              icon,
-              color: Colors.white,
-              size: 21.sp,
-            ),
-            SizedBox(height: 2.w),
             Text(
               label,
               style: TextStyle(

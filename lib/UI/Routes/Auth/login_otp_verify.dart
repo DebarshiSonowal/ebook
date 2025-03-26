@@ -465,106 +465,170 @@ Future<void> showTextFieldDialog(
     builder: (context) {
       return AlertDialog(
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontSize: 16.sp,
-              ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1.5),
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+        elevation: 8,
+        title: Column(
+          children: [
+            Icon(
+              Icons.person_outline_rounded,
+              size: 40,
+              color: Colors.white,
+            ),
+            SizedBox(height: 1.h),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ],
+        ),
+        content: Container(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  description,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 14.sp,
+                      ),
+                ),
+                SizedBox(height: 2.5.h),
+                _buildTextField(
+                  context,
+                  nameController,
+                  'Name',
+                  Icons.person,
+                ),
+                SizedBox(height: 2.h),
+                _buildTextField(
+                  context,
+                  emailController,
+                  'Email',
+                  Icons.email,
+                ),
+                SizedBox(height: 2.h),
+                _buildTextField(
+                  context,
+                  mobileController,
+                  'Mobile',
+                  Icons.phone,
+                  keyboardType: TextInputType.phone,
+                ),
+              ],
+            ),
+          ),
+        ),
+        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        actions: [
+          Row(
             children: [
-              Text(
-                description,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigation.instance.goBack(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey.withOpacity(0.3),
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
                     ),
-              ),
-              SizedBox(height: 2.h),
-              TextField(
-                controller: nameController,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 14.sp,
-                    ),
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  labelStyle: TextStyle(color: Colors.white),
                 ),
               ),
-              SizedBox(height: 1.h),
-              TextField(
-                controller: emailController,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 14.sp,
+              SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    onSubmit(
+                      nameController.text,
+                      emailController.text,
+                      mobileController.text,
+                    );
+                    Navigation.instance.goBack();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  labelStyle: TextStyle(color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 1.h),
-              TextField(
-                controller: mobileController,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 14.sp,
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
                     ),
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  labelText: 'Mobile',
-                  border: OutlineInputBorder(),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  labelStyle: TextStyle(color: Colors.white),
                 ),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigation.instance.goBack(),
-            child: Text(
-              'Cancel',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              onSubmit(
-                nameController.text,
-                emailController.text,
-                mobileController.text,
-              );
-              Navigation.instance.goBack();
-            },
-            child: Text(
-              'Submit',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
         ],
       );
+
+      // Helper function for consistent text field styling
     },
+  );
+}
+
+Widget _buildTextField(
+  BuildContext context,
+  TextEditingController controller,
+  String label,
+  IconData icon, {
+  TextInputType keyboardType = TextInputType.text,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: TextField(
+      controller: controller,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontSize: 15.sp,
+            color: Colors.white,
+          ),
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.7)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white, width: 1),
+        ),
+        labelStyle: TextStyle(
+          color: Colors.white.withOpacity(0.7),
+          fontSize: 14.sp,
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      ),
+    ),
   );
 }
