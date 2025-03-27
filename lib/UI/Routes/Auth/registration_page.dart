@@ -1,7 +1,7 @@
-// import 'package:cool_alert/cool_alert.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../Constants/constance_data.dart';
@@ -31,37 +31,33 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   var current = "";
 
   @override
   void dispose() {
-    super.dispose();
     _phoneController.dispose();
     _fnameController.dispose();
     _lnameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    // var outputFormat = DateFormat('dd/MM/yyyy');
-    // var outputDate = outputFormat.format(DateTime.now());
-    // current =
-    // '${outputDate.toString().split('/')[0]}-${outputDate.toString().split(
-    //     '/')[1]}-${outputDate.toString().split('/')[2]}';
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
           icon: const Icon(
-            Icons.arrow_back,
+            Icons.arrow_back_ios_new_rounded,
             color: Colors.white,
           ),
           onPressed: () {
@@ -69,461 +65,388 @@ class _RegistrationPageState extends State<RegistrationPage> {
           },
         ),
       ),
-      body: SafeArea(
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: Theme.of(context).primaryColor,
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).primaryColor,
+              Theme.of(context).primaryColor.withOpacity(0.8),
+              Theme.of(context).primaryColorDark,
+            ],
+          ),
+        ),
+        child: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // SizedBox(
-                //   height: 2.h,
-                // ),
-                // Image.asset(
-                //   ConstanceData.primaryIcon,
-                //   fit: BoxFit.fill,
-                //   height: 20.h,
-                //   width: 34.w,
-                // ),
-                SizedBox(
-                  height: 3.h,
-                ),
-                Text(
-                  "Signup",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Colors.white,
-                      ),
-                ),
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 4.h),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      cursorHeight:
-                          Theme.of(context).textTheme.headlineSmall?.fontSize,
-                      autofocus: false,
-                      controller: _fnameController,
-                      cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your first name',
-                        hintText: "Firstname",
-                        labelStyle: Theme.of(context)
+                    Center(
+                      child: Text(
+                        "Create Account",
+                        style: Theme.of(context)
                             .textTheme
-                            .titleLarge
-                            ?.copyWith(fontSize: 10.sp),
-                        hintStyle:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
-                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
-                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          gapPadding: 0.0,
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
+                            .headlineMedium
+                            ?.copyWith(
+                              color: Colors.white,
+                              fontSize: 17.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      cursorHeight:
-                          Theme.of(context).textTheme.headlineSmall?.fontSize,
-                      autofocus: false,
-                      controller: _lnameController,
-                      cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your Last name',
-                        hintText: "Lastname",
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontSize: 10.sp),
-                        hintStyle:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
-                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
-                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          gapPadding: 0.0,
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      keyboardType: TextInputType.number,
-                      cursorHeight:
-                          Theme.of(context).textTheme.headlineSmall?.fontSize,
-                      autofocus: false,
-                      controller: _phoneController,
-                      cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your phone number',
-                        hintText: "Mobile Number",
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontSize: 10.sp),
-                        hintStyle:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
-                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
-                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          gapPadding: 0.0,
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      keyboardType: TextInputType.emailAddress,
-                      cursorHeight:
-                          Theme.of(context).textTheme.headlineSmall?.fontSize,
-                      autofocus: false,
-                      controller: _emailController,
-                      cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your Email',
-                        hintText: "qwerty@gmail.com",
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontSize: 10.sp),
-                        hintStyle:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
-                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
-                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              const BorderSide(color: Colors.white, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          gapPadding: 0.0,
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      keyboardType: TextInputType.visiblePassword,
-                      cursorHeight:
-                          Theme.of(context).textTheme.headlineSmall?.fontSize,
-                      autofocus: false,
-                      controller: _passwordController,
-                      cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      decoration: InputDecoration(
-                        labelText: 'Enter your password',
-                        hintText: "Password",
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontSize: 10.sp),
-                        hintStyle:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
-                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
-                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              const BorderSide(color: Colors.white, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          gapPadding: 0.0,
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              const BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: TextField(
-                      keyboardType: TextInputType.visiblePassword,
-                      cursorHeight:
-                          Theme.of(context).textTheme.headlineSmall?.fontSize,
-                      autofocus: false,
-                      controller: _confirmPasswordController,
-                      cursorColor: Colors.white,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm your password',
-                        hintText: "Password",
-                        labelStyle: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(fontSize: 10.sp),
-                        hintStyle:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.grey.shade400,
-                                ),
-                        // prefixIcon: Icon(Icons.star,color: Colors.white,),
-                        // suffixIcon: Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                        // contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          gapPadding: 0.0,
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 30.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  width: double.infinity,
-                  height: 6.5.h,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white,
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.,
-                    children: [
-                      Text(
-                        'DOB:',
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      SizedBox(
-                        width: 2.w,
-                      ),
-                      SizedBox(
-                        width: 40.w,
-                        // height: 4.h,
-                        child: Center(
-                          child: DateTimePicker(
-                            // dateLabelText:
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium
-                                ?.copyWith(color: Colors.white),
-                            // calendarTitle: 'Select a date',
-                            // dateHintText: 'Write a date',
-                            // fieldLabelText: 'My',
-                            // fieldHintText: 'Heelo',
-                            type: DateTimePickerType.date,
-                            initialValue: '',
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
-                            // dateLabelText: 'Date',
-                            onChanged: (val) {
-                              setState(() {
-                                current = val;
-                              });
-                            },
-                            validator: (val) {
-                              print(val);
 
+                    SizedBox(height: 1.h),
+
+                    Center(
+                      child: Text(
+                        "Please fill in the form to continue",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Colors.white70,
+                            ),
+                      ),
+                    ),
+
+                    SizedBox(height: 4.h),
+
+                    // Name fields in a row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _fnameController,
+                            label: 'First Name',
+                            icon: Icons.person_outline,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your first name';
+                              }
                               return null;
                             },
-                            onSaved: (val) => print(val),
+                          ),
+                        ),
+                        SizedBox(width: 3.w),
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _lnameController,
+                            label: 'Last Name',
+                            icon: Icons.person_outline,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your last name';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    _buildTextField(
+                      controller: _emailController,
+                      label: 'Email Address',
+                      icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        if (!value.isValidEmail()) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    _buildTextField(
+                      controller: _phoneController,
+                      label: 'Phone Number',
+                      icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(15),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your phone number';
+                        }
+                        if (value.length < 8) {
+                          return 'Please enter a valid phone number';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    _buildDateField(),
+
+                    SizedBox(height: 2.h),
+
+                    _buildTextField(
+                      controller: _passwordController,
+                      label: 'Password',
+                      icon: Icons.lock_outline,
+                      isPassword: true,
+                      isPasswordVisible: _isPasswordVisible,
+                      onTogglePasswordVisibility: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 2.h),
+
+                    _buildTextField(
+                      controller: _confirmPasswordController,
+                      label: 'Confirm Password',
+                      icon: Icons.lock_outline,
+                      isPassword: true,
+                      isPasswordVisible: _isConfirmPasswordVisible,
+                      onTogglePasswordVisibility: () {
+                        setState(() {
+                          _isConfirmPasswordVisible =
+                              !_isConfirmPasswordVisible;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    SizedBox(height: 4.h),
+
+                    _buildSignUpButton(),
+
+                    SizedBox(height: 3.h),
+
+                    Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigation.instance.navigate('/login');
+                        },
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Already have an account? ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Colors.white70,
+                                ),
+                            children: [
+                              TextSpan(
+                                text: 'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+
+                    SizedBox(height: 2.h),
+                  ],
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: 6.5.h,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          if (_phoneController.text.isNotEmpty &&
-                              _phoneController.text.length > 7 &&
-                              _passwordController.text.isNotEmpty &&
-                              _confirmPasswordController.text.isNotEmpty &&
-                              _fnameController.text.isNotEmpty &&
-                              _lnameController.text.isNotEmpty &&
-                              _emailController.text.isNotEmpty &&
-                              _emailController.text.isValidEmail() &&
-                              current != '') {
-                            if (_passwordController.text ==
-                                _confirmPasswordController.text) {
-                              CreateAccount(
-                                  _fnameController.text,
-                                  _lnameController.text,
-                                  _emailController.text,
-                                  _phoneController.text,
-                                  current,
-                                  _passwordController.text);
-                            } else {
-                              // CoolAlert.show(
-                              //   context: context,
-                              //   type: CoolAlertType.warning,
-                              //   text: "Confirm Password field is wrong",
-                              // );
-                            }
-                          } else {
-                            // CoolAlert.show(
-                            //   context: context,
-                            //   type: CoolAlertType.warning,
-                            //   text: "Enter proper credentials",
-                            // );
-                          }
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                        ),
-                        child: Text(
-                          'Sign up',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                fontSize: 3.h,
-                                color: Colors.black,
-                              ),
-                        )),
-                  ),
-                ),
-                SizedBox(
-                  height: 5.h,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigation.instance.navigate('/login');
-                  },
-                  child: Text(
-                    "Already have an account? Login",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    bool isPassword = false,
+    bool isPasswordVisible = false,
+    VoidCallback? onTogglePasswordVisibility,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: isPassword && !isPasswordVisible,
+      cursorColor: Colors.white,
+      style: TextStyle(color: Colors.white),
+      inputFormatters: inputFormatters,
+      validator: validator,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.white70),
+        prefixIcon: Icon(icon, color: Colors.white70),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.white70,
+                ),
+                onPressed: onTogglePasswordVisibility,
+              )
+            : null,
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.1),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.redAccent),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.redAccent, width: 2),
+        ),
+        errorStyle: TextStyle(color: Colors.redAccent),
+      ),
+    );
+  }
+
+  Widget _buildDateField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.3)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.w),
+        child: Row(
+          children: [
+            Icon(Icons.calendar_today_outlined, color: Colors.white70),
+            SizedBox(width: 3.w),
+            Expanded(
+              child: DateTimePicker(
+                type: DateTimePickerType.date,
+                initialValue: '',
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+                decoration: InputDecoration(
+                  labelText: 'Date of Birth',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  border: InputBorder.none,
+                  errorStyle: TextStyle(color: Colors.redAccent),
+                ),
+                style: TextStyle(color: Colors.white),
+                onChanged: (val) {
+                  setState(() {
+                    current = val;
+                  });
+                },
+                validator: (val) {
+                  if (val == null || val.isEmpty) {
+                    return 'Please select your date of birth';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return ElevatedButton(
+      onPressed: _validateAndSubmit,
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 2.h),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 5,
+        shadowColor: Colors.black.withOpacity(0.5),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'SIGN UP',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
+          ),
+          SizedBox(width: 2.w),
+          Icon(Icons.arrow_forward_rounded),
+        ],
+      ),
+    );
+  }
+
+  void _validateAndSubmit() {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (current.isEmpty) {
+        _showErrorSnackBar('Please select your date of birth');
+        return;
+      }
+
+      CreateAccount(
+        _fnameController.text,
+        _lnameController.text,
+        _emailController.text,
+        _phoneController.text,
+        current,
+        _passwordController.text,
+      );
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
   }
@@ -534,19 +457,19 @@ class _RegistrationPageState extends State<RegistrationPage> {
         .addSubscriber(fname, lname, email, mobile, dob, password);
     if (response.status ?? false) {
       Navigation.instance.goBack();
-      // CoolAlert.show(
-      //   context: context,
-      //   type: CoolAlertType.error,
-      //   text: "Account Created Successfully",
-      // );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Account Created Successfully"),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
       Navigation.instance.navigate('/login');
     } else {
       Navigation.instance.goBack();
-      // CoolAlert.show(
-      //   context: context,
-      //   type: CoolAlertType.error,
-      //   text: response.message ?? "Something Went Wrong",
-      // );
+      _showErrorSnackBar(response.message ?? "Something Went Wrong");
     }
   }
 }

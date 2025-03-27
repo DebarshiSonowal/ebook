@@ -22,16 +22,14 @@ class SpecificLibraryPage extends StatefulWidget {
 class _SpecificLibraryPageState extends State<SpecificLibraryPage>
     with TickerProviderStateMixin {
   TabController? _controller;
+  String? _libraryTitle;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          Provider.of<DataProvider>(context, listen: false)
-              .libraries
-              .firstWhere((e) => e.id == widget.id)
-              .title,
+          _libraryTitle ?? "Library",
           style: TextStyle(
             color: Colors.black,
             fontSize: 17.sp,
@@ -180,10 +178,27 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
       length: 3,
       vsync: this,
     );
+
     Future.delayed(Duration.zero, () {
       fetchData();
+      _loadLibraryTitle();
       setState(() {});
     });
+  }
+
+  void _loadLibraryTitle() {
+    try {
+      final dataProvider = Provider.of<DataProvider>(context, listen: false);
+      final library = dataProvider.libraries.firstWhere(
+        (e) => e.id == widget.id,
+      );
+
+      setState(() {
+        _libraryTitle = library.title;
+      });
+    } catch (e) {
+      debugPrint("Error loading library title: $e");
+    }
   }
 
   void fetchData() async {

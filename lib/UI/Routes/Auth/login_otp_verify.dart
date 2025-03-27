@@ -5,6 +5,7 @@ import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
+import 'package:ebook/UI/Routes/Auth/text_field_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -48,9 +49,15 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
+        elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigation.instance.goBack(),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigation.instance.goBack();
+          },
         ),
       ),
       body: SafeArea(
@@ -59,35 +66,131 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
           width: double.infinity,
           color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 3.h),
-                Image.asset(
-                  ConstanceData.primaryIcon,
-                  fit: BoxFit.fill,
-                  height: 20.h,
-                  width: 34.w,
-                ),
-                SizedBox(height: 6.h),
-                Text(
-                  "Login",
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: Colors.white,
-                        fontSize: 20.sp,
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 3.h),
+                  Hero(
+                    tag: 'app_logo',
+                    child: Image.asset(
+                      ConstanceData.primaryIcon,
+                      fit: BoxFit.contain,
+                      height: 20.h,
+                      width: 34.w,
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  Text(
+                    "Login",
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          color: Colors.white,
+                          fontSize: 21.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  SizedBox(height: 4.h),
+                  _buildTextField(
+                    context: context,
+                    controller: _emailController,
+                    hintText: "Email Address",
+                    labelText: "Enter your email",
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_outlined,
+                  ),
+                  SizedBox(height: 2.h),
+                  _buildTextField(
+                    context: context,
+                    controller: _passwordController,
+                    hintText: "Password",
+                    labelText: "Enter your password",
+                    isObscure: true,
+                    prefixIcon: Icons.lock_outline,
+                  ),
+                  SizedBox(height: 4.h),
+                  _buildLoginButton(context),
+                  SizedBox(height: 2.5.h),
+                  GestureDetector(
+                    onTap: () {
+                      _launchUrl(
+                          Uri.parse("https://tratri.in/app-forget-password"));
+                    },
+                    child: Text(
+                      "Forgot Password?",
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline,
+                              ),
+                    ),
+                  ),
+                  SizedBox(height: 3.h),
+                  GestureDetector(
+                    onTap: () {
+                      Navigation.instance.navigate('/signup');
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontSize: 14.sp,
+                                ),
+                        children: [
+                          TextSpan(
+                            text: "Signup",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                            ),
+                          ),
+                        ],
                       ),
-                ),
-                SizedBox(height: 4.h),
-                _buildEmailTextField(),
-                SizedBox(height: 1.5.h),
-                _buildPasswordTextField(),
-                SizedBox(height: 3.h),
-                _buildLoginButton(),
-                SizedBox(height: 2.h),
-                _buildForgotPasswordButton(),
-                SizedBox(height: 2.h),
-                _buildSocialLoginButtons(),
-                SizedBox(height: 5.h),
-              ],
+                    ),
+                  ),
+                  SizedBox(height: 1.h),
+                  Divider(color: Colors.white.withOpacity(0.5)),
+                  SizedBox(height: 1.h),
+                  Text(
+                    "Or continue with",
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontSize: 15.sp,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                  ),
+                  SizedBox(height: 2.h),
+                  if (Platform.isAndroid)
+                    SizedBox(
+                      width: 60.w,
+                      child: SocialLoginButton(
+                        backgroundColor: Colors.white70,
+                        height: 5.5.h,
+                        text: 'Sign in with Google',
+                        borderRadius: 8,
+                        fontSize: 14.sp,
+                        buttonType: SocialLoginButtonType.google,
+                        onPressed: _handleGoogleSignIn,
+                      ),
+                    ),
+                  if (Platform.isIOS) ...[
+                    SizedBox(height: 2.h),
+                    SizedBox(
+                      width: 60.w,
+                      child: SignInWithAppleButton(
+                        height: 5.5.h,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
+                        onPressed: signInWithApple,
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 5.h),
+                ],
+              ),
             ),
           ),
         ),
@@ -95,189 +198,113 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
     );
   }
 
-  Widget _buildEmailTextField() {
-    return SizedBox(
+  Widget _buildTextField({
+    required BuildContext context,
+    required TextEditingController controller,
+    required String hintText,
+    required String labelText,
+    bool isObscure = false,
+    TextInputType keyboardType = TextInputType.text,
+    IconData? prefixIcon,
+  }) {
+    return Container(
       width: double.infinity,
       height: 6.5.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30.0),
-        child: TextField(
-          controller: _emailController,
-          keyboardType: TextInputType.emailAddress,
-          cursorColor: Colors.white,
-          style:
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: TextField(
+        keyboardType: keyboardType,
+        cursorHeight: Theme.of(context).textTheme.headlineSmall?.fontSize,
+        autofocus: false,
+        controller: controller,
+        cursorColor: Colors.white,
+        obscureText: isObscure,
+        style:
+            Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 16.sp),
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+          prefixIcon: prefixIcon != null
+              ? Icon(prefixIcon, color: Colors.white70)
+              : null,
+          labelStyle:
               Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 14.sp),
-          decoration: InputDecoration(
-            labelText: 'Enter your email',
-            hintText: "Email Address",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: Colors.white, width: 2),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: Colors.white, width: 1.5),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: Colors.white, width: 1.5),
-            ),
-            labelStyle: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontSize: 14.sp),
-            hintStyle: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.grey.shade400,
-                  fontSize: 13.sp,
-                ),
+          hintStyle: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.grey.shade400,
+                fontSize: 15.sp,
+              ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.white, width: 2),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.white, width: 1.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            gapPadding: 0.0,
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.white, width: 1.5),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildPasswordTextField() {
+  Widget _buildLoginButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 6.5.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30.0),
-        child: TextField(
-          controller: _passwordController,
-          obscureText: true,
-          cursorColor: Colors.white,
-          style:
-              Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 14.sp),
-          decoration: InputDecoration(
-            labelText: 'Enter your password',
-            hintText: "Password",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: Colors.white, width: 2),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: Colors.white, width: 1.5),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5),
-              borderSide: BorderSide(color: Colors.white, width: 1.5),
-            ),
-            labelStyle: Theme.of(context)
-                .textTheme
-                .titleLarge
-                ?.copyWith(fontSize: 14.sp),
-            hintStyle: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: Colors.grey.shade400,
-                  fontSize: 13.sp,
-                ),
+      height: 5.5.h,
+      child: ElevatedButton(
+        onPressed: () {
+          if (_emailController.text.isNotEmpty &&
+              _passwordController.text.isNotEmpty &&
+              _emailController.text.isValidEmail()) {
+            Login();
+          } else {
+            Fluttertoast.showToast(
+              msg: "Please enter valid credentials",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+            );
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 3,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildLoginButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 5.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30.0),
-        child: ElevatedButton(
-          onPressed: () {
-            if (_emailController.text.isNotEmpty &&
-                _passwordController.text.isNotEmpty &&
-                _emailController.text.isValidEmail()) {
-              Login();
-            } else {
-              Fluttertoast.showToast(msg: "Please enter valid credentials");
-            }
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          child: Text(
-            'Login',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontSize: 18.sp,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
+        child: Text(
+          'LOGIN',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                fontSize: 16.sp,
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.2,
+              ),
         ),
       ),
-    );
-  }
-
-  Widget _buildForgotPasswordButton() {
-    return GestureDetector(
-      onTap: () =>
-          _launchUrl(Uri.parse("https://tratri.in/app-forget-password")),
-      child: Text(
-        "Forgot Password",
-        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontSize: 13.sp,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildSocialLoginButtons() {
-    return Column(
-      children: [
-        if (Platform.isAndroid)
-          SizedBox(
-            width: 60.w,
-            child: SocialLoginButton(
-              backgroundColor: Colors.white70,
-              height: 40,
-              text: 'Sign in',
-              borderRadius: 5,
-              fontSize: 15.sp,
-              buttonType: SocialLoginButtonType.google,
-              onPressed: _handleGoogleSignIn,
-            ),
-          ),
-        if (Platform.isIOS) ...[
-          SizedBox(height: 1.h),
-          SizedBox(
-            width: 60.w,
-            child: SocialLoginButton(
-              backgroundColor: Colors.white70,
-              height: 40,
-              text: 'Sign in',
-              borderRadius: 5,
-              fontSize: 15.sp,
-              buttonType: SocialLoginButtonType.apple,
-              onPressed: signInWithApple,
-            ),
-          ),
-        ],
-      ],
     );
   }
 
   void Login() async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance.socialLogin(
-      "",
-      "",
-      _emailController.text,
-      _passwordController.text,
-      "normal",
-      "",
-      "",
-    );
+    final response = await ApiProvider.instance.socialLogin("", "",
+        _emailController.text, _passwordController.text, "normal", "", "");
     if (response.status ?? false) {
       await Storage.instance.setUser(response.access_token ?? "");
       fetchProfile();
-      Navigation.instance.goBack();
     } else {
       Navigation.instance.goBack();
-      Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
+      Fluttertoast.showToast(
+        msg: response.message ?? "Something went wrong",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
@@ -285,32 +312,48 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
     final response = await ApiProvider.instance.getProfile();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
-        Navigation.instance.navigatorKey.currentContext ?? context,
-        listen: false,
-      ).setProfile(response.profile!);
+              Navigation.instance.navigatorKey.currentContext ?? context,
+              listen: false)
+          .setProfile(response.profile!);
       Navigation.instance.goBack();
-      Navigation.instance.goBack();
+      Navigation.instance.navigate('/main');
     } else {
       Navigation.instance.goBack();
-      Fluttertoast.showToast(msg: "Something went wrong");
+      Fluttertoast.showToast(
+        msg: "Something went wrong",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+    }
+  }
+
+  Future<void> _launchUrl(_url) async {
+    if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
+      throw 'Could not launch $_url';
     }
   }
 
   Future<void> _handleGoogleSignIn() async {
-    final response = await signInWithGoogle();
-    loginSocial(
-      response.user?.displayName?.split(" ")[0] ?? "",
-      response.user?.displayName?.split(" ").length == null
-          ? ""
-          : response.user!.displayName!.split(" ").length > 1
-              ? response.user!.displayName!.split(" ")[1]
-              : "",
-      response.user?.email ?? "",
-      "",
-      "google",
-      response.user?.phoneNumber ?? "",
-      "",
-    );
+    try {
+      final response = await signInWithGoogle();
+      loginSocial(
+        response.user?.displayName?.split(" ")[0] ?? "",
+        (response.user?.displayName?.split(" ").length ?? 0) > 1
+            ? response.user?.displayName?.split(" ")[1] ?? ""
+            : "",
+        response.user?.email ?? "",
+        "",
+        "google",
+        response.user?.phoneNumber ?? "",
+        "",
+      );
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Google Sign In failed. Please try again.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
+    }
   }
 
   void loginSocial(
@@ -338,13 +381,11 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       fetchProfile();
     } else {
       Navigation.instance.goBack();
-      Fluttertoast.showToast(msg: response.message ?? "Something went wrong");
-    }
-  }
-
-  Future<void> _launchUrl(Uri _url) async {
-    if (!await launchUrl(_url, mode: LaunchMode.inAppWebView)) {
-      throw 'Could not launch $_url';
+      Fluttertoast.showToast(
+        msg: response.message ?? "Something went wrong",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 
@@ -357,45 +398,48 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         ],
       );
 
-      // Check if we received a valid user identifier
       if (credential.userIdentifier?.isNotEmpty ?? false) {
         if (!mounted) return;
 
         // Format the name correctly from Apple credentials
         final fullName = _formatAppleFullName(credential);
 
-        // Show dialog to collect additional user information
         showTextFieldDialog(
           context,
-          "Complete Your Profile",
-          "Please verify your information to continue",
+          "Please Enter Your Credentials",
+          "We need your details to provide you better services",
           fullName,
           credential.email,
           "",
           (String? name, String? email, String mobile) {
-            if (_isValidMobile(mobile)) {
-              // Process the social login
-              _processSocialLogin(
-                  name, email, mobile, credential.userIdentifier);
+            if (mobile.isNotEmpty && mobile.length == 10) {
+              loginSocial(
+                name?.split(" ").firstOrNull ?? "",
+                (name?.split(" ").length ?? 0) > 1
+                    ? name?.split(" ")[1] ?? ""
+                    : "",
+                email ?? "",
+                "",
+                "apple",
+                mobile,
+                credential.userIdentifier ?? "",
+              );
             } else {
               Navigation.instance.goBack();
               Fluttertoast.showToast(
                 msg: "Please enter a valid 10-digit mobile number",
                 toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
               );
             }
           },
         );
-      } else {
-        Fluttertoast.showToast(
-          msg: "Sign in failed. Please try again.",
-          toastLength: Toast.LENGTH_SHORT,
-        );
       }
     } catch (e) {
       Fluttertoast.showToast(
-        msg: "Sign in with Apple failed: ${e.toString()}",
+        msg: "Apple Sign In failed. Please try again.",
         toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
       );
     }
   }
@@ -409,226 +453,47 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         : "${credential.givenName} ${credential.familyName}";
   }
 
-  // Validate mobile number
-  bool _isValidMobile(String mobile) {
-    return mobile.isNotEmpty &&
-        mobile.length == 10 &&
-        int.tryParse(mobile) != null;
-  }
-
-  // Process the social login with user information
-  void _processSocialLogin(
-      String? name, String? email, String mobile, String? appleId) {
-    final firstName = name?.split(" ")[0] ?? "";
-    final lastName =
-        (name?.split(" ").length ?? 0) > 1 ? name!.split(" ")[1] : "";
-
-    loginSocial(
-      firstName,
-      lastName,
-      email ?? "",
-      "",
-      "ios",
-      mobile,
-      appleId ?? "",
+  void showTextFieldDialog(
+    BuildContext context,
+    String title,
+    String hintText,
+    String? nameText,
+    String? emailText,
+    String? mobileText,
+    Function(String? name, String? email, String mobile) onSubmit,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => TextFieldDialog(
+        title: title,
+        hintText: hintText,
+        nameText: nameText,
+        emailText: emailText,
+        mobileText: mobileText,
+        onSubmit: onSubmit,
+      ),
     );
   }
 
   Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
+
+    if (googleUser == null) {
+      throw Exception("Google sign in aborted by user");
+    }
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create a new credential
     final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
     );
+
+    // Once signed in, return the UserCredential
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
-}
-
-Future<void> showTextFieldDialog(
-  BuildContext context,
-  String title,
-  String description,
-  String? name,
-  String? email,
-  String? mobile,
-  Function(String?, String?, String) onSubmit,
-) async {
-  final nameController = TextEditingController(text: name);
-  final emailController = TextEditingController(text: email);
-  final mobileController = TextEditingController(text: mobile);
-
-  return showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      return AlertDialog(
-        backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: Colors.white.withOpacity(0.2), width: 1.5),
-        ),
-        elevation: 8,
-        title: Column(
-          children: [
-            Icon(
-              Icons.person_outline_rounded,
-              size: 40,
-              color: Colors.white,
-            ),
-            SizedBox(height: 1.h),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ],
-        ),
-        content: Container(
-          width: double.maxFinite,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  description,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: 14.sp,
-                      ),
-                ),
-                SizedBox(height: 2.5.h),
-                _buildTextField(
-                  context,
-                  nameController,
-                  'Name',
-                  Icons.person,
-                ),
-                SizedBox(height: 2.h),
-                _buildTextField(
-                  context,
-                  emailController,
-                  'Email',
-                  Icons.email,
-                ),
-                SizedBox(height: 2.h),
-                _buildTextField(
-                  context,
-                  mobileController,
-                  'Mobile',
-                  Icons.phone,
-                  keyboardType: TextInputType.phone,
-                ),
-              ],
-            ),
-          ),
-        ),
-        actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () => Navigation.instance.goBack(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.withOpacity(0.3),
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    onSubmit(
-                      nameController.text,
-                      emailController.text,
-                      mobileController.text,
-                    );
-                    Navigation.instance.goBack();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
-
-      // Helper function for consistent text field styling
-    },
-  );
-}
-
-Widget _buildTextField(
-  BuildContext context,
-  TextEditingController controller,
-  String label,
-  IconData icon, {
-  TextInputType keyboardType = TextInputType.text,
-}) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: TextField(
-      controller: controller,
-      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontSize: 15.sp,
-            color: Colors.white,
-          ),
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.7)),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white, width: 1),
-        ),
-        labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: 14.sp,
-        ),
-        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      ),
-    ),
-  );
 }

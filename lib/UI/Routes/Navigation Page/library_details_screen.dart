@@ -27,7 +27,16 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   void initState() {
     super.initState();
     fetchData();
+    fetchLibraryData();
     _loadLibraryDetails();
+  }
+
+  Future<void> fetchLibraryData() async {
+    final response = await ApiProvider.instance.getPublicLibraryList();
+    if (response.success) {
+      Provider.of<DataProvider>(context, listen: false)
+          .setPublicLibraries(response.result ?? []);
+    } else {}
   }
 
   Future<void> _loadLibraryDetails() async {
@@ -392,7 +401,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   SizedBox(height: 1.h),
                   Consumer<DataProvider>(
                     builder: (context, data, _) {
-                      if (data.libraries.isEmpty) {
+                      if (data.publicLibraries.isEmpty) {
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -426,6 +435,10 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                 TextButton(
                                   onPressed: () {
                                     // Navigate to view all books
+                                    Navigation.instance.navigate(
+                                        '/libraryBooks',
+                                        args:
+                                            data.publicLibraries.first.id ?? 0);
                                   },
                                   child: Row(
                                     children: [
