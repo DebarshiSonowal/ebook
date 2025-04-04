@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ebook/Model/enote_banner.dart';
 import 'package:ebook/UI/Components/tags_section.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -115,31 +117,35 @@ class ScrollableContent extends StatelessWidget {
               ],
             ),
             SizedBox(height: 0.5.h),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              color: Colors.white,
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                // decoration: ,
-                child: Text(
-                  data.selling_price?.toStringAsFixed(2).toString() == '0.00'
-                      ? 'FREE'
-                      : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontSize: 1.5.h,
-                        color:
-                            data.selling_price?.toStringAsFixed(2).toString() ==
-                                    '0.00'
-                                ? Colors.green
-                                : Colors.black,
+            Platform.isAndroid
+                ? Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    color: Colors.white,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      // decoration: ,
+                      child: Text(
+                        data.selling_price?.toStringAsFixed(2).toString() ==
+                                '0.00'
+                            ? 'FREE'
+                            : 'Rs. ${data.selling_price?.toStringAsFixed(2)}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontSize: 1.5.h,
+                              color: data.selling_price
+                                          ?.toStringAsFixed(2)
+                                          .toString() ==
+                                      '0.00'
+                                  ? Colors.green
+                                  : Colors.black,
+                            ),
                       ),
-                ),
-              ),
-            ),
+                    ),
+                  )
+                : Container(),
             SizedBox(height: 1.h),
             TagsSection(data: data),
             SizedBox(height: 0.7.h),
@@ -432,35 +438,37 @@ class ScrollableEnoteContent extends StatelessWidget {
               ],
             ),
             SizedBox(height: 0.5.h),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              color: Colors.white,
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                // decoration: ,
-                child: Text(
-                  double.parse(data.sellingPrice.toString())
-                              .toStringAsFixed(2)
-                              .toString() ==
-                          '0.00'
-                      ? 'FREE'
-                      : 'Rs. ${double.parse(data.sellingPrice.toString()).toStringAsFixed(2)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontSize: 1.5.h,
-                        color: double.parse(data.sellingPrice.toString())
+            Platform.isAndroid
+                ? Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    color: Colors.white,
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      // decoration: ,
+                      child: Text(
+                        double.parse(data.sellingPrice.toString())
                                     .toStringAsFixed(2)
                                     .toString() ==
                                 '0.00'
-                            ? Colors.green
-                            : Colors.black,
+                            ? 'FREE'
+                            : 'Rs. ${double.parse(data.sellingPrice.toString()).toStringAsFixed(2)}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              fontSize: 1.5.h,
+                              color: double.parse(data.sellingPrice.toString())
+                                          .toStringAsFixed(2)
+                                          .toString() ==
+                                      '0.00'
+                                  ? Colors.green
+                                  : Colors.black,
+                            ),
                       ),
-                ),
-              ),
-            ),
+                    ),
+                  )
+                : Container(),
             SizedBox(height: 0.7.h),
             TagsEnotesSection(data: data),
             SizedBox(height: 0.7.h),

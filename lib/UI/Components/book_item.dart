@@ -266,16 +266,16 @@ class _BookItemState extends State<BookItem> {
     Fluttertoast.showToast(msg: "Something went wrong");
   }
 
-  String getPriceText() {
-    var priceText =
-        (widget.data.selling_price?.toStringAsFixed(2)).toString() == '0.00'
-            ? (widget.data.base_price ?? 0).toStringAsFixed(2)
-            : widget.data.selling_price?.toStringAsFixed(2);
-    if (priceText.toString() != '0.00') {
-      return 'Rs. $priceText';
-    }
-    return "FREE";
-  }
+  // String getPriceText() {
+  //   var priceText =
+  //       (widget.data.selling_price?.toStringAsFixed(2)).toString() == '0.00'
+  //           ? (widget.data.base_price ?? 0).toStringAsFixed(2)
+  //           : widget.data.selling_price?.toStringAsFixed(2);
+  //   if (priceText.toString() != '0.00') {
+  //     return 'Rs. $priceText';
+  //   }
+  //   return "FREE";
+  // }
 
   bool getColorText() {
     var priceText =

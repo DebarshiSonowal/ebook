@@ -1,9 +1,6 @@
-// import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-
-// import 'package:cool_alert/cool_alert.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/UI/Components/type_bar.dart';
@@ -12,9 +9,9 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-// import 'package:rating_dialog/rating_dialog.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:pay/pay.dart';
 
 import '../../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
@@ -52,12 +49,17 @@ class _BookInfoState extends State<BookInfo>
   double tempTotal = 0;
   var cupon = "";
   String temp_order_id = '0';
+  late final PaymentConfiguration _paymentConfiguration;
 
   @override
   void initState() {
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+    if (Platform.isIOS) {
+      _paymentConfiguration = PaymentConfiguration.fromJsonString(
+          '{"provider": "apple_pay", "data": {"merchantIdentifier": "merchant.xamtech.tratri", "displayName": "Tratri", "merchantCapabilities": ["3DS", "debit", "credit"], "supportedNetworks": ["amex", "visa", "discover", "masterCard"], "countryCode": "IN", "currencyCode": "INR"}}');
+    }
     super.initState();
     fetchBookDetails();
   }
@@ -208,39 +210,44 @@ class _BookInfoState extends State<BookInfo>
                                 SizedBox(
                                   height: 1.5.h,
                                 ),
-                                Card(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(3.0),
-                                  ),
-                                  color: Colors.white,
-                                  child: Container(
-                                    padding: EdgeInsets.all(0.7.w),
-                                    // decoration: ,
-                                    child: Text(
-                                      bookDetails?.selling_price
-                                                  ?.toStringAsFixed(2)
-                                                  .toString() ==
-                                              "0.00"
-                                          ? "FREE"
-                                          : "Rs. ${bookDetails?.selling_price?.toStringAsFixed(2)}",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge
-                                          ?.copyWith(
-                                            fontSize: 15.sp,
-                                            color: bookDetails?.selling_price
+                                Platform.isAndroid
+                                    ? Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(3.0),
+                                        ),
+                                        color: Colors.white,
+                                        child: Container(
+                                          padding: EdgeInsets.all(0.7.w),
+                                          // decoration: ,
+                                          child: Text(
+                                            bookDetails?.selling_price
                                                         ?.toStringAsFixed(2)
                                                         .toString() ==
                                                     "0.00"
-                                                ? Colors.green
-                                                : Colors.black,
-                                            fontWeight: FontWeight.bold,
+                                                ? "FREE"
+                                                : "Rs. ${bookDetails?.selling_price?.toStringAsFixed(2)}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge
+                                                ?.copyWith(
+                                                  fontSize: 15.sp,
+                                                  color: bookDetails
+                                                              ?.selling_price
+                                                              ?.toStringAsFixed(
+                                                                  2)
+                                                              .toString() ==
+                                                          "0.00"
+                                                      ? Colors.green
+                                                      : Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
-                                    ),
-                                  ),
-                                ),
+                                        ),
+                                      )
+                                    : Container(),
                               ],
                             ),
                           ),
@@ -576,9 +583,36 @@ class _BookInfoState extends State<BookInfo>
       //   text: "Payment received Successfully",
       // );
       if (Platform.isIOS) {
-        final result = await launchUrl(
-            Uri.parse("https://tratri.in/payment/${response.order?.order_id}"));
-        checkIfValid(response.order?.id);
+        try {
+          final paymentItems = [
+            PaymentItem(
+              label: 'Total',
+              amount: '10.00',
+              status: PaymentItemStatus.final_price,
+            )
+          ];
+
+          // Display Apple Pay sheet and handle the payment result
+          await ApplePayButton(
+            paymentConfiguration: _paymentConfiguration,
+            paymentItems: paymentItems,
+            style: ApplePayButtonStyle.black,
+            type: ApplePayButtonType.buy,
+            margin: const EdgeInsets.only(top: 15.0),
+            onPaymentResult: (result) {
+              // Handle payment completion
+              checkIfValid(response.order?.id);
+            },
+            loadingIndicator: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } catch (e) {
+          // Fallback to URL if Apple Pay fails
+          final result = await launchUrl(Uri.parse(
+              "https://tratri.in/payment/${response.order?.order_id}"));
+          checkIfValid(response.order?.id);
+        }
       } else {
         fetchCartItems();
         Navigation.instance.goBack();

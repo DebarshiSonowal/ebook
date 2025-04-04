@@ -130,48 +130,50 @@ class NewSearchBar extends StatelessWidget {
             width: 1.w,
           ),
           Consumer<DataProvider>(builder: (context, data, _) {
-            return GestureDetector(
-              onTap: () {
-                if ((Provider.of<DataProvider>(
-                                Navigation
-                                        .instance.navigatorKey.currentContext ??
-                                    context,
-                                listen: false)
-                            .profile !=
-                        null) &&
-                    Storage.instance.isLoggedIn) {
-                  Navigation.instance.navigate('/cartPage');
-                } else {
-                  ConstanceData.showAlertDialog(context);
-                }
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: data.cartData?.items.isEmpty ?? true
-                    ? const Icon(
-                        Icons.shopping_cart,
-                        // size: 2.h
-                      )
-                    : badge.Badge(
-                        position: badge.BadgePosition.topEnd(),
-                        // badgeColor: ConstanceData.primaryColor,
-                        badgeContent: Text(
-                          '${data.cartData?.items.length ?? ""}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+            return Platform.isAndroid
+                ? GestureDetector(
+                    onTap: () {
+                      if ((Provider.of<DataProvider>(
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: false)
+                                  .profile !=
+                              null) &&
+                          Storage.instance.isLoggedIn) {
+                        Navigation.instance.navigate('/cartPage');
+                      } else {
+                        ConstanceData.showAlertDialog(context);
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: data.cartData?.items.isEmpty ?? true
+                          ? const Icon(
+                              Icons.shopping_cart,
+                              // size: 2.h
+                            )
+                          : badge.Badge(
+                              position: badge.BadgePosition.topEnd(),
+                              // badgeColor: ConstanceData.primaryColor,
+                              badgeContent: Text(
+                                '${data.cartData?.items.length ?? ""}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
-                        ),
-                        child: const Icon(
-                          ConstanceData.storeIcon,
-                          // size: 2.h
-                        ),
-                      ),
-              ),
-            );
+                              child: const Icon(
+                                ConstanceData.storeIcon,
+                                // size: 2.h
+                              ),
+                            ),
+                    ),
+                  )
+                : Container();
           }),
           GestureDetector(
             onTap: () {

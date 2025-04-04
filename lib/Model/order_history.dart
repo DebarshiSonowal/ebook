@@ -29,7 +29,6 @@ class OrderHistory {
   List<Invoice> invoices = [];
   Subscriber? subscriber;
 
-
   OrderHistory.fromJson(json) {
     id = json['id'] ?? 0;
     subscriber_id = json['subscriber_id'] == null
@@ -84,8 +83,7 @@ class OrderHistory {
         ? []
         : (json['invoices'] as List).map((e) => Invoice.fromJson(e)).toList();
     //
-    subscriber = Subscriber.fromJson(json['subscriber']!);
-
+    subscriber = Subscriber.fromJson(json['subscriber']);
   }
 }
 

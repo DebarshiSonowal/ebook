@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:ebook/Networking/api_provider.dart';
@@ -37,8 +38,6 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
             unselectedItemColor: Colors.white70,
-            //
-            // unselectedItemColor: Colors.white,
             unselectedLabelStyle: TextStyle(
               fontSize: 1.5.h,
               color: Colors.white,
@@ -61,16 +60,12 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 if (data.details?.book_format == "magazine") {
                   Navigation.instance.navigate('/magazineArticles',
                       args: data.details?.id ?? 0);
-                  // ConstanceData.show(context, data.details!);
                 } else {
                   if (data.details != null) {
                     Navigation.instance.navigate('/bookDetails',
                         args:
                             '${data.details?.id ?? 0},${data.details?.profile_pic}');
-                    // ConstanceData.show(context, data.details!);
                   }
-                  // Navigation.instance
-                  //     .navigate('/bookDetails', args: data.details?.id ?? 0);
                 }
               } else {
                 Navigation.instance.navigate('/accountDetails');
@@ -131,24 +126,25 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                           );
                   }),
                   label: ''),
-              BottomNavigationBarItem(
-                  backgroundColor: ConstanceData.secondaryColor,
-                  icon: Image.asset(
-                    ConstanceData.orderIcon,
-                    height: 3.5.h,
-                    width: 7.w,
-                    fit: BoxFit.fill,
-                    color: Provider.of<DataProvider>(
-                                    Navigation.instance.navigatorKey
-                                            .currentContext ??
-                                        context,
-                                    listen: true)
-                                .currentIndex ==
-                            3
-                        ? Colors.white
-                        : Colors.grey,
-                  ),
-                  label: 'Orders'),
+              if (!Platform.isIOS)
+                BottomNavigationBarItem(
+                    backgroundColor: ConstanceData.secondaryColor,
+                    icon: Image.asset(
+                      ConstanceData.orderIcon,
+                      height: 3.5.h,
+                      width: 7.w,
+                      fit: BoxFit.fill,
+                      color: Provider.of<DataProvider>(
+                                      Navigation.instance.navigatorKey
+                                              .currentContext ??
+                                          context,
+                                      listen: true)
+                                  .currentIndex ==
+                              3
+                          ? Colors.white
+                          : Colors.grey,
+                    ),
+                    label: 'Orders'),
               BottomNavigationBarItem(
                   backgroundColor: ConstanceData.secondaryColor,
                   icon: Image.asset(

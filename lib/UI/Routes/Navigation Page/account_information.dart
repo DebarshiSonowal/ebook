@@ -41,14 +41,15 @@ class _AccountInformationState extends State<AccountInformation> {
                 ?.date_of_birth
                 ?.isNotEmpty ??
             false) {
-          date = Jiffy(Provider.of<DataProvider>(
-                          Navigation.instance.navigatorKey.currentContext ??
-                              context,
-                          listen: false)
-                      .profile
-                      ?.date_of_birth ??
-                  "")
-              .format("dd-MM-yyyy");
+          date = Jiffy.parseFromDateTime(DateTime.parse(
+                  Provider.of<DataProvider>(
+                              Navigation.instance.navigatorKey.currentContext ??
+                                  context,
+                              listen: false)
+                          .profile
+                          ?.date_of_birth ??
+                      DateTime.now().toString()))
+              .format();
         }
         nameController.text = ""
             "${Provider.of<DataProvider>(Navigation.instance.navigatorKey.currentContext ?? context, listen: false).profile?.f_name ?? ''} "

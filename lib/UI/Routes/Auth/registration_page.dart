@@ -1,8 +1,9 @@
-import 'package:date_time_picker/date_time_picker.dart';
+// import 'package:date_time_picker/date_time_picker.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../Constants/constance_data.dart';
 import 'package:sizer/sizer.dart';
@@ -359,29 +360,55 @@ class _RegistrationPageState extends State<RegistrationPage> {
             Icon(Icons.calendar_today_outlined, color: Colors.white70),
             SizedBox(width: 3.w),
             Expanded(
-              child: DateTimePicker(
-                type: DateTimePickerType.date,
-                initialValue: '',
-                firstDate: DateTime(1900),
-                lastDate: DateTime.now(),
-                decoration: InputDecoration(
-                  labelText: 'Date of Birth',
-                  labelStyle: TextStyle(color: Colors.white70),
-                  border: InputBorder.none,
-                  errorStyle: TextStyle(color: Colors.redAccent),
+              child: GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: Container(
+                        height: 300,
+                        width: 300,
+                        child: SfDateRangePicker(
+                          selectionMode: DateRangePickerSelectionMode.single,
+                          initialSelectedDate: current.isNotEmpty
+                              ? DateFormat('yyyy-MM-dd').parse(current)
+                              : null,
+                          minDate: DateTime(1900),
+                          maxDate: DateTime.now(),
+                          onSelectionChanged: (args) {
+                            if (args.value is DateTime) {
+                              setState(() {
+                                current =
+                                    DateFormat('yyyy-MM-dd').format(args.value);
+                              });
+                              Navigator.pop(context);
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                child: AbsorbPointer(
+                  child: TextFormField(
+                    controller: TextEditingController(text: current),
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'Date of Birth',
+                      labelStyle: TextStyle(color: Colors.white70),
+                      border: InputBorder.none,
+                      errorStyle: TextStyle(color: Colors.redAccent),
+                      hintText: 'Select date of birth',
+                      hintStyle: TextStyle(color: Colors.white54),
+                    ),
+                    validator: (val) {
+                      if (current.isEmpty) {
+                        return 'Please select your date of birth';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-                style: TextStyle(color: Colors.white),
-                onChanged: (val) {
-                  setState(() {
-                    current = val;
-                  });
-                },
-                validator: (val) {
-                  if (val == null || val.isEmpty) {
-                    return 'Please select your date of birth';
-                  }
-                  return null;
-                },
               ),
             ),
           ],

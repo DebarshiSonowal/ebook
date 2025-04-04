@@ -1,7 +1,8 @@
 // import 'package:cool_alert/cool_alert.dart';
-import 'package:date_time_picker/date_time_picker.dart';
+// import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../../../Helper/navigator.dart';
 
@@ -404,32 +405,47 @@ class _AppleSignInPageState extends State<AppleSignInPage> {
                         width: 40.w,
                         // height: 4.h,
                         child: Center(
-                          child: DateTimePicker(
-                            // dateLabelText:
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium
-                                ?.copyWith(color: Colors.white),
-                            // calendarTitle: 'Select a date',
-                            // dateHintText: 'Write a date',
-                            // fieldLabelText: 'My',
-                            // fieldHintText: 'Heelo',
-                            type: DateTimePickerType.date,
-                            initialValue: '',
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
-                            // dateLabelText: 'Date',
-                            onChanged: (val) {
-                              setState(() {
-                                current = val;
-                              });
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Dialog(
+                                    child: Container(
+                                      height: 30.h,
+                                      padding: EdgeInsets.all(12),
+                                      child: SfDateRangePicker(
+                                        selectionColor:
+                                            Theme.of(context).primaryColor,
+                                        todayHighlightColor:
+                                            Theme.of(context).primaryColor,
+                                        minDate: DateTime(1900),
+                                        maxDate: DateTime.now(),
+                                        onSelectionChanged:
+                                            (DateRangePickerSelectionChangedArgs
+                                                args) {
+                                          if (args.value is DateTime) {
+                                            setState(() {
+                                              current = args.value
+                                                  .toString()
+                                                  .split(' ')[0];
+                                            });
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
                             },
-                            validator: (val) {
-                              print(val);
-
-                              return null;
-                            },
-                            onSaved: (val) => print(val),
+                            child: Text(
+                              current.isEmpty ? 'Select Date' : current,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineMedium
+                                  ?.copyWith(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
