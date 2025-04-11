@@ -50,12 +50,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 } else {
                   Navigation.instance.navigate("/login");
                 }
-              } else if (i != 4 && i != 2) {
-                Provider.of<DataProvider>(
-                        Navigation.instance.navigatorKey.currentContext ??
-                            context,
-                        listen: false)
-                    .setIndex(i);
+              } else if (i == 3) {
+                Navigation.instance.navigate('/accountDetails');
               } else if (i == 2) {
                 if (data.details?.book_format == "magazine") {
                   Navigation.instance.navigate('/magazineArticles',
@@ -68,7 +64,11 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   }
                 }
               } else {
-                Navigation.instance.navigate('/accountDetails');
+                Provider.of<DataProvider>(
+                        Navigation.instance.navigatorKey.currentContext ??
+                            context,
+                        listen: false)
+                    .setIndex(i);
               }
             },
             items: [

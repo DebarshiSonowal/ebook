@@ -414,7 +414,8 @@ class _LoginPageState extends State<LoginPage> {
           credential.email,
           "",
           (String? name, String? email, String mobile) {
-            if (mobile.isNotEmpty && mobile.length == 10) {
+            if ((email != null && email.isNotEmpty && email.isValidEmail()) ||
+                (mobile.isNotEmpty && mobile.length == 10)) {
               loginSocial(
                 name?.split(" ").firstOrNull ?? "",
                 (name?.split(" ").length ?? 0) > 1
@@ -429,7 +430,8 @@ class _LoginPageState extends State<LoginPage> {
             } else {
               Navigation.instance.goBack();
               Fluttertoast.showToast(
-                msg: "Please enter a valid 10-digit mobile number",
+                msg:
+                    "Please provide either a valid email or 10-digit mobile number",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
               );

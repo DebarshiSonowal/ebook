@@ -129,6 +129,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: HomePage());
 
     default:
+      return FadeTransitionPageRouteBuilder(page: const SplashScreen());
       print("Unknown ${settings.arguments}");
       return MaterialPageRoute(builder: (_) {
         return const Scaffold(
