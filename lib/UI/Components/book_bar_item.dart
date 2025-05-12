@@ -19,8 +19,8 @@ class bookBaritem extends StatelessWidget {
     return Card(
       color: Colors.transparent,
       child: Container(
-        height: 20.h,
-        width: 70.w,
+        // height: 20.h,
+        width: 60.w,
         decoration: const BoxDecoration(
           // color: Colors.transparent,
           color: Color(0xff121212),
@@ -75,7 +75,7 @@ class bookBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: 18.sp,
+                                fontSize: 15.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -88,7 +88,7 @@ class bookBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontSize: 16.sp,
+                                fontSize: 14.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -97,7 +97,7 @@ class bookBaritem extends StatelessWidget {
                     ),
                     IgnorePointer(
                       child: RatingBar.builder(
-                          itemSize: 4.w,
+                          itemSize: 3.w,
                           initialRating: data.average_rating ?? 0,
                           minRating: 1,
                           direction: Axis.horizontal,
@@ -105,10 +105,10 @@ class bookBaritem extends StatelessWidget {
                           itemCount: 5,
                           // itemPadding:
                           //     EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => const Icon(
+                          itemBuilder: (context, _) => Icon(
                                 Icons.star,
                                 color: Colors.white,
-                                size: 10,
+                                size: 10.sp,
                               ),
                           onRatingUpdate: (rating) {
                             print(rating);
@@ -173,8 +173,8 @@ class enoteBaritem extends StatelessWidget {
     return Card(
       color: Colors.transparent,
       child: Container(
-        height: 20.h,
-        width: 70.w,
+        // height: 20.h,
+        width: 60.w,
         decoration: const BoxDecoration(
           // color: Colors.transparent,
           color: Color(0xff121212),
@@ -229,7 +229,7 @@ class enoteBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: 18.sp,
+                                fontSize: 15.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -242,7 +242,7 @@ class enoteBaritem extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontSize: 16.sp,
+                                fontSize: 14.sp,
                                 color: Colors.white,
                               ),
                     ),
@@ -251,7 +251,7 @@ class enoteBaritem extends StatelessWidget {
                     ),
                     IgnorePointer(
                       child: RatingBar.builder(
-                          itemSize: 4.w,
+                          itemSize: 3.w,
                           initialRating:
                               double.parse(data.averageRating ?? "0"),
                           minRating: 1,
@@ -260,10 +260,10 @@ class enoteBaritem extends StatelessWidget {
                           itemCount: 5,
                           // itemPadding:
                           //     EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => const Icon(
+                          itemBuilder: (context, _) => Icon(
                                 Icons.star,
                                 color: Colors.white,
-                                size: 10,
+                                size: 10.sp,
                               ),
                           onRatingUpdate: (rating) {
                             print(rating);

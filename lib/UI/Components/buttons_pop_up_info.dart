@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ebook/Model/enote_banner.dart';
 import 'package:ebook/Model/library_book_details.dart';
 import 'package:ebook/Storage/app_storage.dart';
@@ -48,7 +50,7 @@ class ButtonsPopUpInfo extends StatelessWidget {
               child: Text(
                 'View Details',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontSize: 2.h,
+                      fontSize: 15.sp,
                       color: Colors.black,
                     ),
               ),
@@ -174,8 +176,12 @@ class addToButton extends StatelessWidget {
                             (element.item_id ?? 0) == (data.id ?? 0))
                         .isNotEmpty ??
                     false)
-                ? 'Go To Cart'
-                : 'Add To Cart',
+                ? Platform.isIOS
+                    ? 'Go To List'
+                    : 'Go To Cart'
+                : Platform.isIOS
+                    ? 'Add To List'
+                    : 'Add To Cart',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontSize: 2.h,
                   color: Colors.black,
@@ -344,8 +350,12 @@ class addToDataButton extends StatelessWidget {
                             (element.item_id ?? 0) == (data.id ?? 0))
                         .isNotEmpty ??
                     false)
-                ? 'Go To Cart'
-                : 'Add To Cart',
+                ? Platform.isIOS
+                    ? 'Go To List'
+                    : 'Go To Cart'
+                : Platform.isIOS
+                    ? 'Add To List'
+                    : 'Add To Cart',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontSize: 2.h,
                   color: Colors.black,
@@ -522,8 +532,12 @@ class addEnotesToButton extends StatelessWidget {
                             (element.item_id ?? 0) == (data.id ?? 0))
                         .isNotEmpty ??
                     false)
-                ? 'Go To Cart'
-                : 'Add To Cart',
+                ? Platform.isIOS
+                    ? 'Go To List'
+                    : 'Go To Cart'
+                : Platform.isIOS
+                    ? 'Add To List'
+                    : 'Add To Cart',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontSize: 2.h,
                   color: Colors.black,

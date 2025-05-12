@@ -401,39 +401,25 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       if (credential.userIdentifier?.isNotEmpty ?? false) {
         if (!mounted) return;
 
-        // Format the name correctly from Apple credentials
-        final fullName = _formatAppleFullName(credential);
+        // Use the name and email directly from Apple's credentials
+        String firstName = credential.givenName ?? "";
+        String lastName = credential.familyName ?? "";
 
-        showTextFieldDialog(
-          context,
-          "Please Enter Your Credentials",
-          "We need your details to provide you better services",
-          fullName,
-          credential.email,
+        // If name fields are empty but we have an email, use an appropriate fallback
+        if (firstName.isEmpty && lastName.isEmpty && credential.email != null) {
+          firstName = "Apple";
+          lastName = "User";
+        }
+
+        // Sign in directly with the data provided by Apple
+        loginSocial(
+          firstName,
+          lastName,
+          credential.email ?? "",
           "",
-          (String? name, String? email, String mobile) {
-            if ((mobile.isNotEmpty && mobile.length == 10) ||
-                (email?.isNotEmpty == true && email!.isValidEmail())) {
-              loginSocial(
-                name?.split(" ").firstOrNull ?? "",
-                (name?.split(" ").length ?? 0) > 1
-                    ? name?.split(" ")[1] ?? ""
-                    : "",
-                email ?? "",
-                "",
-                "apple",
-                mobile,
-                credential.userIdentifier ?? "",
-              );
-            } else {
-              Navigation.instance.goBack();
-              Fluttertoast.showToast(
-                msg: "Please enter a valid mobile number or email",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              );
-            }
-          },
+          "apple",
+          "",
+          credential.userIdentifier ?? "",
         );
       }
     } catch (e) {
@@ -443,15 +429,6 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         gravity: ToastGravity.CENTER,
       );
     }
-  }
-
-  // Helper method to format Apple name credentials
-  String _formatAppleFullName(AuthorizationCredentialAppleID credential) {
-    if (credential.givenName == null) return "";
-
-    return credential.familyName == null
-        ? credential.givenName!
-        : "${credential.givenName} ${credential.familyName}";
   }
 
   void showTextFieldDialog(

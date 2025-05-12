@@ -39,7 +39,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
             type: BottomNavigationBarType.fixed,
             unselectedItemColor: Colors.white70,
             unselectedLabelStyle: TextStyle(
-              fontSize: 1.5.h,
+              fontSize: 14.sp,
               color: Colors.white,
             ),
             onTap: (i) {
@@ -76,8 +76,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   backgroundColor: ConstanceData.secondaryColor,
                   icon: Image.asset(
                     ConstanceData.homeIcon,
-                    height: 3.5.h,
-                    width: 7.w,
+                    height: 3.h,
+                    width: 4.w,
                     fit: BoxFit.fill,
                     color: Provider.of<DataProvider>(
                                     Navigation.instance.navigatorKey
@@ -94,8 +94,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   backgroundColor: ConstanceData.secondaryColor,
                   icon: Image.asset(
                     ConstanceData.libraryIcon,
-                    height: 3.5.h,
-                    width: 7.w,
+                    height: 3.h,
+                    width: 4.w,
                     fit: BoxFit.fill,
                     color: Provider.of<DataProvider>(
                                     Navigation.instance.navigatorKey
@@ -114,13 +114,13 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                     return data.details == null
                         ? Image.asset(
                             ConstanceData.primaryIcon,
-                            height: 4.5.h,
-                            width: 9.w,
+                            height: 5.h,
+                            width: 7.w,
                             fit: BoxFit.fill,
                           )
                         : Image.asset(
                             ConstanceData.readingIcon,
-                            height: 4.5.h,
+                            height: 3.5.h,
                             width: 10.w,
                             fit: BoxFit.fill,
                           );
@@ -131,8 +131,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                     backgroundColor: ConstanceData.secondaryColor,
                     icon: Image.asset(
                       ConstanceData.orderIcon,
-                      height: 3.5.h,
-                      width: 7.w,
+                      height: 3.h,
+                      width: 4.w,
                       fit: BoxFit.fill,
                       color: Provider.of<DataProvider>(
                                       Navigation.instance.navigatorKey
@@ -149,8 +149,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   backgroundColor: ConstanceData.secondaryColor,
                   icon: Image.asset(
                     ConstanceData.humanImage,
-                    height: 3.5.h,
-                    width: 7.w,
+                    height: 3.h,
+                    width: 4.w,
                     fit: BoxFit.fill,
                     color: Provider.of<DataProvider>(
                                     Navigation.instance.navigatorKey

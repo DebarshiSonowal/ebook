@@ -172,29 +172,21 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
                     SizedBox(height: 2.h),
 
-                    _buildTextField(
-                      controller: _phoneController,
-                      label: 'Phone Number',
-                      icon: Icons.phone_outlined,
-                      keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(15),
-                      ],
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your phone number';
-                        }
-                        if (value.length < 8) {
-                          return 'Please enter a valid phone number';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    SizedBox(height: 2.h),
-
-                    _buildDateField(),
+                    // _buildTextField(
+                    //   controller: _phoneController,
+                    //   label: 'Phone Number (Optional)',
+                    //   icon: Icons.phone_outlined,
+                    //   keyboardType: TextInputType.phone,
+                    //   inputFormatters: [
+                    //     FilteringTextInputFormatter.digitsOnly,
+                    //     LengthLimitingTextInputFormatter(15),
+                    //   ],
+                    //   // Removed phone validation since it's optional
+                    // ),
+                    //
+                    // SizedBox(height: 2.h),
+                    //
+                    // _buildDateField(),
 
                     SizedBox(height: 2.h),
 
@@ -394,19 +386,14 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     controller: TextEditingController(text: current),
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'Date of Birth',
+                      labelText: 'Date of Birth (Optional)',
                       labelStyle: TextStyle(color: Colors.white70),
                       border: InputBorder.none,
                       errorStyle: TextStyle(color: Colors.redAccent),
                       hintText: 'Select date of birth',
                       hintStyle: TextStyle(color: Colors.white54),
                     ),
-                    validator: (val) {
-                      if (current.isEmpty) {
-                        return 'Please select your date of birth';
-                      }
-                      return null;
-                    },
+                    // Removed date of birth validation since it's optional
                   ),
                 ),
               ),
@@ -450,11 +437,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void _validateAndSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
-      if (current.isEmpty) {
-        _showErrorSnackBar('Please select your date of birth');
-        return;
-      }
-
       CreateAccount(
         _fnameController.text,
         _lnameController.text,

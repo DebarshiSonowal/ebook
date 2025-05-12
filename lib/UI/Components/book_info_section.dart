@@ -70,7 +70,7 @@ class BookInfoSection extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                fontSize: 2.h,
+                                fontSize: 14.sp,
                                 color: Colors.black,
                               ),
                         )),

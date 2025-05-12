@@ -22,35 +22,37 @@ class DataSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // alignment: Alignment.topCenter,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          color: ConstanceData.secondaryColor.withOpacity(0.97),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Container(),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigation.instance.navigate('/bookInfo', args: data.id);
-                },
-                child: BookImageInformationWidget(data: data.profile_pic!),
-              ),
-              const Expanded(
-                flex: 2,
-                child: CloseButtonCustom(),
-              ),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        // alignment: Alignment.topCenter,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            color: ConstanceData.secondaryColor.withOpacity(0.97),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigation.instance.navigate('/bookInfo', args: data.id);
+                  },
+                  child: BookImageInformationWidget(data: data.profile_pic!),
+                ),
+                const Expanded(
+                  flex: 2,
+                  child: CloseButtonCustom(),
+                ),
+              ],
+            ),
           ),
-        ),
-        BookInfoSection(data: data),
-      ],
+          BookInfoSection(data: data),
+        ],
+      ),
     );
   }
 }
@@ -105,37 +107,39 @@ class DataBookDetailsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // alignment: Alignment.topCenter,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          color: ConstanceData.secondaryColor.withOpacity(0.97),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 2,
-                child: Container(),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Navigation.instance.navigate('/bookInfo', args: data.id);
-                  Navigation.instance.navigate('/bookDetails',
-                      args: "${data.id ?? 0},${data.profile_pic}");
-                },
-                child: BookImageInformationWidget(data: data.profile_pic!),
-              ),
-              const Expanded(
-                flex: 2,
-                child: CloseButtonCustom(),
-              ),
-            ],
+    return SingleChildScrollView(
+      child: Column(
+        // alignment: Alignment.topCenter,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            color: ConstanceData.secondaryColor.withOpacity(0.97),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Navigation.instance.navigate('/bookInfo', args: data.id);
+                    Navigation.instance.navigate('/bookDetails',
+                        args: "${data.id ?? 0},${data.profile_pic}");
+                  },
+                  child: BookImageInformationWidget(data: data.profile_pic!),
+                ),
+                const Expanded(
+                  flex: 2,
+                  child: CloseButtonCustom(),
+                ),
+              ],
+            ),
           ),
-        ),
-        BookDetailsInfoSection(data: data),
-      ],
+          BookDetailsInfoSection(data: data),
+        ],
+      ),
     );
   }
 }

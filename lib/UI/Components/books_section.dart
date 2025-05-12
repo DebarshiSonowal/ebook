@@ -17,7 +17,7 @@ class BooksSection extends StatelessWidget {
     return Container(
       // color: ConstanceData.secondaryColor,
       padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 2.w),
-      height: 39.5.h,
+      height: 55.h,
       width: double.infinity,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -37,7 +37,7 @@ class BooksSection extends StatelessWidget {
                     maxLines: 2,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.white,
-                          fontSize: 19.sp,
+                          fontSize: 16.sp,
                         ),
                   ),
                 ),

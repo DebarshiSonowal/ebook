@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -368,7 +370,9 @@ class bookSmallDescription extends StatelessWidget {
                                         MaterialStateProperty.all(Colors.blue),
                                   ),
                                   child: Text(
-                                    'Add To Cart',
+                                    Platform.isIOS
+                                        ? 'Add To List'
+                                        : 'Add To Cart',
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineSmall

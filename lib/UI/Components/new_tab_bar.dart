@@ -20,7 +20,7 @@ class NewTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xff121212),
-      height: 7.h,
+      // height: 7.h,
       width: double.infinity,
       child: Consumer<DataProvider>(builder: (context, data, _) {
         return Row(
@@ -54,7 +54,7 @@ class NewTabBar extends StatelessWidget {
                               .textTheme
                               .displaySmall
                               ?.copyWith(
-                                fontSize: 16.sp,
+                                fontSize: 15.sp,
                                 color: (count) == data.currentTab
                                     ? Colors.white
                                     : Colors.grey.shade600,

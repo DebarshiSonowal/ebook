@@ -15,10 +15,9 @@ class BookImageInformationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration:
-      BoxDecoration(border: Border.all(color: Colors.white)),
-      height: 25.h,
-      width: 40.w,
+      decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+      // height: 25.h,
+      width: 30.w,
       child: CachedNetworkImage(
         imageUrl: data ?? "",
         placeholder: (context, url) => const Padding(

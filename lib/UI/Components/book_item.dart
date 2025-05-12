@@ -60,27 +60,29 @@ class _BookItemState extends State<BookItem> {
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
-        // height: 18.h,
         width: 35.w,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize:
+              MainAxisSize.min, // Ensure column only takes needed space
           children: [
-            Container(
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.white)),
-              height: 20.h,
-              margin: EdgeInsets.symmetric(horizontal: 1.5.w),
-              width: double.infinity,
-              child: CachedNetworkImage(
-                imageUrl: widget.data.profile_pic ?? "",
-                placeholder: (context, url) => const Padding(
-                  padding: EdgeInsets.all(18.0),
-                  child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white),
+            AspectRatio(
+              aspectRatio: 0.75, // Fixed aspect ratio for image container
+              child: Container(
+                decoration:
+                    BoxDecoration(border: Border.all(color: Colors.white)),
+                margin: EdgeInsets.symmetric(horizontal: 1.5.w),
+                child: CachedNetworkImage(
+                  imageUrl: widget.data.profile_pic ?? "",
+                  placeholder: (context, url) => const Padding(
+                    padding: EdgeInsets.all(18.0),
+                    child: CircularProgressIndicator(
+                        strokeWidth: 2, color: Colors.white),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.image, color: Colors.white),
+                  fit: BoxFit.fill,
                 ),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.image, color: Colors.white),
-                fit: BoxFit.fill,
               ),
             ),
             SizedBox(
@@ -90,11 +92,11 @@ class _BookItemState extends State<BookItem> {
               padding: EdgeInsets.only(left: 1.w),
               child: Text(
                 widget.data.title ?? "",
-                // maxLines: 2,
+                maxLines: 1, // Limit to one line
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Colors.white,
-                      fontSize: 17.sp,
+                      fontSize: 15.sp,
                     ),
               ),
             ),
@@ -105,9 +107,10 @@ class _BookItemState extends State<BookItem> {
               padding: EdgeInsets.only(left: 1.w),
               child: Text(
                 widget.data.writer ?? "",
+                maxLines: 1, // Limit to one line
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontSize: 15.sp,
+                      fontSize: 14.sp,
                     ),
               ),
             ),
@@ -117,24 +120,24 @@ class _BookItemState extends State<BookItem> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IgnorePointer(
-                  child: RatingBar.builder(
-                    itemSize: 4.w,
-                    initialRating: widget.data.average_rating ?? 0,
-                    minRating: 1,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    // itemPadding:
-                    //     EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => const Icon(
-                      Icons.star,
-                      color: Colors.white,
-                      size: 10,
+                Flexible(
+                  child: IgnorePointer(
+                    child: RatingBar.builder(
+                      itemSize: 3.w,
+                      initialRating: widget.data.average_rating ?? 0,
+                      minRating: 1,
+                      direction: Axis.horizontal,
+                      allowHalfRating: true,
+                      itemCount: 5,
+                      itemBuilder: (context, _) => Icon(
+                        Icons.star,
+                        color: Colors.white,
+                        size: 10.sp,
+                      ),
+                      onRatingUpdate: (rating) {
+                        print(rating);
+                      },
                     ),
-                    onRatingUpdate: (rating) {
-                      print(rating);
-                    },
                   ),
                 ),
                 StatefulBuilder(builder: (context, _) {
@@ -196,7 +199,6 @@ class _BookItemState extends State<BookItem> {
                     },
                     child: Icon(
                       (widget.data.is_bookmarked ?? false) ^ selected
-                          // selected
                           ? Icons.bookmark
                           : Icons.bookmark_border,
                       size: 18.sp,

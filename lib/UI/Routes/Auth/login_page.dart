@@ -157,13 +157,15 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 1.h),
                   Divider(color: Colors.white.withOpacity(0.5)),
                   SizedBox(height: 1.h),
-                  Text(
-                    "Or continue with",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontSize: 15.sp,
-                          color: Colors.white.withOpacity(0.8),
-                        ),
-                  ),
+                  if (Platform.isAndroid)
+                    Text(
+                      "Or continue with",
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontSize: 15.sp,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                    ),
                   SizedBox(height: 2.h),
                   if (Platform.isAndroid)
                     SizedBox(
@@ -178,18 +180,18 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _handleGoogleSignIn,
                       ),
                     ),
-                  if (Platform.isIOS) ...[
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 60.w,
-                      child: SignInWithAppleButton(
-                        height: 5.5.h,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        onPressed: signInWithApple,
-                      ),
-                    ),
-                  ],
+                  // if (Platform.isIOS) ...[
+                  //   SizedBox(height: 2.h),
+                  //   SizedBox(
+                  //     width: 60.w,
+                  //     child: SignInWithAppleButton(
+                  //       height: 5.5.h,
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(8)),
+                  //       onPressed: signInWithApple,
+                  //     ),
+                  //   ),
+                  // ],
                   SizedBox(height: 5.h),
                 ],
               ),
@@ -403,41 +405,26 @@ class _LoginPageState extends State<LoginPage> {
       if (credential.userIdentifier?.isNotEmpty ?? false) {
         if (!mounted) return;
 
-        // Format the name correctly from Apple credentials
-        final fullName = _formatAppleFullName(credential);
+        // Extract name from Apple credentials
+        final firstName = credential.givenName ?? "";
+        final lastName = credential.familyName ?? "";
+        final email = credential.email ?? "";
 
-        showTextFieldDialog(
-          context,
-          "Please Enter Your Credentials",
-          "We need your details to provide you better services",
-          fullName,
-          credential.email,
-          "",
-          (String? name, String? email, String mobile) {
-            if ((email != null && email.isNotEmpty && email.isValidEmail()) ||
-                (mobile.isNotEmpty && mobile.length == 10)) {
-              loginSocial(
-                name?.split(" ").firstOrNull ?? "",
-                (name?.split(" ").length ?? 0) > 1
-                    ? name?.split(" ")[1] ?? ""
-                    : "",
-                email ?? "",
-                "",
-                "apple",
-                mobile,
-                credential.userIdentifier ?? "",
-              );
-            } else {
-              Navigation.instance.goBack();
-              Fluttertoast.showToast(
-                msg:
-                    "Please provide either a valid email or 10-digit mobile number",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-              );
-            }
-          },
-        );
+        // Directly use the data provided by Apple without prompting the user again
+        Navigation.instance.navigate("/loadingDialog");
+        try {
+          loginSocial(
+            firstName,
+            lastName,
+            email,
+            "",
+            "apple",
+            "",
+            credential.userIdentifier ?? "",
+          );
+        } catch (e) {
+          print(e);
+        }
       }
     } catch (e) {
       Fluttertoast.showToast(
@@ -446,15 +433,6 @@ class _LoginPageState extends State<LoginPage> {
         gravity: ToastGravity.CENTER,
       );
     }
-  }
-
-  // Helper method to format Apple name credentials
-  String _formatAppleFullName(AuthorizationCredentialAppleID credential) {
-    if (credential.givenName == null) return "";
-
-    return credential.familyName == null
-        ? credential.givenName!
-        : "${credential.givenName} ${credential.familyName}";
   }
 
   void showTextFieldDialog(

@@ -66,10 +66,17 @@ class ApiProvider {
       "f_name": fname,
       "l_name": lname,
       "email": email,
-      "mobile": mobile,
-      "date_of_birth": dob,
       "password": password
     };
+
+    if (mobile != null && mobile.isNotEmpty) {
+      data["mobile"] = mobile;
+    }
+
+    if (dob != null && dob.isNotEmpty) {
+      data["date_of_birth"] = dob;
+    }
+    debugPrint(data.toString());
     BaseOptions option = BaseOptions(
         connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
@@ -96,7 +103,8 @@ class ApiProvider {
       }
     } on DioError catch (e) {
       debugPrint("add Subscriber response: ${e.response}");
-      return GenericResponse.withError(e.response ?? e.message.toString());
+      return GenericResponse.withError(
+          e.response?.data['message'] ?? e.message.toString());
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -85,7 +87,7 @@ class ButtonsPopUpInfoBookmark extends StatelessWidget {
                       backgroundColor: MaterialStateProperty.all(Colors.blue),
                     ),
                     child: Text(
-                      'Add To Cart',
+                      Platform.isIOS ? 'Add To List' : 'Add To Cart',
                       style:
                           Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontSize: 2.h,

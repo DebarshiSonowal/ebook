@@ -213,7 +213,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                       ? DynamicEnotesSection()
                       : const DynamicBooksSection(),
                   SizedBox(
-                    height: 35.h,
+                    height: 15.h,
                   ),
                 ],
               ),

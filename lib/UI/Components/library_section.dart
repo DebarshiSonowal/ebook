@@ -12,16 +12,19 @@ class LibrarySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 80.w,
-          child: Text(
-            "Libraries",
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontSize: 19.sp,
-                ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2.w),
+          child: SizedBox(
+            width: 80.w,
+            child: Text(
+              "Libraries",
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontSize: 16.sp,
+                  ),
+            ),
           ),
         ),
         SizedBox(

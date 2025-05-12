@@ -13,7 +13,7 @@ class CategoryBar extends StatelessWidget {
     return Consumer<DataProvider>(builder: (context, current, _) {
       return current.currentIndex == 0
           ? Container(
-              padding: EdgeInsets.only(top: .5.h),
+              padding: EdgeInsets.only(top: .5.h, left: 2.w, right: 2.w),
               decoration: const BoxDecoration(
                 color: const Color(0xff121212),
                 border: Border(
@@ -63,7 +63,7 @@ class CategoryBar extends StatelessWidget {
                                     .textTheme
                                     .headlineSmall
                                     ?.copyWith(
-                                      fontSize: 16.sp,
+                                      fontSize: 14.sp,
                                       // color: selected == count
                                       //     ? const Color(0xffffd400)
                                       //     : Colors.white,
@@ -86,7 +86,7 @@ class CategoryBar extends StatelessWidget {
                       Navigation.instance.navigate('/categories', args: "");
                     },
                     child: Container(
-                      width: 20.w,
+                      width: 10.w,
                       height: 3.h,
                       padding: EdgeInsets.all(0.2.h),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -98,7 +98,7 @@ class CategoryBar extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                fontSize: 16.sp,
+                                fontSize: 14.sp,
                                 color: Colors.white,
                               ),
                         ),
@@ -121,7 +121,7 @@ class EnotesCategoryBar extends StatelessWidget {
     return Consumer<DataProvider>(builder: (context, current, _) {
       return current.currentIndex == 0
           ? Container(
-              padding: EdgeInsets.only(top: .5.h),
+              padding: EdgeInsets.only(top: .5.h, left: 2.w, right: 2.w),
               decoration: const BoxDecoration(
                 color: const Color(0xff121212),
                 border: Border(
@@ -160,7 +160,7 @@ class EnotesCategoryBar extends StatelessWidget {
                                     .textTheme
                                     .headlineSmall
                                     ?.copyWith(
-                                      fontSize: 17.sp,
+                                      fontSize: 14.sp,
                                       // color: selected == count
                                       //     ? const Color(0xffffd400)
                                       //     : Colors.white,
@@ -184,7 +184,7 @@ class EnotesCategoryBar extends StatelessWidget {
                           .navigate('/categories', args: "enotes");
                     },
                     child: Container(
-                      width: 20.w,
+                      width: 14.w,
                       height: 3.h,
                       padding: EdgeInsets.all(0.2.h),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -196,7 +196,7 @@ class EnotesCategoryBar extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                fontSize: 17.sp,
+                                fontSize: 14.sp,
                                 color: Colors.white,
                               ),
                         ),

@@ -25,7 +25,7 @@ class NewSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      height: 7.h,
+      // height: 7.h,
       width: double.infinity,
       color: Color(0xff121212),
       child: Row(

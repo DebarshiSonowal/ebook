@@ -101,13 +101,13 @@ class _BookInfoState extends State<BookInfo>
                   children: [
                     SizedBox(
                       width: double.infinity,
-                      height: 20.h,
+                      // height: 20.h,
                       child: Row(
                         children: [
                           Container(
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.white)),
-                            height: 20.h,
+                            // height: 20.h,
                             width: 30.w,
                             child: CachedNetworkImage(
                               imageUrl: bookDetails?.profile_pic ?? "",

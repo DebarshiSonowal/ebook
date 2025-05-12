@@ -270,7 +270,7 @@ class BuyButton extends StatelessWidget {
                                         (element.item_id ?? 0) == (id ?? 0))
                                     .isNotEmpty ??
                                 false)
-                            ? ('Go To Cart')
+                            ? (Platform.isAndroid ? 'Go To List' : 'Go To Cart')
                             : (Platform.isAndroid
                                 ? 'Add To Cart'
                                 : 'Add To List'),

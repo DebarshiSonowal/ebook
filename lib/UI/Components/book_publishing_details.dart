@@ -18,7 +18,7 @@ class BookPublishinDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 20.h,
+      // height: 20.h,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
