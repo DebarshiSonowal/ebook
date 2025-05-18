@@ -178,7 +178,8 @@ class _AccountPageState extends State<AccountPage> {
         break;
       case 2:
         Share.share(
-            'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+          "https://onelink.to/xzcqex",
+        );
         break;
       case 3:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
@@ -190,7 +191,7 @@ class _AccountPageState extends State<AccountPage> {
         _launchUrl(Uri.parse('https://tratri.in/contact-us'));
         break;
       case 7:
-        _launchUrl(Uri.parse('https://tratri.in/https://tratri.in/about-us'));
+        _launchUrl(Uri.parse('https://tratri.in/about-us'));
         break;
       default:
         requestDelete();
@@ -207,7 +208,8 @@ class _AccountPageState extends State<AccountPage> {
         break;
       case 1:
         Share.share(
-            'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+          "https://onelink.to/xzcqex",
+        );
         break;
       case 2:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));

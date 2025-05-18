@@ -44,31 +44,78 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
             ),
             onTap: (i) {
               debugPrint("onTap: $i");
-              if (i == 1) {
-                if (Storage.instance.isLoggedIn) {
-                  showLibrary();
-                } else {
-                  Navigation.instance.navigate("/login");
-                }
-              } else if (i == 3) {
-                Navigation.instance.navigate('/accountDetails');
-              } else if (i == 2) {
-                if (data.details?.book_format == "magazine") {
-                  Navigation.instance.navigate('/magazineArticles',
-                      args: data.details?.id ?? 0);
-                } else {
-                  if (data.details != null) {
-                    Navigation.instance.navigate('/bookDetails',
-                        args:
-                            '${data.details?.id ?? 0},${data.details?.profile_pic}');
-                  }
+              if (Platform.isAndroid) {
+                switch (i) {
+                  case 1:
+                    if (Storage.instance.isLoggedIn) {
+                      showLibrary();
+                    } else {
+                      Navigation.instance.navigate("/login");
+                    }
+                    break;
+                  case 2:
+                    if (data.details != null) {
+                      if (data.details?.book_format == "magazine") {
+                        Navigation.instance.navigate('/magazineArticles',
+                            args: data.details?.id ?? 0);
+                      } else {
+                        Navigation.instance.navigate('/bookDetails',
+                            args:
+                                '${data.details?.id ?? 0},${data.details?.profile_pic}');
+                      }
+                    }
+                    break;
+                  case 3:
+                    if (Storage.instance.isLoggedIn) {
+                      Navigation.instance.navigate('/orderHistory');
+                    } else {
+                      Navigation.instance.navigate("/login");
+                    }
+
+                    break;
+                  case 4:
+                    Navigation.instance.navigate('/accountDetails');
+                    break;
+                  default:
+                    Provider.of<DataProvider>(
+                            Navigation.instance.navigatorKey.currentContext ??
+                                context,
+                            listen: false)
+                        .setIndex(i);
+                    break;
                 }
               } else {
-                Provider.of<DataProvider>(
-                        Navigation.instance.navigatorKey.currentContext ??
-                            context,
-                        listen: false)
-                    .setIndex(i);
+                switch (i) {
+                  case 1:
+                    if (Storage.instance.isLoggedIn) {
+                      showLibrary();
+                    } else {
+                      Navigation.instance.navigate("/login");
+                    }
+                    break;
+                  case 2:
+                    if (data.details != null) {
+                      if (data.details?.book_format == "magazine") {
+                        Navigation.instance.navigate('/magazineArticles',
+                            args: data.details?.id ?? 0);
+                      } else {
+                        Navigation.instance.navigate('/bookDetails',
+                            args:
+                                '${data.details?.id ?? 0},${data.details?.profile_pic}');
+                      }
+                    }
+                    break;
+                  case 3:
+                    Navigation.instance.navigate('/accountDetails');
+                    break;
+                  default:
+                    Provider.of<DataProvider>(
+                            Navigation.instance.navigatorKey.currentContext ??
+                                context,
+                            listen: false)
+                        .setIndex(i);
+                    break;
+                }
               }
             },
             items: [

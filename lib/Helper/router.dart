@@ -11,6 +11,7 @@ import '../UI/Components/loading_dialog.dart';
 import '../UI/Routes/Auth/login_otp_verify.dart';
 import '../UI/Routes/Auth/login_page.dart';
 import '../UI/Routes/Auth/registration_otp_verify.dart';
+import '../UI/Routes/Drawer/history.dart';
 import '../UI/Routes/Navigation Page/account_information.dart';
 import '../UI/Routes/Navigation Page/book_details.dart';
 import '../UI/Routes/Navigation Page/cart_page.dart';
@@ -101,6 +102,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: const CartPage());
     case '/search':
       return FadeTransitionPageRouteBuilder(page: SearchPage());
+    case '/orderHistory':
+      return FadeTransitionPageRouteBuilder(page: OrderHistoryPage());
     case '/notifications':
       return FadeTransitionPageRouteBuilder(page: NotificationsPage());
     case '/subscription_pop_up':
