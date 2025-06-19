@@ -36,6 +36,7 @@ import '../Model/home_section.dart';
 import '../Model/library.dart';
 import '../Model/library_book_details.dart';
 import '../Model/library_model.dart';
+import '../Model/library_search_response.dart';
 import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
 import '../Model/magazine_plan.dart';
@@ -2111,6 +2112,47 @@ class ApiProvider {
       debugPrint("NotificationBookList response: ${e.response}");
       return NotificationBookListResponse.withError(
           e.response?.data['message'] ?? "");
+    }
+  }
+
+  Future<LibrarySearchResponse> searchLibraries(
+      int page, String searchText) async {
+    var url = "$baseUrl/libraries/search";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+
+    var queryParams = {
+      'page': page,
+      'search_text': searchText,
+    };
+
+    debugPrint(url.toString());
+    debugPrint('Query params: $queryParams');
+    debugPrint('Bearer ${Storage.instance.token}');
+
+    try {
+      Response? response = await dio?.get(
+        url.toString(),
+        queryParameters: queryParams,
+      );
+      debugPrint("Library search response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibrarySearchResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Library search error: ${response?.data}");
+        return LibrarySearchResponse.fromError("Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Library search error: ${e.response}");
+      return LibrarySearchResponse.fromError(
+          e.response?.data['message'] ?? e.message ?? "Network error");
     }
   }
 

@@ -16,8 +16,8 @@ import 'package:sizer/sizer.dart';
 
 // import 'package:uni_links2/uni_links.dart';
 import 'package:upgrader/upgrader.dart';
-import '../../../Constants/constance_data.dart';
-import '../../../Networking/api_provider.dart';
+import 'package:ebook/Constants/constance_data.dart';
+import 'package:ebook/Networking/api_provider.dart';
 import '../../Components/CategoryBar.dart';
 import '../../Components/bottom_navbar.dart';
 import '../../Components/buildbook_section.dart';
@@ -162,9 +162,10 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    fetchData();
-    fetchDetails();
-    fetchPublicLibraries();
+
+    // Initial data fetch - only once
+    _initializeData();
+
     _controller = TabController(
       length: Provider.of<DataProvider>(
                   Navigation.instance.navigatorKey.currentContext!,
@@ -204,10 +205,6 @@ class _HomePageState extends State<HomePage>
       }
       debugPrint('index ${_controller?.index}');
     });
-    fetchEnotes();
-    fetchEnotesBanner();
-    fetchEnotesList();
-    getEnoteSection();
   }
 
   Future<void> fetchCartItems() async {
@@ -237,7 +234,7 @@ class _HomePageState extends State<HomePage>
   //   }
   // }
 
-  void fetchDetails() async {
+  Future<void> fetchDetails() async {
     await fetchCartItems();
     // getDynamicLink();
     // initUniLinks();
@@ -248,7 +245,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  void fetchEnotes() async {
+  Future<void> fetchEnotes() async {
     final response = await ApiProvider.instance.getEnoteCategory();
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
@@ -256,7 +253,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  void fetchEnotesBanner() async {
+  Future<void> fetchEnotesBanner() async {
     final response = await ApiProvider.instance.getEnoteBanner();
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
@@ -264,7 +261,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  void fetchEnotesList() async {
+  Future<void> fetchEnotesList() async {
     final response = await ApiProvider.instance.getEnoteList();
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
@@ -272,7 +269,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  void getEnoteSection() async {
+  Future<void> getEnoteSection() async {
     final response = await ApiProvider.instance.getEnoteSection();
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
@@ -280,7 +277,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  void fetchEnotesChapterList(id) async {
+  Future<void> fetchEnotesChapterList(String id) async {
     final response = await ApiProvider.instance.getEnoteChapter(id);
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
@@ -288,7 +285,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  void fetchEnotesDetails(id) async {
+  Future<void> fetchEnotesDetails(String id) async {
     final response = await ApiProvider.instance.getEnoteDetails(id);
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
@@ -296,7 +293,7 @@ class _HomePageState extends State<HomePage>
     } else {}
   }
 
-  fetchData() async {
+  Future<void> fetchData() async {
     // setState(() {
     //   loading = true;
     // });
@@ -318,29 +315,49 @@ class _HomePageState extends State<HomePage>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     debugPrint("didChangeAppLifecycleState $state}");
-    if (state == AppLifecycleState.resumed) {
-      fetchHomeBanner();
-      fetchHomeSection();
-    } else {
-      fetchHomeBanner();
-      fetchHomeSection();
-    }
+    // Removed automatic refresh on app lifecycle changes
   }
 
-  void fetchHomeBanner() async {
-    for (var i in Provider.of<DataProvider>(
-            Navigation.instance.navigatorKey.currentContext!,
-            listen: false)
-        .formats!) {
+  Future<void> _initializeData() async {
+    // Fetch initial data only once
+    await fetchData();
+    await fetchDetails();
+    await fetchPublicLibraries();
+    await fetchEnotes();
+    await fetchEnotesBanner();
+    await fetchEnotesList();
+    await getEnoteSection();
+
+    // Wait a bit for formats to be fully loaded from splash screen
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    // Now fetch banners and sections
+    await fetchHomeBanner();
+    await fetchHomeSection();
+  }
+
+  Future<void> fetchHomeBanner() async {
+    final dataProvider = Provider.of<DataProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+
+    final formats = dataProvider.formats;
+    if (formats == null || formats.isEmpty) {
+      debugPrint("Formats not loaded yet, skipping banner fetch");
+      return;
+    }
+
+    for (var i in formats) {
       final response =
           await ApiProvider.instance.fetchHomeBanner(i.productFormat ?? '');
       if (response.status ?? false) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext!,
-                listen: false)
-            .addBannerList(response.banners!);
-      } else {}
+        dataProvider.addBannerList(response.banners!);
+      } else {
+        debugPrint("Failed to load banner for format: ${i.productFormat}");
+      }
     }
+    final bannerCount = dataProvider.bannerList?.length ?? 0;
+    debugPrint("Banner loading completed. Total banner groups: $bannerCount");
   }
 
   Future<void> fetchHomeSection() async {
@@ -349,25 +366,35 @@ class _HomePageState extends State<HomePage>
         context,
         listen: false,
       );
-      for (final format
-          in Provider.of<DataProvider>(context, listen: true).formats ?? []) {
+
+      final formats = Provider.of<DataProvider>(context, listen: false).formats;
+      if (formats == null || formats.isEmpty) {
+        debugPrint("Formats not loaded yet, skipping section fetch");
+        return;
+      }
+
+      for (final format in formats) {
         final response = await ApiProvider.instance
             .fetchHomeSections(format.productFormat ?? '');
 
         if (response.status ?? false) {
           switch (format.productFormat) {
-            case 'ebook':
+            case 'e-book':
               dataProvider.setEbookHomeSections(response.sections!);
               break;
             case 'magazine':
               dataProvider.setMagazineHomeSections(response.sections!);
               break;
-            case 'enotes':
+            case 'e-note':
               dataProvider.setEnotesHomeSections(response.sections!);
               break;
           }
+        } else {
+          debugPrint(
+              "Failed to load section for format: ${format.productFormat}");
         }
       }
+      debugPrint("Home sections loading completed");
     } catch (e) {
       debugPrint('Error fetching home sections: $e');
     }
@@ -375,7 +402,7 @@ class _HomePageState extends State<HomePage>
     // _refreshController.refreshCompleted();
   }
 
-  fetchPublicLibraries() async {
+  Future<void> fetchPublicLibraries() async {
     final response = await ApiProvider.instance.getPublicLibraryList();
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)

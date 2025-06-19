@@ -2,6 +2,7 @@ import 'package:ebook/Storage/common_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../Constants/constance_data.dart';
 import '../../Model/home_section.dart';
@@ -31,6 +32,11 @@ class DynamicBooksSection extends StatelessWidget {
             break;
         }
 
+        // Show shimmer loading if no data
+        if (currentSection.isEmpty) {
+          return _buildShimmerSections();
+        }
+
         return ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -53,6 +59,146 @@ class DynamicBooksSection extends StatelessWidget {
       },
     );
   }
+
+  Widget _buildShimmerSections() {
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return _buildShimmerSection();
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          height: 0.1.h,
+        );
+      },
+      itemCount: 3, // Show 3 shimmer sections
+    );
+  }
+
+  Widget _buildShimmerSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 2.w),
+      height: 55.h,
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: 9.h,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                    width: 60.w,
+                    height: 3.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 4, // Show 4 shimmer book items
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return _buildShimmerBookItem();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerBookItem() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      width: 35.w,
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AspectRatio(
+              aspectRatio: 0.75,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 1.5.w),
+              ),
+            ),
+            SizedBox(height: 0.5.h),
+            Padding(
+              padding: EdgeInsets.only(left: 1.w),
+              child: Container(
+                width: 25.w,
+                height: 2.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            SizedBox(height: 0.3.h),
+            Padding(
+              padding: EdgeInsets.only(left: 1.w),
+              child: Container(
+                width: 20.w,
+                height: 1.5.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            SizedBox(height: 0.5.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: List.generate(
+                      5,
+                      (index) => Container(
+                            width: 3.w,
+                            height: 3.w,
+                            margin: EdgeInsets.only(right: 0.5.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          )),
+                ),
+                Container(
+                  width: 18.sp,
+                  height: 18.sp,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 0.5.h),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class DynamicEnotesSection extends StatelessWidget {
@@ -64,6 +210,11 @@ class DynamicEnotesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(
       builder: (context, dataProvider, _) {
+        // Show shimmer loading if no data
+        if (dataProvider.enotesSection.isEmpty) {
+          return _buildShimmerSections();
+        }
+
         return ListView.separated(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -85,6 +236,146 @@ class DynamicEnotesSection extends StatelessWidget {
           itemCount: dataProvider.enotesSection.length,
         );
       },
+    );
+  }
+
+  Widget _buildShimmerSections() {
+    return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return _buildShimmerSection();
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          height: 0.1.h,
+        );
+      },
+      itemCount: 3, // Show 3 shimmer sections
+    );
+  }
+
+  Widget _buildShimmerSection() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 2.w),
+      height: 55.h,
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: 9.h,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                    width: 60.w,
+                    height: 3.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 4, // Show 4 shimmer book items
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return _buildShimmerBookItem();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShimmerBookItem() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      width: 35.w,
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AspectRatio(
+              aspectRatio: 0.75,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 1.5.w),
+              ),
+            ),
+            SizedBox(height: 0.5.h),
+            Padding(
+              padding: EdgeInsets.only(left: 1.w),
+              child: Container(
+                width: 25.w,
+                height: 2.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            SizedBox(height: 0.3.h),
+            Padding(
+              padding: EdgeInsets.only(left: 1.w),
+              child: Container(
+                width: 20.w,
+                height: 1.5.h,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            SizedBox(height: 0.5.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: List.generate(
+                      5,
+                      (index) => Container(
+                            width: 3.w,
+                            height: 3.w,
+                            margin: EdgeInsets.only(right: 0.5.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          )),
+                ),
+                Container(
+                  width: 18.sp,
+                  height: 18.sp,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 0.5.h),
+          ],
+        ),
+      ),
     );
   }
 }

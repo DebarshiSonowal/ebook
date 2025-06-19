@@ -37,12 +37,45 @@ class LibrarySection extends StatelessWidget {
             final list = data.publicLibraries;
             return ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: list.length,
+              itemCount: list.length + 1, // +1 for the "All" item
               itemBuilder: (context, index) {
+                // First item is "All"
+                if (index == 0) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigation.instance.navigate("/librarySearchScreen");
+                    },
+                    child: Container(
+                      width: 40.w,
+                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 2.w, vertical: 0.4.h),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "All",
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                // Regular library items (index - 1 because of the "All" item)
+                final libraryIndex = index - 1;
                 return GestureDetector(
                   onTap: () {
-                    Navigation.instance
-                        .navigate("/libraryDetails", args: list[index].id);
+                    Navigation.instance.navigate("/libraryDetails",
+                        args: list[libraryIndex].id);
                   },
                   child: Container(
                     width: 40.w,
@@ -55,7 +88,7 @@ class LibrarySection extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        list[index].title,
+                        list[libraryIndex].title,
                         maxLines: 1,
                         style: TextStyle(
                           fontSize: 14.sp,

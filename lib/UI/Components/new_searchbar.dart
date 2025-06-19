@@ -5,6 +5,7 @@ import 'package:badges/badges.dart' as badge;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:search_page/search_page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,6 +16,7 @@ import '../../Model/book.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../Storage/app_storage.dart';
+import '../../Networking/api_provider.dart';
 
 class NewSearchBar extends StatelessWidget {
   const NewSearchBar({
@@ -53,7 +55,7 @@ class NewSearchBar extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 4.w),
+          SizedBox(width: 2.w),
           (Platform.isAndroid && !Storage.instance.isLoggedIn)
               ? GestureDetector(
                   onTap: () {
@@ -79,7 +81,50 @@ class NewSearchBar extends StatelessWidget {
                     ),
                   ),
                 )
-              : Container(),
+              : (Platform.isAndroid && Storage.instance.isLoggedIn)
+                  ? Consumer<DataProvider>(
+                      builder: (context, data, _) {
+                        return GestureDetector(
+                          onTap: () {
+                            _showPhoneUpdateDialog(
+                                context, data.profile?.mobile ?? '');
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(15),
+                                ),
+                                border: Border.all(color: Colors.white)),
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 1.5.w, vertical: 1.h),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  color: Colors.white,
+                                  size: 16.sp,
+                                ),
+                                SizedBox(width: 1.w),
+                                Text(
+                                  data.profile?.mobile?.isNotEmpty == true
+                                      ? "Update Phone"
+                                      : 'Add Phone',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontSize: 14.sp,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Container(),
           SizedBox(
             width: 1.w,
           ),
@@ -262,5 +307,136 @@ class NewSearchBar extends StatelessWidget {
     if (!await launchUrl(_url)) {
       throw 'Could not launch $_url';
     }
+  }
+
+  void _showPhoneUpdateDialog(BuildContext context, String currentPhoneNumber) {
+    TextEditingController _phoneController =
+        TextEditingController(text: currentPhoneNumber);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text(
+            'Update Phone Number',
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Enter your new phone number',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey[600],
+                ),
+              ),
+              SizedBox(height: 2.h),
+              TextField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  hintText: 'Enter phone number',
+                  prefixIcon: Icon(Icons.phone),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: ConstanceData.primaryColor),
+                  ),
+                ),
+                keyboardType: TextInputType.phone,
+                maxLength: 15,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () async {
+                String newPhoneNumber = _phoneController.text.trim();
+                if (newPhoneNumber.isNotEmpty) {
+                  try {
+                    Navigator.of(context).pop();
+                    // Show loading dialog
+                    Navigation.instance.navigate('/loadingDialog');
+
+                    final dataProvider = Provider.of<DataProvider>(
+                        Navigation.instance.navigatorKey.currentContext ??
+                            context,
+                        listen: false);
+
+                    final profile = dataProvider.profile;
+                    if (profile != null) {
+                      final name =
+                          "${profile.f_name ?? ''} ${profile.l_name ?? ''}"
+                              .trim();
+                      final email = profile.email ?? '';
+                      final dob = profile.date_of_birth ?? '';
+
+                      // Call the existing updateProfile API
+                      final response = await ApiProvider.instance
+                          .updateProfile(name, email, newPhoneNumber, dob);
+
+                      Navigation.instance.goBack(); // Close loading dialog
+
+                      if (response.status == true) {
+                        // Refresh profile data
+                        final profileResponse =
+                            await ApiProvider.instance.getProfile();
+                        if (profileResponse.status == true &&
+                            profileResponse.profile != null) {
+                          dataProvider.setProfile(profileResponse.profile!);
+                        }
+
+                        Fluttertoast.showToast(
+                            msg: 'Phone number updated successfully');
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: response.message ??
+                                'Failed to update phone number');
+                      }
+                    } else {
+                      Navigation.instance.goBack();
+                      Fluttertoast.showToast(msg: 'Profile not found');
+                    }
+                  } catch (e) {
+                    Navigation.instance.goBack();
+                    Fluttertoast.showToast(msg: 'An error occurred: $e');
+                  }
+                } else {
+                  Navigator.of(context).pop();
+                  Fluttertoast.showToast(
+                      msg: 'Please enter a valid phone number');
+                }
+              },
+              child: Text(
+                'Update',
+                style: TextStyle(
+                  color: ConstanceData.primaryColor,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

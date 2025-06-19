@@ -19,6 +19,7 @@ import '../UI/Routes/Navigation Page/category_page.dart';
 import '../UI/Routes/Navigation Page/category_specific_page.dart';
 import '../UI/Routes/Navigation Page/coupon_page.dart';
 import '../UI/Routes/Navigation Page/library_details_screen.dart';
+import '../UI/Routes/Navigation Page/librarysearchscreen.dart';
 import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
 import '../UI/Routes/Navigation Page/notifications_page.dart';
@@ -64,6 +65,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/libraryDetails':
       return FadeTransitionPageRouteBuilder(
           page: LibraryDetailsScreen(id: settings.arguments as int));
+    case '/librarySearchScreen':
+      return FadeTransitionPageRouteBuilder(page: LibrarySearchScreen());
 
     case '/bookInfo':
       return FadeTransitionPageRouteBuilder(

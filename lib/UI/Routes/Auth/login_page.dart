@@ -169,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 2.h),
                   if (Platform.isAndroid)
                     SizedBox(
-                      width: 60.w,
+                      width: 66.w,
                       child: SocialLoginButton(
                         backgroundColor: Colors.white70,
                         height: 5.5.h,

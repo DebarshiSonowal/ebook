@@ -68,8 +68,7 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
               SizedBox(
                 height: 1.h,
               ),
-              SizedBox(
-                height: 80.h,
+              Expanded(
                 child: TabBarView(
                   controller: _controller,
                   children: [
