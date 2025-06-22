@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Constants/constance_data.dart';
@@ -36,14 +37,11 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
           ),
         ),
         actions: [
-          GestureDetector(
-            onTap: () {
-              Navigation.instance.navigate("/search");
+          IconButton(
+            onPressed: () {
+              _shareLibrary();
             },
-            child: Icon(Icons.search),
-          ),
-          SizedBox(
-            width: 2.w,
+            icon: const Icon(Icons.share),
           ),
         ],
       ),
@@ -185,6 +183,12 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
     });
   }
 
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   void _loadLibraryTitle() {
     try {
       final dataProvider = Provider.of<DataProvider>(context, listen: false);
@@ -197,6 +201,49 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
       });
     } catch (e) {
       debugPrint("Error loading library title: $e");
+    }
+  }
+
+  void _shareLibrary() async {
+    try {
+      final dataProvider = Provider.of<DataProvider>(context, listen: false);
+      final library = dataProvider.libraries.firstWhere(
+        (e) => e.id == widget.id,
+      );
+
+      // Use the same pattern as download_section.dart
+      String page = "library";
+      Share.share(
+          'https://tratri.in/link?format=library&id=${library.id}&details=$page&title=${Uri.encodeComponent(library.title ?? "")}');
+    } catch (e) {
+      debugPrint('Error sharing library: $e');
+      // Fallback to sharing just the app link
+      _shareWithFallback();
+    }
+  }
+
+  void _shareWithFallback() async {
+    try {
+      final dataProvider = Provider.of<DataProvider>(context, listen: false);
+      final library = dataProvider.libraries.firstWhere(
+        (e) => e.id == widget.id,
+      );
+
+      final shareText = '''
+Check out "${library.title}" library in our eBook app!
+
+📚 Thousands of books, magazines, and e-notes available
+📱 Download the app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook
+
+Library ID: ${library.id}
+''';
+
+      Share.share(shareText);
+    } catch (e) {
+      debugPrint('Error in fallback sharing: $e');
+      // Last resort - share just the app link
+      Share.share(
+          'Check out our eBook app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
     }
   }
 

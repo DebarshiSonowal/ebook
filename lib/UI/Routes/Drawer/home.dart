@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/Networking/api_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter/services.dart';
@@ -15,7 +16,6 @@ import 'package:sizer/sizer.dart';
 import '../../../Storage/app_storage.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
-import '../../../Networking/api_provider.dart';
 import '../../Components/buildbook_section.dart';
 import '../../Components/dynamic_books_section.dart';
 import '../../Components/library_section.dart';
@@ -29,7 +29,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-  late StreamSubscription _sub;
+  StreamSubscription? _sub;
   int selected = 0;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -64,34 +64,40 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   Future<void> initUniLinks() async {
     print("deeplink start initial");
-    final appLinks = AppLinks();
+    try {
+      final appLinks = AppLinks();
 
-    // Handle initial/background links
-    final uri = await appLinks.getInitialLink();
-    if (uri == null) {
-      print("No initial deeplink");
+      // Always set up the listener first
       initUniLinksAlive(appLinks);
-    } else {
-      print("Initial deeplink: $uri");
-      await fetchBookDetails(uri.toString());
-      goToUrl(uri.toString());
+
+      // Then handle initial/background links
+      final uri = await appLinks.getInitialLink();
+      if (uri != null) {
+        print("Initial deeplink: $uri");
+        await handleInitialLink(uri.toString());
+      } else {
+        print("No initial deeplink");
+      }
+    } catch (e) {
+      print("Error initializing deep links: $e");
     }
   }
 
   Future<void> initUniLinksAlive(AppLinks appLinks) async {
-    // Listen to app links while app is in foreground
-    _sub = appLinks.uriLinkStream.listen((Uri? uri) async {
-      print("Foreground deeplink: $uri");
-      if (uri != null) {
-        await fetchBookDetails(uri.toString());
-        goToUrlSecond(uri.toString());
-      }
-    }, onError: (err) {
-      print("Deeplink error: $err");
-      // Handle exception by warning the user their action did not succeed
-    });
-
-    // NOTE: Don't forget to call _sub.cancel() in dispose()
+    try {
+      // Listen to app links while app is in foreground
+      _sub = appLinks.uriLinkStream.listen((Uri? uri) async {
+        print("Foreground deeplink: $uri");
+        if (uri != null) {
+          await handleForegroundLink(uri.toString());
+        }
+      }, onError: (err) {
+        print("Deeplink error: $err");
+        // Handle exception by warning the user their action did not succeed
+      });
+    } catch (e) {
+      print("Error setting up link listener: $e");
+    }
   }
 
   @override
@@ -103,7 +109,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _sub.cancel();
+    _sub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -383,17 +389,31 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void goToUrl(String initialLink) async {
     debugPrint("GoToUrl: " + initialLink);
     final uri = Uri.parse(initialLink);
+    debugPrint("Parsed URI: $uri");
+    debugPrint("Details parameter: ${uri.queryParameters['details']}");
+
     if (uri.queryParameters['details'] == "reading") {
+      debugPrint("Handling reading link");
       checkByFormat(uri, initialLink);
+    } else if (uri.queryParameters['details'] == "library") {
+      debugPrint("Handling library link");
+      // Handle library links
+      handleLibraryLink(uri);
     } else {
+      debugPrint("Handling regular book info link");
       Navigation.instance.navigate('/bookInfo',
           args: int.parse(uri.queryParameters['id'] ?? "0"));
     }
   }
 
   void goToUrlSecond(String initialLink) {
+    debugPrint("GoToUrlSecond: " + initialLink);
     final uri = Uri.parse(initialLink);
+    debugPrint("Parsed URI: $uri");
+    debugPrint("Details parameter: ${uri.queryParameters['details']}");
+
     if (uri.queryParameters['details'] == "reading") {
+      debugPrint("Handling reading link in foreground");
       if (uri.queryParameters['format'] == "e-book") {
         Provider.of<DataProvider>(context, listen: false).setCurrentTab(0);
         if (Storage.instance.isLoggedIn) {
@@ -412,6 +432,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           }
         } else {
           Navigation.instance.navigate('/loginReturn');
+          initUniLinks();
         }
       } else {
         Provider.of<DataProvider>(context, listen: false).setCurrentTab(1);
@@ -434,7 +455,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           initUniLinks();
         }
       }
+    } else if (uri.queryParameters['details'] == "library") {
+      debugPrint("Handling library link in foreground");
+      // Handle library links
+      handleLibraryLink(uri);
     } else {
+      debugPrint("Handling regular book info link in foreground");
       Navigation.instance.navigate('/bookInfo',
           args: int.parse(uri.queryParameters['id'] ?? "0"));
     }
@@ -515,5 +541,56 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     // monitor network fetch
     await Future.delayed(const Duration(milliseconds: 1000));
     _refreshController.loadComplete();
+  }
+
+  void handleLibraryLink(Uri uri) {
+    debugPrint("Handling library link: $uri");
+    debugPrint("Query parameters: ${uri.queryParameters}");
+
+    try {
+      final libraryIdString = uri.queryParameters['id'];
+      debugPrint("Library ID string: $libraryIdString");
+
+      if (libraryIdString == null || libraryIdString.isEmpty) {
+        debugPrint("No library ID found in link");
+        return;
+      }
+
+      final libraryId = int.parse(libraryIdString);
+      debugPrint("Parsed library ID: $libraryId");
+
+      if (libraryId > 0) {
+        debugPrint("Navigating to library with ID: $libraryId");
+        // Navigate to the specific library page using the correct route
+        Navigation.instance.navigate('/libraryBooks', args: libraryId);
+      } else {
+        debugPrint("Invalid library ID: $libraryId");
+      }
+    } catch (e) {
+      debugPrint("Error parsing library link: $e");
+      debugPrint("Stack trace: ${StackTrace.current}");
+    }
+  }
+
+  Future<void> handleInitialLink(String linkString) async {
+    final uri = Uri.parse(linkString);
+
+    // Only fetch book details for book-related links
+    if (uri.queryParameters['details'] != "library") {
+      await fetchBookDetails(linkString);
+    }
+
+    goToUrl(linkString);
+  }
+
+  Future<void> handleForegroundLink(String linkString) async {
+    final uri = Uri.parse(linkString);
+
+    // Only fetch book details for book-related links
+    if (uri.queryParameters['details'] != "library") {
+      await fetchBookDetails(linkString);
+    }
+
+    goToUrlSecond(linkString);
   }
 }

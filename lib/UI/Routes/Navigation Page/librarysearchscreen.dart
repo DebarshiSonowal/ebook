@@ -232,125 +232,185 @@ class _LibrarySearchScreenState extends State<LibrarySearchScreen> {
         _navigateToLibraryDetails(library);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 1.5.h, horizontal: 3.w),
+        margin: EdgeInsets.symmetric(horizontal: 1.w, vertical: 0.5.h),
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: Border.all(
+            color: Colors.grey.shade200,
+            width: 1,
+          ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile Picture
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: CachedNetworkImage(
-                imageUrl: library.profilePic,
-                fit: BoxFit.cover,
-                height: 12.h,
-                width: 20.w,
-                placeholder: (context, url) => Container(
-                  height: 12.h,
-                  width: 20.w,
-                  color: Colors.grey.shade300,
-                  child: const Icon(Icons.library_books, color: Colors.grey),
+        child: Padding(
+          padding: EdgeInsets.all(4.w),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile Picture with enhanced styling
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
-                errorWidget: (context, url, error) => Container(
-                  height: 12.h,
-                  width: 20.w,
-                  color: Colors.grey.shade300,
-                  child: const Icon(Icons.library_books, color: Colors.grey),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: CachedNetworkImage(
+                    imageUrl: library.profilePic,
+                    fit: BoxFit.cover,
+                    height: 16.h,
+                    width: 24.w,
+                    placeholder: (context, url) => Container(
+                      height: 16.h,
+                      width: 24.w,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.grey.shade50, Colors.grey.shade100],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.library_books,
+                        color: Colors.grey.shade400,
+                        size: 8.w,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 16.h,
+                      width: 24.w,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.grey.shade50, Colors.grey.shade100],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.library_books,
+                        color: Colors.grey.shade400,
+                        size: 8.w,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(width: 4.w),
+              SizedBox(width: 4.w),
 
-            // Library Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    library.title,
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
+              // Library Details with improved layout
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title with better typography
+                    Text(
+                      library.title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 18.sp,
+                            height: 1.3,
+                          ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 1.5.h),
+
+                    // Owner Name with icon
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person_outline,
+                          size: 14.sp,
+                          color: Colors.grey.shade600,
                         ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 0.5.h),
-                  Text(
-                    library.ownerName,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.black87,
-                          fontSize: 14.sp,
+                        SizedBox(width: 1.w),
+                        Expanded(
+                          child: Text(
+                            library.ownerName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                  ),
-                  SizedBox(height: 0.5.h),
-                  Text(
-                    library.libraryType,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.blue.shade700,
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w500,
+                      ],
+                    ),
+                    SizedBox(height: 1.h),
+
+                    // Library Type with enhanced styling
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 2.w, vertical: 0.5.h),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(
+                          color: Colors.blue.shade200,
+                          width: 0.5,
                         ),
-                  ),
-                  SizedBox(height: 0.5.h),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.book,
-                        size: 16.sp,
-                        color: Colors.green.shade700,
                       ),
-                      SizedBox(width: 1.w),
-                      Text(
-                        '${library.noOfBooks} books',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              color: Colors.green.shade700,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 0.5.h),
-                  Row(
-                    children: [
-                      Icon(
-                        library.isFree == 1
-                            ? Icons.check_circle
-                            : Icons.payment,
-                        size: 16.sp,
-                        color:
-                            library.isFree == 1 ? Colors.green : Colors.orange,
-                      ),
-                      SizedBox(width: 1.w),
-                      Text(
-                        library.isFree == 1
-                            ? 'Free'
-                            : '₹${library.membershipAmount}',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              color: library.isFree == 1
-                                  ? Colors.green
-                                  : Colors.orange,
-                              fontSize: 13.sp,
+                      child: Text(
+                        library.libraryType,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.blue.shade700,
+                              fontSize: 12.sp,
                               fontWeight: FontWeight.w600,
                             ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 1.5.h),
+
+                    // Books count with enhanced styling
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(1.w),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          child: Icon(
+                            Icons.menu_book,
+                            size: 14.sp,
+                            color: Colors.green.shade700,
+                          ),
+                        ),
+                        SizedBox(width: 2.w),
+                        Text(
+                          '${library.noOfBooks} books available',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.green.shade700,
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
