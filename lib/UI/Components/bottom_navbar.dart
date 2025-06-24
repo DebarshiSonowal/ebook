@@ -124,7 +124,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   icon: Image.asset(
                     ConstanceData.homeIcon,
                     height: 3.h,
-                    width: 4.w,
+                    width: 5.5.w,
                     fit: BoxFit.fill,
                     color: Provider.of<DataProvider>(
                                     Navigation.instance.navigatorKey
@@ -142,7 +142,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   icon: Image.asset(
                     ConstanceData.libraryIcon,
                     height: 3.h,
-                    width: 4.w,
+                    width: 5.5.w,
                     fit: BoxFit.fill,
                     color: Provider.of<DataProvider>(
                                     Navigation.instance.navigatorKey
@@ -162,13 +162,13 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                         ? Image.asset(
                             ConstanceData.primaryIcon,
                             height: 5.h,
-                            width: 7.w,
+                            width: 7.5.w,
                             fit: BoxFit.fill,
                           )
                         : Image.asset(
                             ConstanceData.readingIcon,
                             height: 3.5.h,
-                            width: 10.w,
+                            width: 12.w,
                             fit: BoxFit.fill,
                           );
                   }),
@@ -179,7 +179,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                     icon: Image.asset(
                       ConstanceData.orderIcon,
                       height: 3.h,
-                      width: 4.w,
+                      width: 5.5.w,
                       fit: BoxFit.fill,
                       color: Provider.of<DataProvider>(
                                       Navigation.instance.navigatorKey
@@ -197,7 +197,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                   icon: Image.asset(
                     ConstanceData.humanImage,
                     height: 3.h,
-                    width: 4.w,
+                    width: 6.w,
                     fit: BoxFit.fill,
                     color: Provider.of<DataProvider>(
                                     Navigation.instance.navigatorKey

@@ -562,7 +562,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       if (libraryId > 0) {
         debugPrint("Navigating to library with ID: $libraryId");
         // Navigate to the specific library page using the correct route
-        Navigation.instance.navigate('/libraryBooks', args: libraryId);
+        Navigation.instance.navigate('/libraryDetails', args: libraryId);
       } else {
         debugPrint("Invalid library ID: $libraryId");
       }

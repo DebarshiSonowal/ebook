@@ -81,7 +81,17 @@ class NewSearchBar extends StatelessWidget {
                     ),
                   ),
                 )
-              : (Platform.isAndroid && Storage.instance.isLoggedIn)
+              : (Platform.isAndroid &&
+                      Storage.instance.isLoggedIn &&
+                      Provider.of<DataProvider>(
+                                  Navigation.instance.navigatorKey
+                                          .currentContext ??
+                                      context,
+                                  listen: false)
+                              .profile
+                              ?.mobile
+                              ?.isEmpty ==
+                          true)
                   ? Consumer<DataProvider>(
                       builder: (context, data, _) {
                         return GestureDetector(

@@ -532,7 +532,7 @@ class _LibrarySearchScreenState extends State<LibrarySearchScreen> {
   void _navigateToLibraryDetails(LibrarySearchItem library) {
     // Navigate to library details page
     // Navigation.instance.navigate('/specificLibrary', args: library.id);
-    Navigation.instance.navigate('/libraryBooks', args: library.id);
+    Navigation.instance.navigate('/libraryDetails', args: library.id);
   }
 
   void _showErrorMessage(String message) {
