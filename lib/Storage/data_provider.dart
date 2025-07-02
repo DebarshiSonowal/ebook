@@ -3,6 +3,7 @@ import 'package:ebook/Model/library.dart';
 import 'package:ebook/Model/library_book_details.dart';
 import 'package:ebook/Model/order_history.dart';
 import 'package:ebook/Model/writer.dart';
+import 'package:ebook/Model/advertisement.dart';
 import 'package:ebook/UI/Routes/Drawer/history.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -52,6 +53,10 @@ class DataProvider extends ChangeNotifier {
   List<EnotesSection> enotesSection = [];
   List<Chapter> enotesChapterList = [];
   EnotesDetails? enotesDetails;
+
+  // Advertisement
+  List<Advertisement> advertisements = [];
+  List<AdvertisementBanner>? advertisementBanners = [];
 
   // User
   Profile? profile;
@@ -125,6 +130,12 @@ class DataProvider extends ChangeNotifier {
       _notifyChange(() => writerDetails = writer);
   void setNotifications(List<NotificationItem> data) =>
       _notifyChange(() => notifications = data);
+
+  void setAdBanner(List<Advertisement> list) =>
+      _notifyChange(() => advertisements = list);
+
+  void setAdvertisementBanners(List<AdvertisementBanner> list) =>
+      _notifyChange(() => advertisementBanners = list);
 
   void addToCart(Book book) => _notifyChange(() {
         cartBooks.add(book);

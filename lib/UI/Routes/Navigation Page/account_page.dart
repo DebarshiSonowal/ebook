@@ -3,6 +3,7 @@ import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -177,9 +178,7 @@ class _AccountPageState extends State<AccountPage> {
         Navigation.instance.navigateAndRemoveUntil('/main');
         break;
       case 2:
-        Share.share(
-          "https://onelink.to/xzcqex",
-        );
+        ShareHelper.shareText("https://onelink.to/xzcqex", context: context);
         break;
       case 3:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
@@ -207,9 +206,7 @@ class _AccountPageState extends State<AccountPage> {
         Navigation.instance.navigate('/login');
         break;
       case 1:
-        Share.share(
-          "https://onelink.to/xzcqex",
-        );
+        ShareHelper.shareText("https://onelink.to/xzcqex", context: context);
         break;
       case 2:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));

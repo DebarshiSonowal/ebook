@@ -7,17 +7,10 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
-
-// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
-// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:sizer/sizer.dart';
-import 'package:url_launcher/url_launcher.dart';
-// import 'package:webview_flutter/platform_interface.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
@@ -75,33 +68,28 @@ class _ReadingPageState extends State<ReadingPage> {
 
   @override
   void dispose() {
+    pageController.dispose();
     super.dispose();
-
-    // removeScreenshotDisable();
   }
 
   @override
   void initState() {
     super.initState();
-
-    // _scrollController.addListener(_scrollListener);
     fetchBookDetails();
-    // setScreenshotDisable();
-    // initPlatformBrightness();
     Future.delayed(Duration.zero, () async {
-      // page_no = await systemBrightness;
-      Navigation.instance.navigate('/readingDialog');
-      setState(() {
-        Storage.instance.setReadingBook(widget.id);
-      });
+      if (mounted) {
+        setState(() {
+          Storage.instance.setReadingBook(widget.id);
+        });
+      }
     });
     pageController.addListener(() {
-      page_no = pageController.page ?? 1;
+      if (mounted) {
+        setState(() {
+          page_no = pageController.page ?? 1;
+        });
+      }
     });
-    // pageController.addListener(() {
-    //   print(pageController.page??0);
-    //
-    // });
   }
 
   @override
@@ -110,7 +98,7 @@ class _ReadingPageState extends State<ReadingPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: getTextColor()),
         title: Text(
-          title ?? "",
+          title.isNotEmpty ? title : "",
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context)
               .textTheme
@@ -121,12 +109,14 @@ class _ReadingPageState extends State<ReadingPage> {
         actions: [
           IconButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return buildAlertDialog();
-                },
-              );
+              if (context != null) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return buildAlertDialog();
+                  },
+                );
+              }
             },
             icon: Icon(
               Icons.font_download,
@@ -140,14 +130,13 @@ class _ReadingPageState extends State<ReadingPage> {
               PopupMenuItem<int>(
                 value: 1,
                 child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Icon(
                       Icons.bookmark,
                       color: getBackGroundColor(),
                     ),
                     SizedBox(
-                      width: 5.w,
+                      width: 2.w,
                     ),
                     Text(
                       'Add bookmark',
@@ -162,14 +151,13 @@ class _ReadingPageState extends State<ReadingPage> {
               PopupMenuItem<int>(
                 value: 2,
                 child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Icon(
                       Icons.close,
                       color: getBackGroundColor(),
                     ),
                     SizedBox(
-                      width: 5.w,
+                      width: 2.w,
                     ),
                     Text(
                       'Finished',
@@ -198,7 +186,7 @@ class _ReadingPageState extends State<ReadingPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    title ?? "",
+                    title.isNotEmpty ? title : "",
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context)
                         .textTheme
@@ -220,60 +208,63 @@ class _ReadingPageState extends State<ReadingPage> {
               SizedBox(
                 height: 70.h,
                 width: double.infinity,
-                child: PageView.builder(
-                  controller: pageController,
-                  itemBuilder: (cont, index) {
-                    BookWithAdsChapter current = chapters[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigation.instance.navigate('/bookDetails',
-                            // args: '${widget.id},${index}');
-                            args: '${widget.id},${data.details?.profile_pic}');
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10.w),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                          color: Colors.blue,
-                        )),
-                        height: 60.h,
-                        width: 50.w,
-                        child: Html(
-                          data: current.pages![0].content,
-
-                          // tagsList: [
-                          //   'img','p','!DOCTYPE html','body'
-                          // ],
-                          // tagsList: ['p'],
-                          shrinkWrap: true,
-                          style: {
-                            '#': Style(
-                              fontSize: FontSize(_counterValue),
-                              maxLines: 5,
-                              color: getBackGroundColor(),
-                              // textOverflow: TextOverflow.ellipsis,
+                child: chapters.isNotEmpty
+                    ? PageView.builder(
+                        controller: pageController,
+                        itemBuilder: (cont, index) {
+                          if (index >= chapters.length) return Container();
+                          BookWithAdsChapter current = chapters[index];
+                          return GestureDetector(
+                            onTap: () {
+                              if (widget.id != null && data.details != null) {
+                                Navigation.instance.navigate('/bookDetails',
+                                    args:
+                                        '${widget.id},${data.details?.profile_pic}');
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10.w),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                color: Colors.blue,
+                              )),
+                              height: 60.h,
+                              width: 50.w,
+                              child: Html(
+                                data: current.pages?.isNotEmpty == true
+                                    ? current.pages![0].content ?? ""
+                                    : "",
+                                shrinkWrap: true,
+                                style: {
+                                  '#': Style(
+                                    fontSize: FontSize(_counterValue),
+                                    maxLines: 5,
+                                    color: getBackGroundColor(),
+                                  ),
+                                },
+                                extensions: const [
+                                  IframeHtmlExtension(),
+                                  TableHtmlExtension(),
+                                  VideoHtmlExtension(),
+                                  EmbeddedLinkExtension(2),
+                                  BlockquoteExtension(),
+                                  CustomImageExtension(),
+                                  CustomSpaceExtension(),
+                                ],
+                              ),
                             ),
-                          },
-                          extensions: const [
-                            IframeHtmlExtension(),
-                            TableHtmlExtension(),
-                            VideoHtmlExtension(),
-                            EmbeddedLinkExtension(2),
-                            BlockquoteExtension(),
-                            CustomImageExtension(),
-                            CustomSpaceExtension(),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: chapters.length,
-                  onPageChanged: (count) {
-                    setState(() {
-                      brightness_lvl = count.toDouble();
-                    });
-                  },
-                ),
+                          );
+                        },
+                        itemCount: chapters.length,
+                        onPageChanged: (count) {
+                          if (mounted) {
+                            setState(() {
+                              brightness_lvl = count.toDouble();
+                            });
+                          }
+                        },
+                      )
+                    : const Center(child: CircularProgressIndicator()),
               ),
               SizedBox(
                 height: 1.h,
@@ -289,17 +280,26 @@ class _ReadingPageState extends State<ReadingPage> {
               SizedBox(
                 height: 1.h,
               ),
-              Slider(
+              if (chapters.isNotEmpty)
+                Slider(
                   value: brightness_lvl,
                   min: 0,
-                  max: double.parse((chapters.length ?? 0).toString()),
+                  max: chapters.isNotEmpty
+                      ? (chapters.length - 1).toDouble()
+                      : 0,
                   onChanged: (value) {
-                    print(value);
-                    setState(() {
-                      brightness_lvl = value.toInt().toDouble();
-                    });
-                    pageController.jumpToPage(brightness_lvl.toInt());
-                  }),
+                    if (value != null) {
+                      if (mounted) {
+                        setState(() {
+                          brightness_lvl = value;
+                        });
+                      }
+                      if (chapters.isNotEmpty) {
+                        pageController.jumpToPage(brightness_lvl.toInt());
+                      }
+                    }
+                  },
+                ),
             ],
           );
         }),
@@ -310,7 +310,7 @@ class _ReadingPageState extends State<ReadingPage> {
   void fetchBookDetails() async {
     final response =
         await ApiProvider.instance.fetchBookDetails(widget.id.toString());
-    if (response.status ?? false) {
+    if (response != null && response.status == true) {
       bookDetails = response.details;
       if (mounted) {
         setState(() {
@@ -320,53 +320,57 @@ class _ReadingPageState extends State<ReadingPage> {
     }
     final response1 = await ApiProvider.instance
         .fetchBookChaptersWithAds(widget.id.toString() ?? '3');
-    // .fetchBookChapters('3');
-    if (response1.status ?? false) {
+    if (response1 != null && response1.status == true) {
       chapters = response1.chapters ?? [];
       if (mounted) {
         setState(() {});
       }
     }
-    Navigation.instance.goBack();
+    if (Navigation.instance != null) {
+      Navigation.instance.goBack();
+    }
   }
 
   getBackGroundColor() {
-    switch (selectedTheme) {
-      default:
-        return themes[selectedTheme].color1;
+    if (themes.isNotEmpty) {
+      switch (selectedTheme) {
+        default:
+          return themes[selectedTheme].color1;
+      }
     }
+    return Colors.white;
   }
 
   getTextColor() {
-    switch (selectedTheme) {
-      default:
-        return themes[selectedTheme].color2;
+    if (themes.isNotEmpty) {
+      switch (selectedTheme) {
+        default:
+          return themes[selectedTheme].color2;
+      }
     }
+    return Colors.black;
   }
 
   getBodyColor() {
-    switch (selectedTheme) {
-      default:
-        return themes[selectedTheme].color2;
+    if (themes.isNotEmpty) {
+      switch (selectedTheme) {
+        default:
+          return themes[selectedTheme].color2;
+      }
     }
+    return Colors.white;
   }
 
   handleClick(int item) {}
 
-  void setScreenshotDisable() async {
-    // await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
-  }
+  void setScreenshotDisable() async {}
 
-  void removeScreenshotDisable() async {
-    // await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
-  }
+  void removeScreenshotDisable() async {}
 
   AlertDialog buildAlertDialog() {
     return AlertDialog(
-      // title: Text('Welcome'),
       content: StatefulBuilder(builder: (context, _) {
         return SizedBox(
-          // height: 20.h,
           width: 50.w,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -389,23 +393,25 @@ class _ReadingPageState extends State<ReadingPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: themes.length,
                   itemBuilder: (BuildContext context, int index) {
-                    var data = themes[index];
-                    return GestureDetector(
-                      onTap: () {
-                        _(() {
-                          setState(() {
-                            selectedTheme = index;
-                            // _loadHtmlFromAssets(test, list_bg_color[index],
-                            //     list_txt_color[index], _counterValue);
-                          });
-                        });
-                      },
-                      child: ThemeItem(
-                        data: data,
-                        selectedTheme: selectedTheme,
-                        index: index,
-                      ),
-                    );
+                    if (themes.isNotEmpty) {
+                      var data = themes[index];
+                      return GestureDetector(
+                        onTap: () {
+                          if (mounted) {
+                            setState(() {
+                              selectedTheme = index;
+                            });
+                          }
+                        },
+                        child: ThemeItem(
+                          data: data,
+                          selectedTheme: selectedTheme,
+                          index: index,
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return SizedBox(
@@ -431,13 +437,11 @@ class _ReadingPageState extends State<ReadingPage> {
                 return CounterButton(
                   loading: false,
                   onChange: (int val) {
-                    _(() {
+                    if (mounted) {
                       setState(() {
                         _counterValue = val.toDouble();
-                        // _loadHtmlFromAssets(test, getBackGroundColor(),
-                        //     getTextColor(), _counterValue);
                       });
-                    });
+                    }
                   },
                   count: _counterValue.toInt(),
                   countColor: Colors.white,
@@ -458,18 +462,18 @@ class _ReadingPageState extends State<ReadingPage> {
               Slider(
                   value: brightness_lvl,
                   onChanged: (value) {
-                    _(() {
-                      setState(() {
-                        brightness_lvl = value;
-                        // FlutterScreenWake.setBrightness(brightness_lvl);
-                      });
-                      // setBrightness(value);
-                    });
-
-                    if (brightness_lvl == 0) {
-                      toggle = true;
-                    } else {
-                      toggle = false;
+                    if (value != null) {
+                      ScreenBrightness().setScreenBrightness(value);
+                      if (mounted) {
+                        setState(() {
+                          brightness_lvl = value;
+                        });
+                      }
+                      if (brightness_lvl == 0) {
+                        toggle = true;
+                      } else {
+                        toggle = false;
+                      }
                     }
                   }),
               SizedBox(
@@ -483,86 +487,93 @@ class _ReadingPageState extends State<ReadingPage> {
   }
 
   void showBottomSlider(total) {
-    showCupertinoModalBottomSheet(
-      enableDrag: true,
-      // expand: true,
-      elevation: 15,
-      clipBehavior: Clip.antiAlias,
-      backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
-      topRadius: const Radius.circular(15),
-      closeProgressThreshold: 10,
-      context: Navigation.instance.navigatorKey.currentContext ?? context,
-      builder: (context) => Material(
-        child: StatefulBuilder(builder: (context, _) {
-          return Container(
-            height: 14.h,
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Page Slider",
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
-                      ),
-                ),
-                Slider(
-                  value: page_no,
-                  onChanged: (value) {
-                    _(() {
-                      page_no = value;
-                      pageController.jumpToPage(
-                        page_no.toInt(),
-                      );
-                    });
-                    setState(() {});
+    if (Navigation.instance != null) {
+      showCupertinoModalBottomSheet(
+        enableDrag: true,
+        backgroundColor: ConstanceData.secondaryColor.withOpacity(0.97),
+        topRadius: const Radius.circular(15),
+        closeProgressThreshold: 10,
+        context: Navigation.instance.navigatorKey.currentContext ?? context,
+        builder: (context) => Material(
+          child: StatefulBuilder(builder: (context, _) {
+            return Container(
+              height: 14.h,
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 2.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Page Slider",
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
+                        ),
+                  ),
+                  Slider(
+                    value: page_no,
+                    onChanged: (value) {
+                      if (value != null) {
+                        _(() {
+                          page_no = value;
+                          pageController.jumpToPage(
+                            page_no.toInt(),
+                          );
+                        });
+                        if (mounted) {
+                          setState(() {});
+                        }
 
-                    if (page_no == 0) {
-                      toggle = true;
-                    } else {
-                      toggle = false;
-                    }
-                  },
-                  max: total.toDouble(),
-                ),
-                SizedBox(
-                  height: 0.5.h,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Current: ${page_no.toInt()}",
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12.sp,
-                              ),
-                    ),
-                    Text(
-                      "Total: ${total}",
-                      style:
-                          Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12.sp,
-                              ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 1.h,
-                ),
-              ],
-            ),
-          );
-        }),
-      ),
-    );
+                        if (page_no == 0) {
+                          toggle = true;
+                        } else {
+                          toggle = false;
+                        }
+                      }
+                    },
+                    max: total.toDouble(),
+                  ),
+                  SizedBox(
+                    height: 0.5.h,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Current: ${page_no.toInt()}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
+                            ),
+                      ),
+                      Text(
+                        "Total: ${total}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12.sp,
+                            ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 1.h,
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+      );
+    }
   }
 
   Future<double> get systemBrightness async {
@@ -592,12 +603,14 @@ class ThemeItem extends StatelessWidget {
       decoration: BoxDecoration(
           color: data.color2,
           border: Border.all(
-              color: selectedTheme == index ? Colors.blue : data.color2!)),
+              color: selectedTheme == index
+                  ? Colors.blue
+                  : data.color2 ?? Colors.transparent)),
       height: 5.h,
       width: 10.w,
       child: Center(
         child: Text(
-          'Aa',
+          "Aa",
           style: Theme.of(context)
               .textTheme
               .headlineSmall

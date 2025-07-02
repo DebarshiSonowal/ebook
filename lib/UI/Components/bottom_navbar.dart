@@ -154,7 +154,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                         ? Colors.white
                         : Colors.grey,
                   ),
-                  label: 'Library'),
+                  label: 'Collections'),
               BottomNavigationBarItem(
                   backgroundColor: ConstanceData.secondaryColor,
                   icon: Consumer<DataProvider>(builder: (cont, data, _) {
@@ -285,7 +285,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                         ),
                         SizedBox(width: 2.w),
                         Text(
-                          'My Library',
+                          'My Shelf-Bought & Bookmark',
                           style:
                               TextStyle(fontSize: 15.sp, color: Colors.white),
                         ),

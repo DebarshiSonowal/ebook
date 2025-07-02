@@ -5,7 +5,6 @@ import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/UI/Routes/Drawer/library.dart';
 import 'package:ebook/UI/Routes/Drawer/more.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter/services.dart';
 import 'package:material_dialogs/material_dialogs.dart';
@@ -275,6 +274,11 @@ class _HomePageState extends State<HomePage>
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesSection(response.result);
     } else {}
+
+    // Also update CommonProvider loading state for e-notes
+    final commonProvider = Provider.of<CommonProvider>(context, listen: false);
+    commonProvider
+        .setEnotesHomeSections([]); // This sets isEnotesSectionLoading = false
   }
 
   Future<void> fetchEnotesChapterList(String id) async {
@@ -385,7 +389,9 @@ class _HomePageState extends State<HomePage>
             case 'magazine':
               dataProvider.setMagazineHomeSections(response.sections!);
               break;
-            case 'e-note':
+            case 'enotes':
+            case 'e-notes':
+            case 'E-Notes':
               dataProvider.setEnotesHomeSections(response.sections!);
               break;
           }

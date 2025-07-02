@@ -4,6 +4,7 @@ import 'package:ebook/Constants/constance_data.dart';
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -47,9 +48,10 @@ class _CategorySpecificPageState extends State<CategorySpecificPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Share.share(
-                  'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+            onPressed: () async {
+              await ShareHelper.shareText(
+                  'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook',
+                  context: context);
             },
             icon: const Icon(Icons.share),
           ),

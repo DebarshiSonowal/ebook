@@ -10,6 +10,7 @@ import '../../../Model/bookmark.dart';
 import '../../../Model/home_banner.dart';
 import '../../../Networking/api_provider.dart';
 import '../../../Storage/data_provider.dart';
+import '../../../Utility/share_helper.dart';
 import '../../Components/library_card_item.dart';
 
 class SpecificLibraryPage extends StatefulWidget {
@@ -213,8 +214,9 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
 
       // Use the same pattern as download_section.dart
       String page = "library";
-      Share.share(
-          'https://tratri.in/link?format=library&id=${library.id}&details=$page&title=${Uri.encodeComponent(library.title ?? "")}');
+      final shareUrl =
+          'https://tratri.in/link?format=library&id=${library.id}&details=$page&title=${Uri.encodeComponent(library.title ?? "")}';
+      await ShareHelper.shareText(shareUrl, context: context);
     } catch (e) {
       debugPrint('Error sharing library: $e');
       // Fallback to sharing just the app link
@@ -238,12 +240,13 @@ Check out "${library.title}" library in our eBook app!
 Library ID: ${library.id}
 ''';
 
-      Share.share(shareText);
+      await ShareHelper.shareText(shareText, context: context);
     } catch (e) {
       debugPrint('Error in fallback sharing: $e');
       // Last resort - share just the app link
-      Share.share(
-          'Check out our eBook app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+      await ShareHelper.shareText(
+          'Check out our eBook app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook',
+          context: context);
     }
   }
 

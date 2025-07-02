@@ -63,7 +63,7 @@ class CategoryBar extends StatelessWidget {
                                     .textTheme
                                     .headlineSmall
                                     ?.copyWith(
-                                      fontSize: 14.sp,
+                                      fontSize: 15.sp,
                                       // color: selected == count
                                       //     ? const Color(0xffffd400)
                                       //     : Colors.white,
@@ -86,7 +86,7 @@ class CategoryBar extends StatelessWidget {
                       Navigation.instance.navigate('/categories', args: "");
                     },
                     child: Container(
-                      width: 10.w,
+                      width: 15.w,
                       height: 3.h,
                       padding: EdgeInsets.all(0.2.h),
                       margin: const EdgeInsets.symmetric(horizontal: 5),
@@ -98,7 +98,7 @@ class CategoryBar extends StatelessWidget {
                               .textTheme
                               .headlineSmall
                               ?.copyWith(
-                                fontSize: 14.sp,
+                                fontSize: 15.sp,
                                 color: Colors.white,
                               ),
                         ),

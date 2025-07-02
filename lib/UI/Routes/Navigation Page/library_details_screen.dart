@@ -2,6 +2,7 @@ import 'package:awesome_icons/awesome_icons.dart';
 import 'package:ebook/Model/library_model.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
+import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -14,7 +15,9 @@ import '../../../Storage/data_provider.dart';
 
 class LibraryDetailsScreen extends StatefulWidget {
   const LibraryDetailsScreen({super.key, required this.id});
+
   final int id;
+
   @override
   State<LibraryDetailsScreen> createState() => _LibraryDetailsScreenState();
 }
@@ -115,18 +118,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
   Widget _buildDetails() {
     return Container(
-      // decoration: BoxDecoration(
-      //   color: Colors.grey.shade900,
-      //   borderRadius: BorderRadius.circular(20),
-      //   boxShadow: [
-      //     BoxShadow(
-      //       color: Colors.black.withOpacity(0.3),
-      //       spreadRadius: 5,
-      //       blurRadius: 7,
-      //       offset: const Offset(0, 3),
-      //     ),
-      //   ],
-      // ),
       margin: EdgeInsets.symmetric(
         horizontal: 2.w,
       ),
@@ -154,7 +145,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
             title: 'Owner',
             content: data?.ownerName ?? '',
           ),
-          // _buildContactSection(),
           _buildButtons(),
           if (data?.about != null) _buildAboutSection(),
         ],
@@ -212,60 +202,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   ),
                 ),
               ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactSection() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.grey.shade800.withOpacity(0.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Contact Information',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-          ),
-          const SizedBox(height: 16),
-          if (data?.mobile != null)
-            _buildContactItem(Icons.phone, data?.mobile ?? ''),
-          if (data?.whatsappNo != null)
-            _buildContactItem(
-                FontAwesomeIcons.whatsapp, data?.whatsappNo ?? ''),
-          if (data?.email != null)
-            _buildContactItem(Icons.email, data?.email ?? ''),
-          if (data?.address != null)
-            _buildContactItem(Icons.location_on, data?.address ?? ''),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContactItem(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: Colors.grey.shade300),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 15.sp,
-                color: Colors.grey.shade400,
-              ),
             ),
           ),
         ],
@@ -386,6 +322,14 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.white),
+            onPressed: () {
+              _shareLibrary();
+            },
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(
@@ -434,7 +378,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    // Navigate to view all books
                                     Navigation.instance.navigate(
                                         '/libraryBooks',
                                         args:
@@ -462,8 +405,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                             ),
                           ),
                           SizedBox(height: 1.h),
-
-                          // E-Books Section
                           _buildBookSection(
                             context,
                             "E-Books",
@@ -472,8 +413,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     e.book_format?.toLowerCase() == "e-book")
                                 .toList(),
                           ),
-
-                          // Magazines Section
                           _buildBookSection(
                             context,
                             "Magazines",
@@ -482,8 +421,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     e.book_format?.toLowerCase() == "magazine")
                                 .toList(),
                           ),
-
-                          // E-Notes Section
                           _buildBookSection(
                             context,
                             "E-Notes",
@@ -492,7 +429,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     e.book_format?.toLowerCase() == "e-note")
                                 .toList(),
                           ),
-
                           const SizedBox(height: 30),
                         ],
                       );
@@ -534,8 +470,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
               final book = books[index];
               return GestureDetector(
                 onTap: () {
-                  // Navigation.instance
-                  //     .navigate('/bookDetailsScreen', args: book.id);
                   Navigation.instance.navigate('/bookInfo', args: book.id);
                 },
                 child: Container(
@@ -612,16 +546,12 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   }
 
   void fetchData() async {
-    // Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.getLibraryBookList(widget.id);
     if (response.status ?? false) {
       Provider.of<DataProvider>(
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
           .setLibraryBooks(response.details ?? []);
-      // Navigation.instance.goBack();
-    } else {
-      // Navigation.instance.goBack();
     }
   }
 
@@ -725,6 +655,42 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } catch (e) {
       _showSnackBar('Failed to open link: ${e.toString()}');
+    }
+  }
+
+  void _shareLibrary() async {
+    if (data == null) return;
+
+    try {
+      final shareUrl =
+          'https://tratri.in/link?format=library&id=${data!.id}&details=library&title=${Uri.encodeComponent(data!.title ?? "")}';
+      await ShareHelper.shareText(shareUrl, context: context);
+    } catch (e) {
+      debugPrint('Error sharing library: $e');
+      _shareWithFallback();
+    }
+  }
+
+  void _shareWithFallback() async {
+    if (data == null) return;
+
+    try {
+      final shareText = '''
+Check out "${data!.title}" library in our eBook app!
+
+📚 Thousands of books, magazines, and e-notes available
+📱 Download the app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook  
+
+Library ID: ${data!.id}
+''';
+
+      await ShareHelper.shareText(shareText, context: context);
+    } catch (e) {
+      debugPrint('Error in fallback sharing: $e');
+      await ShareHelper.shareText(
+        'Check out our eBook app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook',
+        context: context,
+      );
     }
   }
 }
