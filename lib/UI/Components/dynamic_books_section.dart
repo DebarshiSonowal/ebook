@@ -19,22 +19,31 @@ class DynamicBooksSection extends StatelessWidget {
     return Consumer2<CommonProvider, DataProvider>(
       builder: (context, commonData, dataProvider, _) {
         List<HomeSection> currentSection = [];
+        bool isLoading = false;
 
         switch (dataProvider.currentTab) {
           case 0:
             currentSection = commonData.eBookSection;
+            isLoading = commonData.isEbookSectionLoading;
             break;
           case 1:
             currentSection = commonData.magazineSection;
+            isLoading = commonData.isMagazineSectionLoading;
             break;
           case 2:
             currentSection = commonData.eNotesSection;
+            isLoading = commonData.isEnotesSectionLoading;
             break;
         }
 
-        // Show shimmer loading if no data
-        if (currentSection.isEmpty) {
+        // Show shimmer loading if still loading
+        if (isLoading) {
           return _buildShimmerSections();
+        }
+
+        // If not loading and empty, show nothing or empty state
+        if (currentSection.isEmpty) {
+          return const SizedBox.shrink();
         }
 
         return ListView.separated(
@@ -208,11 +217,34 @@ class DynamicEnotesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataProvider>(
-      builder: (context, dataProvider, _) {
-        // Show shimmer loading if no data
-        if (dataProvider.enotesSection.isEmpty) {
+    return Consumer2<CommonProvider, DataProvider>(
+      builder: (context, commonData, dataProvider, _) {
+        List<HomeSection> currentSection = [];
+        bool isLoading = false;
+
+        switch (dataProvider.currentTab) {
+          case 0:
+            currentSection = commonData.eBookSection;
+            isLoading = commonData.isEbookSectionLoading;
+            break;
+          case 1:
+            currentSection = commonData.magazineSection;
+            isLoading = commonData.isMagazineSectionLoading;
+            break;
+          case 2:
+            currentSection = commonData.eNotesSection;
+            isLoading = commonData.isEnotesSectionLoading;
+            break;
+        }
+
+        // Show shimmer loading if still loading
+        if (isLoading) {
           return _buildShimmerSections();
+        }
+
+        // If not loading and empty, show nothing or empty state
+        if (currentSection.isEmpty) {
+          return const SizedBox.shrink();
         }
 
         return ListView.separated(
@@ -220,9 +252,8 @@ class DynamicEnotesSection extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (cont, index) {
             return BooksSection(
-              title: dataProvider.enotesSection[index].title ??
-                  'Bestselling Books',
-              list: dataProvider.enotesSection[index].books ?? [],
+              title: currentSection[index].title ?? 'Bestselling Books',
+              list: currentSection[index].book ?? [],
               show: (data) {
                 ConstanceData.show(context, data);
               },
@@ -233,7 +264,7 @@ class DynamicEnotesSection extends StatelessWidget {
               height: 0.1.h,
             );
           },
-          itemCount: dataProvider.enotesSection.length,
+          itemCount: currentSection.length,
         );
       },
     );

@@ -19,6 +19,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/book.dart';
@@ -35,6 +36,7 @@ import '../../../Utility/blockquote_extention.dart';
 import '../../../Utility/embeded_link_extenion.dart';
 import '../../../Utility/image_extension.dart';
 import '../../../Utility/spaceExtension.dart';
+import '../../../Utility/share_helper.dart';
 import '../../Components/dynamicSize.dart';
 import '../../Components/splittedText.dart';
 
@@ -319,12 +321,11 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
               )
             : Container(),
         IconButton(
-          onPressed: () {
-            // Share.share(
-            //     'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
+          onPressed: () async {
             String page = "reading";
-            Share.share(
-                'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}&page=${pageController.page?.toInt()}');
+            final shareUrl =
+                'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}&page=${pageController.page?.toInt()}';
+            await ShareHelper.shareText(shareUrl, context: context);
           },
           icon: Icon(
             Icons.share,
@@ -484,6 +485,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                   value: brightness,
                   onChanged: (value) {
                     _(() {
+                      ScreenBrightness().setScreenBrightness(value);
                       setState(() {
                         brightness = value;
                         // FlutterScreenWake.setBrightness(brightness);
@@ -657,8 +659,10 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
           //   text = text + j;
           // }
           if (i >= int.parse(widget.id.toString().split(',')[1])) {
+            final currentPageNo = j.current_page_no ?? 0;
+            final shouldShowAd = response1.isAdPage(currentPageNo);
             reading.add(ReadingChapter(chapters[i].title, j.content,
-                chapters[i].review_url, j.view_ad, j.view_ad_count));
+                chapters[i].review_url, shouldShowAd, j.view_ad_count));
             text = text + j.content!;
           }
         }
@@ -695,18 +699,14 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
 
   void showAds(int? adCount) {
     if (adCount == null || adCount <= 0) return;
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      barrierDismissible: true,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
       builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          insetPadding: EdgeInsets.symmetric(horizontal: 2.w),
-          child: AdsPopup(
-            adCount: adCount,
-          ),
-        );
+        return const AdsPopup();
       },
     );
   }

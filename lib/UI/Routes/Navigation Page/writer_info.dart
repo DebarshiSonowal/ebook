@@ -4,6 +4,8 @@ import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../Components/book_item.dart';
@@ -42,6 +44,59 @@ class _WriterInfoState extends State<WriterInfo> {
                 SizedBox(
                   height: 3.h,
                 ),
+                if (data.writerDetails?.website_url != null &&
+                    data.writerDetails!.website_url!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Website',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontSize: 2.h,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              final url = data.writerDetails?.website_url;
+                              if (url != null &&
+                                  await canLaunchUrl(Uri.parse(url))) {
+                                await launchUrl(Uri.parse(url));
+                              } else {
+                                // Handle error if URL is invalid
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            child: Text(
+                              'Biography',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontSize: 1.5.h,
+                                    color: Colors.white,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  height: 3.h,
+                ),
                 Text(
                   'About',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -67,68 +122,8 @@ class _WriterInfoState extends State<WriterInfo> {
                               .headlineSmall
                               ?.copyWith(
                                 color: Colors.white,
+                                fontSize: 15.sp,
                               ),
-                        ),
-                      ),
-                SizedBox(
-                  height: 1.h,
-                ),
-                (data.writerDetails?.tags ?? []).isEmpty
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Tags',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
-                                      fontSize: 2.h,
-                                      // color: Colors.grey.shade200,
-                                    ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                (data.writerDetails?.tags ?? []).isEmpty
-                    ? Container()
-                    : SizedBox(
-                        height: 4.h,
-                        child: ListView(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            for (var i in data.writerDetails?.tags ?? [])
-                              GestureDetector(
-                                onTap: () {
-                                  Navigation.instance.goBack();
-                                  Navigation.instance.navigate('/searchWithTag',
-                                      args: i.toString());
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.white),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5)),
-                                  ),
-                                  child: Text(
-                                    i.name ?? "",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall,
-                                  ),
-                                ),
-                              ),
-                          ],
                         ),
                       ),
                 SizedBox(
@@ -171,7 +166,7 @@ class _WriterInfoState extends State<WriterInfo> {
                                   Navigation.instance.goBack();
                                   Navigation.instance.navigate(
                                       '/searchWithAuthor',
-                                      args: i.toString());
+                                      args: widget.id.toString().split(",")[0]);
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(5),
@@ -180,14 +175,14 @@ class _WriterInfoState extends State<WriterInfo> {
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.white),
                                     borderRadius: const BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
+                                        Radius.circular(5)),
                                   ),
                                   child: Text(
                                     i.name ?? "",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall,
+                                        .headlineSmall
+                                        ?.copyWith(fontSize: 18.sp),
                                   ),
                                 ),
                               ),
@@ -197,12 +192,7 @@ class _WriterInfoState extends State<WriterInfo> {
                 SizedBox(
                   height: 2.h,
                 ),
-                (data.writerDetails?.books
-                                .where((element) =>
-                                    element.book_format == "e-book")
-                                .toList() ??
-                            [])
-                        .isEmpty
+                (data.writerDetails?.tags ?? []).isEmpty
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -212,7 +202,7 @@ class _WriterInfoState extends State<WriterInfo> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Books',
+                                'Tags',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineSmall
@@ -221,39 +211,16 @@ class _WriterInfoState extends State<WriterInfo> {
                                       // color: Colors.grey.shade200,
                                     ),
                               ),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Text(
-                                  'More >',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineSmall
-                                      ?.copyWith(
-                                        fontSize: 1.5.h,
-                                        color: Colors.blueAccent,
-                                      ),
-                                ),
-                              ),
                             ],
                           ),
                         ),
                       ),
-                (data.writerDetails?.books
-                                .where((element) =>
-                                    element.book_format == "e-book")
-                                .toList() ??
-                            [])
-                        .isEmpty
+                (data.writerDetails?.tags ?? []).isEmpty
                     ? Container()
                     : SizedBox(
                         height: 1.h,
                       ),
-                (data.writerDetails?.books
-                                .where((element) =>
-                                    element.book_format == "e-book")
-                                .toList() ??
-                            [])
-                        .isEmpty
+                (data.writerDetails?.tags ?? []).isEmpty
                     ? Container()
                     : SizedBox(
                         height: 35.h,
@@ -307,7 +274,10 @@ class _WriterInfoState extends State<WriterInfo> {
                                 ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigation.instance.navigate('/searchWithAuthor',
+                                  args: widget.id.toString().split(",")[0]);
+                            },
                             child: Text(
                               'More >',
                               style: Theme.of(context)

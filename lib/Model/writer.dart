@@ -12,7 +12,9 @@ class writer {
       mobile,
       email,
       profile_pic,
-      about,title;
+      about,
+      title,
+      website_url;
   List<Book> books = [];
   List<Tag> tags = [], awards = [];
 
@@ -36,6 +38,7 @@ class writer {
     mobile = json['mobile'] ?? "";
     email = json['email'] ?? "";
     profile_pic = json['profile_pic'] ?? "";
+    website_url = json['website_url'] ?? "";
 
     books = json['books'] == null
         ? []
@@ -47,7 +50,6 @@ class writer {
     awards = json['awards'] == null
         ? []
         : (json['awards'] as List).map((e) => Tag.fromJson(e)).toList();
-
   }
 }
 

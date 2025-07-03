@@ -73,7 +73,7 @@ class _BookItemState extends State<BookItem> {
                     BoxDecoration(border: Border.all(color: Colors.white)),
                 margin: EdgeInsets.symmetric(horizontal: 1.5.w),
                 child: CachedNetworkImage(
-                  imageUrl: widget.data.profile_pic ?? "",
+                  imageUrl: (widget.data.profile_pic ?? ""),
                   placeholder: (context, url) => const Padding(
                     padding: EdgeInsets.all(18.0),
                     child: CircularProgressIndicator(
@@ -289,6 +289,7 @@ class _BookItemState extends State<BookItem> {
     }
     return true;
   }
+
 // void initiatePaymentProcess(id) async {
 //   Navigation.instance.navigate('/loadingDialog');
 //   final response = await ApiProvider.instance.fetchRazorpay();

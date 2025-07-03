@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:awesome_icons/awesome_icons.dart';
 import 'package:badges/badges.dart' as badge;
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -138,7 +137,7 @@ class NewSearchBar extends StatelessWidget {
           SizedBox(
             width: 1.w,
           ),
-          Expanded(child: Container()),
+          Spacer(),
           GestureDetector(
             onTap: () {
               Navigation.instance.navigate('/search');
@@ -333,11 +332,13 @@ class NewSearchBar extends StatelessWidget {
             'Update Phone Number',
             style: TextStyle(
               fontSize: 18.sp,
+              color: Colors.black,
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Enter your new phone number',
@@ -360,8 +361,12 @@ class NewSearchBar extends StatelessWidget {
                     borderSide: BorderSide(color: ConstanceData.primaryColor),
                   ),
                 ),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.sp,
+                ),
                 keyboardType: TextInputType.phone,
-                maxLength: 15,
+                maxLength: 10,
               ),
             ],
           ),

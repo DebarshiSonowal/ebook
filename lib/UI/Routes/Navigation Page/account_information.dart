@@ -212,7 +212,7 @@ class _AccountInformationState extends State<AccountInformation> {
               listen: false)
           .setProfile(response.profile!);
       Fluttertoast.showToast(msg: "Profile updated");
-      Navigation.instance.goBack();
+      Navigation.instance.navigateAndRemoveUntil("/main");
     } else {
       Navigation.instance.goBack();
     }

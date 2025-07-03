@@ -10,6 +10,7 @@ import '../../Helper/navigator.dart';
 import '../../Networking/api_provider.dart';
 import '../../Storage/app_storage.dart';
 import '../../Storage/data_provider.dart';
+import '../../Utility/share_helper.dart';
 
 class DownloadSection extends StatelessWidget {
   final int id;
@@ -30,10 +31,11 @@ class DownloadSection extends StatelessWidget {
             width: 0.1.w,
           ),
           GestureDetector(
-            onTap: () {
+            onTap: () async {
               String page = "details";
-              Share.share(
-                  'https://tratri.in/link?format=$format&id=$id&details=$page');
+              final shareUrl =
+                  'https://tratri.in/link?format=$format&id=$id&details=$page';
+              await ShareHelper.shareText(shareUrl, context: context);
             },
             child: SizedBox(
               height: 15.h,

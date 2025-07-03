@@ -3,15 +3,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:ebook/Model/home_banner.dart';
+import 'package:ebook/Model/advertisement.dart';
 import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sizer/sizer.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../Storage/app_storage.dart';
 import '../../../Constants/constance_data.dart';
@@ -19,6 +20,7 @@ import '../../../Helper/navigator.dart';
 import '../../Components/buildbook_section.dart';
 import '../../Components/dynamic_books_section.dart';
 import '../../Components/library_section.dart';
+import '../../Components/advertisement_banner.dart';
 import 'package:app_links/app_links.dart';
 
 class Home extends StatefulWidget {
@@ -35,9 +37,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       RefreshController(initialRefresh: false);
   final ScrollController controller = ScrollController();
   bool isLoading = true; // Add loading state
+  bool isLoadingAdBanners = true; // Add specific loading state for ad banners
 
   void _onRefresh() async {
     // monitor network fetch
+    debugPrint("onRefresh");
     setState(() {
       isLoading = true;
     });
@@ -47,6 +51,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       await Future.wait([
         fetchHomeBanner(),
         fetchHomeSection(),
+        fetchAdvertisementBanners(),
       ]);
 
       // Add a small delay to ensure state updates are processed
@@ -58,12 +63,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       setState(() {
         isLoading = false;
       });
-      _refreshController.refreshCompleted();
+      if (mounted) {
+        _refreshController.refreshCompleted();
+      }
     }
   }
 
   Future<void> initUniLinks() async {
-    print("deeplink start initial");
+    print("🔗 HOME: Initializing universal links...");
     try {
       final appLinks = AppLinks();
 
@@ -73,13 +80,37 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       // Then handle initial/background links
       final uri = await appLinks.getInitialLink();
       if (uri != null) {
-        print("Initial deeplink: $uri");
+        print("🔗 HOME: Initial deeplink: $uri");
         await handleInitialLink(uri.toString());
       } else {
-        print("No initial deeplink");
+        print("🔗 HOME: No initial deeplink");
+      }
+
+      // Test universal links configuration
+      await testUniversalLinksConfiguration();
+    } catch (e) {
+      print("🔗 HOME: Error initializing deep links: $e");
+    }
+  }
+
+  // Test universal links configuration
+  Future<void> testUniversalLinksConfiguration() async {
+    print("🔗 HOME: Testing universal links configuration...");
+
+    // Test if the app can handle the domain
+    try {
+      final testUrls = [
+        'https://tratri.in/link',
+        'https://tratri.in/link?test=1',
+        'tratri://test',
+      ];
+
+      for (final url in testUrls) {
+        print("🔗 HOME: Testing URL: $url");
+        // This would normally be handled by the system
       }
     } catch (e) {
-      print("Error initializing deep links: $e");
+      print("🔗 HOME: Error testing configuration: $e");
     }
   }
 
@@ -97,6 +128,96 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       });
     } catch (e) {
       print("Error setting up link listener: $e");
+    }
+  }
+
+  Future<void> handleInitialLink(String linkString) async {
+    try {
+      print("🔗 handleInitialLink: $linkString");
+
+      // Validate URL format first
+      if (!linkString.startsWith('https://tratri.in/link')) {
+        print("❌ Invalid URL format: $linkString");
+        return;
+      }
+
+      final uri = Uri.parse(linkString);
+      print("🔗 Parsed URI: $uri");
+      print("🔗 Query params: ${uri.queryParameters}");
+
+      // Validate required parameters
+      if (uri.queryParameters['id'] == null ||
+          uri.queryParameters['details'] == null) {
+        print("❌ Missing required parameters: id or details");
+        return;
+      }
+
+      // Only fetch book details for book-related links
+      if (uri.queryParameters['details'] != "library") {
+        await fetchBookDetails(linkString);
+      }
+
+      goToUrl(linkString);
+      print("🔗 handleInitialLink completed successfully");
+    } catch (e, stackTrace) {
+      print("❌ Error in handleInitialLink: $e");
+      print("❌ Stack trace: $stackTrace");
+      // Don't rethrow - this might cause the fallback to Safari
+    }
+  }
+
+  Future<void> handleForegroundLink(String linkString) async {
+    try {
+      print("🔗 handleForegroundLink: $linkString");
+
+      // Validate URL format first
+      if (!linkString.startsWith('https://tratri.in/link')) {
+        print("❌ Invalid URL format: $linkString");
+        return;
+      }
+
+      final uri = Uri.parse(linkString);
+      print("🔗 Parsed URI: $uri");
+      print("🔗 Query params: ${uri.queryParameters}");
+
+      // Validate required parameters
+      if (uri.queryParameters['id'] == null ||
+          uri.queryParameters['details'] == null) {
+        print("❌ Missing required parameters: id or details");
+        return;
+      }
+
+      // Only fetch book details for book-related links
+      if (uri.queryParameters['details'] != "library") {
+        await fetchBookDetails(linkString);
+      }
+
+      goToUrlSecond(linkString);
+      print("🔗 handleForegroundLink completed successfully");
+    } catch (e, stackTrace) {
+      print("❌ Error in handleForegroundLink: $e");
+      print("❌ Stack trace: $stackTrace");
+      // Don't rethrow - this might cause the fallback to Safari
+    }
+  }
+
+  void goToUrlSecond(String initialLink) {
+    debugPrint("GoToUrlSecond: " + initialLink);
+    final uri = Uri.parse(initialLink);
+    debugPrint("Parsed URI: $uri");
+    debugPrint("Details parameter: ${uri.queryParameters['details']}");
+
+    if (uri.queryParameters['details'] == "reading") {
+      debugPrint("Handling reading link in second method");
+      checkByFormat(uri, initialLink);
+    } else if (uri.queryParameters['details'] == "library") {
+      debugPrint("Handling library link in second method");
+      // Handle library links
+      handleLibraryLink(uri);
+    } else {
+      debugPrint("Handling regular book info link in second method");
+      Navigation.instance.navigate('/bookInfo',
+          args: int.parse(uri.queryParameters['id'] ?? "0"));
     }
   }
 
@@ -121,6 +242,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     Future.delayed(const Duration(seconds: 0), () {
       initUniLinks();
       fetchNotifications();
+      fetchAdvertisementBanners();
       _loadInitialData();
     });
   }
@@ -129,6 +251,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     setState(() {
       isLoading = true;
     });
+
+    // Reset loading states for sections when initially loading
+    final commonProvider = Provider.of<CommonProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+    commonProvider.resetLoadingStates();
 
     // Small delay to let the UI render
     await Future.delayed(const Duration(milliseconds: 100));
@@ -141,122 +269,167 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: false,
-            header: const WaterDropHeader(
-              waterDropColor: Colors.white,
-            ),
-            footer: CustomFooter(
-              builder: (BuildContext context, LoadStatus? mode) {
-                Widget body;
-                if (mode == LoadStatus.idle) {
-                  body = const Text("pull up load");
-                } else if (mode == LoadStatus.loading) {
-                  body = const CupertinoActivityIndicator(
-                    color: Colors.white,
-                  );
-                } else if (mode == LoadStatus.failed) {
-                  body = const Text("Load Failed!Click retry!");
-                } else if (mode == LoadStatus.canLoading) {
-                  body = const Text("release to load more");
-                } else {
-                  body = const Text("No more Data");
-                }
-                return Container(
-                  height: 55.0,
-                  child: Center(child: body),
-                );
-              },
-            ),
-            controller: _refreshController,
-            onRefresh: _onRefresh,
-            onLoading: _onLoading,
-            child: Container(
-              margin: EdgeInsets.only(top: 0.1.h),
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Consumer<DataProvider>(builder: (context, data, _) {
-                // Check if we have actual data loaded
-                bool hasBannerData = false;
-                try {
-                  hasBannerData = data.bannerList != null &&
-                      data.bannerList!.isNotEmpty &&
-                      data.currentTab < data.bannerList!.length &&
-                      data.bannerList![data.currentTab].isNotEmpty;
-                } catch (e) {
-                  debugPrint("Error checking banner data: $e");
-                  hasBannerData = false;
-                }
-
-                debugPrint(
-                    "Banner check - isLoading: $isLoading, hasBannerData: $hasBannerData, currentTab: ${data.currentTab}, bannerList length: ${data.bannerList?.length}");
-
-                return SingleChildScrollView(
-                  controller: controller,
-                  child: Column(
-                    children: [
-                      (isLoading || !hasBannerData)
-                          ? CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : data.currentTab == 2
-                              ? BuildEnoteBarSection(
-                                  show: (data) {
-                                    ConstanceData.showEnotes(context, data);
-                                  },
-                                )
-                              : BuildBookBarSection(
-                                  show: (data) {
-                                    ConstanceData.show(context, data);
-                                  },
-                                ),
-                      const LibrarySection(),
-                      data.currentTab == 2
-                          ? DynamicEnotesSection()
-                          : const DynamicBooksSection(),
-                      SizedBox(
-                        height: 15.h,
-                      ),
-                    ],
-                  ),
-                );
-              }),
-            ),
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: const WaterDropHeader(
+          waterDropColor: Colors.white,
+          complete: Text(
+            "Refresh Completed",
+            style: TextStyle(color: Colors.white),
           ),
-          // Loading overlay
-          if (isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(4.h),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        'Loading...',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.black,
-                              fontSize: 16.sp,
+          failed: Text(
+            "Refresh Failed",
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        footer: CustomFooter(
+          builder: (BuildContext context, LoadStatus? mode) {
+            Widget body;
+            if (mode == LoadStatus.idle) {
+              body = const Text("pull up load");
+            } else if (mode == LoadStatus.loading) {
+              body = const CupertinoActivityIndicator(
+                color: Colors.white,
+              );
+            } else if (mode == LoadStatus.failed) {
+              body = const Text("Load Failed!Click retry!");
+            } else if (mode == LoadStatus.canLoading) {
+              body = const Text("release to load more");
+            } else {
+              body = const Text("No more Data");
+            }
+            return Container(
+              height: 55.0,
+              child: Center(child: body),
+            );
+          },
+        ),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Consumer<DataProvider>(builder: (context, data, _) {
+            // Check if we have actual data loaded
+            bool hasBannerData = false;
+            try {
+              hasBannerData = data.bannerList != null &&
+                  data.bannerList!.isNotEmpty &&
+                  data.currentTab < data.bannerList!.length &&
+                  data.bannerList![data.currentTab].isNotEmpty;
+            } catch (e) {
+              debugPrint("Error checking banner data: $e");
+              hasBannerData = false;
+            }
+
+            debugPrint(
+                "Banner check - isLoading: $isLoading, hasBannerData: $hasBannerData, currentTab: ${data.currentTab}, bannerList length: ${data.bannerList?.length}");
+
+            return Column(
+              children: [
+                isLoading
+                    ? Container(
+                        height: 20.h,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    : hasBannerData
+                        ? (data.currentTab == 2
+                            ? BuildEnoteBarSection(
+                                show: (data) {
+                                  ConstanceData.showEnotes(context, data);
+                                },
+                              )
+                            : BuildBookBarSection(
+                                show: (data) {
+                                  ConstanceData.show(context, data);
+                                },
+                              ))
+                        : const SizedBox.shrink(),
+                SizedBox(height: 1.h),
+                // Advertisement Banner Carousel Sections
+                // Show shimmer while loading or ad banners when ready
+                Consumer<DataProvider>(
+                  builder: (context, dataProvider, child) {
+                    final allBanners = dataProvider.advertisementBanners ?? [];
+
+                    if (isLoadingAdBanners) {
+                      return Column(
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              height: 20.h,
+                              child: PageView.builder(
+                                itemCount: 3, // Show 3 shimmer items
+                                controller:
+                                    PageController(viewportFraction: 0.9),
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 2.w),
+                                    child: Container(
+                                      height: 20.h,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                      ),
-                    ],
-                  ),
+                          ),
+                          SizedBox(height: 1.h),
+                        ],
+                      );
+                    }
+
+                    if (allBanners.isNotEmpty) {
+                      return Column(
+                        children: [
+                          Container(
+                            height: 20.h,
+                            child: PageView.builder(
+                              itemCount: allBanners.length,
+                              controller: PageController(viewportFraction: 0.9),
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 3.w),
+                                  child: AdvertisementBannerWidget(
+                                    banner: allBanners[index],
+                                    height: 20.h,
+                                    margin: EdgeInsets.zero,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                        ],
+                      );
+                    }
+                    // Hide section completely when not loading and no banners
+                    return const SizedBox.shrink();
+                  },
                 ),
-              ),
-            ),
-        ],
+                const LibrarySection(),
+                data.currentTab == 2
+                    ? DynamicEnotesSection()
+                    : const DynamicBooksSection(),
+                SizedBox(
+                  height: 15.h,
+                ),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }
@@ -272,14 +445,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       default:
         return ConstanceData.Children;
     }
-  }
-
-  filterByCategory(List<Book> list, DataProvider data) {
-    return list
-        .where((element) =>
-            element.book_category_id ==
-            data.categoryList[data.currentTab][data.currentCategory].id)
-        .toList();
   }
 
   getSelected(context, id) {
@@ -335,6 +500,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     final dataProvider = Provider.of<DataProvider>(
         Navigation.instance.navigatorKey.currentContext!,
         listen: false);
+    final commonProvider = Provider.of<CommonProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+
+    // Reset loading states for all sections
+    commonProvider.resetLoadingStates();
 
     final formats = dataProvider.formats;
     if (formats == null || formats.isEmpty) {
@@ -360,33 +531,107 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       final response = await ApiProvider.instance
           .fetchHomeSections(format.productFormat ?? '');
 
-      if (response.status ?? false) {
-        final commonProvider = Provider.of<CommonProvider>(
-            Navigation.instance.navigatorKey.currentContext!,
-            listen: false);
+      final commonProvider = Provider.of<CommonProvider>(
+          Navigation.instance.navigatorKey.currentContext!,
+          listen: false);
 
+      if (response.status ?? false) {
         switch (format.productFormat) {
           case 'e-book':
-            commonProvider.setEbookHomeSections(response.sections!);
+            commonProvider.setEbookHomeSections(response.sections ?? []);
             break;
           case 'magazine':
-            commonProvider.setMagazineHomeSections(response.sections!);
+            commonProvider.setMagazineHomeSections(response.sections ?? []);
             break;
           case 'e-note':
-            commonProvider.setEnotesHomeSections(response.sections!);
+            commonProvider.setEnotesHomeSections(response.sections ?? []);
             break;
         }
       } else {
+        // Even if API fails, set empty data and stop loading
+        switch (format.productFormat) {
+          case 'e-book':
+            commonProvider.setEbookHomeSections([]);
+            break;
+          case 'magazine':
+            commonProvider.setMagazineHomeSections([]);
+            break;
+          case 'e-note':
+            commonProvider.setEnotesHomeSections([]);
+            break;
+        }
         debugPrint(
             "Failed to refresh section for format: ${format.productFormat}");
       }
     } catch (e) {
+      // On error, set empty data and stop loading
+      final commonProvider = Provider.of<CommonProvider>(
+          Navigation.instance.navigatorKey.currentContext!,
+          listen: false);
+
+      switch (format.productFormat) {
+        case 'e-book':
+          commonProvider.setEbookHomeSections([]);
+          break;
+        case 'magazine':
+          commonProvider.setMagazineHomeSections([]);
+          break;
+        case 'e-note':
+          commonProvider.setEnotesHomeSections([]);
+          break;
+      }
       debugPrint(
           "Error fetching section for format ${format.productFormat}: $e");
     }
   }
 
-  void goToUrl(String initialLink) async {
+  Future<void> fetchAdvertisementBanners() async {
+    setState(() {
+      isLoadingAdBanners = true;
+    });
+
+    try {
+      final response = await ApiProvider.instance.fetchAdvertisementBanners();
+      if (response.success ?? false) {
+        final dataProvider = Provider.of<DataProvider>(
+            Navigation.instance.navigatorKey.currentContext!,
+            listen: false);
+
+        // Convert AdvertisementBanner to Advertisement for DataProvider compatibility
+        final advertisements = response.result
+                ?.map((banner) => Advertisement.fromJson({
+                      'id': banner.id,
+                      'ad_id': banner.id,
+                      'is_interactive': false,
+                      'ad_type': banner.adType,
+                      'content': banner.content,
+                      'redirect_link': banner.redirectLink,
+                      'related_id': banner.relatedId,
+                      'ad_category': banner.adCategory,
+                    }))
+                .toList() ??
+            [];
+
+        dataProvider.setAdBanner(advertisements);
+
+        // Also store the original banner response for easier category filtering
+        dataProvider.setAdvertisementBanners(response.result ?? []);
+
+        debugPrint(
+            "Advertisement banners loaded: ${response.result?.length ?? 0}");
+      } else {
+        debugPrint("Failed to fetch advertisement banners");
+      }
+    } catch (e) {
+      debugPrint("Error fetching advertisement banners: $e");
+    } finally {
+      setState(() {
+        isLoadingAdBanners = false;
+      });
+    }
+  }
+
+  void goToUrl(String initialLink) {
     debugPrint("GoToUrl: " + initialLink);
     final uri = Uri.parse(initialLink);
     debugPrint("Parsed URI: $uri");
@@ -401,66 +646,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       handleLibraryLink(uri);
     } else {
       debugPrint("Handling regular book info link");
-      Navigation.instance.navigate('/bookInfo',
-          args: int.parse(uri.queryParameters['id'] ?? "0"));
-    }
-  }
-
-  void goToUrlSecond(String initialLink) {
-    debugPrint("GoToUrlSecond: " + initialLink);
-    final uri = Uri.parse(initialLink);
-    debugPrint("Parsed URI: $uri");
-    debugPrint("Details parameter: ${uri.queryParameters['details']}");
-
-    if (uri.queryParameters['details'] == "reading") {
-      debugPrint("Handling reading link in foreground");
-      if (uri.queryParameters['format'] == "e-book") {
-        Provider.of<DataProvider>(context, listen: false).setCurrentTab(0);
-        if (Storage.instance.isLoggedIn) {
-          if (Provider.of<DataProvider>(context, listen: false).myBooks.any(
-              (element) =>
-                  (element.id ?? 0) ==
-                  int.parse(uri.queryParameters['id'] ?? "0"))) {
-            Storage.instance.setReadingBookPage(
-                int.parse(uri.queryParameters['page'] ?? "0"));
-            Navigation.instance.navigate('/bookDetails',
-                args:
-                    "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image']}");
-          } else {
-            Navigation.instance.navigate('/bookInfo',
-                args: int.parse(uri.queryParameters['id'] ?? "0"));
-          }
-        } else {
-          Navigation.instance.navigate('/loginReturn');
-          initUniLinks();
-        }
-      } else {
-        Provider.of<DataProvider>(context, listen: false).setCurrentTab(1);
-        if (Storage.instance.isLoggedIn) {
-          if (Provider.of<DataProvider>(context, listen: false).myBooks.any(
-              (element) =>
-                  (element.id ?? 0) ==
-                  int.parse(uri.queryParameters['id'] ?? "0"))) {
-            Storage.instance.setReadingBookPage(
-                int.parse(uri.queryParameters['page'] ?? "0"));
-            Navigation.instance.navigate('/bookDetails',
-                args:
-                    "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image']}");
-          } else {
-            Navigation.instance.navigate('/bookInfo',
-                args: int.parse(uri.queryParameters['id'] ?? "0"));
-          }
-        } else {
-          Navigation.instance.navigate('/loginReturn');
-          initUniLinks();
-        }
-      }
-    } else if (uri.queryParameters['details'] == "library") {
-      debugPrint("Handling library link in foreground");
-      // Handle library links
-      handleLibraryLink(uri);
-    } else {
-      debugPrint("Handling regular book info link in foreground");
       Navigation.instance.navigate('/bookInfo',
           args: int.parse(uri.queryParameters['id'] ?? "0"));
     }
@@ -570,27 +755,5 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       debugPrint("Error parsing library link: $e");
       debugPrint("Stack trace: ${StackTrace.current}");
     }
-  }
-
-  Future<void> handleInitialLink(String linkString) async {
-    final uri = Uri.parse(linkString);
-
-    // Only fetch book details for book-related links
-    if (uri.queryParameters['details'] != "library") {
-      await fetchBookDetails(linkString);
-    }
-
-    goToUrl(linkString);
-  }
-
-  Future<void> handleForegroundLink(String linkString) async {
-    final uri = Uri.parse(linkString);
-
-    // Only fetch book details for book-related links
-    if (uri.queryParameters['details'] != "library") {
-      await fetchBookDetails(linkString);
-    }
-
-    goToUrlSecond(linkString);
   }
 }

@@ -10,7 +10,10 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<!-- Associated domains for Universal Links. Make sure your apple-app-site-association file is correctly configured on these domains. -->
 		<string>applinks:tratri.in</string>
+		<string>applinks:www.tratri.in</string>
+		<!-- Add more applinks here as needed -->
 	</array>
 </dict>
 </plist>

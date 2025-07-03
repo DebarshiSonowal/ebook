@@ -12,21 +12,21 @@ class LibrarySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.w),
-          child: SizedBox(
-            width: 80.w,
-            child: Text(
-              "Libraries",
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontSize: 16.sp,
-                  ),
-            ),
-          ),
-        ),
+        // Padding(
+        //   padding: EdgeInsets.symmetric(horizontal: 2.w),
+        //   child: SizedBox(
+        //     width: 80.w,
+        //     child: Text(
+        //       "Libraries",
+        //       overflow: TextOverflow.ellipsis,
+        //       maxLines: 2,
+        //       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        //             color: Colors.white,
+        //             fontSize: 16.sp,
+        //           ),
+        //     ),
+        //   ),
+        // ),
         SizedBox(
           height: 2.h,
         ),
@@ -47,20 +47,20 @@ class LibrarySection extends StatelessWidget {
                     },
                     child: Container(
                       width: 40.w,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      margin: EdgeInsets.symmetric(horizontal: 1.w),
                       padding: EdgeInsets.symmetric(
                           horizontal: 2.w, vertical: 0.4.h),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Colors.grey[800],
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
                         child: Text(
-                          "All",
+                          "All libraries",
                           maxLines: 1,
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                           ),
                           textAlign: TextAlign.center,
@@ -69,7 +69,6 @@ class LibrarySection extends StatelessWidget {
                     ),
                   );
                 }
-
                 // Regular library items (index - 1 because of the "All" item)
                 final libraryIndex = index - 1;
                 return GestureDetector(
@@ -79,7 +78,7 @@ class LibrarySection extends StatelessWidget {
                   },
                   child: Container(
                     width: 40.w,
-                    margin: EdgeInsets.symmetric(horizontal: 8),
+                    margin: EdgeInsets.symmetric(horizontal: 1.w),
                     padding:
                         EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.4.h),
                     decoration: BoxDecoration(

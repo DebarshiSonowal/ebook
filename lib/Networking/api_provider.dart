@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:ebook/Model/add_review.dart';
 import 'package:ebook/Model/notification_model.dart';
+import 'package:ebook/Model/advertisement.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 
@@ -522,7 +523,12 @@ class ApiProvider {
   }
 
   Future<BookCategoryResponse> fetchBookCategory(String format) async {
-    var url = "${baseUrl}$path/categories/${format}";
+    String url;
+    if (format.toLowerCase() == "enotes" || format.toLowerCase() == "e-notes") {
+      url = "$baseUrl/enote/categories";
+    } else {
+      url = "${baseUrl}$path/categories/${format.toLowerCase()}";
+    }
     BaseOptions option = BaseOptions(
         connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
@@ -551,7 +557,12 @@ class ApiProvider {
   }
 
   Future<HomeBannerResponse> fetchHomeBanner(String format) async {
-    var url = "${baseUrl}$path/home-banners/${format}";
+    String url;
+    if (format.toLowerCase() == "enotes" || format.toLowerCase() == "e-notes") {
+      url = "$baseUrl/enote/home-banners";
+    } else {
+      url = "${baseUrl}$path/home-banners/${format.toLowerCase()}";
+    }
     BaseOptions option = BaseOptions(
         connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
@@ -581,7 +592,12 @@ class ApiProvider {
   }
 
   Future<HomeSectionResponse> fetchHomeSections(String format) async {
-    var url = "${baseUrl}$path/home-sections/${format}";
+    String url;
+    if (format.toLowerCase() == "enotes" || format.toLowerCase() == "e-notes") {
+      url = "$baseUrl/enote/home-sections";
+    } else {
+      url = "${baseUrl}$path/home-sections/${format.toLowerCase()}";
+    }
     BaseOptions option = BaseOptions(
         connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
@@ -673,7 +689,7 @@ class ApiProvider {
   // }
 
   Future<BookChapterWithAdsResponse> fetchBookChaptersWithAds(String id) async {
-    var url = "${baseUrl}$path/chapters-new/${id}";
+    var url = "${baseUrl}$path/chapters/${id}";
     BaseOptions option = BaseOptions(
         connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
@@ -2219,7 +2235,94 @@ class ApiProvider {
   //   }
   // }
 
-  // Future download2(int id) async {
+  Future<AdvertisementBannersResponse> fetchAdvertisementBanners() async {
+    var url = "${baseUrl}/advertisement/banners";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          'platform': Platform.isAndroid ? "android" : "ios",
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("advertisement banners response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return AdvertisementBannersResponse.fromJson(response?.data);
+      } else {
+        debugPrint("advertisement banners error: ${response?.data}");
+        return AdvertisementBannersResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("advertisement banners response: ${e.response}");
+      return AdvertisementBannersResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<AdvertisementResponse> fetchAdvertisement() async {
+    var url = "${baseUrl}/advertisement";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          'platform': Platform.isAndroid ? "android" : "ios",
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("advertisement response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return AdvertisementResponse.fromJson(response?.data);
+      } else {
+        debugPrint("advertisement error: ${response?.data}");
+        return AdvertisementResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("advertisement response: ${e.response}");
+      return AdvertisementResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> trackAdClick(int adId) async {
+    var url = "${baseUrl}/advertisement/clicked-on-ad/${adId}";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+          'platform': Platform.isAndroid ? "android" : "ios",
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.post(url.toString());
+      debugPrint("track ad click response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("track ad click error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("track ad click response: ${e.response}");
+      return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+// Future download2(int id) async {
 //   var url = '${baseUrl}/sales/invoice/${id}';
 //   Navigation.instance.goBack();
 //   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();

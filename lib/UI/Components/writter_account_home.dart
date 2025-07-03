@@ -36,24 +36,24 @@ class WriterAccountHome extends StatelessWidget {
                       width: 20.w,
                     ),
               ),
-              Container(
-                padding: EdgeInsets.all(4),
-                color: Colors.white,
-                child: Text(
-                  contributor ?? 'AUTHOR',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontSize: 1.5.h,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+              // Container(
+              //   padding: EdgeInsets.all(4),
+              //   color: Colors.white,
+              //   child: Text(
+              //     contributor ?? 'AUTHOR',
+              //     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              //         fontSize: 1.5.h,
+              //         color: Colors.black,
+              //         fontWeight: FontWeight.bold),
+              //   ),
+              // ),
             ],
           ),
           SizedBox(
             height: 2.h,
           ),
           Text(
-            "${saluation} ${name}" ?? 'Simon & Schuster',
+            "$saluation $name" ?? 'Simon & Schuster',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontSize: 2.h,
                 ),

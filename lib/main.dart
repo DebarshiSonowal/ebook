@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 // import 'package:open_file/open_file.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:app_links/app_links.dart';
 
 import 'Constants/theme_data.dart';
 import 'Helper/navigator.dart';
@@ -23,6 +24,29 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Add comprehensive debug logging for deep links
+  final appLinks = AppLinks();
+
+  // Check initial link
+  try {
+    final initialLink = await appLinks.getInitialLink();
+    print("🔗 MAIN: Initial link: $initialLink");
+  } catch (e) {
+    print("🔗 MAIN: Error getting initial link: $e");
+  }
+
+  // Listen to all incoming links
+  appLinks.uriLinkStream.listen((uri) {
+    print("🔗 MAIN: Received deep link: $uri");
+    print("🔗 MAIN: Host: ${uri.host}");
+    print("🔗 MAIN: Path: ${uri.path}");
+    print("🔗 MAIN: Query: ${uri.query}");
+    print("🔗 MAIN: Fragment: ${uri.fragment}");
+  }, onError: (err) {
+    print("🔗 MAIN: Deep link error: $err");
+  });
+
   runApp(const MyApp());
 }
 

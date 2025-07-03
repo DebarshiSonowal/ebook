@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:io';
 
 import 'package:counter_button/counter_button.dart';
 import 'package:ebook/Model/book_chapter.dart';
@@ -9,16 +10,13 @@ import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/Utility/blockquote_extention.dart';
+import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
-// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
-// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:share_plus/share_plus.dart';
@@ -57,6 +55,8 @@ class _BookDetailsState extends State<BookDetails>
   String background = "https://picsum.photos/id/237/200/300";
   bool isShowing = false;
   Book? bookDetails;
+  BookChapterWithAdsResponse?
+      chaptersResponse; // Add this to store chapters response
   var themes = [
     ReadingTheme(
       Colors.black,
@@ -172,12 +172,41 @@ class _BookDetailsState extends State<BookDetails>
                       )
                     : Container(),
                 IconButton(
-                  onPressed: () {
-                    // Share.share(
-                    //     'https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook');
-                    String page = "reading";
-                    Share.share(
-                        'https://tratri.in/link?format=${bookDetails?.book_format}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${bookDetails?.profile_pic}');
+                  onPressed: () async {
+                    try {
+                      String page = "reading";
+                      final universalLink =
+                          'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
+
+                      final customSchemeLink =
+                          'tratri://link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
+
+                      // Try universal link first, fallback to custom scheme
+                      String shareUrl = universalLink;
+
+                      // For iOS, also include custom scheme as fallback
+                      if (Platform.isIOS) {
+                        shareUrl =
+                            '$universalLink\n\nAlternative link: $customSchemeLink';
+                      }
+
+                      // Use the specialized app bar share method
+                      await ShareHelper.shareFromAppBar(
+                        shareUrl,
+                        context: context,
+                      );
+                    } catch (e) {
+                      debugPrint('Error sharing: $e');
+                      // Fallback to simple share without position on any platform
+                      try {
+                        await Share.share(
+                          'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=reading&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}',
+                        );
+                      } catch (fallbackError) {
+                        debugPrint(
+                            'Fallback share also failed: $fallbackError');
+                      }
+                    }
                   },
                   icon: Icon(
                     Icons.share,
@@ -214,9 +243,23 @@ class _BookDetailsState extends State<BookDetails>
                           physics: const ClampingScrollPhysics(),
                           itemCount: reading.length,
                           onPageChanged: (val) {
-                            if (reading[val].viewAds ?? false) {
-                              showAds(reading[val].ads_number);
-                            } else {}
+                            // Get the actual page number from the reading chapter
+                            final currentReadingPage = reading[val];
+                            final actualPageNumber =
+                                currentReadingPage.ads_number ??
+                                    0; // This stores current_page_no
+                            final isAdPage =
+                                chaptersResponse?.isAdPage(actualPageNumber) ??
+                                    false;
+
+                            debugPrint(
+                                'Reading Page Index: $val, Actual Page Number: $actualPageNumber, Is Ad Page: $isAdPage');
+
+                            if (isAdPage) {
+                              debugPrint(
+                                  'Showing ad for page: $actualPageNumber');
+                              showAds(actualPageNumber);
+                            }
                           },
                           itemBuilder: (context, index) {
                             test = reading[index].desc!;
@@ -249,7 +292,6 @@ class _BookDetailsState extends State<BookDetails>
                                         style: {
                                           '#': Style(
                                             fontSize: FontSize(_counterValue),
-
                                             // maxLines: 22,
                                             color: getBackGroundColor(),
                                             // textOverflow: TextOverflow.ellipsis,
@@ -400,19 +442,12 @@ class _BookDetailsState extends State<BookDetails>
               Slider(
                   value: brightness,
                   onChanged: (value) {
+                    ScreenBrightness().setScreenBrightness(value);
                     _(() {
                       setState(() {
                         brightness = value;
-                        // FlutterScreenWake.setBrightness(brightness);
                       });
-                      // setBrightness(value);
                     });
-
-                    if (brightness == 0) {
-                      toggle = true;
-                    } else {
-                      toggle = false;
-                    }
                   }),
               SizedBox(
                 height: 1.h,
@@ -464,6 +499,7 @@ class _BookDetailsState extends State<BookDetails>
   void removeScreenshotDisable() async {
     // await FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
   }
+
   Future<void> fetchBookDetails() async {
     try {
       final bookId = widget.input.toString().split(',')[0];
@@ -476,8 +512,15 @@ class _BookDetailsState extends State<BookDetails>
       if (bookResponse.status ?? false) {
         final flipBookUrl = bookResponse.details?.flip_book_url;
         if (flipBookUrl?.isNotEmpty ?? false) {
-          Navigation.instance.goBack();
-          _launchUrl(flipBookUrl);
+          if ((bookResponse.details?.is_bought ?? false)) {
+            _launchUrl(flipBookUrl).then((e) => {
+                  Navigation.instance.goBack(),
+                  Navigation.instance.goBack(),
+                });
+          } else {
+            Navigation.instance.goBack();
+            Navigation.instance.goBack();
+          }
           return;
         }
 
@@ -493,7 +536,13 @@ class _BookDetailsState extends State<BookDetails>
       if (!mounted) return;
 
       if (chaptersResponse.status ?? false) {
+        // Store the chapters response for ad checking
+        this.chaptersResponse = chaptersResponse;
         chapters = chaptersResponse.chapters ?? [];
+
+        // Debug: Print ad pages
+        final adPages = chaptersResponse.getAdPageNumbers();
+        debugPrint("Ad Pages configured: $adPages");
 
         reading.clear();
         read = "";
@@ -505,8 +554,11 @@ class _BookDetailsState extends State<BookDetails>
           for (final page in chapter.pages!) {
             final content = page.content;
             if (content != null) {
+              final currentPageNo = page.current_page_no ?? 0;
+              final shouldShowAd = chaptersResponse.isAdPage(currentPageNo);
+              debugPrint("Page: $currentPageNo, Should Show Ad: $shouldShowAd");
               reading.add(ReadingChapter('', content, chapter.review_url,
-                  page.view_ad, page.view_ad_count));
+                  shouldShowAd, currentPageNo));
               read += content;
             }
           }
@@ -637,8 +689,43 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(Uri.parse(_url), mode: LaunchMode.inAppWebView)) {
-      throw 'Could not launch $_url';
+    try {
+      String url = _url.toString();
+      // Handle URLs that don't have a protocol
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://$url';
+      }
+
+      // First try with in-app web view
+      if (!await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView)) {
+        throw 'Could not launch $_url';
+      }
+    } catch (e) {
+      debugPrint('Error launching URL with in-app browser: $e');
+      // Try fallback with external browser for SSL or other issues
+      try {
+        String url = _url.toString();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'https://$url';
+        }
+        await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView);
+      } catch (fallbackError) {
+        debugPrint('External browser launch also failed: $fallbackError');
+        // Final fallback - try with HTTP instead of HTTPS for SSL issues
+        try {
+          String url = _url.toString();
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'http://$url'; // Use HTTP as final fallback
+          } else if (url.startsWith('https://')) {
+            url = url.replaceFirst(
+                'https://', 'http://'); // Convert HTTPS to HTTP
+          }
+          await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView);
+          debugPrint('Successfully launched with HTTP fallback');
+        } catch (httpFallbackError) {
+          debugPrint('All launch attempts failed: $httpFallbackError');
+        }
+      }
     }
   }
 
@@ -691,20 +778,16 @@ class _BookDetailsState extends State<BookDetails>
     page_no = pageController.page ?? 1;
   }
 
-  void showAds(int? adCount) {
-    if (adCount == null || adCount <= 0) return;
-    showDialog(
+  void showAds(int adCount) {
+    if (adCount <= 0) return;
+    showModalBottomSheet(
       context: context,
-      barrierDismissible: true,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      isDismissible: true,
+      enableDrag: true,
       builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          insetPadding: EdgeInsets.symmetric(horizontal: 2.w),
-          child: AdsPopup(
-            adCount: adCount,
-          ),
-        );
+        return const AdsPopup();
       },
     );
   }
