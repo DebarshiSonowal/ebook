@@ -344,8 +344,8 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   _buildDetails(),
                   SizedBox(height: 1.h),
                   Consumer<DataProvider>(
-                    builder: (context, data, _) {
-                      if (data.publicLibraries.isEmpty) {
+                    builder: (context, listData, _) {
+                      if (listData.publicLibraries.isEmpty) {
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -381,7 +381,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     Navigation.instance.navigate(
                                         '/libraryBooks',
                                         args:
-                                            data.publicLibraries.first.id ?? 0);
+                                            data?.id?? 0);
                                   },
                                   child: Row(
                                     children: [
@@ -408,7 +408,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                           _buildBookSection(
                             context,
                             "E-Books",
-                            data.library
+                            listData.library
                                 .where((e) =>
                                     e.book_format?.toLowerCase() == "e-book")
                                 .toList(),
@@ -416,7 +416,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                           _buildBookSection(
                             context,
                             "Magazines",
-                            data.library
+                            listData.library
                                 .where((e) =>
                                     e.book_format?.toLowerCase() == "magazine")
                                 .toList(),
@@ -424,7 +424,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                           _buildBookSection(
                             context,
                             "E-Notes",
-                            data.library
+                            listData.library
                                 .where((e) =>
                                     e.book_format?.toLowerCase() == "e-note")
                                 .toList(),

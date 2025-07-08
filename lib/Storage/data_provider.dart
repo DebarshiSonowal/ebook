@@ -38,7 +38,8 @@ class DataProvider extends ChangeNotifier {
   List<EnotesCategory> enotes = [];
 
   // Library
-  List<LibraryBookDetailsModel> library = [];
+  List<LibraryBookDetailsModel> _library = [];
+  List<LibraryBookDetailsModel> _specificLibraryBooks = [];
   List<Library> libraries = [], publicLibraries = [];
   List<BookmarkItem> bookmarks = [];
 
@@ -70,6 +71,11 @@ class DataProvider extends ChangeNotifier {
   int currentTab = 0;
   int libraryTab = 0;
   String title = '';
+
+  List<LibraryBookDetailsModel> get library => _library;
+
+  List<LibraryBookDetailsModel> get specificLibraryBooks =>
+      _specificLibraryBooks;
 
   void clearAllData() {
     cartBooks.clear();
@@ -110,7 +116,10 @@ class DataProvider extends ChangeNotifier {
   void setEnotesChapterList(List<Chapter> list) =>
       _notifyChange(() => enotesChapterList = list);
   void setLibraryBooks(List<LibraryBookDetailsModel> list) =>
-      _notifyChange(() => library = list);
+      _notifyChange(() => _library = list);
+
+  void setSpecificLibraryBooks(List<LibraryBookDetailsModel> books) =>
+      _notifyChange(() => _specificLibraryBooks = books);
   void setLibraries(List<Library> list) =>
       _notifyChange(() => libraries = list);
 

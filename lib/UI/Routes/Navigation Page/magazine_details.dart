@@ -54,6 +54,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   int currentIndex = 0;
   List<ReadingChapter> reading = [];
   Book? bookDetails;
+  bool canShare = false;
   var themes = [
     ReadingTheme(
       Colors.black,
@@ -320,18 +321,20 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
                 ),
               )
             : Container(),
-        IconButton(
-          onPressed: () async {
-            String page = "reading";
-            final shareUrl =
-                'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}&page=${pageController.page?.toInt()}';
-            await ShareHelper.shareText(shareUrl, context: context);
-          },
-          icon: Icon(
-            Icons.share,
-            color: getTextColor(),
-          ),
-        ),
+        canShare
+            ? IconButton(
+                onPressed: () async {
+                  String page = "reading";
+                  final shareUrl =
+                      'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&count=${widget.id.toString().split(",")[1]}&page=${pageController.page?.toInt()}';
+                  await ShareHelper.shareText(shareUrl, context: context);
+                },
+                icon: Icon(
+                  Icons.share,
+                  color: getTextColor(),
+                ),
+              )
+            : Container(),
       ],
     );
   }
@@ -678,6 +681,9 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       }
     }
     Navigation.instance.goBack();
+    setState(() {
+      canShare = bookDetails?.status == 2; // Check book details status
+    });
   }
 
   void updateFont(val) {

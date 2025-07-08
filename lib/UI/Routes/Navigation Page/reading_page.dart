@@ -10,6 +10,7 @@ import 'package:flutter_html_video/flutter_html_video.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../Constants/constance_data.dart';
@@ -54,6 +55,7 @@ class _ReadingPageState extends State<ReadingPage> {
     ),
   ];
   Book? bookDetails;
+  bool canShare = false;
 
   var _counterValue = 12.sp;
   int selectedTheme = 0;
@@ -123,6 +125,25 @@ class _ReadingPageState extends State<ReadingPage> {
               color: getTextColor(),
             ),
           ),
+          canShare
+              ? IconButton(
+                  onPressed: () async {
+                    try {
+                      String page = "reading";
+                      final shareUrl =
+                          'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
+
+                      await Share.share(shareUrl);
+                    } catch (e) {
+                      debugPrint('Error sharing: $e');
+                    }
+                  },
+                  icon: Icon(
+                    Icons.share,
+                    color: getTextColor(),
+                  ),
+                )
+              : Container(),
           PopupMenuButton<int>(
             color: getTextColor(),
             onSelected: (item) => handleClick(item),
@@ -312,6 +333,7 @@ class _ReadingPageState extends State<ReadingPage> {
         await ApiProvider.instance.fetchBookDetails(widget.id.toString());
     if (response != null && response.status == true) {
       bookDetails = response.details;
+      canShare = bookDetails?.status == 2; // Check book details status
       if (mounted) {
         setState(() {
           title = bookDetails?.title ?? "";

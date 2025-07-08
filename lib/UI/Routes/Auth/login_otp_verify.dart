@@ -48,7 +48,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
@@ -60,135 +60,245 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
           },
         ),
       ),
+      extendBodyBehindAppBar: true,
       body: SafeArea(
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          color: Theme.of(context).primaryColor,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColor.withOpacity(0.8),
+                Colors.black.withOpacity(0.9),
+              ],
+            ),
+          ),
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.w),
+              padding: EdgeInsets.symmetric(horizontal: 6.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 3.h),
                   Hero(
                     tag: 'app_logo',
                     child: Image.asset(
                       ConstanceData.primaryIcon,
                       fit: BoxFit.contain,
-                      height: 20.h,
-                      width: 34.w,
+                      height: 15.h,
+                      width: 30.w,
                     ),
                   ),
-                  SizedBox(height: 3.h),
+                  SizedBox(height: 1.h),
                   Text(
-                    "Login",
+                    "Welcome Back",
                     style: Theme.of(context).textTheme.displaySmall?.copyWith(
                           color: Colors.white,
-                          fontSize: 21.sp,
+                          fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
-                  SizedBox(height: 4.h),
-                  _buildTextField(
-                    context: context,
-                    controller: _emailController,
-                    hintText: "Email Address",
-                    labelText: "Enter your email",
-                    keyboardType: TextInputType.emailAddress,
-                    prefixIcon: Icons.email_outlined,
-                  ),
-                  SizedBox(height: 2.h),
-                  _buildTextField(
-                    context: context,
-                    controller: _passwordController,
-                    hintText: "Password",
-                    labelText: "Enter your password",
-                    isObscure: true,
-                    prefixIcon: Icons.lock_outline,
-                  ),
-                  SizedBox(height: 4.h),
-                  _buildLoginButton(context),
-                  SizedBox(height: 2.5.h),
-                  GestureDetector(
-                    onTap: () {
-                      _launchUrl(
-                          Uri.parse("https://tratri.in/app-forget-password"));
-                    },
-                    child: Text(
-                      "Forgot Password?",
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                              ),
-                    ),
+                  SizedBox(height: 1.h),
+                  Text(
+                    "Sign in to continue",
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 14.sp,
+                        ),
                   ),
                   SizedBox(height: 3.h),
-                  GestureDetector(
-                    onTap: () {
-                      Navigation.instance.navigate('/signup');
-                    },
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Don't have an account? ",
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontSize: 14.sp,
-                                ),
+
+                  // Social Login Section
+                  if (Platform.isAndroid || Platform.isIOS) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(2.w),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
                         children: [
-                          TextSpan(
-                            text: "Signup",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 15.sp,
-                            ),
+                          Text(
+                            "Quick Sign In",
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                           ),
+                          SizedBox(height: 2.h),
+                          if (Platform.isAndroid)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 6.h,
+                              child: SocialLoginButton(
+                                backgroundColor: Colors.white,
+                                height: 6.h,
+                                text: 'Continue with Google',
+                                borderRadius: 12,
+                                fontSize: 16.sp,
+                                buttonType: SocialLoginButtonType.google,
+                                onPressed: _handleGoogleSignIn,
+                              ),
+                            ),
+                          if (Platform.isIOS)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 6.h,
+                              child: SignInWithAppleButton(
+                                height: 6.h,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(12)),
+                                onPressed: signInWithApple,
+                              ),
+                            ),
                         ],
                       ),
                     ),
-                  ),
-                  SizedBox(height: 1.h),
-                  Divider(color: Colors.white.withOpacity(0.5)),
-                  SizedBox(height: 1.h),
-                  Text(
-                    "Or continue with",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontSize: 15.sp,
-                          color: Colors.white.withOpacity(0.8),
+                    SizedBox(height: 3.h),
+
+                    // Divider with text
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: Colors.white.withOpacity(0.3),
+                            thickness: 1,
+                          ),
                         ),
-                  ),
-                  SizedBox(height: 2.h),
-                  if (Platform.isAndroid)
-                    SizedBox(
-                      width: 60.w,
-                      child: SocialLoginButton(
-                        backgroundColor: Colors.white70,
-                        height: 5.5.h,
-                        text: 'Sign in with Google',
-                        borderRadius: 8,
-                        fontSize: 14.sp,
-                        buttonType: SocialLoginButtonType.google,
-                        onPressed: _handleGoogleSignIn,
-                      ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 3.w),
+                          child: Text(
+                            "OR",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  fontSize: 14.sp,
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.white.withOpacity(0.3),
+                            thickness: 1,
+                          ),
+                        ),
+                      ],
                     ),
-                  if (Platform.isIOS) ...[
-                    SizedBox(height: 2.h),
-                    SizedBox(
-                      width: 60.w,
-                      child: SignInWithAppleButton(
-                        height: 5.5.h,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        onPressed: signInWithApple,
-                      ),
-                    ),
+                    SizedBox(height: 3.h),
                   ],
-                  SizedBox(height: 5.h),
+
+                  // Regular Login Form
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(4.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.15),
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Sign in with Email",
+                          style:
+                              Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                        SizedBox(height: 3.h),
+                        _buildTextField(
+                          context: context,
+                          controller: _emailController,
+                          hintText: "Email Address",
+                          labelText: "Enter your email",
+                          keyboardType: TextInputType.emailAddress,
+                          prefixIcon: Icons.email_outlined,
+                        ),
+                        SizedBox(height: 2.5.h),
+                        _buildTextField(
+                          context: context,
+                          controller: _passwordController,
+                          hintText: "Password",
+                          labelText: "Enter your password",
+                          isObscure: true,
+                          prefixIcon: Icons.lock_outline,
+                        ),
+                        SizedBox(height: 3.h),
+                        _buildLoginButton(context),
+                        SizedBox(height: 2.h),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              _launchUrl(Uri.parse(
+                                  "https://tratri.in/app-forget-password"));
+                            },
+                            child: Text(
+                              "Forgot Password?",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    fontSize: 14.sp,
+                                    color: Colors.white.withOpacity(0.9),
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 3.h),
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigation.instance.navigate('/signup');
+                      },
+                      child: RichText(
+                        text: TextSpan(
+                          text: "Don't have an account? ",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontSize: 15.sp,
+                                    color: Colors.white.withOpacity(0.8),
+                                  ),
+                          children: [
+                            TextSpan(
+                              text: "Sign Up",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
                 ],
               ),
             ),
@@ -209,9 +319,10 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   }) {
     return Container(
       width: double.infinity,
-      height: 6.5.h,
+      height: 7.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.1),
       ),
       child: TextField(
         keyboardType: keyboardType,
@@ -220,33 +331,45 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         controller: controller,
         cursorColor: Colors.white,
         obscureText: isObscure,
-        style:
-            Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 16.sp),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontSize: 16.sp,
+              color: Colors.white,
+            ),
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,
           prefixIcon: prefixIcon != null
-              ? Icon(prefixIcon, color: Colors.white70)
+              ? Icon(prefixIcon, color: Colors.white.withOpacity(0.8))
               : null,
-          labelStyle:
-              Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 14.sp),
+          labelStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontSize: 14.sp,
+                color: Colors.white.withOpacity(0.8),
+              ),
           hintStyle: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey.shade400,
+                color: Colors.white.withOpacity(0.6),
                 fontSize: 15.sp,
               ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.white, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.5,
+            ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.white, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.5,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             gapPadding: 0.0,
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.white, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.white, width: 2),
           ),
+          filled: true,
+          fillColor: Colors.transparent,
         ),
       ),
     );
@@ -255,7 +378,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   Widget _buildLoginButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 5.5.h,
+      height: 6.h,
       child: ElevatedButton(
         onPressed: () {
           if (_emailController.text.isNotEmpty &&
@@ -273,17 +396,18 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
-          elevation: 3,
+          elevation: 8,
+          shadowColor: Colors.black.withOpacity(0.3),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
         ),
         child: Text(
-          'LOGIN',
+          'SIGN IN',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontSize: 16.sp,
+                fontSize: 17.sp,
                 color: Colors.black,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
               ),
         ),

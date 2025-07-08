@@ -72,7 +72,7 @@ import Flutter
         var matchedPattern = ""
         
         for pathPattern in supportedPaths {
-          if pathPattern.endsWith("/") {
+          if pathPattern.hasSuffix("/") {
             // Pattern ends with slash - check if path starts with it
             if path.hasPrefix(pathPattern) {
               pathMatches = true

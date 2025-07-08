@@ -54,9 +54,9 @@ class _BookDetailsState extends State<BookDetails>
 
   String background = "https://picsum.photos/id/237/200/300";
   bool isShowing = false;
+  bool canShare = false;
   Book? bookDetails;
-  BookChapterWithAdsResponse?
-      chaptersResponse; // Add this to store chapters response
+  BookChapterWithAdsResponse? chaptersResponse;
   var themes = [
     ReadingTheme(
       Colors.black,
@@ -171,48 +171,50 @@ class _BookDetailsState extends State<BookDetails>
                         ),
                       )
                     : Container(),
-                IconButton(
-                  onPressed: () async {
-                    try {
-                      String page = "reading";
-                      final universalLink =
-                          'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
+                canShare
+                    ? IconButton(
+                        onPressed: () async {
+                          try {
+                            String page = "reading";
+                            final universalLink =
+                                'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
 
-                      final customSchemeLink =
-                          'tratri://link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
+                            final customSchemeLink =
+                                'tratri://link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=$page&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}';
 
-                      // Try universal link first, fallback to custom scheme
-                      String shareUrl = universalLink;
+                            // Try universal link first, fallback to custom scheme
+                            String shareUrl = universalLink;
 
-                      // For iOS, also include custom scheme as fallback
-                      if (Platform.isIOS) {
-                        shareUrl =
-                            '$universalLink\n\nAlternative link: $customSchemeLink';
-                      }
+                            // For iOS, also include custom scheme as fallback
+                            if (Platform.isIOS) {
+                              shareUrl =
+                                  '$universalLink\n\nAlternative link: $customSchemeLink';
+                            }
 
-                      // Use the specialized app bar share method
-                      await ShareHelper.shareFromAppBar(
-                        shareUrl,
-                        context: context,
-                      );
-                    } catch (e) {
-                      debugPrint('Error sharing: $e');
-                      // Fallback to simple share without position on any platform
-                      try {
-                        await Share.share(
-                          'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=reading&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}',
-                        );
-                      } catch (fallbackError) {
-                        debugPrint(
-                            'Fallback share also failed: $fallbackError');
-                      }
-                    }
-                  },
-                  icon: Icon(
-                    Icons.share,
-                    color: getTextColor(),
-                  ),
-                ),
+                            // Use the specialized app bar share method
+                            await ShareHelper.shareFromAppBar(
+                              shareUrl,
+                              context: context,
+                            );
+                          } catch (e) {
+                            debugPrint('Error sharing: $e');
+                            // Fallback to simple share without position on any platform
+                            try {
+                              await Share.share(
+                                'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}&id=${bookDetails?.id}&details=reading&page=${pageController.page?.toInt()}&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}',
+                              );
+                            } catch (fallbackError) {
+                              debugPrint(
+                                  'Fallback share also failed: $fallbackError');
+                            }
+                          }
+                        },
+                        icon: Icon(
+                          Icons.share,
+                          color: getTextColor(),
+                        ),
+                      )
+                    : Container(),
               ],
             )
           : null,
@@ -527,6 +529,7 @@ class _BookDetailsState extends State<BookDetails>
         setState(() {
           bookDetails = bookResponse.details;
           title = bookDetails?.title ?? "";
+          canShare = bookDetails?.status == 2; // Check book details status
         });
       }
 

@@ -25,6 +25,7 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
     with TickerProviderStateMixin {
   TabController? _controller;
   String? _libraryTitle;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,98 +69,127 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
                 height: 1.h,
               ),
               Expanded(
-                child: TabBarView(
-                  controller: _controller,
-                  children: [
-                    GridView.builder(
-                      itemCount: data.library
-                          .where(
-                              (e) => e.book_format?.toLowerCase() == "e-book")
-                          .toList()
-                          .length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 2 / 2.5,
-                        crossAxisSpacing: 10.w,
-                      ),
-                      itemBuilder: (context, count) {
-                        var current = data.library
-                            .where(
-                                (e) => e.book_format?.toLowerCase() == "e-book")
-                            .toList()[count];
-                        return GestureDetector(
-                          onTap: () {
-                            ConstanceData.showBookDetails(context, current);
-                          },
-                          child: Card(
-                            child: CachedNetworkImage(
-                              imageUrl: current.profile_pic ?? "",
-                              fit: BoxFit.fill,
+                child: _isLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : data.specificLibraryBooks.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No books available in this library',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                              ),
                             ),
+                          )
+                        : TabBarView(
+                            controller: _controller,
+                            children: [
+                              GridView.builder(
+                                itemCount: data.specificLibraryBooks
+                                    .where((e) =>
+                                        e.book_format?.toLowerCase() ==
+                                        "e-book")
+                                    .toList()
+                                    .length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 2 / 2.5,
+                                  crossAxisSpacing: 10.w,
+                                ),
+                                itemBuilder: (context, count) {
+                                  var current = data.specificLibraryBooks
+                                      .where((e) =>
+                                          e.book_format?.toLowerCase() ==
+                                          "e-book")
+                                      .toList()[count];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      ConstanceData.showBookDetails(
+                                          context, current);
+                                    },
+                                    child: Card(
+                                      child: CachedNetworkImage(
+                                        imageUrl: current.profile_pic ?? "",
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              GridView.builder(
+                                itemCount: data.specificLibraryBooks
+                                    .where((e) =>
+                                        e.book_format?.toLowerCase() ==
+                                        "magazine")
+                                    .toList()
+                                    .length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 2 / 2.5,
+                                  crossAxisSpacing: 10.w,
+                                ),
+                                itemBuilder: (context, count) {
+                                  var current = data.specificLibraryBooks
+                                      .where((e) =>
+                                          e.book_format?.toLowerCase() ==
+                                          "magazine")
+                                      .toList()[count];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      ConstanceData.showBookDetails(
+                                          context, current);
+                                    },
+                                    child: Card(
+                                      child: CachedNetworkImage(
+                                        imageUrl: current.profile_pic ?? "",
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              GridView.builder(
+                                itemCount: data.specificLibraryBooks
+                                    .where((e) =>
+                                        e.book_format?.toLowerCase() ==
+                                        "e-note")
+                                    .toList()
+                                    .length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 2 / 2.5,
+                                  crossAxisSpacing: 10.w,
+                                ),
+                                itemBuilder: (context, count) {
+                                  var current = data.specificLibraryBooks
+                                      .where((e) =>
+                                          e.book_format?.toLowerCase() ==
+                                          "e-note")
+                                      .toList()[count];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      ConstanceData.showBookDetails(
+                                          context, current);
+                                    },
+                                    child: Card(
+                                      child: CachedNetworkImage(
+                                        imageUrl: current.profile_pic ?? "",
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    ),
-                    GridView.builder(
-                      itemCount: data.library
-                          .where(
-                              (e) => e.book_format?.toLowerCase() == "magazine")
-                          .toList()
-                          .length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 2 / 2.5,
-                        crossAxisSpacing: 10.w,
-                      ),
-                      itemBuilder: (context, count) {
-                        var current = data.library
-                            .where((e) =>
-                                e.book_format?.toLowerCase() == "magazine")
-                            .toList()[count];
-                        return GestureDetector(
-                          onTap: () {
-                            ConstanceData.showBookDetails(context, current);
-                          },
-                          child: Card(
-                            child: CachedNetworkImage(
-                              imageUrl: current.profile_pic ?? "",
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    GridView.builder(
-                      itemCount: data.library
-                          .where(
-                              (e) => e.book_format?.toLowerCase() == "e-note")
-                          .toList()
-                          .length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 2 / 2.5,
-                        crossAxisSpacing: 10.w,
-                      ),
-                      itemBuilder: (context, count) {
-                        var current = data.library
-                            .where(
-                                (e) => e.book_format?.toLowerCase() == "e-note")
-                            .toList()[count];
-                        return GestureDetector(
-                          onTap: () {
-                            ConstanceData.showBookDetails(context, current);
-                          },
-                          child: Card(
-                            child: CachedNetworkImage(
-                              imageUrl: current.profile_pic ?? "",
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
               ),
             ],
           );
@@ -177,16 +207,25 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
       vsync: this,
     );
 
+    // Clear previous specific library books data
+    Provider.of<DataProvider>(context, listen: false)
+        .setSpecificLibraryBooks([]);
+
     Future.delayed(Duration.zero, () {
+      setState(() {
+        _isLoading = true;
+      });
       fetchData();
       _loadLibraryTitle();
-      setState(() {});
     });
   }
 
   @override
   void dispose() {
     _controller?.dispose();
+    // Clear specific library books data when leaving the screen
+    Provider.of<DataProvider>(context, listen: false)
+        .setSpecificLibraryBooks([]);
     super.dispose();
   }
 
@@ -251,16 +290,13 @@ Library ID: ${library.id}
   }
 
   void fetchData() async {
-    Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.getLibraryBookList(widget.id);
     if (response.status ?? false) {
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
-          .setLibraryBooks(response.details ?? []);
-      Navigation.instance.goBack();
+      Provider.of<DataProvider>(context, listen: false)
+          .setSpecificLibraryBooks(response.details ?? []);
     } else {
-      Navigation.instance.goBack();
     }
+    _isLoading = false;
+    setState(() {});
   }
 }

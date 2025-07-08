@@ -29,7 +29,8 @@ class Book {
       contributor_id,
       no_of_articles,
       total_chapters,
-      magazine_id;
+      magazine_id,
+      status;
   String? title,
       writer,
       book_format,
@@ -67,6 +68,7 @@ class Book {
     length = json['length'] == null ? 0 : int.parse(json['length'].toString());
     total_rating = json['total_rating'] ?? 0;
     total_chapters = json['total_chapters'] ?? 0;
+    status = json['status'] ?? 0;
 
     title = json['title'] ?? "";
     writer = json['writer'] ?? json['contributor'] ?? "";
@@ -126,6 +128,7 @@ class Book {
       'no_of_articles': no_of_articles,
       'total_chapters': total_chapters,
       'magazine_id': magazine_id,
+      'status': status,
       'title': title,
       'writer': writer,
       'book_format': book_format,
