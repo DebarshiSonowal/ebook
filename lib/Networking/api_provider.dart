@@ -1605,7 +1605,8 @@ class ApiProvider {
   }
 
   Future<CategoryResponse> getEnoteCategory() async {
-    var url = "$baseUrl/enote/categories";
+    // Correct API path for E-Notes category as per API spec
+    var url = "${baseUrl}/books/categories/e-note";
     BaseOptions option = BaseOptions(
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
@@ -1618,13 +1619,9 @@ class ApiProvider {
     dio = Dio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
-    // debugPrint(data.toString());
     try {
-      Response? response;
-
-      response = await dio!.get(
+      Response? response = await dio!.get(
         url.toString(),
-        // queryParameters: data,
       );
 
       debugPrint("enote/categories response: ${response?.data}");

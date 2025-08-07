@@ -84,75 +84,104 @@ class _SplashScreenState extends State<SplashScreen> {
               Navigation.instance.navigatorKey.currentContext!,
               listen: false)
           .setFormats(response.bookFormats!);
-      fetchCategory();
-      fetchHomeBanner();
-      fetchHomeSection();
-      fetchBookmarks();
-      fetchCupons();
+
+      // Execute all data fetching operations in parallel for better performance
+      await Future.wait([
+        fetchCategory(),
+        fetchHomeBanner(),
+        fetchHomeSection(),
+        fetchBookmarks(),
+        fetchCupons(),
+      ]);
     }
   }
 
-  void fetchCategory() async {
-    for (var i in Provider.of<DataProvider>(
+  Future<void> fetchCategory() async {
+    final formats = Provider.of<DataProvider>(
             Navigation.instance.navigatorKey.currentContext!,
             listen: false)
-        .formats!) {
-      final response =
-          await ApiProvider.instance.fetchBookCategory(i.productFormat ?? '');
+        .formats!;
+
+    // Fetch all categories in parallel
+    final List<Future<void>> categoryFutures = formats.map((format) async {
+      final response = await ApiProvider.instance
+          .fetchBookCategory(format.productFormat ?? '');
       if (response.status ?? false) {
         Provider.of<DataProvider>(
                 Navigation.instance.navigatorKey.currentContext!,
                 listen: false)
             .addCategoryList(response.categories!);
       }
-    }
+    }).toList();
+
+    await Future.wait(categoryFutures);
   }
 
-  void fetchHomeBanner() async {
-    for (var i in Provider.of<DataProvider>(
+  Future<void> fetchHomeBanner() async {
+    final formats = Provider.of<DataProvider>(
             Navigation.instance.navigatorKey.currentContext!,
             listen: false)
-        .formats!) {
-      final response =
-          await ApiProvider.instance.fetchHomeBanner(i.productFormat ?? '');
+        .formats!;
+
+    // Fetch all banners in parallel
+    final List<Future<void>> bannerFutures = formats.map((format) async {
+      final response = await ApiProvider.instance
+          .fetchHomeBanner(format.productFormat ?? '');
       if (response.status ?? false) {
         Provider.of<DataProvider>(
                 Navigation.instance.navigatorKey.currentContext!,
                 listen: false)
             .addBannerList(response.banners!);
       }
-    }
+    }).toList();
+
+    await Future.wait(bannerFutures);
   }
 
-  void fetchHomeSection() async {
-    for (var i in Provider.of<DataProvider>(
+  Future<void> fetchHomeSection() async {
+    final formats = Provider.of<DataProvider>(
             Navigation.instance.navigatorKey.currentContext!,
             listen: false)
-        .formats!) {
-      final response =
-          await ApiProvider.instance.fetchHomeSections(i.productFormat ?? '');
+        .formats!;
+
+    // Fetch all sections in parallel
+    final List<Future<void>> sectionFutures = formats.map((format) async {
+      final response = await ApiProvider.instance
+          .fetchHomeSections(format.productFormat ?? '');
+
       if (response.status ?? false) {
-        if (i.productFormat == 'ebook') {
-          Provider.of<CommonProvider>(
-                  Navigation.instance.navigatorKey.currentContext!,
-                  listen: false)
-              .setEbookHomeSections(response.sections!);
-        } else if (i.productFormat == 'magazine') {
-          Provider.of<CommonProvider>(
-                  Navigation.instance.navigatorKey.currentContext!,
-                  listen: false)
-              .setMagazineHomeSections(response.sections!);
-        } else if (i.productFormat == 'enotes') {
-          Provider.of<CommonProvider>(
-                  Navigation.instance.navigatorKey.currentContext!,
-                  listen: false)
-              .setEnotesHomeSections(response.sections!);
+        switch (format.productFormat) {
+          case 'e-book':
+            Provider.of<CommonProvider>(
+                    Navigation.instance.navigatorKey.currentContext!,
+                    listen: false)
+                .setEbookHomeSections(response.sections!);
+            break;
+          case 'magazine':
+            Provider.of<CommonProvider>(
+                    Navigation.instance.navigatorKey.currentContext!,
+                    listen: false)
+                .setMagazineHomeSections(response.sections!);
+            break;
+          case 'enotes':
+          case 'e-notes':
+          case 'E-Notes':
+            Provider.of<CommonProvider>(
+                    Navigation.instance.navigatorKey.currentContext!,
+                    listen: false)
+                .setEnotesHomeSections(response.sections!);
+            break;
         }
+      } else {
+        debugPrint(
+            "Failed to load section for format: ${format.productFormat}");
       }
-    }
+    }).toList();
+
+    await Future.wait(sectionFutures);
   }
 
-  void fetchBookmarks() async {
+  Future<void> fetchBookmarks() async {
     final response = await ApiProvider.instance.fetchBookmark();
     if (response.status ?? false) {
       Provider.of<DataProvider>(
@@ -162,7 +191,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void fetchCupons() async {
+  Future<void> fetchCupons() async {
     final reponse = await ApiProvider.instance.fetchDiscount();
     if (reponse.status ?? false) {
       Provider.of<DataProvider>(

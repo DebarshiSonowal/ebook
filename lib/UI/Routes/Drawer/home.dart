@@ -239,10 +239,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Future.delayed(const Duration(seconds: 0), () {
-      initUniLinks();
-      fetchNotifications();
-      fetchAdvertisementBanners();
+
+    // Run initialization tasks in parallel for better performance
+    Future.wait([
+      initUniLinks(),
+      fetchNotifications(),
+      fetchAdvertisementBanners(),
+    ]).then((_) {
       _loadInitialData();
     });
   }
@@ -258,8 +261,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         listen: false);
     commonProvider.resetLoadingStates();
 
-    // Small delay to let the UI render
-    await Future.delayed(const Duration(milliseconds: 100));
+    // Reduce delay for faster UI response
+    await Future.delayed(const Duration(milliseconds: 50));
 
     setState(() {
       isLoading = false;
@@ -482,15 +485,20 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       return;
     }
 
-    for (var i in formats) {
-      final response =
-          await ApiProvider.instance.fetchHomeBanner(i.productFormat ?? '');
+    // Fetch all banners in parallel for better performance
+    final List<Future<void>> bannerFutures = formats.map((format) async {
+      final response = await ApiProvider.instance
+          .fetchHomeBanner(format.productFormat ?? '');
       if (response.status ?? false) {
         dataProvider.addBannerList(response.banners!);
       } else {
-        debugPrint("Failed to refresh banner for format: ${i.productFormat}");
+        debugPrint(
+            "Failed to refresh banner for format: ${format.productFormat}");
       }
-    }
+    }).toList();
+
+    await Future.wait(bannerFutures);
+
     debugPrint(
         "Banner refresh completed. Total banner groups: ${dataProvider.bannerList?.length ?? 0}");
   }
@@ -513,13 +521,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       return;
     }
 
-    final List<Future<void>> sectionFutures = [];
+    final List<Future<void>> sectionFutures =
+        formats.map((format) => _fetchSectionForFormat(format)).toList();
 
-    for (var i in formats) {
-      sectionFutures.add(_fetchSectionForFormat(i));
-    }
-
-    // Wait for all sections to complete
     await Future.wait(sectionFutures);
 
     setState(() {});

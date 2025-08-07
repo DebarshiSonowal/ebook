@@ -323,21 +323,25 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> _initializeData() async {
-    // Fetch initial data only once
-    await fetchData();
-    await fetchDetails();
-    await fetchPublicLibraries();
-    await fetchEnotes();
-    await fetchEnotesBanner();
-    await fetchEnotesList();
-    await getEnoteSection();
+    // Fetch initial data in parallel instead of sequentially for better performance
+    await Future.wait([
+      fetchData(),
+      fetchDetails(),
+      fetchPublicLibraries(),
+      fetchEnotes(),
+      fetchEnotesBanner(),
+      fetchEnotesList(),
+      getEnoteSection(),
+    ]);
 
     // Wait a bit for formats to be fully loaded from splash screen
     await Future.delayed(const Duration(milliseconds: 500));
 
-    // Now fetch banners and sections
-    await fetchHomeBanner();
-    await fetchHomeSection();
+    // Now fetch banners and sections in parallel
+    await Future.wait([
+      fetchHomeBanner(),
+      fetchHomeSection(),
+    ]);
   }
 
   Future<void> fetchHomeBanner() async {
@@ -351,15 +355,18 @@ class _HomePageState extends State<HomePage>
       return;
     }
 
-    for (var i in formats) {
-      final response =
-          await ApiProvider.instance.fetchHomeBanner(i.productFormat ?? '');
+    final List<Future<void>> bannerFutures = formats.map((format) async {
+      final response = await ApiProvider.instance
+          .fetchHomeBanner(format.productFormat ?? '');
       if (response.status ?? false) {
         dataProvider.addBannerList(response.banners!);
       } else {
-        debugPrint("Failed to load banner for format: ${i.productFormat}");
+        debugPrint("Failed to load banner for format: ${format.productFormat}");
       }
-    }
+    }).toList();
+
+    await Future.wait(bannerFutures);
+
     final bannerCount = dataProvider.bannerList?.length ?? 0;
     debugPrint("Banner loading completed. Total banner groups: $bannerCount");
   }
@@ -377,7 +384,7 @@ class _HomePageState extends State<HomePage>
         return;
       }
 
-      for (final format in formats) {
+      final List<Future<void>> sectionFutures = formats.map((format) async {
         final response = await ApiProvider.instance
             .fetchHomeSections(format.productFormat ?? '');
 
@@ -399,7 +406,9 @@ class _HomePageState extends State<HomePage>
           debugPrint(
               "Failed to load section for format: ${format.productFormat}");
         }
-      }
+      }).toList();
+
+      await Future.wait(sectionFutures);
       debugPrint("Home sections loading completed");
     } catch (e) {
       debugPrint('Error fetching home sections: $e');
