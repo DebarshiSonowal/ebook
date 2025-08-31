@@ -13,7 +13,9 @@
 		<!-- Associated domains for Universal Links. Make sure your apple-app-site-association file is correctly configured on these domains. -->
 		<string>applinks:tratri.in</string>
 		<string>applinks:www.tratri.in</string>
-		<!-- Add more applinks here as needed -->
+		<!-- Add webcredentials for better integration -->
+		<string>webcredentials:tratri.in</string>
+		<string>webcredentials:www.tratri.in</string>
 	</array>
 </dict>
 </plist>

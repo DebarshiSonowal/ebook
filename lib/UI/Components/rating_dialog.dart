@@ -125,11 +125,12 @@ class _RatingDialogState extends State<RatingDialog> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10),
                 widget.enableComment
                     ? TextField(
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 13.sp,
+                          fontSize: 14.sp,
                         ),
                         controller: _commentController,
                         textAlign: TextAlign.center,
@@ -138,6 +139,25 @@ class _RatingDialogState extends State<RatingDialog> {
                         maxLines: 5,
                         decoration: InputDecoration(
                           hintText: widget.commentHint,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide:
+                                BorderSide(color: Colors.blue, width: 2.0),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 12.0),
+                          filled: true,
+                          fillColor: Colors.grey[50],
                         ),
                       )
                     : const SizedBox(height: 15),

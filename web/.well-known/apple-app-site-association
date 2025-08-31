@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.com.tsinfosec.ebook.ebook",
+        "paths": [
+          "/link/*",
+          "/app/*",
+          "/bookDetails*",
+          "/magazineDetails*",
+          "/categories*",
+          "/bookInfo*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "TEAM_ID.com.tsinfosec.ebook.ebook"
+    ]
+  }
+}

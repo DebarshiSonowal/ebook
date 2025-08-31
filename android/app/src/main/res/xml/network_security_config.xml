@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">tratri.in</domain>
+        <domain includeSubdomains="true">www.tratri.in</domain>
+        <domain includeSubdomains="true">10.0.2.2</domain>
+        <domain includeSubdomains="true">localhost</domain>
+    </domain-config>
+
+    <!-- Allow cleartext for Facebook debugging -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">facebook.com</domain>
+        <domain includeSubdomains="true">fb.com</domain>
+    </domain-config>
+</network-security-config>

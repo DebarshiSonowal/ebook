@@ -14,14 +14,14 @@ import '../../Utility/share_helper.dart';
 
 class DownloadSection extends StatelessWidget {
   final int id;
-  final bool isBookmarked;
+  final bool isBookmarked,isSharable;
   final String format;
 
-  DownloadSection(this.id, this.isBookmarked, this.format);
+  DownloadSection(this.id, this.isBookmarked, this.format,this.isSharable);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return isSharable? Container():SizedBox(
       width: double.infinity,
       height: 10.h,
       child: Row(

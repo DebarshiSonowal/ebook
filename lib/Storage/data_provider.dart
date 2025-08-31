@@ -160,6 +160,15 @@ class DataProvider extends ChangeNotifier {
   void addBannerList(List<Book> list) =>
       _notifyChange(() => bannerList?.add(list));
 
+  void setBannerList(List<List<Book>> list) =>
+      _notifyChange(() => bannerList = list);
+
+  void setBannerListAt(int index, List<Book> list) => _notifyChange(() {
+        if (bannerList != null && index >= 0 && index < bannerList!.length) {
+          bannerList![index] = list;
+        }
+      });
+
   void setFormats(List<BookFormat> list) => _notifyChange(() {
         formats = list ?? [];
         formats?.add(BookFormat(3, "E-Notes", "E-Notes"));

@@ -24,28 +24,88 @@ class OrderHistoryPage extends StatefulWidget {
 class _OrderHistoryPageState extends State<OrderHistoryPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: ConstanceData.primaryColor,
-      height: double.infinity,
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.h),
-      child: Consumer<DataProvider>(builder: (context, data, _) {
-        return data.orders.isEmpty
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Lottie.asset(
-                    'assets/animation/coming.json',
-                    height: 22.h,
-                    width: 44.w,
-                    fit: BoxFit.fill,
+    return Scaffold(
+      backgroundColor: ConstanceData.primaryColor,
+      appBar: AppBar(
+        backgroundColor: ConstanceData.primaryColor,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigation.instance.goBack();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Colors.white,
+            size: 24,
+          ),
+        ),
+        title: Text(
+          'Order History',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.5,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              fetchOrderHistory();
+            },
+            icon: Icon(
+              Icons.refresh_rounded,
+              color: Colors.white,
+              size: 24,
+            ),
+            tooltip: 'Refresh',
+          ),
+        ],
+      ),
+      body: Container(
+        height: double.infinity,
+        width: double.infinity,
+        padding: EdgeInsets.only(top: 1.h),
+        child: Consumer<DataProvider>(builder: (context, data, _) {
+          return data.orders.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Lottie.asset(
+                        'assets/animation/coming.json',
+                        height: 28.h,
+                        width: 56.w,
+                        fit: BoxFit.contain,
+                      ),
+                      SizedBox(height: 3.h),
+                      Text(
+                        'No Orders Found',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 1.h),
+                      Text(
+                        'Your order history will appear here once you make a purchase',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              )
-            : HistoryPageInfo(
-                data: data,
-              );
-      }),
+                )
+              : HistoryPageInfo(
+                  data: data,
+                );
+        }),
+      ),
     );
   }
 

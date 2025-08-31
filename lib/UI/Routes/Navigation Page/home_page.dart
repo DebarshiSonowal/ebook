@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:ebook/Helper/navigator.dart';
 import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/Storage/app_storage.dart';
+import 'package:ebook/Model/home_banner.dart';
+import 'package:ebook/Model/home_section.dart';
 import 'package:ebook/UI/Routes/Drawer/library.dart';
 import 'package:ebook/UI/Routes/Drawer/more.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -36,6 +40,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   TabController? _controller;
+  bool _isManualRefresh = false;
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +97,15 @@ class _HomePageState extends State<HomePage>
                   children: [
                     NewTabBar(controller: _controller),
                     const NewSearchBar(),
-                    data.currentTab == 2
-                        // ? Container()
-                        ? EnotesCategoryBar()
-                        : const CategoryBar(),
+                    Builder(
+                      builder: (context) {
+                        debugPrint(
+                            "CategoryBar logic - currentTab: ${data.currentTab}");
+                        return data.currentTab == 2
+                            ? EnotesCategoryBar()
+                            : const CategoryBar();
+                      },
+                    ),
                     Expanded(
                       child: Consumer<DataProvider>(
                         builder: (context, current, _) {
@@ -104,7 +114,7 @@ class _HomePageState extends State<HomePage>
                             child: bodyWidget(
                                 current.currentIndex, current.currentTab),
                           );
-                        },
+                        }, 
                       ),
                     ),
                   ],
@@ -275,10 +285,8 @@ class _HomePageState extends State<HomePage>
           .setEnotesSection(response.result);
     } else {}
 
-    // Also update CommonProvider loading state for e-notes
-    final commonProvider = Provider.of<CommonProvider>(context, listen: false);
-    commonProvider
-        .setEnotesHomeSections([]); // This sets isEnotesSectionLoading = false
+    // Removed the problematic line that was interfering with loading states
+    // The proper loading state is now managed in home.dart fetchHomeSection method
   }
 
   Future<void> fetchEnotesChapterList(String id) async {
@@ -344,7 +352,25 @@ class _HomePageState extends State<HomePage>
     ]);
   }
 
-  Future<void> fetchHomeBanner() async {
+  // Method to handle manual refresh with cache clearing
+  Future<void> handleManualRefresh() async {
+    _isManualRefresh = true;
+
+    // Clear all cache when user manually refreshes
+    await Storage.instance.clearAllApiCache();
+    debugPrint("Manual refresh: Cleared all API cache");
+
+    // Fetch fresh data
+    await Future.wait([
+      fetchHomeBanner(forceRefresh: true),
+      fetchHomeSection(forceRefresh: true),
+    ]);
+
+    _isManualRefresh = false;
+    debugPrint("Manual refresh completed");
+  }
+
+  Future<void> fetchHomeBanner({bool forceRefresh = false}) async {
     final dataProvider = Provider.of<DataProvider>(
         Navigation.instance.navigatorKey.currentContext!,
         listen: false);
@@ -355,23 +381,72 @@ class _HomePageState extends State<HomePage>
       return;
     }
 
-    final List<Future<void>> bannerFutures = formats.map((format) async {
-      final response = await ApiProvider.instance
-          .fetchHomeBanner(format.productFormat ?? '');
-      if (response.status ?? false) {
-        dataProvider.addBannerList(response.banners!);
-      } else {
-        debugPrint("Failed to load banner for format: ${format.productFormat}");
-      }
-    }).toList();
+    // Initialize bannerList with empty lists for each format to maintain order 
+    dataProvider.setBannerList(List.generate(formats.length, (index) => []));
 
-    await Future.wait(bannerFutures);
+    // Fetch banners in order and place them in correct positions
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      final cacheKey = 'home_banner_${format.productFormat}';
+
+      try {
+        List<dynamic>? cachedBanners;
+
+        // Check cache first if not forcing refresh
+        if (!forceRefresh && !_isManualRefresh) {
+          final cachedData = Storage.instance.getApiCache(cacheKey);
+          if (cachedData != null) {
+            final cachedJson = jsonDecode(cachedData);
+            if (cachedJson['status'] == true && cachedJson['banners'] != null) {
+              cachedBanners = cachedJson['banners'];
+              debugPrint("Using cached banners for ${format.productFormat}");
+            }
+          }
+        }
+
+        if (cachedBanners != null) {
+          // Use cached data
+          final bannerList =
+              cachedBanners.map((json) => Book.fromJson(json)).toList();
+          dataProvider.setBannerListAt(i, bannerList);
+          debugPrint(
+              "Loaded ${bannerList.length} cached banners for ${format.productFormat} at index $i");
+        } else {
+          // Fetch from API
+          final response = await ApiProvider.instance
+              .fetchHomeBanner(format.productFormat ?? '');
+
+          if (response.status ?? false) {
+            // Cache the response
+            final cacheData = {
+              'status': true,
+              'banners':
+                  response.banners?.map((book) => book.toJson()).toList(),
+              'timestamp': DateTime.now().millisecondsSinceEpoch,
+            };
+            await Storage.instance.setApiCache(cacheKey, jsonEncode(cacheData));
+
+            // Set banners at specific index to maintain order
+            dataProvider.setBannerListAt(i, response.banners ?? []);
+            debugPrint(
+                "Fetched ${response.banners?.length ?? 0} banners for ${format.productFormat} at index $i");
+          } else {
+            debugPrint(
+                "Failed to load banner for format: ${format.productFormat}");
+            dataProvider.setBannerListAt(i, []);
+          }
+        }
+      } catch (e) {
+        debugPrint("Error fetching banner for ${format.productFormat}: $e");
+        dataProvider.setBannerListAt(i, []);
+      }
+    }
 
     final bannerCount = dataProvider.bannerList?.length ?? 0;
     debugPrint("Banner loading completed. Total banner groups: $bannerCount");
   }
 
-  Future<void> fetchHomeSection() async {
+  Future<void> fetchHomeSection({bool forceRefresh = false}) async {
     try {
       final dataProvider = Provider.of<CommonProvider>(
         context,
@@ -384,37 +459,108 @@ class _HomePageState extends State<HomePage>
         return;
       }
 
-      final List<Future<void>> sectionFutures = formats.map((format) async {
-        final response = await ApiProvider.instance
-            .fetchHomeSections(format.productFormat ?? '');
+      for (final format in formats) {
+        final cacheKey = 'home_section_${format.productFormat}';
 
-        if (response.status ?? false) {
-          switch (format.productFormat) {
-            case 'e-book':
-              dataProvider.setEbookHomeSections(response.sections!);
-              break;
-            case 'magazine':
-              dataProvider.setMagazineHomeSections(response.sections!);
-              break;
-            case 'enotes':
-            case 'e-notes':
-            case 'E-Notes':
-              dataProvider.setEnotesHomeSections(response.sections!);
-              break;
+        try {
+          List<dynamic>? cachedSections;
+
+          // Check cache first if not forcing refresh
+          if (!forceRefresh && !_isManualRefresh) {
+            final cachedData = Storage.instance.getApiCache(cacheKey);
+            if (cachedData != null) {
+              final cachedJson = jsonDecode(cachedData);
+              if (cachedJson['status'] == true &&
+                  cachedJson['sections'] != null) {
+                cachedSections = cachedJson['sections'];
+                debugPrint("Using cached sections for ${format.productFormat}");
+              }
+            }
           }
-        } else {
-          debugPrint(
-              "Failed to load section for format: ${format.productFormat}");
-        }
-      }).toList();
 
-      await Future.wait(sectionFutures);
+          if (cachedSections != null) {
+            // Use cached data
+            switch (format.productFormat) {
+              case 'e-book':
+                final sections = cachedSections
+                    .map((json) => HomeSection.fromJson(json))
+                    .toList();
+                dataProvider.setEbookHomeSections(sections);
+                debugPrint("Loaded ${sections.length} cached e-book sections");
+                break;
+              case 'magazine':
+                final sections = cachedSections
+                    .map((json) => HomeSection.fromJson(json))
+                    .toList();
+                dataProvider.setMagazineHomeSections(sections);
+                debugPrint(
+                    "Loaded ${sections.length} cached magazine sections");
+                break;
+              case 'enotes':
+              case 'e-notes':
+              case 'E-Notes':
+                final sections = cachedSections
+                    .map((json) => HomeSection.fromJson(json))
+                    .toList();
+                dataProvider.setEnotesHomeSections(sections);
+                debugPrint("Loaded ${sections.length} cached e-notes sections");
+                break;
+            }
+          } else {
+            // Fetch from API
+            final response = await ApiProvider.instance
+                .fetchHomeSections(format.productFormat ?? '');
+
+            if (response.status ?? false) {
+              // Cache the raw response data
+              final cacheData = {
+                'status': true,
+                'sections': response.sections
+                    ?.map((section) => {
+                          'title': section.title,
+                          'books': section.book
+                              ?.map((book) => book.toJson())
+                              .toList(),
+                        })
+                    .toList(),
+                'timestamp': DateTime.now().millisecondsSinceEpoch,
+              };
+              await Storage.instance
+                  .setApiCache(cacheKey, jsonEncode(cacheData));
+
+              switch (format.productFormat) {
+                case 'e-book':
+                  dataProvider.setEbookHomeSections(response.sections!);
+                  debugPrint(
+                      "Fetched ${response.sections?.length ?? 0} e-book sections");
+                  break;
+                case 'magazine':
+                  dataProvider.setMagazineHomeSections(response.sections!);
+                  debugPrint(
+                      "Fetched ${response.sections?.length ?? 0} magazine sections");
+                  break;
+                case 'enotes':
+                case 'e-notes':
+                case 'E-Notes':
+                  dataProvider.setEnotesHomeSections(response.sections!);
+                  debugPrint(
+                      "Fetched ${response.sections?.length ?? 0} e-notes sections");
+                  break;
+              }
+            } else {
+              debugPrint(
+                  "Failed to load section for format: ${format.productFormat}");
+            }
+          }
+        } catch (e) {
+          debugPrint("Error fetching section for ${format.productFormat}: $e");
+        }
+      }
+
       debugPrint("Home sections loading completed");
     } catch (e) {
       debugPrint('Error fetching home sections: $e');
     }
-
-    // _refreshController.refreshCompleted();
   }
 
   Future<void> fetchPublicLibraries() async {

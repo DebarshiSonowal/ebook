@@ -136,7 +136,7 @@ class AdvertisementBannerWidget extends StatelessWidget {
     if (banner.adType == "image" && banner.content != null) {
       return CachedNetworkImage(
         imageUrl: banner.content!,
-        fit: BoxFit.cover,
+        fit: BoxFit.fill,
         placeholder: (context, url) => Container(
           color: Colors.grey.shade200,
           child: Center(

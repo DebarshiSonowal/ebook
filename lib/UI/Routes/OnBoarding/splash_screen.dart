@@ -80,6 +80,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void fetchFormats() async {
     final response = await ApiProvider.instance.fetchBookFormat();
     if (response.status ?? false) {
+      final formats = response.bookFormats!;
+      debugPrint("Loaded ${formats.length} formats:");
+      for (int i = 0; i < formats.length; i++) {
+        debugPrint(
+            "Format $i: ${formats[i].productFormat} (ID: ${formats[i].id})");
+      }
+
       Provider.of<DataProvider>(
               Navigation.instance.navigatorKey.currentContext!,
               listen: false)
@@ -102,19 +109,35 @@ class _SplashScreenState extends State<SplashScreen> {
             listen: false)
         .formats!;
 
-    // Fetch all categories in parallel
-    final List<Future<void>> categoryFutures = formats.map((format) async {
+    debugPrint("Fetching categories for ${formats.length} formats in order");
+
+    // Fetch categories sequentially to maintain correct order
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint(
+          "Fetching categories for format ${i}: ${format.productFormat}");
+
       final response = await ApiProvider.instance
           .fetchBookCategory(format.productFormat ?? '');
+
       if (response.status ?? false) {
+        debugPrint(
+            "Loaded ${response.categories?.length ?? 0} categories for ${format.productFormat}");
         Provider.of<DataProvider>(
                 Navigation.instance.navigatorKey.currentContext!,
                 listen: false)
             .addCategoryList(response.categories!);
+      } else {
+        debugPrint("Failed to load categories for ${format.productFormat}");
+        // Add empty list to maintain index alignment
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext!,
+                listen: false)
+            .addCategoryList([]);
       }
-    }).toList();
+    }
 
-    await Future.wait(categoryFutures);
+    debugPrint("Category loading completed in order");
   }
 
   Future<void> fetchHomeBanner() async {
@@ -123,19 +146,34 @@ class _SplashScreenState extends State<SplashScreen> {
             listen: false)
         .formats!;
 
-    // Fetch all banners in parallel
-    final List<Future<void>> bannerFutures = formats.map((format) async {
+    debugPrint("Fetching banners for ${formats.length} formats in order");
+
+    // Fetch banners sequentially to maintain correct order
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint("Fetching banners for format ${i}: ${format.productFormat}");
+
       final response = await ApiProvider.instance
           .fetchHomeBanner(format.productFormat ?? '');
+
       if (response.status ?? false) {
+        debugPrint(
+            "Loaded ${response.banners?.length ?? 0} banners for ${format.productFormat}");
         Provider.of<DataProvider>(
                 Navigation.instance.navigatorKey.currentContext!,
                 listen: false)
             .addBannerList(response.banners!);
+      } else {
+        debugPrint("Failed to load banners for ${format.productFormat}");
+        // Add empty list to maintain index alignment
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext!,
+                listen: false)
+            .addBannerList([]);
       }
-    }).toList();
+    }
 
-    await Future.wait(bannerFutures);
+    debugPrint("Banner loading completed in order");
   }
 
   Future<void> fetchHomeSection() async {

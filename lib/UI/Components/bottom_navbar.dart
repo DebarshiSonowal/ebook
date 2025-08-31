@@ -167,8 +167,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                           )
                         : Image.asset(
                             ConstanceData.readingIcon,
-                            height: 3.5.h,
-                            width: 12.w,
+                            // height: 5.h,
+                            width: 11.w,
                             fit: BoxFit.fill,
                           );
                   }),
@@ -319,10 +319,13 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                                 color: Colors.white60,
                               ),
                               SizedBox(width: 2.w),
-                              Text(
-                                item.title,
-                                style: TextStyle(
-                                    fontSize: 15.sp, color: Colors.white),
+                              SizedBox(
+                                width: 80.w,
+                                child: Text(
+                                  item.title,
+                                  style: TextStyle(
+                                      fontSize: 15.sp, color: Colors.white),
+                                ),
                               ),
                             ],
                           ),

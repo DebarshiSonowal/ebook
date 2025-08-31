@@ -1,14 +1,13 @@
-import 'dart:async';
 import 'dart:core';
 import 'dart:io';
 
-import 'package:counter_button/counter_button.dart';
 import 'package:ebook/Model/book_chapter.dart';
 import 'package:ebook/Model/book_details.dart';
 import 'package:ebook/Model/reading_theme.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
+import 'package:ebook/Utility/ads_popup.dart';
 import 'package:ebook/Utility/blockquote_extention.dart';
 import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -28,7 +27,6 @@ import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
-import '../../../Utility/ads_popup.dart';
 import '../../../Utility/embeded_link_extenion.dart';
 import '../../../Utility/image_extension.dart';
 import '../../../Utility/spaceExtension.dart';
@@ -506,12 +504,14 @@ class _BookDetailsState extends State<BookDetails>
     try {
       final bookId = widget.input.toString().split(',')[0];
 
-      // Fetch book details and chapters
+      // First, fetch only book details to check permissions
       final bookResponse = await ApiProvider.instance.fetchBookDetails(bookId);
+
       if (!mounted) return;
 
-      // Handle flip book URL if present
+      // Handle book details response
       if (bookResponse.status ?? false) {
+        // Handle flip book URL if present
         final flipBookUrl = bookResponse.details?.flip_book_url;
         if (flipBookUrl?.isNotEmpty ?? false) {
           if ((bookResponse.details?.is_bought ?? false)) {
@@ -526,62 +526,97 @@ class _BookDetailsState extends State<BookDetails>
           return;
         }
 
+        // Check if user has permission to read the book
+        debugPrint("User has permission to read the book ${bookResponse.details?.is_bought}");
+        if (!(bookResponse.details?.is_bought ?? false)) {
+          Navigation.instance.goBack(); // Close loading dialog first
+          _showPermissionDeniedDialog();
+          return; // Don't proceed with chapters API
+        }
+
         setState(() {
           bookDetails = bookResponse.details;
           title = bookDetails?.title ?? "";
           canShare = bookDetails?.status == 2; // Check book details status
         });
-      }
 
-      // Fetch and process chapters
-      final chaptersResponse =
-          await ApiProvider.instance.fetchBookChaptersWithAds(bookId);
-      if (!mounted) return;
+        // Only fetch chapters if user has permission
+        final chaptersResponse =
+            await ApiProvider.instance.fetchBookChaptersWithAds(bookId);
 
-      if (chaptersResponse.status ?? false) {
-        // Store the chapters response for ad checking
-        this.chaptersResponse = chaptersResponse;
-        chapters = chaptersResponse.chapters ?? [];
+        if (!mounted) return;
 
-        // Debug: Print ad pages
-        final adPages = chaptersResponse.getAdPageNumbers();
-        debugPrint("Ad Pages configured: $adPages");
+        if (chaptersResponse.status ?? false) {
+          // Store the chapters response for ad checking
+          this.chaptersResponse = chaptersResponse;
+          chapters = chaptersResponse.chapters ?? [];
 
-        reading.clear();
-        read = "";
+          // Debug: Print ad pages
+          final adPages = chaptersResponse.getAdPageNumbers();
+          debugPrint("Ad Pages configured: $adPages");
 
-        // Process each chapter and page
-        for (final chapter in chapters) {
-          if (chapter.pages == null) continue;
+          reading.clear();
+          read = "";
 
-          for (final page in chapter.pages!) {
-            final content = page.content;
-            if (content != null) {
-              final currentPageNo = page.current_page_no ?? 0;
-              final shouldShowAd = chaptersResponse.isAdPage(currentPageNo);
-              debugPrint("Page: $currentPageNo, Should Show Ad: $shouldShowAd");
-              reading.add(ReadingChapter('', content, chapter.review_url,
-                  shouldShowAd, currentPageNo));
-              read += content;
+          // Process each chapter and page
+          for (final chapter in chapters) {
+            if (chapter.pages == null) continue;
+
+            for (final page in chapter.pages!) {
+              final content = page.content;
+              if (content != null) {
+                final currentPageNo = page.current_page_no ?? 0;
+                final shouldShowAd = chaptersResponse.isAdPage(currentPageNo);
+                debugPrint(
+                    "Page: $currentPageNo, Should Show Ad: $shouldShowAd");
+                reading.add(ReadingChapter('', content, chapter.review_url,
+                    shouldShowAd, currentPageNo));
+                read += content;
+              }
             }
           }
+
+          setState(() {
+            reviewUrl = chapters.isNotEmpty ? chapters[0].review_url ?? "" : "";
+            getSplitedText(
+                TextStyle(
+                    color: getBackGroundColor(),
+                    fontSize: FontSize(_counterValue).value),
+                read);
+          });
         }
 
-        setState(() {
-          reviewUrl = chapters.isNotEmpty ? chapters[0].review_url ?? "" : "";
-          getSplitedText(
-              TextStyle(
-                  color: getBackGroundColor(),
-                  fontSize: FontSize(_counterValue).value),
-              read);
-        });
+        Navigation.instance.goBack();
       }
-
-      Navigation.instance.goBack();
     } catch (e) {
       debugPrint('Error fetching book details: $e');
       Navigation.instance.goBack();
     }
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false, // Prevent back button dismissal
+          child: AlertDialog(
+            title: Text('Permission Denied'),
+            content: Text('You do not have permission to read this book.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  Navigation.instance.goBack(); // Go back to previous screen
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   getSizeFromBloc(GlobalKey pagekey) {
@@ -695,39 +730,60 @@ class _BookDetailsState extends State<BookDetails>
     try {
       String url = _url.toString();
       // Handle URLs that don't have a protocol
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      if (!url.startsWith('http://') &&
+          !url.startsWith('https://') &&
+          !url.startsWith('file://')) {
         url = 'https://$url';
       }
 
-      // First try with in-app web view
-      if (!await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView)) {
-        throw 'Could not launch $_url';
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 20),
+                Text("Loading..."),
+              ],
+            ),
+          );
+        },
+      );
+
+      // Launch with in-app web view with loading indicator
+      await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.inAppWebView,
+        webViewConfiguration: WebViewConfiguration(
+          enableJavaScript: true,
+          enableDomStorage: true,
+          headers: {
+            'User-Agent':
+                'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+          },
+        ),
+      );
+
+      // Close loading dialog
+      if (mounted) {
+        Navigator.of(context).pop();
       }
     } catch (e) {
-      debugPrint('Error launching URL with in-app browser: $e');
-      // Try fallback with external browser for SSL or other issues
-      try {
-        String url = _url.toString();
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-          url = 'https://$url';
-        }
-        await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView);
-      } catch (fallbackError) {
-        debugPrint('External browser launch also failed: $fallbackError');
-        // Final fallback - try with HTTP instead of HTTPS for SSL issues
-        try {
-          String url = _url.toString();
-          if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'http://$url'; // Use HTTP as final fallback
-          } else if (url.startsWith('https://')) {
-            url = url.replaceFirst(
-                'https://', 'http://'); // Convert HTTPS to HTTP
-          }
-          await launchUrl(Uri.parse(url), mode: LaunchMode.inAppBrowserView);
-          debugPrint('Successfully launched with HTTP fallback');
-        } catch (httpFallbackError) {
-          debugPrint('All launch attempts failed: $httpFallbackError');
-        }
+      debugPrint('Error launching URL: $e');
+      // Close loading dialog on error
+      if (mounted) {
+        Navigator.of(context).pop();
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to load content'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -756,7 +812,7 @@ class _BookDetailsState extends State<BookDetails>
       final storedBookId = Storage.instance.readingBook.toString();
       if (storedBookId == bookId) {
         final storedPage = Storage.instance.readingBookPage;
-        pageController.jumpToPage(storedPage);
+        pageController.jumpToPage(storedPage); 
 
         // Add listener for stored book
         pageController.addListener(_storedBookListener);

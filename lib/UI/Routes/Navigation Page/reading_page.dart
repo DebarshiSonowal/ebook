@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:counter_button/counter_button.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -61,7 +59,7 @@ class _ReadingPageState extends State<ReadingPage> {
   int selectedTheme = 0;
   double brightness_lvl = 1, page_no = 1;
   bool toggle = false;
-  double sliderVal = 0;
+  double sliderVal = 0; 
   String title = '';
   List<BookWithAdsChapter> chapters = [];
   PageController pageController = PageController(
@@ -329,10 +327,16 @@ class _ReadingPageState extends State<ReadingPage> {
   }
 
   void fetchBookDetails() async {
-    final response =
-        await ApiProvider.instance.fetchBookDetails(widget.id.toString());
-    if (response != null && response.status == true) {
-      bookDetails = response.details;
+    // Make parallel API calls
+    final futures = await Future.wait([
+      ApiProvider.instance.fetchBookDetails(widget.id.toString()),
+      ApiProvider.instance.fetchBookChaptersWithAds(widget.id.toString()),
+    ]);
+
+    // Handle book details response
+    final bookResponse = futures[0] as BookDetailsResponse;
+    if (bookResponse.status == true) {
+      bookDetails = bookResponse.details;
       canShare = bookDetails?.status == 2; // Check book details status
       if (mounted) {
         setState(() {
@@ -340,14 +344,16 @@ class _ReadingPageState extends State<ReadingPage> {
         });
       }
     }
-    final response1 = await ApiProvider.instance
-        .fetchBookChaptersWithAds(widget.id.toString() ?? '3');
-    if (response1 != null && response1.status == true) {
-      chapters = response1.chapters ?? [];
+
+    // Handle chapters response
+    final chaptersResponse = futures[1] as BookChapterWithAdsResponse;
+    if (chaptersResponse.status == true) {
+      chapters = chaptersResponse.chapters ?? [];
       if (mounted) {
         setState(() {});
       }
     }
+
     if (Navigation.instance != null) {
       Navigation.instance.goBack();
     }

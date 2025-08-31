@@ -43,88 +43,120 @@ class LibraryList {
 
 class Library {
   final int id;
-  // final String code;
+  final String code;
   final String title;
-  // final String contactName;
-  // final String mobile;
-  // final String altMobile;
-  // final String whatsappNo;
-  // final String email;
-  // final String password;
-  // final String? rememberToken;
-  // final String address;
-  // final int cityId;
-  // final int districtId;
-  // final int stateId;
-  // final String pinCode;
-  // final int status;
-  // final DateTime createdAt;
-  // final DateTime updatedAt;
+  final String ownerName;
+  final int libraryTypeId;
+  final String contactName;
+  final String mobile;
+  final String? altMobile;
+  final String? whatsappNo;
+  final String email;
+  final String? address;
+  final int cityId;
+  final int districtId;
+  final int stateId;
+  final String? pinCode;
+  final String? profilePicFile;
+  final String profilePic;
+  final int noOfBooks;
+  final int isFree;
+  final String membershipAmount;
+  final String? about;
+  final int status;
+  final String memberRequestUrl;
+  final String bookPublishRequestUrl;
+  final int isMember;
+  final String libraryType;
 
   Library({
     required this.id,
-    // required this.code,
+    required this.code,
     required this.title,
-    // required this.contactName,
-    // required this.mobile,
-    // required this.altMobile,
-    // required this.whatsappNo,
-    // required this.email,
-    // required this.password,
-    // this.rememberToken,
-    // required this.address,
-    // required this.cityId,
-    // required this.districtId,
-    // required this.stateId,
-    // required this.pinCode,
-    // required this.status,
-    // required this.createdAt,
-    // required this.updatedAt,
+    required this.ownerName,
+    required this.libraryTypeId,
+    required this.contactName,
+    required this.mobile,
+    this.altMobile,
+    this.whatsappNo,
+    required this.email,
+    this.address,
+    required this.cityId,
+    required this.districtId,
+    required this.stateId,
+    this.pinCode,
+    this.profilePicFile,
+    required this.profilePic,
+    required this.noOfBooks,
+    required this.isFree,
+    required this.membershipAmount,
+    this.about,
+    required this.status,
+    required this.memberRequestUrl,
+    required this.bookPublishRequestUrl,
+    required this.isMember,
+    required this.libraryType,
   });
 
   factory Library.fromJson(Map<String, dynamic> json) {
     return Library(
       id: json['id'],
-      // code: json['code'],
+      code: json['code'],
       title: json['title'],
-      // contactName: json['contact_name'],
-      // mobile: json['mobile'],
-      // altMobile: json['alt_mobile'],
-      // whatsappNo: json['whatsapp_no'],
-      // email: json['email'],
-      // password: json['password'],
-      // rememberToken: json['remember_token'],
-      // address: json['address'],
-      // cityId: json['city_id'],
-      // districtId: json['district_id'],
-      // stateId: json['state_id'],
-      // pinCode: json['pin_code'],
-      // status: json['status'],
-      // createdAt: DateTime.parse(json['created_at']),
-      // updatedAt: DateTime.parse(json['updated_at']),
+      ownerName: json['owner_name'],
+      libraryTypeId: json['library_type_id'],
+      contactName: json['contact_name'],
+      mobile: json['mobile'],
+      altMobile: json['alt_mobile'],
+      whatsappNo: json['whatsapp_no'],
+      email: json['email'],
+      address: json['address'],
+      cityId: json['city_id'],
+      districtId: json['district_id'],
+      stateId: json['state_id'],
+      pinCode: json['pin_code'],
+      profilePicFile: json['profile_pic_file'],
+      profilePic: json['profile_pic'],
+      noOfBooks: json['no_of_books'],
+      isFree: json['is_free'],
+      membershipAmount: json['membership_amount'],
+      about: json['about'],
+      status: json['status'],
+      memberRequestUrl: json['member_request_url'],
+      bookPublishRequestUrl: json['book_publish_request_url'],
+      isMember: json['is_member'],
+      libraryType: json['library_type'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      // 'code': code,
+      'code': code,
       'title': title,
-      // 'contact_name': contactName,
-      // 'mobile': mobile,
-      // 'alt_mobile': altMobile,
-      // 'whatsapp_no': whatsappNo,
-      // 'email': email,
-      // 'password': password,
-      // 'remember_token': rememberToken,
-      // 'address': address,
-      // 'city_id': cityId,
-      // 'district_id': districtId,
-      // 'state_id': stateId,
-      // 'pin_code': pinCode,
-      // 'status': status,
-      // 'created_at': createdAt.toIso8601String(),
-      // 'updated_at': updatedAt.toIso8601String(),
+      'owner_name': ownerName,
+      'library_type_id': libraryTypeId,
+      'contact_name': contactName,
+      'mobile': mobile,
+      'alt_mobile': altMobile,
+      'whatsapp_no': whatsappNo,
+      'email': email,
+      'address': address,
+      'city_id': cityId,
+      'district_id': districtId,
+      'state_id': stateId,
+      'pin_code': pinCode,
+      'profile_pic_file': profilePicFile,
+      'profile_pic': profilePic,
+      'no_of_books': noOfBooks,
+      'is_free': isFree,
+      'membership_amount': membershipAmount,
+      'about': about,
+      'status': status,
+      'member_request_url': memberRequestUrl,
+      'book_publish_request_url': bookPublishRequestUrl,
+      'is_member': isMember,
+      'library_type': libraryType,
     };
   }
 }

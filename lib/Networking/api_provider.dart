@@ -643,7 +643,7 @@ class ApiProvider {
     try {
       Response? response = await dio?.get(url.toString());
       debugPrint("BookDetails response: "
-          // "${response?.data}"
+          "${response?.data}"
           );
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return BookDetailsResponse.fromJson(response?.data);
@@ -2316,6 +2316,42 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("track ad click response: ${e.response}");
       return GenericResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<GenericResponse> addLibraryReview(
+      String content, double rating, int libraryId) async {
+    var url = "${baseUrl}/libraries/reviews/${libraryId}";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+    var data = {
+      'content': content,
+      'rating': rating,
+    };
+    debugPrint(url.toString());
+    debugPrint(jsonEncode(data));
+    try {
+      Response? response =
+          await dio?.post(url.toString(), data: jsonEncode(data));
+      debugPrint("Library review response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Library review error: ${response?.data}");
+        return GenericResponse.withError(
+            response?.data['message'] ?? "Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Library review response: ${e.response}");
+      return GenericResponse.withError(
+          e.response?.data['message'] ?? e.message ?? "Network error");
     }
   }
 

@@ -33,6 +33,7 @@ class BuildBookBarSection extends StatelessWidget {
         height: 19.h,
         child: Center(
           child: ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
             scrollDirection: Axis.horizontal,
             itemCount: currentData.bannerList![currentData.currentTab].length,
             itemBuilder: (cont, count) {
@@ -107,6 +108,7 @@ class BuildEnoteBarSection extends StatelessWidget {
         height: 19.h,
         child: Center(
           child: ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
             scrollDirection: Axis.horizontal,
             itemCount: currentData.enotesBanner.length,
             itemBuilder: (cont, count) {

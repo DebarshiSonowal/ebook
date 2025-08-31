@@ -11,6 +11,17 @@ class CategoryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataProvider>(builder: (context, current, _) {
+      debugPrint("CategoryBar logic - currentTab: ${current.currentTab}");
+      debugPrint("Total categoryList length: ${current.categoryList.length}");
+      if (current.categoryList.isNotEmpty &&
+          current.currentTab < current.categoryList.length) {
+        debugPrint(
+            "Categories for tab ${current.currentTab}: ${current.categoryList[current.currentTab].length} items");
+        debugPrint(
+            "Category Items ${current.categoryList[current.currentTab].toList().map((e) => e.title)}");
+      } else {
+        debugPrint("No categories available for tab ${current.currentTab}");
+      }
       return current.currentIndex == 0
           ? Container(
               padding: EdgeInsets.only(top: .5.h, left: 2.w, right: 2.w),

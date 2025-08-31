@@ -1,9 +1,9 @@
-import 'package:awesome_icons/awesome_icons.dart';
 import 'package:ebook/Model/library_model.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +25,10 @@ class LibraryDetailsScreen extends StatefulWidget {
 class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   LibraryResult? data;
   bool _isLoading = true;
+  bool _showReviewForm = false;
+  final _reviewController = TextEditingController();
+  double _rating = 5.0;
+  bool _isSubmittingReview = false;
 
   @override
   void initState() {
@@ -64,12 +68,13 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     }
   }
 
-  void _showSnackBar(String message) {
+  void _showSnackBar(String message, {bool isSuccess = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.red.shade800,
+        backgroundColor:
+            isSuccess ? Colors.green.shade700 : Colors.red.shade800,
       ),
     );
   }
@@ -87,7 +92,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   image: NetworkImage(data!.profilePic),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.5),
+                    Colors.black.withOpacity(0.2),
                     BlendMode.darken,
                   ),
                 ),
@@ -105,7 +110,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
                 colors: [
-                  Colors.black.withOpacity(0.9),
+                  Colors.black.withOpacity(0.3),
                   Colors.transparent,
                 ],
               ),
@@ -133,13 +138,51 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   color: Colors.white,
                 ),
           ),
-          SizedBox(height: 2.h),
-          _buildInfoCard(
-            icon: Icons.library_books,
-            title: 'Library Type',
-            content: data?.libraryType ?? '',
+          SizedBox(height: 1.h),
+          Row(
+            children: [
+              Icon(
+                Icons.star,
+                color: Colors.amber,
+                size: 20.sp,
+              ),
+              SizedBox(width: 2.w),
+              Text(
+                data?.averageRating ?? '0.0',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ), 
+              Text(
+                ' / 5.0',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade400,
+                ),
+              ),
+              SizedBox(width: 4.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade700,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  data?.libraryType ?? '',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 1.h),
+          _buildStatsRow(),
+          SizedBox(height: 2.h),
           _buildInfoCard(
             icon: Icons.person,
             title: 'Owner',
@@ -149,6 +192,61 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
           if (data?.about != null) _buildAboutSection(),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatsRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatItem(
+            icon: Icons.menu_book,
+            count: '${data?.noOfBooks ?? 0}',
+            label: 'Books',
+          ),
+        ),
+        Expanded(
+          child: _buildStatItem(
+            icon: Icons.group,
+            count: '${data?.totalMembers ?? 0}',
+            label: 'Members',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatItem({
+    required IconData icon,
+    required String count,
+    required String label,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon,
+          color: Colors.blue.shade300,
+          size: 20.sp,
+        ),
+        SizedBox(width: 3.w),
+        Text(
+          count,
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        SizedBox(width: 1.w),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.grey.shade400,
+          ),
+        ),
+      ],
     );
   }
 
@@ -311,6 +409,12 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   }
 
   @override
+  void dispose() {
+    _reviewController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
@@ -345,19 +449,8 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   SizedBox(height: 1.h),
                   Consumer<DataProvider>(
                     builder: (context, listData, _) {
-                      if (listData.publicLibraries.isEmpty) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              'No books available',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                          ),
-                        );
+                      if (data == null || listData.library.isEmpty) {
+                        return const SizedBox.shrink();
                       }
 
                       return Column(
@@ -407,7 +500,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                           SizedBox(height: 1.h),
                           _buildBookSection(
                             context,
-                            "E-Books",
+                            "E-Books", 
                             listData.library
                                 .where((e) =>
                                     e.book_format?.toLowerCase() == "e-book")
@@ -429,11 +522,243 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     e.book_format?.toLowerCase() == "e-note")
                                 .toList(),
                           ),
-                          const SizedBox(height: 30),
                         ],
                       );
                     },
                   ),
+                  // Reviews Section
+                  Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.reviews,
+                                  color: Colors.blue.shade300,
+                                  size: 20.sp,
+                                ),
+                                SizedBox(width: 2.w),
+                                Text(
+                                  'Reviews (${data?.totalReview ?? 0})',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (data?.showReviewForm == true &&
+                                Storage.instance.isLoggedIn)
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    _showReviewForm = !_showReviewForm;
+                                  });
+                                },
+                                icon: Icon(
+                                  _showReviewForm
+                                      ? Icons.close
+                                      : Icons.rate_review,
+                                  size: 16.sp,
+                                ),
+                                label: Text(
+                                  _showReviewForm ? 'Cancel' : 'Write Review',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _showReviewForm
+                                      ? Colors.red.shade600
+                                      : Colors.amber.shade700,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 3.w, vertical: 1.h),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (_showReviewForm && data?.showReviewForm == true)
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                      padding: EdgeInsets.all(4.w),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade800,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade700),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Leave a Review',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            'Rating',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          Row(
+                            children: [
+                              RatingBar.builder(
+                                initialRating: _rating,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: false,
+                                itemCount: 5,
+                                itemSize: 7.w,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 1.w),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (rating) {
+                                  setState(() {
+                                    _rating = rating;
+                                  });
+                                },
+                              ),
+                              SizedBox(width: 3.w),
+                              Text(
+                                '${_rating.toStringAsFixed(1)} / 5.0',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.white70,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 2.h),
+                          Text(
+                            'Your Review',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          TextField(
+                            controller: _reviewController,
+                            maxLines: 4,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                            ),
+                            decoration: InputDecoration(
+                              hintText:
+                                  'Share your thoughts about this library...',
+                              hintStyle: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 13.sp,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade700,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 3.w, vertical: 2.h),
+                            ),
+                          ),
+                          SizedBox(height: 2.h),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: _isSubmittingReview
+                                      ? null
+                                      : () async {
+                                          if (_reviewController.text
+                                              .trim()
+                                              .isEmpty) {
+                                            _showSnackBar(
+                                                'Please write a review');
+                                            return;
+                                          }
+
+                                          setState(() {
+                                            _isSubmittingReview = true;
+                                          });
+                                          final response = await ApiProvider
+                                              .instance
+                                              .addLibraryReview(
+                                                  _reviewController.text.trim(),
+                                                  _rating,
+                                                  widget.id);
+                                          if (response.status ?? false) {
+                                            _showSnackBar(
+                                                'Review submitted successfully!',
+                                                isSuccess: true);
+                                            setState(() {
+                                              _showReviewForm = false;
+                                              _reviewController.clear();
+                                              _rating = 5.0;
+                                              _isSubmittingReview = false;
+                                            });
+                                            await _loadLibraryDetails();
+                                          } else {
+                                            _showSnackBar(response.message ??
+                                                'Failed to submit review');
+                                            setState(() {
+                                              _isSubmittingReview = false;
+                                            });
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue.shade600,
+                                    foregroundColor: Colors.white,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 1.5.h),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: _isSubmittingReview
+                                      ? CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : Text(
+                                          'Submit Review',
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 2.h),
                 ],
               ),
             ),
@@ -537,7 +862,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                     ],
                   ),
                 ),
-              );
+              ); 
             },
           ),
         ),
@@ -582,7 +907,12 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                       ),
                     )
                   : Container(),
-              const SizedBox(width: 12),
+              if ((data?.memberRequestUrl != null &&
+                      data?.memberRequestUrl.isNotEmpty == true &&
+                      (data?.is_member ?? 0) == 0) &&
+                  (data?.bookPublishRequestUrl != null &&
+                      data!.bookPublishRequestUrl.isNotEmpty))
+                const SizedBox(width: 8),
               data?.bookPublishRequestUrl != null &&
                       data!.bookPublishRequestUrl.isNotEmpty
                   ? Expanded(
@@ -647,14 +977,50 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   }
 
   Future<void> launch(Uri url) async {
-    if (!await canLaunchUrl(url)) {
-      _showSnackBar('Could not open the link');
-      return;
-    }
     try {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(width: 20),
+                Text("Loading..."),
+              ],
+            ),
+          );
+        },
+      );
+
+      // Launch with in-app web view (no URL bar)
+      await launchUrl(
+        url,
+        mode: LaunchMode.inAppWebView,
+        webViewConfiguration: WebViewConfiguration(
+          enableJavaScript: true,
+          enableDomStorage: true,
+          headers: {
+            'User-Agent':
+                'Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36',
+          },
+        ),
+      );
+
+      // Close loading dialog
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } catch (e) {
-      _showSnackBar('Failed to open link: ${e.toString()}');
+      debugPrint('Error launching URL: $e');
+      // Close loading dialog on error
+      if (mounted) {
+        Navigator.of(context).pop();
+        _showSnackBar('Failed to load content');
+      }
     }
   }
 
@@ -662,8 +1028,8 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     if (data == null) return;
 
     try {
-      final shareUrl =
-          'https://tratri.in/link?format=library&id=${data!.id}&details=library&title=${Uri.encodeComponent(data!.title ?? "")}';
+      final shareUrl = 'https://tratri.in/link?format=library&id=${data!.id}';
+
       await ShareHelper.shareText(shareUrl, context: context);
     } catch (e) {
       debugPrint('Error sharing library: $e');
@@ -675,20 +1041,25 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     if (data == null) return;
 
     try {
+      // Enhanced fallback with better formatting for social media
       final shareText = '''
-Check out "${data!.title}" library in our eBook app!
+📚 ${data!.title ?? "Amazing Library"}
 
-📚 Thousands of books, magazines, and e-notes available
-📱 Download the app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook  
+Discover thousands of books, magazines, and e-notes in our digital library!
 
-Library ID: ${data!.id}
+🔗 Open Library: https://tratri.in/link?format=library&id=${data!.id}
+
+📱 Get the App: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook
+
+#DigitalLibrary #eBooks #Learning
 ''';
 
       await ShareHelper.shareText(shareText, context: context);
     } catch (e) {
       debugPrint('Error in fallback sharing: $e');
+      // Ultimate fallback
       await ShareHelper.shareText(
-        'Check out our eBook app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook',
+        '📚 Check out our digital library! https://tratri.in/link?format=library&id=${data!.id} \n\nDownload the app: https://play.google.com/store/apps/details?id=com.tsinfosec.ebook.ebook',
         context: context,
       );
     }

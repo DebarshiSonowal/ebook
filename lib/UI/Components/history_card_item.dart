@@ -145,6 +145,7 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                       .displayMedium
                                       ?.copyWith(
                                         color: Colors.white,
+                                        fontSize: 16.sp,
                                         fontWeight: FontWeight.w600,
                                         letterSpacing: 0.3,
                                       ),
@@ -157,6 +158,7 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                       .headlineSmall
                                       ?.copyWith(
                                         color: Colors.grey.shade400,
+                                        fontSize: 13.sp,
                                         fontWeight: FontWeight.w400,
                                       ),
                                 ),
@@ -195,6 +197,7 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                       .textTheme
                                       .displaySmall
                                       ?.copyWith(
+                                        fontSize: 15.sp,
                                         fontWeight: FontWeight.w700,
                                         color: isFree
                                             ? const Color(0xff4CAF50)
@@ -247,6 +250,7 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                   .textTheme
                                   .headlineSmall
                                   ?.copyWith(
+                                    fontSize: 13.sp,
                                     fontWeight: FontWeight.w600,
                                     color: statusColor,
                                   ),
@@ -290,6 +294,7 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                       .textTheme
                                       .headlineSmall
                                       ?.copyWith(
+                                        fontSize: 13.sp,
                                         fontWeight: FontWeight.w600,
                                         color: widget.current.isPaid == 1
                                             ? const Color(0xff4CAF50)
@@ -341,12 +346,13 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                     ),
                                     SizedBox(width: 2.w),
                                     Text(
-                                'Order Details',
+                                      'Order Details',
                                       style: Theme.of(context)
                                           .textTheme
                                           .displayMedium
                                           ?.copyWith(
                                             color: Colors.white,
+                                            fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
                                     ),
                                     ),
@@ -407,6 +413,7 @@ class _HistoryCardItemState extends State<HistoryCardItem>
                                           .textTheme
                                           .displaySmall
                                           ?.copyWith(
+                                            fontSize: 15.sp,
                                             fontWeight: FontWeight.w600,
                                             color: Colors.white,
                                             letterSpacing: 0.3,

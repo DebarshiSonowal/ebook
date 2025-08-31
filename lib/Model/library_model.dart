@@ -48,11 +48,19 @@ class LibraryResult {
   final String? pinCode;
   final String? profilePicFile;
   final String profilePic;
+  final int noOfBooks;
+  final int totalMembers;
+  final int isFree;
+  final String? membershipAmount;
   final String? about;
   final int status;
   final String libraryType;
   final String memberRequestUrl;
   final String bookPublishRequestUrl;
+  final int totalReview;
+  final int totalRating;
+  final String? averageRating;
+  final bool showReviewForm;
 
   LibraryResult({
     required this.id,
@@ -73,11 +81,19 @@ class LibraryResult {
     this.pinCode,
     this.profilePicFile,
     required this.profilePic,
+    required this.noOfBooks,
+    required this.totalMembers,
+    required this.isFree,
+    this.membershipAmount,
     this.about,
     required this.status,
     required this.libraryType,
     required this.memberRequestUrl,
     required this.bookPublishRequestUrl,
+    required this.totalReview,
+    required this.totalRating,
+    this.averageRating,
+    required this.showReviewForm,
   });
 
   factory LibraryResult.fromJson(Map<String, dynamic> json) {
@@ -100,12 +116,20 @@ class LibraryResult {
       pinCode: json['pin_code'],
       profilePicFile: json['profile_pic_file'],
       profilePic: json['profile_pic'] ?? '',
+      noOfBooks: json['no_of_books'] ?? 0,
+      totalMembers: json['total_members'] ?? 0,
+      isFree: json['is_free'] ?? 0,
+      membershipAmount: json['membership_amount'],
       about: json['about'],
       status: json['status'] ?? 0,
       libraryType: json['library_type'] ?? '',
       memberRequestUrl: json['member_request_url'] ?? 'https://tratri.in/',
       bookPublishRequestUrl:
           json['book_publish_request_url'] ?? 'https://tratri.in/',
+      totalReview: json['total_review'] ?? 0,
+      totalRating: json['total_rating'] ?? 0,
+      averageRating: json['average_rating'],
+      showReviewForm: json['show_review_form'] ?? false,
     );
   }
 }

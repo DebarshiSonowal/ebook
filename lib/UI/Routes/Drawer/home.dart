@@ -1,9 +1,14 @@
 // import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
+
+// import 'package:http/http.dart' as http;
+// import 'package:http_cache_manager/http_cache_manager.dart';
 
 import 'package:ebook/Model/home_banner.dart';
 import 'package:ebook/Model/advertisement.dart';
+import 'package:ebook/Model/home_section.dart';
 import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/Networking/api_provider.dart';
@@ -26,6 +31,19 @@ import 'package:app_links/app_links.dart';
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
+  // Static reference to the current home state instance
+  static _HomeState? _currentInstance;
+
+  // Static method to safely trigger refresh
+  static void triggerRefresh() {
+    if (_currentInstance != null && _currentInstance!.mounted) {
+      _currentInstance!.refreshHomeData();
+      debugPrint("Home screen refresh triggered via static method");
+    } else {
+      debugPrint("No active Home instance available for refresh");
+    }
+  }
+
   @override
   State<Home> createState() => _HomeState();
 }
@@ -41,12 +59,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _onRefresh() async {
     // monitor network fetch
-    debugPrint("onRefresh");
+    debugPrint("onRefresh - Manual refresh triggered");
     setState(() {
       isLoading = true;
     });
 
     try {
+      // Clear all cache on manual refresh
+      await Storage.instance.clearAllApiCache();
+      debugPrint("Manual refresh: Cleared all API cache");
+
       // Wait for both APIs to complete
       await Future.wait([
         fetchHomeBanner(),
@@ -135,21 +157,49 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     try {
       print("🔗 handleInitialLink: $linkString");
 
-      // Validate URL format first
-      if (!linkString.startsWith('https://tratri.in/link')) {
+      // Enhanced validation for Facebook links
+      bool isFromFacebook =
+          linkString.contains('facebook') || linkString.contains('fb');
+      print("🔗 Link from Facebook: $isFromFacebook");
+
+      // Validate URL format with more flexibility
+      bool isValidTratriLink = linkString.contains('tratri.in/link') ||
+          linkString.startsWith('https://tratri.in/link') ||
+          linkString.startsWith('http://tratri.in/link');
+
+      if (!isValidTratriLink) {
         print("❌ Invalid URL format: $linkString");
-        return;
+        // Try to extract tratri.in link from Facebook wrapper
+        final regex = RegExp(r'https?://(?:www\.)?tratri\.in/link[^&]*');
+        final match = regex.firstMatch(linkString);
+        if (match != null) {
+          linkString = match.group(0)!;
+          print("🔗 Extracted link from wrapper: $linkString");
+        } else {
+          return;
+        }
       }
 
       final uri = Uri.parse(linkString);
       print("🔗 Parsed URI: $uri");
       print("🔗 Query params: ${uri.queryParameters}");
 
-      // Validate required parameters
+      // Validate required parameters with better error handling
       if (uri.queryParameters['id'] == null ||
           uri.queryParameters['details'] == null) {
         print("❌ Missing required parameters: id or details");
+        // For Facebook links, try to show a helpful message
+        if (isFromFacebook) {
+          print("🔗 Facebook link detected - showing fallback");
+          // You could show a toast or redirect to main app
+        }
         return;
+      }
+
+      // Add delay for Facebook in-app browser
+      if (isFromFacebook) {
+        print("🔗 Adding delay for Facebook in-app browser");
+        await Future.delayed(const Duration(milliseconds: 500));
       }
 
       // Only fetch book details for book-related links
@@ -170,21 +220,49 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     try {
       print("🔗 handleForegroundLink: $linkString");
 
-      // Validate URL format first
-      if (!linkString.startsWith('https://tratri.in/link')) {
+      // Enhanced validation for Facebook links
+      bool isFromFacebook =
+          linkString.contains('facebook') || linkString.contains('fb');
+      print("🔗 Link from Facebook: $isFromFacebook");
+
+      // Validate URL format with more flexibility
+      bool isValidTratriLink = linkString.contains('tratri.in/link') ||
+          linkString.startsWith('https://tratri.in/link') ||
+          linkString.startsWith('http://tratri.in/link');
+
+      if (!isValidTratriLink) {
         print("❌ Invalid URL format: $linkString");
-        return;
+        // Try to extract tratri.in link from Facebook wrapper
+        final regex = RegExp(r'https?://(?:www\.)?tratri\.in/link[^&]*');
+        final match = regex.firstMatch(linkString);
+        if (match != null) {
+          linkString = match.group(0)!;
+          print("🔗 Extracted link from wrapper: $linkString");
+        } else {
+          return;
+        }
       }
 
       final uri = Uri.parse(linkString);
       print("🔗 Parsed URI: $uri");
       print("🔗 Query params: ${uri.queryParameters}");
 
-      // Validate required parameters
+      // Validate required parameters with better error handling
       if (uri.queryParameters['id'] == null ||
           uri.queryParameters['details'] == null) {
         print("❌ Missing required parameters: id or details");
+        // For Facebook links, try to show a helpful message
+        if (isFromFacebook) {
+          print("🔗 Facebook link detected - showing fallback");
+          // You could show a toast or redirect to main app
+        }
         return;
+      }
+
+      // Add delay for Facebook in-app browser
+      if (isFromFacebook) {
+        print("🔗 Adding delay for Facebook in-app browser");
+        await Future.delayed(const Duration(milliseconds: 500));
       }
 
       // Only fetch book details for book-related links
@@ -224,12 +302,31 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    debugPrint("didChangeAppLifecycleState $state}");
-    // Removed automatic refresh on app lifecycle changes
+    debugPrint("didChangeAppLifecycleState $state");
+
+    // Only refresh if we're coming back to the app and don't have data
+    if (state == AppLifecycleState.resumed && mounted && !isLoading) {
+      final dataProvider = Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext ?? context,
+          listen: false);
+
+      bool hasAnyBannerData = dataProvider.bannerList != null &&
+          dataProvider.bannerList!.isNotEmpty &&
+          dataProvider.bannerList!.any((list) => list.isNotEmpty);
+
+      if (!hasAnyBannerData) {
+        debugPrint("No banner data on resume, triggering load");
+        _loadInitialData();
+      }
+    }
   }
 
   @override
   void dispose() {
+    // Unregister this instance
+    if (Home._currentInstance == this) {
+      Home._currentInstance = null;
+    }
     _sub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -238,6 +335,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    // Register this instance
+    Home._currentInstance = this;
     WidgetsBinding.instance.addObserver(this);
 
     // Run initialization tasks in parallel for better performance
@@ -250,6 +349,37 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
+  // Method to test cache functionality
+  Future<void> _testCacheLoad() async {
+    debugPrint("🧪 Testing cache functionality...");
+
+    final dataProvider = Provider.of<DataProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+
+    // Clear in-memory data to force reload
+    dataProvider.setBannerList([]);
+
+    // Show current cache status
+    Storage.instance.debugCacheStatus();
+
+    setState(() {
+      isLoading = true;
+    });
+
+    // This should now use cache if available
+    await Future.wait([
+      fetchHomeBanner(),
+      fetchHomeSection(),
+    ]);
+
+    setState(() {
+      isLoading = false;
+    });
+
+    debugPrint("🧪 Cache test completed");
+  }
+
   void _loadInitialData() async {
     setState(() {
       isLoading = true;
@@ -260,6 +390,61 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         Navigation.instance.navigatorKey.currentContext!,
         listen: false);
     commonProvider.resetLoadingStates();
+
+    // Actually fetch the banner data if not already loaded
+    final dataProvider = Provider.of<DataProvider>(
+        Navigation.instance.navigatorKey.currentContext!,
+        listen: false);
+
+    // Ensure formats are loaded first
+    bool hasFormats =
+        dataProvider.formats != null && dataProvider.formats!.isNotEmpty;
+    if (!hasFormats) {
+      debugPrint("🔍 Formats not loaded yet, waiting...");
+      // Wait a bit for formats to be loaded from splash or other sources
+      await Future.delayed(const Duration(milliseconds: 500));
+      hasFormats =
+          dataProvider.formats != null && dataProvider.formats!.isNotEmpty;
+    }
+
+    // For cache testing, temporarily clear in-memory banner data to force reload
+    bool hadBannerData = dataProvider.bannerList != null &&
+        dataProvider.bannerList!.isNotEmpty &&
+        dataProvider.bannerList!.any((list) => list.isNotEmpty);
+
+    if (hadBannerData) {
+      debugPrint("🧪 Clearing in-memory banner data to test cache...");
+      dataProvider.setBannerList([]);
+    }
+
+    // Check if we need to load banner data
+    bool needsBannerData = dataProvider.bannerList == null ||
+        dataProvider.bannerList!.isEmpty ||
+        dataProvider.bannerList!.every((list) => list.isEmpty);
+
+    debugPrint(
+        "🔍 Loading check: needsBannerData=$needsBannerData, hasFormats=$hasFormats, hadDataBefore=$hadBannerData");
+    debugPrint(
+        "🔍 Current banner data: ${dataProvider.bannerList?.length} groups");
+
+    // Debug cache status at startup
+    Storage.instance.debugCacheStatus();
+
+    if (needsBannerData && hasFormats) {
+      debugPrint("🚀 Loading banner and section data...");
+      try {
+        await Future.wait([
+          fetchHomeBanner(),
+          fetchHomeSection(),
+        ]);
+      } catch (e) {
+        debugPrint("❌ Error loading initial data: $e");
+      }
+    } else if (!hasFormats) {
+      debugPrint("❌ Formats still not available, skipping banner load");
+    } else {
+      debugPrint("✅ Banner data already available, skipping load");
+    }
 
     // Reduce delay for faster UI response
     await Future.delayed(const Duration(milliseconds: 50));
@@ -290,7 +475,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           builder: (BuildContext context, LoadStatus? mode) {
             Widget body;
             if (mode == LoadStatus.idle) {
-              body = const Text("pull up load");
+              body = const Text("");
             } else if (mode == LoadStatus.loading) {
               body = const CupertinoActivityIndicator(
                 color: Colors.white,
@@ -327,32 +512,51 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             }
 
             debugPrint(
-                "Banner check - isLoading: $isLoading, hasBannerData: $hasBannerData, currentTab: ${data.currentTab}, bannerList length: ${data.bannerList?.length}");
+                "Banner check - isLoading: $isLoading, hasBannerData: $hasBannerData, currentTab: ${data.currentTab}, bannerList length: ${data.bannerList?.length ?? 0}, tab content length: ${data.bannerList != null && data.currentTab < data.bannerList!.length ? data.bannerList![data.currentTab].length : 'N/A'}");
 
             return Column(
               children: [
-                isLoading
-                    ? Container(
-                        height: 20.h,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
+                GestureDetector(
+                  onDoubleTap: _testCacheLoad,
+                  child: (!hasBannerData && isLoading)
+                      ? Container(
+                          height: 20.h,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      )
-                    : hasBannerData
-                        ? (data.currentTab == 2
-                            ? BuildEnoteBarSection(
-                                show: (data) {
-                                  ConstanceData.showEnotes(context, data);
-                                },
-                              )
-                            : BuildBookBarSection(
-                                show: (data) {
-                                  ConstanceData.show(context, data);
-                                },
-                              ))
-                        : const SizedBox.shrink(),
+                        )
+                      : hasBannerData
+                          ? (data.currentTab == 2
+                              ? BuildEnoteBarSection(
+                                  show: (data) {
+                                    ConstanceData.showEnotes(context, data);
+                                  },
+                                )
+                              : BuildBookBarSection(
+                                  show: (data) {
+                                    ConstanceData.show(context, data);
+                                  },
+                                ))
+                          : Container(
+                              height: 10.h,
+                              child: Center(
+                                child: Text(
+                                  data.currentTab == 2
+                                      ? "No E-notes available\n(Double tap to reload)"
+                                      : data.currentTab == 1
+                                          ? "No magazines available\n(Double tap to reload)"
+                                          : "No e-books available\n(Double tap to reload)",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                ),
                 SizedBox(height: 1.h),
                 // Advertisement Banner Carousel Sections
                 // Show shimmer while loading or ad banners when ready
@@ -414,7 +618,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               },
                             ),
                           ),
-                          SizedBox(height: 1.h),
+                          SizedBox(height: 1.5.h),
                         ],
                       );
                     }
@@ -422,12 +626,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     return const SizedBox.shrink();
                   },
                 ),
+                SizedBox(height: 1.h),
                 const LibrarySection(),
                 data.currentTab == 2
                     ? DynamicEnotesSection()
                     : const DynamicBooksSection(),
                 SizedBox(
-                  height: 15.h,
+                  height: 1.h,
                 ),
               ],
             );
@@ -472,39 +677,98 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Future<void> fetchHomeBanner() async {
+    debugPrint("🎯 [HOME.DART] Starting home banner fetch with caching");
     final dataProvider = Provider.of<DataProvider>(
         Navigation.instance.navigatorKey.currentContext!,
         listen: false);
 
     // Clear existing banners before refreshing
-    dataProvider.bannerList?.clear();
+    dataProvider.setBannerList([]);
 
     final formats = dataProvider.formats;
     if (formats == null || formats.isEmpty) {
-      debugPrint("Formats not available for banner refresh");
+      debugPrint("❌ [HOME.DART] Formats not available for banner refresh");
       return;
     }
 
-    // Fetch all banners in parallel for better performance
-    final List<Future<void>> bannerFutures = formats.map((format) async {
-      final response = await ApiProvider.instance
-          .fetchHomeBanner(format.productFormat ?? '');
-      if (response.status ?? false) {
-        dataProvider.addBannerList(response.banners!);
-      } else {
-        debugPrint(
-            "Failed to refresh banner for format: ${format.productFormat}");
-      }
-    }).toList();
+    debugPrint(
+        "📋 [HOME.DART] Processing ${formats.length} formats for banners");
 
-    await Future.wait(bannerFutures);
+    // Initialize bannerList with empty lists for each format to maintain order
+    dataProvider
+        .setBannerList(List.generate(formats.length, (index) => <Book>[]));
+
+    // Fetch banners sequentially to maintain correct order (not in parallel)
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      final cacheKey = 'home_banner_${format.productFormat}';
+
+      debugPrint("🔍 [HOME.DART] Checking cache for: $cacheKey");
+
+      try {
+        List<dynamic>? cachedBanners;
+
+        // Check cache first
+        final cachedData = Storage.instance.getApiCache(cacheKey);
+        if (cachedData != null) {
+          debugPrint("✅ [HOME.DART] Cache hit for $cacheKey");
+          final cachedJson = jsonDecode(cachedData);
+          if (cachedJson['status'] == true && cachedJson['banners'] != null) {
+            cachedBanners = cachedJson['banners'];
+            debugPrint(
+                "✅ [HOME.DART] Using cached banners for ${format.productFormat}");
+          }
+        } else {
+          debugPrint("❌ [HOME.DART] Cache miss for $cacheKey");
+        }
+
+        if (cachedBanners != null) {
+          // Use cached data
+          final bannerList =
+              cachedBanners.map((json) => Book.fromJson(json)).toList();
+          dataProvider.setBannerListAt(i, bannerList);
+          debugPrint(
+              "📚 [HOME.DART] Loaded ${bannerList.length} cached banners for ${format.productFormat} at index $i");
+        } else {
+          // Fetch from API
+          debugPrint(
+              "🌐 [HOME.DART] Fetching banners from API for ${format.productFormat}");
+          final response = await ApiProvider.instance
+              .fetchHomeBanner(format.productFormat ?? '');
+
+          if (response.status ?? false) {
+            // Cache the response
+            final cacheData = {
+              'status': true,
+              'banners':
+                  response.banners?.map((book) => book.toJson()).toList(),
+              'timestamp': DateTime.now().millisecondsSinceEpoch,
+            };
+            await Storage.instance.setApiCache(cacheKey, jsonEncode(cacheData));
+
+            // Set banners at specific index to maintain order
+            dataProvider.setBannerListAt(i, response.banners ?? []);
+            debugPrint(
+                "📚 [HOME.DART] Fetched & cached ${response.banners?.length ?? 0} banners for ${format.productFormat} at index $i");
+          } else {
+            debugPrint(
+                "❌ [HOME.DART] Failed to refresh banner for format: ${format.productFormat}");
+            dataProvider.setBannerListAt(i, []);
+          }
+        }
+      } catch (e) {
+        debugPrint(
+            "❌ [HOME.DART] Error fetching banner for ${format.productFormat}: $e");
+        dataProvider.setBannerListAt(i, []);
+      }
+    }
 
     debugPrint(
-        "Banner refresh completed. Total banner groups: ${dataProvider.bannerList?.length ?? 0}");
+        "✅ [HOME.DART] Banner refresh completed. Total banner groups: ${dataProvider.bannerList?.length ?? 0}");
   }
 
   Future<void> fetchHomeSection() async {
-    debugPrint("Data Cleared Here");
+    debugPrint("🔄 Starting home sections fetch with caching");
     final dataProvider = Provider.of<DataProvider>(
         Navigation.instance.navigatorKey.currentContext!,
         listen: false);
@@ -517,76 +781,175 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     final formats = dataProvider.formats;
     if (formats == null || formats.isEmpty) {
-      debugPrint("Formats not available for section refresh");
+      debugPrint("❌ Formats not available for section refresh");
       return;
     }
 
-    final List<Future<void>> sectionFutures =
-        formats.map((format) => _fetchSectionForFormat(format)).toList();
+    debugPrint("📋 Processing ${formats.length} formats for sections");
 
-    await Future.wait(sectionFutures);
+    // Process each format sequentially to maintain order
+    for (final format in formats) {
+      await _fetchSectionForFormat(format);
+    }
 
     setState(() {});
-    debugPrint("Section refresh completed for all formats");
+    debugPrint("✅ Section refresh completed for all formats");
   }
 
   Future<void> _fetchSectionForFormat(dynamic format) async {
+    final cacheKey = 'home_section_${format.productFormat}';
+
     try {
-      final response = await ApiProvider.instance
-          .fetchHomeSections(format.productFormat ?? '');
+      List<dynamic>? cachedSections;
+
+      // Check cache first
+      final cachedData = Storage.instance.getApiCache(cacheKey);
+      if (cachedData != null) {
+        final cachedJson = jsonDecode(cachedData);
+        if (cachedJson['status'] == true && cachedJson['sections'] != null) {
+          cachedSections = cachedJson['sections'];
+          debugPrint("Using cached sections for ${format.productFormat}");
+        }
+      }
 
       final commonProvider = Provider.of<CommonProvider>(
           Navigation.instance.navigatorKey.currentContext!,
           listen: false);
 
-      if (response.status ?? false) {
+      if (cachedSections != null) {
+        // Use cached data
         switch (format.productFormat) {
           case 'e-book':
-            commonProvider.setEbookHomeSections(response.sections ?? []);
+            final sections = cachedSections
+                .map((json) => {
+                      'title': json['title'],
+                      'books': json['books'],
+                    })
+                .toList();
+            final homeSections = sections
+                .map((sectionData) => _createHomeSectionFromCache(sectionData))
+                .cast<HomeSection>()
+                .toList();
+            commonProvider.setEbookHomeSections(homeSections);
+            debugPrint(
+                "📚 Loaded ${homeSections.length} cached e-book sections");
             break;
           case 'magazine':
-            commonProvider.setMagazineHomeSections(response.sections ?? []);
+            final sections = cachedSections
+                .map((json) => {
+                      'title': json['title'],
+                      'books': json['books'],
+                    })
+                .toList();
+            final homeSections = sections
+                .map((sectionData) => _createHomeSectionFromCache(sectionData))
+                .cast<HomeSection>()
+                .toList();
+            commonProvider.setMagazineHomeSections(homeSections);
+            debugPrint(
+                "📰 Loaded ${homeSections.length} cached magazine sections");
             break;
           case 'e-note':
-            commonProvider.setEnotesHomeSections(response.sections ?? []);
+            final sections = cachedSections
+                .map((json) => {
+                      'title': json['title'],
+                      'books': json['books'],
+                    })
+                .toList();
+            final homeSections = sections
+                .map((sectionData) => _createHomeSectionFromCache(sectionData))
+                .cast<HomeSection>()
+                .toList();
+            commonProvider.setEnotesHomeSections(homeSections);
+            debugPrint(
+                "📝 Loaded ${homeSections.length} cached e-notes sections");
             break;
         }
       } else {
-        // Even if API fails, set empty data and stop loading
-        switch (format.productFormat) {
-          case 'e-book':
-            commonProvider.setEbookHomeSections([]);
-            break;
-          case 'magazine':
-            commonProvider.setMagazineHomeSections([]);
-            break;
-          case 'e-note':
-            commonProvider.setEnotesHomeSections([]);
-            break;
+        // Fetch from API
+        debugPrint("Fetching sections from API for ${format.productFormat}");
+        final response = await ApiProvider.instance
+            .fetchHomeSections(format.productFormat ?? '');
+
+        if (response.status ?? false) {
+          // Cache the response
+          final cacheData = {
+            'status': true,
+            'sections': response.sections
+                ?.map((section) => {
+                      'title': section.title,
+                      'books':
+                          section.book?.map((book) => book.toJson()).toList(),
+                    })
+                .toList(),
+            'timestamp': DateTime.now().millisecondsSinceEpoch,
+          };
+          await Storage.instance.setApiCache(cacheKey, jsonEncode(cacheData));
+
+          switch (format.productFormat) {
+            case 'e-book':
+              commonProvider.setEbookHomeSections(response.sections ?? []);
+              debugPrint(
+                  "Fetched ${response.sections?.length ?? 0} e-book sections");
+              break;
+            case 'magazine':
+              commonProvider.setMagazineHomeSections(response.sections ?? []);
+              debugPrint(
+                  "Fetched ${response.sections?.length ?? 0} magazine sections");
+              break;
+            case 'e-note':
+              commonProvider.setEnotesHomeSections(response.sections ?? []);
+              debugPrint(
+                  "Fetched ${response.sections?.length ?? 0} e-notes sections");
+              break;
+          }
+        } else {
+          // Even if API fails, set error state
+          switch (format.productFormat) {
+            case 'e-book':
+              commonProvider.setEbookError();
+              break;
+            case 'magazine':
+              commonProvider.setMagazineError();
+              break;
+            case 'e-note':
+              commonProvider.setEnotesError();
+              break;
+          }
+          debugPrint(
+              "Failed to refresh section for format: ${format.productFormat}");
         }
-        debugPrint(
-            "Failed to refresh section for format: ${format.productFormat}");
       }
     } catch (e) {
-      // On error, set empty data and stop loading
+      // On error, set error state
       final commonProvider = Provider.of<CommonProvider>(
           Navigation.instance.navigatorKey.currentContext!,
           listen: false);
 
       switch (format.productFormat) {
         case 'e-book':
-          commonProvider.setEbookHomeSections([]);
+          commonProvider.setEbookError();
           break;
         case 'magazine':
-          commonProvider.setMagazineHomeSections([]);
+          commonProvider.setMagazineError();
           break;
         case 'e-note':
-          commonProvider.setEnotesHomeSections([]);
+          commonProvider.setEnotesError();
           break;
       }
       debugPrint(
           "Error fetching section for format ${format.productFormat}: $e");
     }
+  }
+
+  // Helper method to create HomeSection from cached data
+  HomeSection _createHomeSectionFromCache(Map<String, dynamic> sectionData) {
+    // Create a proper HomeSection object from cached data
+    final homeSection = HomeSection.fromJson({
+      'title': sectionData['title'],
+      'books': sectionData['books'],
+    });
+    return homeSection;
   }
 
   Future<void> fetchAdvertisementBanners() async {
@@ -732,6 +1095,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     _refreshController.loadComplete();
   }
 
+  void refreshHomeData() {
+    debugPrint("External refresh triggered from mobile number update");
+    _onRefresh();
+  }
+
   void handleLibraryLink(Uri uri) {
     debugPrint("Handling library link: $uri");
     debugPrint("Query parameters: ${uri.queryParameters}");
@@ -758,6 +1126,69 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } catch (e) {
       debugPrint("Error parsing library link: $e");
       debugPrint("Stack trace: ${StackTrace.current}");
+    }
+  }
+
+  Future<void> _loadFormatsAndBannerData() async {
+    if (isLoading) return; // Prevent multiple simultaneous loads
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // First load formats
+      await _fetchFormats();
+
+      // Then load banner data
+      await Future.wait([
+        fetchHomeBanner(),
+        fetchHomeSection(),
+      ]);
+    } catch (e) {
+      debugPrint("Error loading formats and banner data: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _fetchFormats() async {
+    final response = await ApiProvider.instance.fetchBookFormat();
+    if (response.status ?? false) {
+      final dataProvider = Provider.of<DataProvider>(
+          Navigation.instance.navigatorKey.currentContext!,
+          listen: false);
+      dataProvider.setFormats(response.bookFormats!);
+      debugPrint("Formats loaded: ${response.bookFormats?.length ?? 0}");
+    } else {
+      debugPrint("Failed to fetch formats");
+    }
+  }
+
+  void _loadBannerData() async {
+    if (isLoading) return; // Prevent multiple simultaneous loads
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await Future.wait([
+        fetchHomeBanner(),
+        fetchHomeSection(),
+      ]);
+    } catch (e) {
+      debugPrint("Error loading banner data: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import 'package:sizer/sizer.dart';
 import '../../../Storage/app_storage.dart';
 import '../../../Storage/data_provider.dart';
 import '../../Components/section_information.dart';
+import '../Drawer/home.dart';
 
 class AccountInformation extends StatefulWidget {
   const AccountInformation({Key? key}) : super(key: key);
@@ -211,6 +212,10 @@ class _AccountInformationState extends State<AccountInformation> {
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
           .setProfile(response.profile!);
+
+      // Refresh home screen data using static method
+      Home.triggerRefresh();
+
       Fluttertoast.showToast(msg: "Profile updated");
       Navigation.instance.navigateAndRemoveUntil("/main");
     } else {

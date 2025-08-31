@@ -1,28 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:counter_button/counter_button.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 import 'package:flutter_html_table/flutter_html_table.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
-
-// import 'package:flutter_html/style.dart';
-// import 'package:flutter_screen_wake/flutter_screen_wake.dart';
-// import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
-// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 import 'package:provider/provider.dart';
 import 'package:screen_brightness/screen_brightness.dart';
-import 'package:search_page/search_page.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
-import '../../../Model/book.dart';
 import '../../../Model/book_chapter.dart';
 import '../../../Model/book_details.dart';
 import '../../../Model/home_banner.dart';
@@ -638,32 +627,36 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
   }
 
   void fetchBookDetails() async {
-    final response = await ApiProvider.instance
-        .fetchBookDetails(widget.id.toString().split(',')[0]);
-    if (response.status ?? false) {
-      bookDetails = response.details;
+    final bookId = widget.id.toString().split(',')[0];
+
+    // Make parallel API calls
+    final futures = await Future.wait([
+      ApiProvider.instance.fetchBookDetails(bookId),
+      ApiProvider.instance.fetchBookChaptersWithAds(bookId),
+    ]);
+
+    // Handle book details response
+    final bookResponse = futures[0] as BookDetailsResponse;
+    if (bookResponse.status ?? false) {
+      bookDetails = bookResponse.details;
       if (mounted) {
         setState(() {});
       }
     }
-    final response1 = await ApiProvider.instance
-        .fetchBookChaptersWithAds(widget.id.toString().split(',')[0] ?? '3');
-    // .fetchBookChapters('3');
-    if (response1.status ?? false) {
-      chapters = response1.chapters ?? [];
+
+    // Handle chapters response
+    final chaptersResponse = futures[1] as BookChapterWithAdsResponse;
+    if (chaptersResponse.status ?? false) {
+      chapters = chaptersResponse.chapters ?? [];
       setState(() {
-        reviewUrl = response1.chapters![0].review_url ?? "";
+        reviewUrl = chaptersResponse.chapters?[0].review_url ?? "";
         debugPrint("ReviewUrl: $reviewUrl");
       });
       for (int i = 0; i < chapters.length; i++) {
         for (var j in chapters[i].pages!) {
-          // if (i == int.parse(widget.id.toString().split(',')[1])) {
-          //   reading.add(ReadingChapter(chapters[i].title, j));
-          //   text = text + j;
-          // }
           if (i >= int.parse(widget.id.toString().split(',')[1])) {
             final currentPageNo = j.current_page_no ?? 0;
-            final shouldShowAd = response1.isAdPage(currentPageNo);
+            final shouldShowAd = chaptersResponse.isAdPage(currentPageNo);
             reading.add(ReadingChapter(chapters[i].title, j.content,
                 chapters[i].review_url, shouldShowAd, j.view_ad_count));
             text = text + j.content!;

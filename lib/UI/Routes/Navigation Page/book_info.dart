@@ -278,7 +278,8 @@ class _BookInfoState extends State<BookInfo>
                     DownloadSection(
                         widget.id,
                         bookDetails?.is_bookmarked ?? false,
-                        bookDetails?.book_format ?? ""),
+                        bookDetails?.book_format ?? "",
+                        (bookDetails?.status ?? 0) < 2,),
                     SizedBox(
                       width: 90.w,
                       height: 0.03.h,
@@ -379,46 +380,55 @@ class _BookInfoState extends State<BookInfo>
                     SizedBox(
                       height: 1.5.h,
                     ),
-                    Text(
-                      'Your Rating & Review',
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                            // fontSize: 2.5.h,
-                            // color: Colors.grey.shade200,
-                            fontSize: 15.sp,
-                            color: Colors.white,
+                    (bookDetails?.status ?? 0) < 2
+                        ? Container()
+                        : Text(
+                            'Your Rating & Review',
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge
+                                ?.copyWith(
+                                  // fontSize: 2.5.h,
+                                  // color: Colors.grey.shade200,
+                                  fontSize: 15.sp,
+                                  color: Colors.white,
+                                ),
                           ),
-                    ),
-                    SizedBox(
-                      height: 2.h,
-                    ),
-                    RatingBar.builder(
-                        itemSize: 5.h,
-                        initialRating: 0,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        // itemPadding:
-                        //     EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => const Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                              size: 10,
-                            ),
-                        onRatingUpdate: (rating) {
-                          if (Storage.instance.isLoggedIn) {
-                            giveRating(context, rating);
-                          } else {
-                            ConstanceData.showAlertDialog(context);
-                          }
-                        }),
+                    (bookDetails?.status ?? 0) < 2
+                        ? Container()
+                        : SizedBox(
+                            height: 2.h,
+                          ),
+                    (bookDetails?.status ?? 0) < 2
+                        ? Container()
+                        : RatingBar.builder(
+                            itemSize: 5.h,
+                            initialRating: 5.0,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            // itemPadding:
+                            //     EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                  size: 10,
+                                ),
+                            onRatingUpdate: (rating) {
+                              if (Storage.instance.isLoggedIn) {
+                                giveRating(context, rating);
+                              } else {
+                                ConstanceData.showAlertDialog(context);
+                              }
+                            }),
                     SizedBox(
                       height: 2.h,
                     ),
                     GestureDetector(
                       onTap: () {
                         if (Storage.instance.isLoggedIn) {
-                          giveRating(context, 0);
+                          giveRating(context, 5);
                         } else {
                           ConstanceData.showAlertDialog(context);
                         }
@@ -544,7 +554,8 @@ class _BookInfoState extends State<BookInfo>
           color: Colors.black,
           fontSize: 18.sp,
         ),
-        commentHint: '',
+        commentHint: 'Enter your comment here',
+
         // commentHint: 'Set your custom comment hint',
         onCancelled: () => print('cancelled'),
         onSubmitted: (response) async {
@@ -749,7 +760,7 @@ class _BookInfoState extends State<BookInfo>
     Fluttertoast.showToast(msg: "The following book is added to cart");
   }
 
-  void showError(context) {
+  void showError(String message) {
     // var snackBar = SnackBar(
     //   elevation: 0,
     //   behavior: SnackBarBehavior.floating,
@@ -761,7 +772,7 @@ class _BookInfoState extends State<BookInfo>
     //   ),
     // );
     // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    Fluttertoast.showToast(msg: "Something went wrong");
+    Fluttertoast.showToast(msg: message);
   }
 
   void addReview(RatingDialogResponse response) async {

@@ -16,6 +16,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../Storage/app_storage.dart';
 import '../../Networking/api_provider.dart';
+import '../Routes/Drawer/home.dart';
 
 class NewSearchBar extends StatelessWidget {
   const NewSearchBar({
@@ -82,17 +83,26 @@ class NewSearchBar extends StatelessWidget {
                 )
               : (Platform.isAndroid &&
                       Storage.instance.isLoggedIn &&
-                      Provider.of<DataProvider>(
+                      (Provider.of<DataProvider>(
                                   Navigation.instance.navigatorKey
                                           .currentContext ??
                                       context,
                                   listen: false)
                               .profile
                               ?.mobile
-                              ?.isEmpty ==
-                          true)
+                              ?.trim()
+                              .isEmpty ??
+                          true))
                   ? Consumer<DataProvider>(
                       builder: (context, data, _) {
+                        // Check if mobile is null or empty
+                        bool shouldShow =
+                            data.profile?.mobile?.trim().isEmpty ?? true;
+
+                        if (!shouldShow) {
+                          return Container();
+                        }
+
                         return GestureDetector(
                           onTap: () {
                             _showPhoneUpdateDialog(
@@ -117,7 +127,8 @@ class NewSearchBar extends StatelessWidget {
                                 ),
                                 SizedBox(width: 1.w),
                                 Text(
-                                  data.profile?.mobile?.isNotEmpty == true
+                                  data.profile?.mobile?.trim().isNotEmpty ==
+                                          true
                                       ? "Update Phone"
                                       : 'Add Phone',
                                   style: Theme.of(context)
@@ -140,7 +151,7 @@ class NewSearchBar extends StatelessWidget {
           Spacer(),
           GestureDetector(
             onTap: () {
-              Navigation.instance.navigate('/search');
+              Navigation.instance.navigate('/search'); 
               // showSearch(
               //   context: context,
               //   delegate: SearchPage<Book_old>(
@@ -241,7 +252,7 @@ class NewSearchBar extends StatelessWidget {
                     badgeContent: Text(
                       '${data.notifications.length}',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white,
+                            color: Colors.white,fontSize: 14.sp,
                           ),
                     ),
                     child: const Icon(
@@ -419,6 +430,9 @@ class NewSearchBar extends StatelessWidget {
                             profileResponse.profile != null) {
                           dataProvider.setProfile(profileResponse.profile!);
                         }
+
+                        // Refresh home screen data using static method
+                        Home.triggerRefresh();
 
                         Fluttertoast.showToast(
                             msg: 'Phone number updated successfully');
