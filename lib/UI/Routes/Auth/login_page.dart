@@ -113,7 +113,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 3.h),
 
                   // Social Login Section
-                  if (Platform.isAndroid) ...[
+                  // if (Platform.isAndroid) ...[
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(2.w),
@@ -187,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     SizedBox(height: 3.h),
-                  ],
+                  // ],
 
                   // Regular Login Form
                   Container(
@@ -449,18 +449,37 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _handleGoogleSignIn() async {
     try {
       final response = await signInWithGoogle();
-      loginSocial(
-        response.user?.displayName?.split(" ")[0] ?? "",
-        (response.user?.displayName?.split(" ").length ?? 0) > 1
-            ? response.user?.displayName?.split(" ")[1] ?? ""
-            : "",
-        response.user?.email ?? "",
-        "",
-        "google",
-        response.user?.phoneNumber ?? "",
-        "",
-      );
+
+      // Check if sign-in was successful
+      if (response.user != null) {
+        loginSocial(
+          response.user?.displayName?.split(" ")[0] ?? "",
+          (response.user?.displayName?.split(" ").length ?? 0) > 1
+              ? response.user?.displayName?.split(" ")[1] ?? ""
+              : "",
+          response.user?.email ?? "",
+          "",
+          "google",
+          response.user?.phoneNumber ?? "",
+          "",
+        );
+      }
+    } on GoogleSignInException catch (e) {
+      // Handle Google Sign-In specific exceptions
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        // User cancelled - don't show error, just silently return
+        debugPrint("Google Sign-In cancelled by user");
+        return;
+      } else {
+        debugPrint("Google Sign-In error: ${e}");
+        Fluttertoast.showToast(
+          msg: "Google Sign In failed: ${e}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
     } catch (e) {
+      debugPrint("Unexpected error during Google Sign-In: $e");
       Fluttertoast.showToast(
         msg: "Google Sign In failed. Please try again.",
         toastLength: Toast.LENGTH_SHORT,
@@ -503,24 +522,43 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    try {
+      final googleSignIn = GoogleSignIn.instance;
 
-    if (googleUser == null) {
-      throw Exception("Google sign in aborted by user");
+      // Define scopes you need (required for getting accessToken in v7)
+      const List<String> scopes = [
+        'email',
+        'profile',
+      ];
+
+      // Check if the platform supports authenticate method
+      if (googleSignIn.supportsAuthenticate()) {
+        // Trigger the authentication flow
+        final GoogleSignInAccount googleUser =
+        await googleSignIn.authenticate();
+
+        // Request authorization for the scopes to get accessToken
+        final authorization =
+        await googleUser.authorizationClient.authorizeScopes(scopes);
+
+        // Get the idToken from authentication
+        final googleAuth = googleUser.authentication;
+
+        // Create Firebase credential with both tokens
+        final credential = GoogleAuthProvider.credential(
+          accessToken: authorization.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        // Sign in to Firebase
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      } else {
+        // For web, you need to use platform-specific approach
+        throw Exception(
+            'Platform does not support authenticate(). Use Google button renderer for web.');
+      }
+    } catch (e) {
+      rethrow;
     }
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

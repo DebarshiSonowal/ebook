@@ -65,6 +65,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void initiateSplash() {
     Future.delayed(const Duration(seconds: ConstanceData.splashTime), () {
+      if (Storage.instance.isDeepLinkProcessed) {
+        print(
+            "🚀 SPLASH: Deep link was processed, skipping automatic navigation to main");
+        return;
+      }
+
+      print(
+          "🚀 SPLASH: No deep link processed, proceeding with normal splash navigation");
       if (Storage.instance.isLoggedIn) {
         fetchProfile();
         Navigation.instance.navigateAndRemoveUntil('/main');

@@ -37,6 +37,7 @@ import '../Model/home_section.dart';
 import '../Model/library.dart';
 import '../Model/library_book_details.dart';
 import '../Model/library_model.dart';
+import '../Model/library_reviews.dart';
 import '../Model/library_search_response.dart';
 import '../Model/login_response.dart';
 import '../Model/logout_response.dart';
@@ -2351,6 +2352,36 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("Library review response: ${e.response}");
       return GenericResponse.withError(
+          e.response?.data['message'] ?? e.message ?? "Network error");
+    }
+  }
+
+  Future<LibraryReviewsResponse> getLibraryReviews(int libraryId) async {
+    var url = "${baseUrl}/libraries/reviews/$libraryId";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("Library reviews response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryReviewsResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Library reviews error: ${response?.data}");
+        return LibraryReviewsResponse.withError(
+            response?.data['message'] ?? "Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Library reviews response error: ${e.response}");
+      return LibraryReviewsResponse.withError(
           e.response?.data['message'] ?? e.message ?? "Network error");
     }
   }

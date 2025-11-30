@@ -162,7 +162,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _launchUrl(_url) async {
-    if (!await launchUrl(_url)) {
+    if (!await launchUrl(_url,mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $_url';
     }
   }
@@ -183,6 +183,9 @@ class _AccountPageState extends State<AccountPage> {
       case 3:
         _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
         break;
+      case 4:
+        _launchUrl(Uri.parse('https://tratri.in/terms-and-conditions'));
+        break;
       case 5:
         _launchUrl(Uri.parse('https://tratri.in/privacy-policy'));
         break;
@@ -192,7 +195,7 @@ class _AccountPageState extends State<AccountPage> {
       case 7:
         _launchUrl(Uri.parse('https://tratri.in/about-us'));
         break;
-      default:
+      case 8:
         requestDelete();
         break;
     }
@@ -209,7 +212,10 @@ class _AccountPageState extends State<AccountPage> {
         ShareHelper.shareText("https://onelink.to/xzcqex", context: context);
         break;
       case 2:
-        _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'));
+        _launchUrl(Uri.parse('https://tratri.in/refund-and-cancellation'),);
+        break;
+      case 3:
+        _launchUrl(Uri.parse('https://tratri.in/terms-and-conditions'));
         break;
       case 4:
         _launchUrl(Uri.parse('https://tratri.in/privacy-policy'));
@@ -218,14 +224,42 @@ class _AccountPageState extends State<AccountPage> {
         _launchUrl(Uri.parse('https://tratri.in/contact-us'));
         break;
       case 6:
-        _launchUrl(Uri.parse('https://tratri.in/https://tratri.in/about-us'));
-        break;
-      default:
+        _launchUrl(Uri.parse('https://tratri.in/about-us'));
         break;
     }
   }
 
   void requestDelete() async {
+    // Show confirmation dialog
+    final bool? confirmed = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title:Text('Delete Profile',style: TextStyle(color: Colors.black,fontSize: 16.sp,),),
+          content:  Text(
+            'Are you sure you want to delete your profile? This action cannot be undone.',style: TextStyle(color: Colors.black,fontSize: 14.sp,),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red,
+              ),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // If user didn't confirm, return early
+    if (confirmed != true) return;
+
+    // Proceed with deletion
     Navigation.instance.navigate("/loadingDialog");
     final response = await ApiProvider.instance.deleteProfile();
     if (response.status ?? false) {

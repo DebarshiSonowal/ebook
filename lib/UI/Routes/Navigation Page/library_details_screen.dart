@@ -1,9 +1,11 @@
 import 'package:ebook/Model/library_model.dart';
+import 'package:ebook/Model/library_reviews.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Utility/share_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,6 +26,7 @@ class LibraryDetailsScreen extends StatefulWidget {
 
 class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   LibraryResult? data;
+  List<LibraryReview> reviews = [];
   bool _isLoading = true;
   bool _showReviewForm = false;
   final _reviewController = TextEditingController();
@@ -36,6 +39,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     fetchData();
     fetchLibraryData();
     _loadLibraryDetails();
+    _loadLibraryReviews();
   }
 
   Future<void> fetchLibraryData() async {
@@ -126,7 +130,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
       margin: EdgeInsets.symmetric(
         horizontal: 2.w,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -138,7 +142,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   color: Colors.white,
                 ),
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 0.5.h),
           Row(
             children: [
               Icon(
@@ -180,9 +184,9 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 1.h),
+          SizedBox(height: 0.5.h),
           _buildStatsRow(),
-          SizedBox(height: 2.h),
+          SizedBox(height: 1.h),
           _buildInfoCard(
             icon: Icons.person,
             title: 'Owner',
@@ -258,10 +262,10 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     if (content.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      margin: EdgeInsets.only(bottom: 1.h),
+      margin: EdgeInsets.only(bottom: 0.5.h),
       padding: EdgeInsets.symmetric(
-        horizontal: 4.w,
-        vertical: 1.5.h,
+        horizontal: 3.w,
+        vertical: 1.h,
       ),
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
@@ -277,7 +281,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
             ),
             child: Icon(icon, color: Colors.white70),
           ),
-          SizedBox(width: 4.w),
+          SizedBox(width: 3.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,7 +294,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   content,
                   style: TextStyle(
@@ -301,107 +305,6 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAboutSection() {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(top: 1.h),
-      padding: EdgeInsets.all(4.w),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade800,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade700),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'About',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-          ),
-          SizedBox(height: 1.h),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data?.about ?? '',
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: Colors.grey.shade300,
-                  height: 1.6,
-                ),
-              ),
-              if ((data?.about?.length ?? 0) > 100)
-                Padding(
-                  padding: EdgeInsets.only(top: 1.h),
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          backgroundColor: Colors.black,
-                          title: Text(
-                            'About',
-                            style: TextStyle(
-                              fontSize: 19.sp,
-                              height: 1.6,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          content: SingleChildScrollView(
-                            child: Text(
-                              data?.about ?? '',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                height: 1.6,
-                              ),
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.blue.shade300,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                  side: BorderSide(color: Colors.blue.shade300),
-                                ),
-                              ),
-                              child: Text(
-                                'Close',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Read more',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: Colors.blue.shade300,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-            ],
           ),
         ],
       ),
@@ -446,7 +349,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                 children: [
                   _buildHeader(),
                   _buildDetails(),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 0.5.h),
                   Consumer<DataProvider>(
                     builder: (context, listData, _) {
                       if (data == null || listData.library.isEmpty) {
@@ -497,7 +400,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 1.h),
+                          SizedBox(height: 0.5.h),
                           _buildBookSection(
                             context,
                             "E-Books", 
@@ -529,7 +432,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   // Reviews Section
                   Container(
                     margin:
-                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                        EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
                     child: Column(
                       children: [
                         Row(
@@ -580,7 +483,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                       : Colors.amber.shade700,
                                   foregroundColor: Colors.white,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 3.w, vertical: 1.h),
+                                      horizontal: 3.w, vertical: 0.8.h),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -594,7 +497,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                   if (_showReviewForm && data?.showReviewForm == true)
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 4.w),
-                      padding: EdgeInsets.all(4.w),
+                      padding: EdgeInsets.all(3.w),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade800,
                         borderRadius: BorderRadius.circular(12),
@@ -611,7 +514,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 1.5.h),
                           Text(
                             'Rating',
                             style: TextStyle(
@@ -620,7 +523,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                               color: Colors.white70,
                             ),
                           ),
-                          SizedBox(height: 1.h),
+                          SizedBox(height: 0.5.h),
                           Row(
                             children: [
                               RatingBar.builder(
@@ -653,7 +556,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 1.5.h),
                           Text(
                             'Your Review',
                             style: TextStyle(
@@ -662,7 +565,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                               color: Colors.white70,
                             ),
                           ),
-                          SizedBox(height: 1.h),
+                          SizedBox(height: 0.5.h),
                           TextField(
                             controller: _reviewController,
                             maxLines: 4,
@@ -684,10 +587,10 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                 borderSide: BorderSide.none,
                               ),
                               contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 3.w, vertical: 2.h),
+                                  horizontal: 3.w, vertical: 1.5.h),
                             ),
                           ),
-                          SizedBox(height: 2.h),
+                          SizedBox(height: 1.5.h),
                           Row(
                             children: [
                               Expanded(
@@ -723,6 +626,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                               _isSubmittingReview = false;
                                             });
                                             await _loadLibraryDetails();
+                                            await _loadLibraryReviews();
                                           } else {
                                             _showSnackBar(response.message ??
                                                 'Failed to submit review');
@@ -735,7 +639,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                     backgroundColor: Colors.blue.shade600,
                                     foregroundColor: Colors.white,
                                     padding:
-                                        EdgeInsets.symmetric(vertical: 1.5.h),
+                                        EdgeInsets.symmetric(vertical: 1.2.h),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -758,7 +662,121 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                         ],
                       ),
                     ),
-                  SizedBox(height: 2.h),
+                  SizedBox(height: 1.h),
+                  if (reviews.isNotEmpty)
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 4.w, vertical: 0.5.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                            child: Text(
+                              'User Reviews',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 1.h),
+                          ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: reviews.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: EdgeInsets.only(bottom: 0.8.h),
+                                padding: EdgeInsets.all(3.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade800,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border:
+                                      Border.all(color: Colors.grey.shade700),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.person,
+                                          color: Colors.blue.shade300,
+                                          size: 18.sp,
+                                        ),
+                                        SizedBox(width: 2.w),
+                                        Text(
+                                          reviews[index].subscriber,
+                                          style: TextStyle(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text(
+                                          DateFormat('MMM dd, yyyy').format(
+                                            reviews[index].createdAt,
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Colors.grey.shade400,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 0.8.h),
+                                    Text(
+                                      reviews[index].content,
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Colors.white70,
+                                        height: 1.4,
+                                      ),
+                                    ),
+                                    SizedBox(height: 0.8.h),
+                                    Row(
+                                      children: [
+                                        RatingBar.builder(
+                                          initialRating:
+                                              reviews[index].rating.toDouble(),
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: false,
+                                          itemCount: 5,
+                                          itemSize: 4.w,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 0.5.w),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {},
+                                        ),
+                                        SizedBox(width: 2.w),
+                                        Text(
+                                          '${reviews[index].rating}/5',
+                                          style: TextStyle(
+                                            fontSize: 13.sp,
+                                            color: Colors.white70,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 2.h),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -862,7 +880,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                     ],
                   ),
                 ),
-              ); 
+              );
             },
           ),
         ),
@@ -882,7 +900,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
   Widget _buildButtons() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 1.h),
+      margin: EdgeInsets.symmetric(vertical: 0.8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -946,7 +964,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 1.h),
+        padding: EdgeInsets.symmetric(vertical: 0.8.h),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(12),
@@ -1063,5 +1081,123 @@ Discover thousands of books, magazines, and e-notes in our digital library!
         context: context,
       );
     }
+  }
+
+  Future<void> _loadLibraryReviews() async {
+    try {
+      final response = await ApiProvider.instance.getLibraryReviews(widget.id);
+      if (!mounted) return;
+
+      if (response.success) {
+        setState(() {
+          reviews = response.result.reviewList;
+        });
+      } else {
+        debugPrint('Could not load library reviews: ${response.message}');
+      }
+    } catch (e) {
+      debugPrint('Failed to load library reviews: $e');
+    }
+  }
+
+  Widget _buildAboutSection() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: 0.8.h),
+      padding: EdgeInsets.all(3.w),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade800,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade700),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'About',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+          ),
+          SizedBox(height: 0.8.h),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                data?.about ?? '',
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: Colors.grey.shade300,
+                  height: 1.6,
+                ),
+              ),
+              if ((data?.about?.length ?? 0) > 100)
+                Padding(
+                  padding: EdgeInsets.only(top: 0.8.h),
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          backgroundColor: Colors.black,
+                          title: Text(
+                            'About',
+                            style: TextStyle(
+                              fontSize: 19.sp,
+                              height: 1.6,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          content: SingleChildScrollView(
+                            child: Text(
+                              data?.about ?? '',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                height: 1.6,
+                              ),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.blue.shade300,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  side: BorderSide(color: Colors.blue.shade300),
+                                ),
+                              ),
+                              child: Text(
+                                'Close',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Read more',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.blue.shade300,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

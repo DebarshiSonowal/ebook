@@ -16,6 +16,17 @@ class Storage {
   static const String _cacheCountPrefix = "api_cache_count_";
   static const String _cacheTimePrefix = "api_cache_time_";
 
+  // Deep link tracking
+  bool _deepLinkProcessed = false;
+  String? lastProcessedLink;
+  DateTime? lastProcessedTime;
+  bool isProcessingDeepLink = false;
+  static const Duration debounceInterval = Duration(milliseconds: 1000);
+
+  // Store target route for persistent navigation
+  String? _targetRoute;
+  Object? _targetArguments;
+
   Future<void> initializeStorage() async {
     sharedpreferences = await SharedPreferences.getInstance();
   }
@@ -54,6 +65,30 @@ class Storage {
   get token =>
       sharedpreferences.getString("token") ??
       "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdHJhdHJpLmluXC9hcGlcL3N1YnNjcmliZXJzXC9sb2dpbiIsImlhdCI6MTY2Mjk1OTk5NiwiZXhwIjoxNjYyOTYzNTk2LCJuYmYiOjE2NjI5NTk5OTYsImp0aSI6ImZ2MzYwZ09zNGdReVhsWWoiLCJzdWIiOjQsInBydiI6IjdhNTljY2RhNDc0MGVjOGU1ZDRmMGVhOGQyNjQ3YThiYWE3N2FjZGQifQ.2_F9m8Jw7iYj5jfDl24dU83foJxNU9tVzUUjQIvrTtE";
+
+  void setDeepLinkProcessed(bool value) {
+    _deepLinkProcessed = value;
+    print("📍 DEEP LINK: Flag set to $value");
+  }
+
+  bool get isDeepLinkProcessed => _deepLinkProcessed;
+
+  // Store target route for later navigation
+  void setTargetRoute(String route, {Object? arguments}) {
+    _targetRoute = route;
+    _targetArguments = arguments;
+    print(" TARGET: Stored route: $route with args: $arguments");
+  }
+
+  String? get targetRoute => _targetRoute;
+
+  Object? get targetArguments => _targetArguments;
+
+  void clearTargetRoute() {
+    print(" TARGET: Clearing stored route: $_targetRoute");
+    _targetRoute = null;
+    _targetArguments = null;
+  }
 
   // Cache management methods
   Future<void> setApiCache(String key, String jsonData) async {

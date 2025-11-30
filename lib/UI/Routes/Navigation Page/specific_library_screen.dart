@@ -39,12 +39,12 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              _shareLibrary();
-            },
-            icon: const Icon(Icons.share),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     _shareLibrary();
+          //   },
+          //   icon: const Icon(Icons.share),
+          // ),
         ],
       ),
       body: Container(

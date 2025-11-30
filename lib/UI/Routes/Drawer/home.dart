@@ -26,7 +26,6 @@ import '../../Components/buildbook_section.dart';
 import '../../Components/dynamic_books_section.dart';
 import '../../Components/library_section.dart';
 import '../../Components/advertisement_banner.dart';
-import 'package:app_links/app_links.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -49,7 +48,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
-  StreamSubscription? _sub;
   int selected = 0;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -91,214 +89,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> initUniLinks() async {
-    print("🔗 HOME: Initializing universal links...");
-    try {
-      final appLinks = AppLinks();
-
-      // Always set up the listener first
-      initUniLinksAlive(appLinks);
-
-      // Then handle initial/background links
-      final uri = await appLinks.getInitialLink();
-      if (uri != null) {
-        print("🔗 HOME: Initial deeplink: $uri");
-        await handleInitialLink(uri.toString());
-      } else {
-        print("🔗 HOME: No initial deeplink");
-      }
-
-      // Test universal links configuration
-      await testUniversalLinksConfiguration();
-    } catch (e) {
-      print("🔗 HOME: Error initializing deep links: $e");
-    }
-  }
-
-  // Test universal links configuration
-  Future<void> testUniversalLinksConfiguration() async {
-    print("🔗 HOME: Testing universal links configuration...");
-
-    // Test if the app can handle the domain
-    try {
-      final testUrls = [
-        'https://tratri.in/link',
-        'https://tratri.in/link?test=1',
-        'tratri://test',
-      ];
-
-      for (final url in testUrls) {
-        print("🔗 HOME: Testing URL: $url");
-        // This would normally be handled by the system
-      }
-    } catch (e) {
-      print("🔗 HOME: Error testing configuration: $e");
-    }
-  }
-
-  Future<void> initUniLinksAlive(AppLinks appLinks) async {
-    try {
-      // Listen to app links while app is in foreground
-      _sub = appLinks.uriLinkStream.listen((Uri? uri) async {
-        print("Foreground deeplink: $uri");
-        if (uri != null) {
-          await handleForegroundLink(uri.toString());
-        }
-      }, onError: (err) {
-        print("Deeplink error: $err");
-        // Handle exception by warning the user their action did not succeed
-      });
-    } catch (e) {
-      print("Error setting up link listener: $e");
-    }
-  }
-
-  Future<void> handleInitialLink(String linkString) async {
-    try {
-      print("🔗 handleInitialLink: $linkString");
-
-      // Enhanced validation for Facebook links
-      bool isFromFacebook =
-          linkString.contains('facebook') || linkString.contains('fb');
-      print("🔗 Link from Facebook: $isFromFacebook");
-
-      // Validate URL format with more flexibility
-      bool isValidTratriLink = linkString.contains('tratri.in/link') ||
-          linkString.startsWith('https://tratri.in/link') ||
-          linkString.startsWith('http://tratri.in/link');
-
-      if (!isValidTratriLink) {
-        print("❌ Invalid URL format: $linkString");
-        // Try to extract tratri.in link from Facebook wrapper
-        final regex = RegExp(r'https?://(?:www\.)?tratri\.in/link[^&]*');
-        final match = regex.firstMatch(linkString);
-        if (match != null) {
-          linkString = match.group(0)!;
-          print("🔗 Extracted link from wrapper: $linkString");
-        } else {
-          return;
-        }
-      }
-
-      final uri = Uri.parse(linkString);
-      print("🔗 Parsed URI: $uri");
-      print("🔗 Query params: ${uri.queryParameters}");
-
-      // Validate required parameters with better error handling
-      if (uri.queryParameters['id'] == null ||
-          uri.queryParameters['details'] == null) {
-        print("❌ Missing required parameters: id or details");
-        // For Facebook links, try to show a helpful message
-        if (isFromFacebook) {
-          print("🔗 Facebook link detected - showing fallback");
-          // You could show a toast or redirect to main app
-        }
-        return;
-      }
-
-      // Add delay for Facebook in-app browser
-      if (isFromFacebook) {
-        print("🔗 Adding delay for Facebook in-app browser");
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
-
-      // Only fetch book details for book-related links
-      if (uri.queryParameters['details'] != "library") {
-        await fetchBookDetails(linkString);
-      }
-
-      goToUrl(linkString);
-      print("🔗 handleInitialLink completed successfully");
-    } catch (e, stackTrace) {
-      print("❌ Error in handleInitialLink: $e");
-      print("❌ Stack trace: $stackTrace");
-      // Don't rethrow - this might cause the fallback to Safari
-    }
-  }
-
-  Future<void> handleForegroundLink(String linkString) async {
-    try {
-      print("🔗 handleForegroundLink: $linkString");
-
-      // Enhanced validation for Facebook links
-      bool isFromFacebook =
-          linkString.contains('facebook') || linkString.contains('fb');
-      print("🔗 Link from Facebook: $isFromFacebook");
-
-      // Validate URL format with more flexibility
-      bool isValidTratriLink = linkString.contains('tratri.in/link') ||
-          linkString.startsWith('https://tratri.in/link') ||
-          linkString.startsWith('http://tratri.in/link');
-
-      if (!isValidTratriLink) {
-        print("❌ Invalid URL format: $linkString");
-        // Try to extract tratri.in link from Facebook wrapper
-        final regex = RegExp(r'https?://(?:www\.)?tratri\.in/link[^&]*');
-        final match = regex.firstMatch(linkString);
-        if (match != null) {
-          linkString = match.group(0)!;
-          print("🔗 Extracted link from wrapper: $linkString");
-        } else {
-          return;
-        }
-      }
-
-      final uri = Uri.parse(linkString);
-      print("🔗 Parsed URI: $uri");
-      print("🔗 Query params: ${uri.queryParameters}");
-
-      // Validate required parameters with better error handling
-      if (uri.queryParameters['id'] == null ||
-          uri.queryParameters['details'] == null) {
-        print("❌ Missing required parameters: id or details");
-        // For Facebook links, try to show a helpful message
-        if (isFromFacebook) {
-          print("🔗 Facebook link detected - showing fallback");
-          // You could show a toast or redirect to main app
-        }
-        return;
-      }
-
-      // Add delay for Facebook in-app browser
-      if (isFromFacebook) {
-        print("🔗 Adding delay for Facebook in-app browser");
-        await Future.delayed(const Duration(milliseconds: 500));
-      }
-
-      // Only fetch book details for book-related links
-      if (uri.queryParameters['details'] != "library") {
-        await fetchBookDetails(linkString);
-      }
-
-      goToUrlSecond(linkString);
-      print("🔗 handleForegroundLink completed successfully");
-    } catch (e, stackTrace) {
-      print("❌ Error in handleForegroundLink: $e");
-      print("❌ Stack trace: $stackTrace");
-      // Don't rethrow - this might cause the fallback to Safari
-    }
-  }
-
-  void goToUrlSecond(String initialLink) {
-    debugPrint("GoToUrlSecond: " + initialLink);
-    final uri = Uri.parse(initialLink);
-    debugPrint("Parsed URI: $uri");
-    debugPrint("Details parameter: ${uri.queryParameters['details']}");
-
-    if (uri.queryParameters['details'] == "reading") {
-      debugPrint("Handling reading link in second method");
-      checkByFormat(uri, initialLink);
-    } else if (uri.queryParameters['details'] == "library") {
-      debugPrint("Handling library link in second method");
-      // Handle library links
-      handleLibraryLink(uri);
-    } else {
-      debugPrint("Handling regular book info link in second method");
-      Navigation.instance.navigate('/bookInfo',
-          args: int.parse(uri.queryParameters['id'] ?? "0"));
-    }
-  }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -327,7 +117,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     if (Home._currentInstance == this) {
       Home._currentInstance = null;
     }
-    _sub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -341,7 +130,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     // Run initialization tasks in parallel for better performance
     Future.wait([
-      initUniLinks(),
       fetchNotifications(),
       fetchAdvertisementBanners(),
     ]).then((_) {
@@ -998,88 +786,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
-  void goToUrl(String initialLink) {
-    debugPrint("GoToUrl: " + initialLink);
-    final uri = Uri.parse(initialLink);
-    debugPrint("Parsed URI: $uri");
-    debugPrint("Details parameter: ${uri.queryParameters['details']}");
-
-    if (uri.queryParameters['details'] == "reading") {
-      debugPrint("Handling reading link");
-      checkByFormat(uri, initialLink);
-    } else if (uri.queryParameters['details'] == "library") {
-      debugPrint("Handling library link");
-      // Handle library links
-      handleLibraryLink(uri);
-    } else {
-      debugPrint("Handling regular book info link");
-      Navigation.instance.navigate('/bookInfo',
-          args: int.parse(uri.queryParameters['id'] ?? "0"));
-    }
-  }
-
-  void checkByFormat(Uri uri, String initialLink) {
-    if (uri.queryParameters['format'] == "e-book") {
-      Provider.of<DataProvider>(context, listen: false).setCurrentTab(0);
-      if (Storage.instance.isLoggedIn) {
-        sentToDestination(uri);
-      } else {
-        Navigation.instance.navigate('/loginReturn');
-        initUniLinks();
-      }
-    } else {
-      Provider.of<DataProvider>(context, listen: false).setCurrentTab(1);
-      if (Storage.instance.isLoggedIn) {
-        sentToDestination(uri);
-      } else {
-        Navigation.instance.navigate('/loginReturn');
-        initUniLinks();
-      }
-    }
-  }
-
-  void sentToDestination(Uri uri) {
-    if (checkIfBoughtOrFree(uri)) {
-      Storage.instance
-          .setReadingBookPage(int.parse(uri.queryParameters['page'] ?? "0"));
-      Navigation.instance.navigate('/bookDetails',
-          args:
-              "${int.parse(uri.queryParameters['id'] ?? "0")},${uri.queryParameters['image']}");
-    } else {
-      Navigation.instance.navigate('/bookInfo',
-          args: int.parse(uri.queryParameters['id'] ?? "0"));
-    }
-  }
-
-  bool checkIfBoughtOrFree(Uri uri) {
-    if (Provider.of<DataProvider>(context, listen: false).myBooks.any(
-        (element) =>
-            (element.id ?? 0) == int.parse(uri.queryParameters['id'] ?? "0"))) {
-      return true;
-    }
-    if (Provider.of<DataProvider>(context, listen: false)
-            .details
-            ?.selling_price
-            ?.toStringAsFixed(2)
-            .toString() ==
-        "0.00") {
-      return true;
-    }
-    return false;
-  }
-
-  Future<void> fetchBookDetails(String? initialLink) async {
-    final uri = Uri.parse(initialLink ?? "");
-    final response = await ApiProvider.instance
-        .fetchBookDetails("${uri.queryParameters['id'] ?? 0}");
-    if (response.status ?? false) {
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
-          .setBookDetails(response.details!);
-    }
-  }
-
   Future<void> fetchNotifications() async {
     final response = await ApiProvider.instance
         .fetchNotification(Storage.instance.isLoggedIn);
@@ -1098,35 +804,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void refreshHomeData() {
     debugPrint("External refresh triggered from mobile number update");
     _onRefresh();
-  }
-
-  void handleLibraryLink(Uri uri) {
-    debugPrint("Handling library link: $uri");
-    debugPrint("Query parameters: ${uri.queryParameters}");
-
-    try {
-      final libraryIdString = uri.queryParameters['id'];
-      debugPrint("Library ID string: $libraryIdString");
-
-      if (libraryIdString == null || libraryIdString.isEmpty) {
-        debugPrint("No library ID found in link");
-        return;
-      }
-
-      final libraryId = int.parse(libraryIdString);
-      debugPrint("Parsed library ID: $libraryId");
-
-      if (libraryId > 0) {
-        debugPrint("Navigating to library with ID: $libraryId");
-        // Navigate to the specific library page using the correct route
-        Navigation.instance.navigate('/libraryDetails', args: libraryId);
-      } else {
-        debugPrint("Invalid library ID: $libraryId");
-      }
-    } catch (e) {
-      debugPrint("Error parsing library link: $e");
-      debugPrint("Stack trace: ${StackTrace.current}");
-    }
   }
 
   Future<void> _loadFormatsAndBannerData() async {

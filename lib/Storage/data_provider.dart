@@ -133,7 +133,12 @@ class DataProvider extends ChangeNotifier {
   void setLibraryTab(int i) => _notifyChange(() => libraryTab = i);
   void setToCart(List<CartItem> list) => _notifyChange(() => items = list);
   void setCupons(List<Discount> list) => _notifyChange(() => coupons = list);
-  void setIndex(int i) => _notifyChange(() => currentIndex = i);
+
+  void setIndex(int i) => _notifyChange(() {
+        print("📍 NAVIGATION INDEX: Changing from $currentIndex to $i");
+        print("📍 STACK TRACE: ${StackTrace.current}");
+        currentIndex = i;
+      });
   void setCategory(int i) => _notifyChange(() => currentCategory = i);
   void setWriterDetails(writer? writer) =>
       _notifyChange(() => writerDetails = writer);

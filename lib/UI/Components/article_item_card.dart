@@ -48,22 +48,22 @@ class articleitemcard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    bookDetails?.title ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontSize: 17.sp,
-                        ),
-                  ),
+                  // Text(
+                  //   bookDetails?.title ?? '',
+                  //   maxLines: 1,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  //         color: Colors.white,
+                  //         fontSize: 17.sp,
+                  //       ),
+                  // ),
                   Text(
                     current?.title ?? '',
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.white60,
-                          fontSize: 15.sp,
+                          color: Colors.white,
+                          fontSize: 17.sp,
                           fontWeight: FontWeight.bold,
                         ),
                   ),
@@ -72,10 +72,11 @@ class articleitemcard extends StatelessWidget {
                   // ),
                   Text(
                     current?.short_note ?? '',
-                    maxLines: 2,
+                    maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Colors.white,
+                          color: Colors.white70,
+                      fontSize: 14.sp,
                           // fontWeight: FontWeight.bold,
                         ),
                   ),

@@ -578,24 +578,43 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    try {
+      final googleSignIn = GoogleSignIn.instance;
 
-    if (googleUser == null) {
-      throw Exception("Google sign in aborted by user");
+      // Define scopes you need (required for getting accessToken in v7)
+      const List<String> scopes = [
+        'email',
+        'profile',
+      ];
+
+      // Check if the platform supports authenticate method
+      if (googleSignIn.supportsAuthenticate()) {
+        // Trigger the authentication flow
+        final GoogleSignInAccount googleUser =
+        await googleSignIn.authenticate();
+
+        // Request authorization for the scopes to get accessToken
+        final authorization =
+        await googleUser.authorizationClient.authorizeScopes(scopes);
+
+        // Get the idToken from authentication
+        final googleAuth = googleUser.authentication;
+
+        // Create Firebase credential with both tokens
+        final credential = GoogleAuthProvider.credential(
+          accessToken: authorization.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        // Sign in to Firebase
+        return await FirebaseAuth.instance.signInWithCredential(credential);
+      } else {
+        // For web, you need to use platform-specific approach
+        throw Exception(
+            'Platform does not support authenticate(). Use Google button renderer for web.');
+      }
+    } catch (e) {
+      rethrow;
     }
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }

@@ -44,6 +44,21 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    // Check for stored deep link route and navigate to it
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Storage.instance.targetRoute != null) {
+        final route = Storage.instance.targetRoute!;
+        final args = Storage.instance.targetArguments;
+        print(" HOME: Found stored route: $route with args: $args");
+        Storage.instance.clearTargetRoute();
+
+        Future.delayed(const Duration(milliseconds: 100), () {
+          Navigation.instance.navigate(route, args: args);
+          print(" HOME: Navigated to stored route: $route");
+        });
+      }
+    });
+
     return SafeArea(
       child: WillPopScope(
         onWillPop: () async {
@@ -189,30 +204,10 @@ class _HomePageState extends State<HomePage>
               Navigation.instance.navigatorKey.currentContext ?? context,
               listen: false)
           .setCurrentTab(_controller?.index ?? 0);
-      if (Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey.currentContext ??
-                          context,
-                      listen: false)
-                  .currentIndex ==
-              1 ||
-          Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey.currentContext ??
-                          context,
-                      listen: false)
-                  .currentIndex ==
-              2 ||
-          Provider.of<DataProvider>(
-                      Navigation.instance.navigatorKey.currentContext ??
-                          context,
-                      listen: false)
-                  .currentIndex ==
-              3) {
-        Provider.of<DataProvider>(
-                Navigation.instance.navigatorKey.currentContext ?? context,
-                listen: false)
-            .setIndex(0);
-      }
-      debugPrint('index ${_controller?.index}');
+
+      // Removed automatic index resetting that was causing navigation back to home
+      // This was interfering with deep link navigation
+      debugPrint('Tab controller index changed to: ${_controller?.index}');
     });
   }
 
