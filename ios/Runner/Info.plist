@@ -26,8 +26,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>15.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -69,26 +67,6 @@
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.xamtech.tratri.universallinks</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>https</string>
-				<string>http</string>
-			</array>
-		</dict>
-	</array>
-	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>applinks:tratri.in</string>
-		<string>applinks:www.tratri.in</string>
-	</array>
-	<key>GIDClientID</key>
-    <string>988029776739-61ivga0i77qshvu37v6mkj5r5nr7hqiv.apps.googleusercontent.com</string>
-
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
             <key>CFBundleTypeRole</key>
             <string>Editor</string>
             <key>CFBundleURLSchemes</key>
@@ -96,6 +74,8 @@
                 <string>com.googleusercontent.apps.988029776739-61ivga0i77qshvu37v6mkj5r5nr7hqiv</string>
             </array>
         </dict>
-    </array>
+	</array>
+	<key>GIDClientID</key>
+    <string>988029776739-61ivga0i77qshvu37v6mkj5r5nr7hqiv.apps.googleusercontent.com</string>
 </dict>
 </plist>

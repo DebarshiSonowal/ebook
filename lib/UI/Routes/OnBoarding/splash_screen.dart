@@ -65,6 +65,23 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void initiateSplash() {
     Future.delayed(const Duration(seconds: ConstanceData.splashTime), () {
+      // Check if we have a stored target route from deep link
+      final hasTargetRoute = Storage.instance.targetRoute != null;
+      
+      if (hasTargetRoute) {
+        print("🚀 SPLASH: Deep link route detected, navigating to main");
+        // Navigate to main and let HomePage handle the deep link
+        if (Storage.instance.isLoggedIn) {
+          fetchProfile();
+          Navigation.instance.navigateAndRemoveUntil('/main');
+        } else {
+          // If not logged in, clear the target and go to login
+          Storage.instance.clearTargetRoute();
+          Navigation.instance.navigateAndRemoveUntil('/main');
+        }
+        return;
+      }
+      
       if (Storage.instance.isDeepLinkProcessed) {
         print(
             "🚀 SPLASH: Deep link was processed, skipping automatic navigation to main");
@@ -108,6 +125,10 @@ class _SplashScreenState extends State<SplashScreen> {
         fetchBookmarks(),
         fetchCupons(),
       ]);
+      
+      // Mark data as loaded after all initial data is fetched
+      Storage.instance.setDataLoaded(true);
+      debugPrint("🚀 SPLASH: All initial data loaded successfully");
     }
   }
 

@@ -460,18 +460,37 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   Future<void> _handleGoogleSignIn() async {
     try {
       final response = await signInWithGoogle();
-      loginSocial(
-        response.user?.displayName?.split(" ")[0] ?? "",
-        (response.user?.displayName?.split(" ").length ?? 0) > 1
-            ? response.user?.displayName?.split(" ")[1] ?? ""
-            : "",
-        response.user?.email ?? "",
-        "",
-        "google",
-        response.user?.phoneNumber ?? "",
-        "",
-      );
+
+      // Check if sign-in was successful
+      if (response.user != null) {
+        loginSocial(
+          response.user?.displayName?.split(" ")[0] ?? "",
+          (response.user?.displayName?.split(" ").length ?? 0) > 1
+              ? response.user?.displayName?.split(" ")[1] ?? ""
+              : "",
+          response.user?.email ?? "",
+          "",
+          "google",
+          response.user?.phoneNumber ?? "",
+          "",
+        );
+      }
+    } on GoogleSignInException catch (e) {
+      // Handle Google Sign-In specific exceptions
+      if (e.code == GoogleSignInExceptionCode.canceled) {
+        // User cancelled - don't show error, just silently return
+        debugPrint("Google Sign-In cancelled by user");
+        return;
+      } else {
+        debugPrint("Google Sign-In error: ${e}");
+        Fluttertoast.showToast(
+          msg: "Google Sign In failed: ${e}",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
     } catch (e) {
+      debugPrint("Unexpected error during Google Sign-In: $e");
       Fluttertoast.showToast(
         msg: "Google Sign In failed. Please try again.",
         toastLength: Toast.LENGTH_SHORT,
@@ -580,39 +599,30 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   Future<UserCredential> signInWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn.instance;
+      
+      // Initialize Google Sign In (required in v7.2.0)
+      await googleSignIn.initialize();
 
-      // Define scopes you need (required for getting accessToken in v7)
-      const List<String> scopes = [
-        'email',
-        'profile',
-      ];
+      // Trigger the authentication flow
+      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
 
-      // Check if the platform supports authenticate method
-      if (googleSignIn.supportsAuthenticate()) {
-        // Trigger the authentication flow
-        final GoogleSignInAccount googleUser =
-        await googleSignIn.authenticate();
+      // Define scopes needed for authorization
+      const List<String> scopes = ['email', 'profile'];
 
-        // Request authorization for the scopes to get accessToken
-        final authorization =
-        await googleUser.authorizationClient.authorizeScopes(scopes);
+      // Request authorization for the scopes to get accessToken
+      final authorization = await googleUser.authorizationClient.authorizeScopes(scopes);
 
-        // Get the idToken from authentication
-        final googleAuth = googleUser.authentication;
+      // Get the idToken from authentication
+      final googleAuth = googleUser.authentication;
 
-        // Create Firebase credential with both tokens
-        final credential = GoogleAuthProvider.credential(
-          accessToken: authorization.accessToken,
-          idToken: googleAuth.idToken,
-        );
+      // Create Firebase credential with both tokens
+      final credential = GoogleAuthProvider.credential(
+        accessToken: authorization.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-        // Sign in to Firebase
-        return await FirebaseAuth.instance.signInWithCredential(credential);
-      } else {
-        // For web, you need to use platform-specific approach
-        throw Exception(
-            'Platform does not support authenticate(). Use Google button renderer for web.');
-      }
+      // Sign in to Firebase
+      return await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
       rethrow;
     }

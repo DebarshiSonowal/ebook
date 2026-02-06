@@ -44,18 +44,15 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    // Check for stored deep link route and navigate to it
+    // Check for stored deep link route and navigate to it with error handling
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Storage.instance.targetRoute != null) {
         final route = Storage.instance.targetRoute!;
         final args = Storage.instance.targetArguments;
         print(" HOME: Found stored route: $route with args: $args");
-        Storage.instance.clearTargetRoute();
-
-        Future.delayed(const Duration(milliseconds: 100), () {
-          Navigation.instance.navigate(route, args: args);
-          print(" HOME: Navigated to stored route: $route");
-        });
+        
+        // Wait for data to be loaded before navigating
+        _navigateToDeepLink(route, args);
       }
     });
 
@@ -564,5 +561,111 @@ class _HomePageState extends State<HomePage>
       Provider.of<DataProvider>(context, listen: false)
           .setPublicLibraries(response.result ?? []);
     } else {}
+  }
+
+  // Helper method to safely navigate to deep link with retry logic
+  Future<void> _navigateToDeepLink(String route, Object? args, {int retryCount = 0}) async {
+    const maxRetries = 3;
+    const retryDelay = Duration(milliseconds: 500);
+    
+    try {
+      // Check if data is loaded
+      if (!Storage.instance.isDataLoaded) {
+        if (retryCount < maxRetries) {
+          print(" HOME: Data not loaded yet, retrying in ${retryDelay.inMilliseconds}ms (attempt ${retryCount + 1}/$maxRetries)");
+          await Future.delayed(retryDelay);
+          return _navigateToDeepLink(route, args, retryCount: retryCount + 1);
+        } else {
+          print(" HOME: ⚠️ Data still not loaded after $maxRetries retries, navigating anyway");
+        }
+      }
+      
+      // Validate the route and arguments
+      bool isValid = _validateDeepLinkNavigation(route, args);
+      
+      if (!isValid) {
+        print(" HOME: ❌ Invalid deep link parameters, staying on home page");
+        Storage.instance.clearTargetRoute();
+        return;
+      }
+      
+      // Clear the target route before navigating
+      Storage.instance.clearTargetRoute();
+      
+      // Add a small delay to ensure UI is ready
+      await Future.delayed(const Duration(milliseconds: 200));
+      
+      // Navigate with error handling
+      print(" HOME: ✅ Navigating to $route with args: $args");
+      Navigation.instance.navigate(route, args: args);
+      print(" HOME: ✅ Navigation completed successfully");
+      
+    } catch (e, stackTrace) {
+      print(" HOME: ❌ Error navigating to deep link: $e");
+      print(" HOME: Stack trace: $stackTrace");
+      
+      // Clear the target route to prevent infinite retry
+      Storage.instance.clearTargetRoute();
+      
+      // Show error to user (optional)
+      debugPrint("Failed to navigate to deep link: $e");
+      
+      // Stay on home page as fallback
+    }
+  }
+  
+  // Validate deep link navigation parameters
+  bool _validateDeepLinkNavigation(String route, Object? args) {
+    print(" HOME: Validating route: $route with args: $args");
+    
+    switch (route) {
+      case '/bookDetails':
+        // Validate book details arguments (should be "id,image" format)
+        if (args is String) {
+          final parts = args.split(',');
+          if (parts.isNotEmpty) {
+            final id = int.tryParse(parts[0]);
+            if (id != null && id > 0) {
+              print(" HOME: ✅ Valid bookDetails route with ID: $id");
+              return true;
+            }
+          }
+        }
+        print(" HOME: ❌ Invalid bookDetails arguments: $args");
+        return false;
+        
+      case '/bookInfo':
+      case '/magazineDetails':
+      case '/libraryDetails':
+      case '/reading':
+      case '/notificationBookList':
+        // Validate numeric ID
+        if (args is int && args > 0) {
+          print(" HOME: ✅ Valid $route with ID: $args");
+          return true;
+        } else if (args is String) {
+          final id = int.tryParse(args);
+          if (id != null && id > 0) {
+            print(" HOME: ✅ Valid $route with ID: $id");
+            return true;
+          }
+        }
+        print(" HOME: ❌ Invalid $route arguments: $args");
+        return false;
+        
+      case '/categories':
+        // Validate category type
+        if (args is String && args.isNotEmpty) {
+          print(" HOME: ✅ Valid categories route with type: $args");
+          return true;
+        }
+        print(" HOME: ❌ Invalid categories arguments: $args");
+        return false;
+        
+      default:
+        // Unknown route, allow it but log warning
+        print(" HOME: ⚠️ Unknown route: $route, allowing navigation");
+        return true;
+    }
   }
 }

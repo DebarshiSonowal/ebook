@@ -159,12 +159,26 @@ void _handleTratriLinkWithParams(Uri uri) {
 
   print(" LINK: Format: $format, ID: $id, Details: $details");
 
+  // Validate ID parameter
+  if (id == null || id.isEmpty) {
+    print(" LINK: ❌ Missing or empty ID parameter, cannot process deep link");
+    _clearDebounceState();
+    return;
+  }
+
+  final parsedId = int.tryParse(id);
+  if (parsedId == null || parsedId <= 0) {
+    print(" LINK: ❌ Invalid ID parameter: $id");
+    _clearDebounceState();
+    return;
+  }
+
   // Handle different link types based on query parameters
   if (details == "reading") {
     print(" LINK: Storing reading link target");
     final image = params['image'] ?? '';
     Storage.instance.setTargetRoute('/bookDetails',
-        arguments: "${int.tryParse(id ?? '0') ?? 0},$image");
+        arguments: "${parsedId},$image");
     Storage.instance
         .setReadingBookPage(int.tryParse(params['page'] ?? '0') ?? 0);
     _setTabBasedOnFormat(format ?? 'e-book');
@@ -172,34 +186,29 @@ void _handleTratriLinkWithParams(Uri uri) {
     _clearDebounceState();
   } else if (details == "library" || format == "library") {
     print(" LINK: Storing library link target");
-    if (id != null) {
-      Storage.instance
-          .setTargetRoute('/libraryDetails', arguments: int.tryParse(id) ?? 0);
-      Storage.instance.setDeepLinkProcessed(true);
-      _clearDebounceState();
-    }
-  } else if (format == "magazine" && id != null) {
+    Storage.instance
+        .setTargetRoute('/libraryDetails', arguments: parsedId);
+    Storage.instance.setDeepLinkProcessed(true);
+    _clearDebounceState();
+  } else if (format == "magazine") {
     print(" LINK: Storing magazine link target");
     Storage.instance.setTargetRoute('/magazineDetails', arguments: id);
     _setTabBasedOnFormat('magazine');
     Storage.instance.setDeepLinkProcessed(true);
     _clearDebounceState();
-  } else if (format == "e-note" && id != null) {
+  } else if (format == "e-note") {
     print(" LINK: Storing e-note link target");
     Storage.instance
-        .setTargetRoute('/bookInfo', arguments: int.tryParse(id) ?? 0);
+        .setTargetRoute('/bookInfo', arguments: parsedId);
     _setTabBasedOnFormat('e-note');
     Storage.instance.setDeepLinkProcessed(true);
     _clearDebounceState();
-  } else if (id != null) {
+  } else {
     print(" LINK: Storing default book info link target (e-book)");
     Storage.instance
-        .setTargetRoute('/bookInfo', arguments: int.tryParse(id) ?? 0);
+        .setTargetRoute('/bookInfo', arguments: parsedId);
     _setTabBasedOnFormat('e-book');
     Storage.instance.setDeepLinkProcessed(true);
-    _clearDebounceState();
-  } else {
-    print(" LINK: No valid parameters, no target stored");
     _clearDebounceState();
   }
 }

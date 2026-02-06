@@ -64,58 +64,36 @@ import Flutter
         let path = webpageURL.path
         print("🔗 AppDelegate: URL path analysis - received: '\(path)'")
         
-        // Validate the path matches expected patterns
-        let supportedPaths = ["/link", "/book/", "/reading/"]
+        // Match paths defined in apple-app-site-association
+        let supportedPaths = ["/link", "/app", "/bookDetails", "/magazineDetails", "/categories", "/bookInfo"]
         print("🔗 AppDelegate: Supported paths: \(supportedPaths)")
         
         var pathMatches = false
         var matchedPattern = ""
         
+        // Check if path starts with any supported pattern
         for pathPattern in supportedPaths {
-          if pathPattern.hasSuffix("/") {
-            // Pattern ends with slash - check if path starts with it
-            if path.hasPrefix(pathPattern) {
-              pathMatches = true
-              matchedPattern = pathPattern
-              break
-            }
-          } else {
-            // Exact match
-            if path == pathPattern {
-              pathMatches = true
-              matchedPattern = pathPattern
-              break
-            }
+          if path == pathPattern || path.hasPrefix(pathPattern + "/") || path.hasPrefix(pathPattern + "?") {
+            pathMatches = true
+            matchedPattern = pathPattern
+            break
           }
         }
         
         print("🔗 AppDelegate: Path matches: \(pathMatches), pattern: '\(matchedPattern)'")
         
-        if pathMatches {
-          print("🔗 AppDelegate: ✅ Path matches supported patterns")
-          
-          // Additional validation - check if URL looks like a valid deep link
-          if webpageURL.query?.contains("id=") == true {
-            print("🔗 AppDelegate: ✅ URL contains id parameter")
-          } else {
-            print("🔗 AppDelegate: ⚠️ URL does not contain id parameter")
-          }
-          
-          // Let the plugin handle it
-          print("🔗 AppDelegate: Calling super.application for universal link handling")
-          let result = super.application(application, continue: userActivity, restorationHandler: restorationHandler)
-          print("🔗 AppDelegate: Super result: \(result)")
-          
-          // Force return true to ensure the link is handled
-          if result {
-            print("🔗 AppDelegate: ✅ Universal link handled successfully")
-          } else {
-            print("🔗 AppDelegate: ⚠️ Super returned false, but forcing true")
-          }
-          return true
-        } else {
-          print("🔗 AppDelegate: ❌ Path doesn't match supported patterns: '\(path)'")
-        }
+        // Accept all tratri.in URLs regardless of path
+        // This ensures universal links always open the app
+        print("🔗 AppDelegate: ✅ Accepting universal link for tratri.in domain")
+        
+        // Let the plugin handle it
+        print("🔗 AppDelegate: Calling super.application for universal link handling")
+        let result = super.application(application, continue: userActivity, restorationHandler: restorationHandler)
+        print("🔗 AppDelegate: Super result: \(result)")
+        
+        // Always return true to ensure the link opens the app
+        print("🔗 AppDelegate: ✅ Universal link handled - returning true")
+        return true
       } else {
         print("🔗 AppDelegate: ❌ Domain doesn't match tratri.in: '\(webpageURL.host ?? "unknown")'")
       }
@@ -156,8 +134,9 @@ import Flutter
     print("🔗 AppDelegate: Will continue user activity with type: \(userActivityType)")
     if userActivityType == NSUserActivityTypeBrowsingWeb {
       print("🔗 AppDelegate: ✅ Will continue browsing web activity")
+      return true
     }
-    return super.application(application, willContinueUserActivityWithType: userActivityType)
+    return true
   }
   
   // Handle errors in universal links
@@ -165,6 +144,6 @@ import Flutter
     print("🔗 AppDelegate: ❌ Failed to continue user activity: \(userActivityType)")
     print("🔗 AppDelegate: ❌ Error: \(error.localizedDescription)")
     print("🔗 AppDelegate: ❌ Error details: \(error)")
-    super.application(application, didFailToContinueUserActivityWithType: userActivityType, error: error)
+    // Don't call super - FlutterAppDelegate doesn't implement this method
   }
 }

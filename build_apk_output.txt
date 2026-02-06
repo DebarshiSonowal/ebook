@@ -1,0 +1,48 @@
+Running Gradle task 'assembleDebug'...                          
+Warning: Flutter support for your project's Kotlin version (1.9.23) will soon be dropped. Please upgrade your Kotlin version to a version of at least 2.1.0 soon.
+Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+
+Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/Volumes/DebarshisSSD/Updated/ebook/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
+If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/Volumes/DebarshisSSD/Updated/ebook/android/build.gradle) by the ext.kotlin_version property.
+
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:mergeDebugNativeLibs'.
+> Could not resolve all files for configuration ':app:debugRuntimeClasspath'.
+   > Failed to transform armeabi_v7a_debug-1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca.jar (io.flutter:armeabi_v7a_debug:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca) to match attributes {artifactType=android-jni, org.gradle.category=library, org.gradle.libraryelements=jar, org.gradle.status=release, org.gradle.usage=java-runtime}.
+      > Execution failed for ExtractJniTransform: /Users/debarshisonowal/.gradle/caches/8.11.1/transforms/e91bf13451c949c459829433a1737f4b/transformed/jetified-armeabi_v7a_debug-1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca.jar.
+         > No space left on device
+   > Failed to transform arm64_v8a_debug-1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca.jar (io.flutter:arm64_v8a_debug:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca) to match attributes {artifactType=android-jni, org.gradle.category=library, org.gradle.libraryelements=jar, org.gradle.status=release, org.gradle.usage=java-runtime}.
+      > Execution failed for ExtractJniTransform: /Users/debarshisonowal/.gradle/caches/8.11.1/transforms/2b0ee6e996e40f1f4b145b50c16ce6ed/transformed/jetified-arm64_v8a_debug-1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca.jar.
+         > No space left on device
+   > Failed to transform x86_64_debug-1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca.jar (io.flutter:x86_64_debug:1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca) to match attributes {artifactType=android-jni, org.gradle.category=library, org.gradle.libraryelements=jar, org.gradle.status=release, org.gradle.usage=java-runtime}.
+      > Execution failed for ExtractJniTransform: /Users/debarshisonowal/.gradle/caches/8.11.1/transforms/55746c5de7e3202cba20a0825cd76cc2/transformed/jetified-x86_64_debug-1.0.0-035316565ad77281a75305515e4682e6c4c6f7ca.jar.
+         > No space left on device
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:minifyDebugWithR8'.
+> Failed to store cache entry 9fd6ab193534b6bf67cf0b0a8b28b80b for task ':app:minifyDebugWithR8': Could not pack tree 'proguardUsageOutput': java.io.IOException: No space left on device
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 59s
+Running Gradle task 'assembleDebug'...                             59.3s
+Gradle task assembleDebug failed with exit code 1

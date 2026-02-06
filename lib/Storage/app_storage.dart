@@ -26,6 +26,9 @@ class Storage {
   // Store target route for persistent navigation
   String? _targetRoute;
   Object? _targetArguments;
+  
+  // Track when initial data loading is complete
+  bool _isDataLoaded = false;
 
   Future<void> initializeStorage() async {
     sharedpreferences = await SharedPreferences.getInstance();
@@ -89,6 +92,14 @@ class Storage {
     _targetRoute = null;
     _targetArguments = null;
   }
+
+  // Data loading state management
+  void setDataLoaded(bool value) {
+    _isDataLoaded = value;
+    print("📊 DATA: Initial data loading complete: $value");
+  }
+
+  bool get isDataLoaded => _isDataLoaded;
 
   // Cache management methods
   Future<void> setApiCache(String key, String jsonData) async {

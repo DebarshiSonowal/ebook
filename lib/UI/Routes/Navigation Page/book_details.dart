@@ -24,7 +24,6 @@ import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
-
 class BookDetails extends StatefulWidget {
   final String input;
 
@@ -38,6 +37,7 @@ class _BookDetailsState extends State<BookDetails>
     with SingleTickerProviderStateMixin {
   String title = '';
   bool isShowing = false;
+  bool isBottomSheetOpen = false; // Add this state variable
   bool canShare = false;
   Book? bookDetails;
   BookChapterWithAdsResponse? chaptersResponse;
@@ -163,13 +163,11 @@ class _BookDetailsState extends State<BookDetails>
     $content
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        // Add click listeners to all images
         const images = document.querySelectorAll('img');
         images.forEach(function(img) {
           img.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            // Send message to Flutter
             window.flutter_inappwebview.callHandler('imageClicked', img.src);
           });
         });
@@ -180,13 +178,9 @@ class _BookDetailsState extends State<BookDetails>
   ''';
   }
 
-
-
   void _initializeAllWebViewControllers() {
-    // Clear existing controllers
     webViewControllers.clear();
 
-    // Pre-create all controllers to avoid index out of range errors
     for (int i = 0; i < reading.length; i++) {
       final content = reading[i].desc ?? '';
       webViewControllers.add(createWebViewController(content, i));
@@ -195,164 +189,243 @@ class _BookDetailsState extends State<BookDetails>
 
   @override
   Widget build(BuildContext context) {
+    final currentPage = pageController.hasClients ? (pageController.page?.toInt() ?? 0) : 0;
+    final isFirstPage = currentPage == 0;
+    final isLastPage = currentPage >= reading.length - 1;
+
     return Scaffold(
       appBar: isShowing
           ? AppBar(
-              iconTheme: IconThemeData(color: getTextColor()),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: getTextColor()),
-                onPressed: () => Navigation.instance.goBack(),
-              ),
-              title: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium
-                    ?.copyWith(color: getTextColor(), fontSize: 16.sp),
-              ),
-              backgroundColor: getBackGroundColor(),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => buildAlertDialog(),
-                    );
-                  },
-                  icon: Icon(Icons.font_download, color: getTextColor()),
-                ),
-                if (reviewUrl.isNotEmpty)
-                  IconButton(
-                    onPressed: () => _launchUrl(reviewUrl),
-                    icon: Icon(Icons.reviews, color: getTextColor()),
-                  ),
-                if (canShare)
-                  IconButton(
-                    onPressed: _shareBook,
-                    icon: Icon(Icons.share, color: getTextColor()),
-                  ),
-              ],
-            )
+        iconTheme: IconThemeData(color: getTextColor()),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: getTextColor()),
+          onPressed: () => Navigation.instance.goBack(),
+        ),
+        title: Text(
+          title,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context)
+              .textTheme
+              .displayMedium
+              ?.copyWith(color: getTextColor(), fontSize: 16.sp),
+        ),
+        backgroundColor: getBackGroundColor(),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => buildAlertDialog(),
+              );
+            },
+            icon: Icon(Icons.font_download, color: getTextColor()),
+          ),
+          if (reviewUrl.isNotEmpty)
+            IconButton(
+              onPressed: () => _launchUrl(reviewUrl),
+              icon: Icon(Icons.reviews, color: getTextColor()),
+            ),
+          if (canShare)
+            IconButton(
+              onPressed: _shareBook,
+              icon: Icon(Icons.share, color: getTextColor()),
+            ),
+        ],
+      )
           : null,
       body: SafeArea(
-        child: Container(
-          key: pageKey,
-          height: double.infinity,
-          width: double.infinity,
-          color: getBodyColor(),
-          child: bookDetails == null
-              ? const Center(child: CircularProgressIndicator())
-              : Consumer<DataProvider>(
-                  builder: (context, data, _) {
-                    if (chapters.isEmpty) {
-                      return Center(
-                        child: Text(
-                          bookDetails != null
-                              ? ''
-                              : 'Oops No Data available here',
-                          style: TextStyle(color: getBackGroundColor()),
-                        ),
-                      );
-                    }
-
-                    return PageView.builder(
-                      controller: pageController,
-                      scrollDirection: Axis.horizontal,
-                      physics: const ClampingScrollPhysics(),
-                      itemCount: reading.length,
-                      onPageChanged: (val) {
-                        final currentReadingPage = reading[val];
-                        final actualPageNumber =
-                            currentReadingPage.ads_number ?? 0;
-                        final isAdPage =
-                            chaptersResponse?.isAdPage(actualPageNumber) ??
-                                false;
-
-                        if (isAdPage) {
-                          showAds(actualPageNumber);
-                        }
-                      },
-                      itemBuilder: (context, index) {
-                        final content = reading[index].desc ?? '';
-
-                        // Ensure we have a controller for this index
-                        while (webViewControllers.length <= index) {
-                          final idx = webViewControllers.length;
-                          final pageContent = reading[idx].desc ?? '';
-                          webViewControllers
-                              .add(createWebViewController(pageContent, idx));
-                        }
-
-                        // Use Stack to layer gesture detector only on specific areas
-                        return Stack(
-                          children: [
-                            // WebView takes full space and handles its own gestures
-                            Container(
-                              width: 98.w,
-                              color: getTextColor(),
-                              child: WebViewWidget(
-                                controller: webViewControllers[index],
-                                gestureRecognizers: {
-                                  Factory<VerticalDragGestureRecognizer>(
-                                    () => VerticalDragGestureRecognizer(),
-                                  ),
-                                },
-                              ),
-                            ),
-
-                            // Top tap area (20% of screen)
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () {
-                                  setState(() {
-                                    isShowing = !isShowing;
-                                  });
-                                  if (isShowing) {
-                                    showBottomSlider(reading.length);
-                                  }
-                                },
-                                child: Container(color: Colors.transparent),
-                              ),
-                            ),
-
-                            // Bottom tap area (20% of screen)
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              right: 0,
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () {
-                                  setState(() {
-                                    isShowing = !isShowing;
-                                  });
-                                  if (isShowing) {
-                                    showBottomSlider(reading.length);
-                                  }
-                                },
-                                child: Container(color: Colors.transparent),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+        child: Stack(
+          children: [
+            Container(
+              key: pageKey,
+              height: double.infinity,
+              width: double.infinity,
+              color: getBodyColor(),
+              child: bookDetails == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : Consumer<DataProvider>(
+                builder: (context, data, _) {
+                  if (chapters.isEmpty) {
+                    return Center(
+                      child: Text(
+                        bookDetails != null ? '' : 'Oops No Data available here',
+                        style: TextStyle(color: getBackGroundColor()),
+                      ),
                     );
-                  },
+                  }
+
+                  return PageView.builder(
+                    controller: pageController,
+                    scrollDirection: Axis.horizontal,
+                    physics: const ClampingScrollPhysics(),
+                    itemCount: reading.length,
+                    onPageChanged: (val) {
+                      final currentReadingPage = reading[val];
+                      final actualPageNumber = currentReadingPage.ads_number ?? 0;
+                      final isAdPage = chaptersResponse?.isAdPage(actualPageNumber) ?? false;
+
+                      if (isAdPage) {
+                        showAds(actualPageNumber);
+                      }
+                      setState(() {}); // Update FAB visibility
+                    },
+                    itemBuilder: (context, index) {
+                      final content = reading[index].desc ?? '';
+
+                      while (webViewControllers.length <= index) {
+                        final idx = webViewControllers.length;
+                        final pageContent = reading[idx].desc ?? '';
+                        webViewControllers.add(createWebViewController(pageContent, idx));
+                      }
+
+                      return Stack(
+                        children: [
+                          Container(
+                            width: 98.w,
+                            color: getTextColor(),
+                            child: WebViewWidget(
+                              controller: webViewControllers[index],
+                              gestureRecognizers: {
+                                Factory<VerticalDragGestureRecognizer>(
+                                      () => VerticalDragGestureRecognizer(),
+                                ),
+                              },
+                            ),
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                setState(() {
+                                  isShowing = !isShowing;
+                                });
+                                if (isShowing) {
+                                  showBottomSlider(reading.length);
+                                }
+                              },
+                              child: Container(color: Colors.transparent),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                setState(() {
+                                  isShowing = !isShowing;
+                                });
+                                if (isShowing) {
+                                  showBottomSlider(reading.length);
+                                }
+                              },
+                              child: Container(color: Colors.transparent),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+
+            // Left Navigation FAB - Only show when bottom sheet is open
+            if (!isFirstPage && reading.isNotEmpty && isBottomSheetOpen)
+              Positioned(
+                left: 3.w,
+                top: MediaQuery.of(context).size.height * 0.5 - 28,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        if (currentPage > 0) {
+                          pageController.previousPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      customBorder: const CircleBorder(),
+                      child: Container(
+                        padding: EdgeInsets.all(2.w),
+                        child: Icon(
+                          Icons.chevron_left,
+                          color: Colors.white,
+                          size: 28.sp,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
+              ),
+
+            // Right Navigation FAB - Only show when bottom sheet is open
+            if (!isLastPage && reading.isNotEmpty && isBottomSheetOpen)
+              Positioned(
+                right: 3.w,
+                top: MediaQuery.of(context).size.height * 0.5 - 28,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        if (currentPage < reading.length - 1) {
+                          pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      customBorder: const CircleBorder(),
+                      child: Container(
+                        padding: EdgeInsets.all(2.w),
+                        child: Icon(
+                          Icons.chevron_right,
+                          color: Colors.white,
+                          size: 28.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
   void updateWebViewContent() {
-    // Recreate all controllers with new theme/font settings
     _initializeAllWebViewControllers();
     setState(() {});
   }
@@ -376,10 +449,8 @@ class _BookDetailsState extends State<BookDetails>
               children: [
                 Text(
                   "Theme",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(color: getBackGroundColor(), fontSize: 16.sp),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: getBackGroundColor(), fontSize: 16.sp),
                 ),
                 SizedBox(height: 1.h),
                 SizedBox(
@@ -401,9 +472,7 @@ class _BookDetailsState extends State<BookDetails>
                           decoration: BoxDecoration(
                             color: data.color2,
                             border: Border.all(
-                              color: selectedTheme == index
-                                  ? Colors.blue
-                                  : data.color2!,
+                              color: selectedTheme == index ? Colors.blue : data.color2!,
                             ),
                           ),
                           height: 5.h,
@@ -414,8 +483,7 @@ class _BookDetailsState extends State<BookDetails>
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineSmall
-                                  ?.copyWith(
-                                      color: data.color1, fontSize: 14.sp),
+                                  ?.copyWith(color: data.color1, fontSize: 14.sp),
                             ),
                           ),
                         ),
@@ -427,21 +495,16 @@ class _BookDetailsState extends State<BookDetails>
                 SizedBox(height: 1.h),
                 Text(
                   "Font Size",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(color: getBackGroundColor(), fontSize: 17.sp),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: getBackGroundColor(), fontSize: 17.sp),
                 ),
                 SizedBox(height: 0.5.h),
                 ToggleSwitch(
                   minWidth: 17.w,
                   minHeight: 4.h,
                   fontSize: 14.sp,
-                  initialLabelIndex: _counterValue == 17.sp
-                      ? 0
-                      : _counterValue == 20.sp
-                          ? 1
-                          : 2,
+                  initialLabelIndex:
+                  _counterValue == 17.sp ? 0 : _counterValue == 20.sp ? 1 : 2,
                   activeBgColor: const [Colors.black87],
                   activeFgColor: Colors.white,
                   inactiveBgColor: Colors.grey,
@@ -461,10 +524,8 @@ class _BookDetailsState extends State<BookDetails>
                 SizedBox(height: 1.h),
                 Text(
                   "Brightness",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(color: getBackGroundColor(), fontSize: 17.sp),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: getBackGroundColor(), fontSize: 17.sp),
                 ),
                 Slider(
                   value: brightness,
@@ -513,10 +574,10 @@ class _BookDetailsState extends State<BookDetails>
       try {
         await Share.share(
           'https://tratri.in/link?format=${Uri.encodeComponent(bookDetails?.book_format ?? '')}'
-          '&id=${bookDetails?.id}'
-          '&details=reading'
-          '&page=${pageController.page?.toInt()}'
-          '&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}',
+              '&id=${bookDetails?.id}'
+              '&details=reading'
+              '&page=${pageController.page?.toInt()}'
+              '&image=${Uri.encodeComponent(bookDetails?.profile_pic ?? '')}',
         );
       } catch (fallbackError) {
         debugPrint('Fallback share failed: $fallbackError');
@@ -559,7 +620,7 @@ class _BookDetailsState extends State<BookDetails>
         });
 
         final chaptersResponseLocal =
-            await ApiProvider.instance.fetchBookChaptersWithAds(bookId);
+        await ApiProvider.instance.fetchBookChaptersWithAds(bookId);
 
         if (!mounted) return;
 
@@ -575,8 +636,7 @@ class _BookDetailsState extends State<BookDetails>
               final content = page.content;
               if (content != null) {
                 final currentPageNo = page.current_page_no ?? 0;
-                final shouldShowAd =
-                    chaptersResponseLocal.isAdPage(currentPageNo);
+                final shouldShowAd = chaptersResponseLocal.isAdPage(currentPageNo);
                 reading.add(
                   ReadingChapter(
                     '',
@@ -591,11 +651,9 @@ class _BookDetailsState extends State<BookDetails>
           }
 
           setState(() {
-            reviewUrl =
-                chapters.isNotEmpty ? (chapters[0].review_url ?? "") : "";
+            reviewUrl = chapters.isNotEmpty ? (chapters[0].review_url ?? "") : "";
           });
 
-          // Initialize all WebView controllers after reading data is ready
           _initializeAllWebViewControllers();
         }
 
@@ -616,8 +674,7 @@ class _BookDetailsState extends State<BookDetails>
           onWillPop: () async => false,
           child: AlertDialog(
             title: const Text('Permission Denied'),
-            content:
-                const Text('You do not have permission to read this book.'),
+            content: const Text('You do not have permission to read this book.'),
             actions: [
               TextButton(
                 child: const Text('OK'),
@@ -634,6 +691,10 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   void showBottomSlider(int total) {
+    setState(() {
+      isBottomSheetOpen = true; // Set to true when opening
+    });
+
     showCupertinoModalBottomSheet(
       enableDrag: true,
       elevation: 17,
@@ -655,10 +716,10 @@ class _BookDetailsState extends State<BookDetails>
                   Text(
                     "Page Slider",
                     style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
-                        ),
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                    ),
                   ),
                   Slider(
                     inactiveColor: Colors.black12,
@@ -678,25 +739,19 @@ class _BookDetailsState extends State<BookDetails>
                     children: [
                       Text(
                         "Current: ${pageController.page?.toInt() ?? 0}",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 17.sp,
-                            ),
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17.sp,
+                        ),
                       ),
                       Text(
                         "Total: $total",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 17.sp,
-                            ),
+                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17.sp,
+                        ),
                       ),
                     ],
                   ),
@@ -707,12 +762,16 @@ class _BookDetailsState extends State<BookDetails>
           },
         ),
       ),
-    );
+    ).whenComplete(() {
+      // Set to false when bottom sheet closes
+      setState(() {
+        isBottomSheetOpen = false;
+      });
+    });
   }
 
   Future<void> _launchUrl(String url) async {
     debugPrint('Launching URL: $url');
-    // Use url_launcher or your existing implementation here.
   }
 
   Future<void> fetchData() async {
@@ -737,7 +796,6 @@ class _BookDetailsState extends State<BookDetails>
       if (storedBookId == bookId) {
         final storedPage = Storage.instance.readingBookPage;
 
-        // Validate stored page is within valid range
         if (storedPage > 0 && storedPage < reading.length) {
           _showResumeReadingDialog(storedPage);
         } else {
@@ -750,6 +808,7 @@ class _BookDetailsState extends State<BookDetails>
       debugPrint('Error in fetchData: $e');
     }
   }
+
   void _showImagePopup(String imageUrl) {
     showDialog(
       context: context,
@@ -818,6 +877,7 @@ class _BookDetailsState extends State<BookDetails>
       ),
     );
   }
+
   void _showResumeReadingDialog(int lastReadPage) {
     if (!mounted) return;
 
@@ -834,7 +894,8 @@ class _BookDetailsState extends State<BookDetails>
             ),
           ),
           content: Text(
-            'Would you like to continue from where you left off?\n\nLast read: Page ${lastReadPage + 1} of ${reading.length}',
+            'Would you like to continue from where you left off?\n\nLast read: Page ${lastReadPage +
+                1} of ${reading.length}',
             style: TextStyle(
               color: Colors.black,
               fontSize: 13.sp,
@@ -899,6 +960,7 @@ class _BookDetailsState extends State<BookDetails>
       builder: (_) => const AdsPopup(),
     );
   }
+
   WebViewController createWebViewController(String content, int index) {
     late final WebViewController controller;
 
@@ -944,5 +1006,4 @@ class _BookDetailsState extends State<BookDetails>
 
     return controller;
   }
-
 }
