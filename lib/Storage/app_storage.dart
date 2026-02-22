@@ -48,6 +48,18 @@ class Storage {
     await sharedpreferences.setInt("page", id);
   }
 
+  // Per-ID Reading Progress
+  Future<void> saveReadingProgress(String type, int id, int page) async {
+    await sharedpreferences.setInt("last_read_${type}_$id", page);
+    print("💾 STORAGE: Saved $type index $id as page $page");
+  }
+
+  int getReadingProgress(String type, int id) {
+    final page = sharedpreferences.getInt("last_read_${type}_$id") ?? 0;
+    print("📖 STORAGE: Retrieved $type index $id as page $page");
+    return page;
+  }
+
   Future<void> setOnBoarding() async {
     await sharedpreferences.setBool("isOnBoarding", true);
   }

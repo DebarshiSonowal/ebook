@@ -23,6 +23,7 @@ import '../UI/Routes/Navigation Page/librarysearchscreen.dart';
 import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
 import '../UI/Routes/Navigation Page/notifications_page.dart';
+import '../UI/Routes/Navigation Page/flip_book_view.dart';
 import '../UI/Routes/Navigation Page/reading_page.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
 import '../UI/Routes/Navigation Page/specific_library_screen.dart';
@@ -131,6 +132,13 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return FadeTransitionPageRouteBuilder(page: WalletScreen());
     case '/transfer':
       return FadeTransitionPageRouteBuilder(page: TransferScreen());
+    case '/flipBook':
+      final args = settings.arguments as Map<String, dynamic>;
+      return FadeTransitionPageRouteBuilder(
+          page: FlipBookView(
+        url: args['url'] as String,
+        title: args['title'] as String,
+      ));
     case '/main':
       return FadeTransitionPageRouteBuilder(page: HomePage());
 

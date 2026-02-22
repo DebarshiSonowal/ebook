@@ -105,9 +105,18 @@ class ApiProvider {
             response?.data['message'] ?? "Something went wrong");
       }
     } on DioError catch (e) {
-      debugPrint("add Subscriber response: ${e.response}");
-      return GenericResponse.withError(
-          e.response?.data['message'] ?? e.message.toString());
+      debugPrint("add Subscriber response error: ${e.response}");
+      String errorMessage = "Something went wrong";
+      if (e.response != null && e.response?.data != null) {
+        if (e.response?.data is Map) {
+          errorMessage = e.response?.data['message'] ?? e.message.toString();
+        } else {
+          errorMessage = e.response?.data.toString() ?? e.message.toString();
+        }
+      } else {
+        errorMessage = e.message.toString();
+      }
+      return GenericResponse.withError(errorMessage);
     }
   }
 
@@ -147,8 +156,18 @@ class ApiProvider {
             response?.data['message'] ?? "Something went wrong");
       }
     } on DioError catch (e) {
-      debugPrint("socialLogin response: ${e.response}");
-      return LoginResponse.withError(e.response?.data['message'].toString());
+      debugPrint("socialLogin response error: ${e.response}");
+      String errorMessage = "Something went wrong";
+      if (e.response != null && e.response?.data != null) {
+        if (e.response?.data is Map) {
+          errorMessage = e.response?.data['message']?.toString() ?? e.message.toString();
+        } else {
+          errorMessage = e.response?.data.toString() ?? e.message.toString();
+        }
+      } else {
+        errorMessage = e.message.toString();
+      }
+      return LoginResponse.withError(errorMessage);
     }
   }
 
@@ -2463,4 +2482,35 @@ class ApiProvider {
 //         payload: fullPath);
 //   });
 // }
+  Future<GenericResponse> postBookReadCount(String ipAddress, String bookId) async {
+    var url = "$baseUrl/books/read-count";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+    var data = {
+      'ip_address': ipAddress,
+      'book_id': bookId,
+    };
+    debugPrint(url.toString());
+    debugPrint(data.toString());
+    try {
+      Response? response = await dio?.post(url, data: jsonEncode(data));
+      debugPrint("postBookReadCount response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        debugPrint("postBookReadCount error: ${response?.data}");
+        return GenericResponse.withError(response?.data['message'] ?? "Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("postBookReadCount error: ${e.response}");
+      return GenericResponse.withError(e.message);
+    }
+  }
 }

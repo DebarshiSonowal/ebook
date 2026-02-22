@@ -462,23 +462,28 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   void CreateAccount(fname, lname, email, mobile, dob, password) async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance
-        .addSubscriber(fname, lname, email, mobile, dob, password);
-    if (response.status ?? false) {
+    try {
+      final response = await ApiProvider.instance
+          .addSubscriber(fname, lname, email, mobile, dob, password);
+      if (response.status ?? false) {
+        Navigation.instance.goBack();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Account Created Successfully"),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+        Navigation.instance.navigate('/login');
+      } else {
+        Navigation.instance.goBack();
+        _showErrorSnackBar(response.message ?? "Something Went Wrong");
+      }
+    } catch (e) {
       Navigation.instance.goBack();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Account Created Successfully"),
-          backgroundColor: Colors.green,
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      );
-      Navigation.instance.navigate('/login');
-    } else {
-      Navigation.instance.goBack();
-      _showErrorSnackBar(response.message ?? "Something Went Wrong");
+      _showErrorSnackBar("Registration failed: $e");
     }
   }
 }

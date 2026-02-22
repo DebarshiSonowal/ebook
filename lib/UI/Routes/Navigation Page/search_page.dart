@@ -381,30 +381,30 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                         SizedBox(width: 2.w),
                         // Debug test button
-                        if (true) // Set to false in production
-                          GestureDetector(
-                            onTap: () {
-                              print("Test search triggered");
-                              search_it("", "", "", "", "");
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 3.w, vertical: 1.h),
-                              decoration: BoxDecoration(
-                                color: Colors.red.shade100,
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.red, width: 1),
-                              ),
-                              child: Text(
-                                'Test Search',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ),
+                        // if (true) // Set to false in production
+                        //   GestureDetector(
+                        //     onTap: () {
+                        //       print("Test search triggered");
+                        //       search_it("", "", "", "", "");
+                        //     },
+                        //     child: Container(
+                        //       padding: EdgeInsets.symmetric(
+                        //           horizontal: 3.w, vertical: 1.h),
+                        //       decoration: BoxDecoration(
+                        //         color: Colors.red.shade100,
+                        //         borderRadius: BorderRadius.circular(20),
+                        //         border: Border.all(color: Colors.red, width: 1),
+                        //       ),
+                        //       child: Text(
+                        //         'Test Search',
+                        //         style: TextStyle(
+                        //           color: Colors.red,
+                        //           fontSize: 12.sp,
+                        //           fontWeight: FontWeight.w600,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
                       ],
                     ),
                   ),
@@ -641,7 +641,7 @@ class _SearchPageState extends State<SearchPage> {
         isScrollControlled: true,
         context: context,
         builder: (context) {
-          return StatefulBuilder(builder: (context, _) {
+          return StatefulBuilder(builder: (context, setModalState) {
             return Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -679,9 +679,10 @@ class _SearchPageState extends State<SearchPage> {
                             ConstanceData.primaryColor,
                           ),
                           onChanged: (String? value) {
-                            setState(() {
+                            setModalState(() {
                               _value = value ?? "";
                             });
+                            setState(() {}); // Update the chip on parent
                             Navigation.instance.goBack();
                           },
                           activeColor: ConstanceData.primaryColor,
@@ -693,7 +694,7 @@ class _SearchPageState extends State<SearchPage> {
                                     color: ConstanceData.primaryColor,
                                     fontSize: 1.8.h,
                                     fontWeight: FontWeight.bold,
-                                  ),
+                                    ),
                         ),
                       ],
                     ),
@@ -708,9 +709,10 @@ class _SearchPageState extends State<SearchPage> {
                             ConstanceData.primaryColor,
                           ),
                           onChanged: (String? value) {
-                            setState(() {
+                            setModalState(() {
                               _value = value ?? "";
                             });
+                            setState(() {}); // Update the chip on parent
                             Navigation.instance.goBack();
                           },
                           activeColor: ConstanceData.primaryColor,
@@ -737,9 +739,10 @@ class _SearchPageState extends State<SearchPage> {
                             ConstanceData.primaryColor,
                           ),
                           onChanged: (String? value) {
-                            setState(() {
+                            setModalState(() {
                               _value = value ?? "";
                             });
+                            setState(() {}); // Update the chip on parent
                             Navigation.instance.goBack();
                           },
                           activeColor: ConstanceData.primaryColor,
@@ -769,7 +772,7 @@ class _SearchPageState extends State<SearchPage> {
         isScrollControlled: true,
         context: context,
         builder: (context) {
-          return StatefulBuilder(builder: (context, _) {
+          return StatefulBuilder(builder: (context, setModalState) {
             return Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -817,10 +820,11 @@ class _SearchPageState extends State<SearchPage> {
                                     false,
                                 onChanged: (value) {
                                   print(value);
-                                  setState(() {
+                                  setModalState(() {
                                     selectedCategories[int.parse(current)] =
                                         value!;
                                   });
+                                  setState(() {}); // Update the chip on parent
                                 },
                                 title: Text(
                                   categories![current] ?? "",
@@ -899,7 +903,7 @@ class _SearchPageState extends State<SearchPage> {
         isScrollControlled: true,
         context: context,
         builder: (context) {
-          return StatefulBuilder(builder: (context, _) {
+          return StatefulBuilder(builder: (context, setModalState) {
             return Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -947,10 +951,11 @@ class _SearchPageState extends State<SearchPage> {
                                     false,
                                 onChanged: (value) {
                                   print(value);
-                                  setState(() {
+                                  setModalState(() {
                                     selectedAuthors[int.parse(current)] =
                                         value!;
                                   });
+                                  setState(() {}); // Update the chip on parent
                                 },
                                 title: Text(
                                   authors![current] ?? "",
@@ -1030,7 +1035,7 @@ class _SearchPageState extends State<SearchPage> {
         isScrollControlled: true,
         context: context,
         builder: (context) {
-          return StatefulBuilder(builder: (context, _) {
+          return StatefulBuilder(builder: (context, setModalState) {
             return Card(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -1078,9 +1083,10 @@ class _SearchPageState extends State<SearchPage> {
                                     selectedAwards[int.parse(current)] ?? false,
                                 onChanged: (value) {
                                   debugPrint("${value}");
-                                  setState(() {
+                                  setModalState(() {
                                     selectedAwards[int.parse(current)] = value!;
                                   });
+                                  setState(() {}); // Update the chip on parent
                                 },
                                 title: Text(
                                   awards![current] ?? "",

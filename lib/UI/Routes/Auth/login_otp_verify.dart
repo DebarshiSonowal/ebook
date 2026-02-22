@@ -541,26 +541,36 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
         ],
       );
 
+      debugPrint("--- Apple Sign In Credential ---");
+      debugPrint("userIdentifier: ${credential.userIdentifier}");
+      debugPrint("givenName: ${credential.givenName}");
+      debugPrint("familyName: ${credential.familyName}");
+      debugPrint("email: ${credential.email}");
+      debugPrint("identityToken: ${credential.identityToken}");
+      debugPrint("authorizationCode: ${credential.authorizationCode}");
+      debugPrint("--------------------------------");
+
       if (credential.userIdentifier?.isNotEmpty ?? false) {
         if (!mounted) return;
 
         // Use the name and email directly from Apple's credentials
         String firstName = credential.givenName ?? "";
         String lastName = credential.familyName ?? "";
+        String email = credential.email ?? "";
 
-        // If name fields are empty but we have an email, use an appropriate fallback
-        if (firstName.isEmpty && lastName.isEmpty && credential.email != null) {
-          firstName = "Apple";
-          lastName = "User";
-        }
+        // Apple only provides user details on the first sign-in.
+        // For subsequent sign-ins, we need fallback values to satisfy backend requirements.
+        if (firstName.isEmpty) firstName = "Apple";
+        if (lastName.isEmpty) lastName = "User";
+        if (email.isEmpty) email = "${credential.userIdentifier}@apple.com";
 
         // Sign in directly with the data provided by Apple
         loginSocial(
           firstName,
           lastName,
-          credential.email ?? "",
+          email,
           "",
-          "apple",
+          "ios",
           "",
           credential.userIdentifier ?? "",
         );
@@ -599,7 +609,7 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
   Future<UserCredential> signInWithGoogle() async {
     try {
       final googleSignIn = GoogleSignIn.instance;
-      
+
       // Initialize Google Sign In (required in v7.2.0)
       await googleSignIn.initialize();
 
@@ -610,7 +620,8 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
       const List<String> scopes = ['email', 'profile'];
 
       // Request authorization for the scopes to get accessToken
-      final authorization = await googleUser.authorizationClient.authorizeScopes(scopes);
+      final authorization =
+          await googleUser.authorizationClient.authorizeScopes(scopes);
 
       // Get the idToken from authentication
       final googleAuth = googleUser.authentication;

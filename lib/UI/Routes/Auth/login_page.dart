@@ -13,6 +13,7 @@ import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sizer/sizer.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -113,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 3.h),
 
                   // Social Login Section
-                  // if (Platform.isAndroid) ...[
+                  if (Platform.isAndroid || Platform.isIOS) ...[
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(2.w),
@@ -137,19 +138,31 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                           ),
                           SizedBox(height: 2.h),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 6.h,
-                            child: SocialLoginButton(
-                              backgroundColor: Colors.white,
+                          if (Platform.isAndroid)
+                            SizedBox(
+                              width: double.infinity,
                               height: 6.h,
-                              text: 'Continue with Google',
-                              borderRadius: 12,
-                              fontSize: 16.sp,
-                              buttonType: SocialLoginButtonType.google,
-                              onPressed: _handleGoogleSignIn,
+                              child: SocialLoginButton(
+                                backgroundColor: Colors.white,
+                                height: 6.h,
+                                text: 'Continue with Google',
+                                borderRadius: 12,
+                                fontSize: 16.sp,
+                                buttonType: SocialLoginButtonType.google,
+                                onPressed: _handleGoogleSignIn,
+                              ),
                             ),
-                          ),
+                          if (Platform.isIOS)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 6.h,
+                              child: SignInWithAppleButton(
+                                height: 6.h,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(12)),
+                                onPressed: signInWithApple,
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -187,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     SizedBox(height: 3.h),
-                  // ],
+                  ],
 
                   // Regular Login Form
                   Container(
@@ -406,15 +419,24 @@ class _LoginPageState extends State<LoginPage> {
 
   void Login() async {
     Navigation.instance.navigate('/loadingDialog');
-    final response = await ApiProvider.instance.socialLogin("", "",
-        _emailController.text, _passwordController.text, "normal", "", "");
-    if (response.status ?? false) {
-      await Storage.instance.setUser(response.access_token ?? "");
-      fetchProfile();
-    } else {
+    try {
+      final response = await ApiProvider.instance.socialLogin("", "",
+          _emailController.text, _passwordController.text, "normal", "", "");
+      if (response.status ?? false) {
+        await Storage.instance.setUser(response.access_token ?? "");
+        fetchProfile();
+      } else {
+        Navigation.instance.goBack();
+        Fluttertoast.showToast(
+          msg: response.message ?? "Something went wrong",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    } catch (e) {
       Navigation.instance.goBack();
       Fluttertoast.showToast(
-        msg: response.message ?? "Something went wrong",
+        msg: "Login failed: $e",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
       );
@@ -422,18 +444,27 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void fetchProfile() async {
-    final response = await ApiProvider.instance.getProfile();
-    if (response.status ?? false) {
-      Provider.of<DataProvider>(
-              Navigation.instance.navigatorKey.currentContext ?? context,
-              listen: false)
-          .setProfile(response.profile!);
-      Navigation.instance.goBack();
-      Navigation.instance.navigate('/main');
-    } else {
+    try {
+      final response = await ApiProvider.instance.getProfile();
+      if (response.status ?? false) {
+        Provider.of<DataProvider>(
+                Navigation.instance.navigatorKey.currentContext ?? context,
+                listen: false)
+            .setProfile(response.profile!);
+        Navigation.instance.goBack();
+        Navigation.instance.navigate('/main');
+      } else {
+        Navigation.instance.goBack();
+        Fluttertoast.showToast(
+          msg: "Something went wrong",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    } catch (e) {
       Navigation.instance.goBack();
       Fluttertoast.showToast(
-        msg: "Something went wrong",
+        msg: "Failed to fetch profile: $e",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
       );
@@ -448,43 +479,63 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _handleGoogleSignIn() async {
     try {
-      final response = await signInWithGoogle();
+      final googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize();
+      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
 
-      // Check if sign-in was successful
-      if (response.user != null) {
-        loginSocial(
-          response.user?.displayName?.split(" ")[0] ?? "",
-          (response.user?.displayName?.split(" ").length ?? 0) > 1
-              ? response.user?.displayName?.split(" ")[1] ?? ""
-              : "",
-          response.user?.email ?? "",
-          "",
-          "google",
-          response.user?.phoneNumber ?? "",
-          "",
+      if (googleUser != null) {
+        Navigation.instance.navigate("/loadingDialog");
+
+        // Request authorization for the scopes to get accessToken
+        const List<String> scopes = ['email', 'profile'];
+        final authorization =
+            await googleUser.authorizationClient.authorizeScopes(scopes);
+        final googleAuth = await googleUser.authentication;
+
+        // Create Firebase credential with both tokens
+        final credential = GoogleAuthProvider.credential(
+          accessToken: authorization.accessToken,
+          idToken: googleAuth.idToken,
         );
+
+        // Sign in to Firebase
+        final userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+
+        if (userCredential.user != null) {
+          loginSocial(
+            userCredential.user?.displayName?.split(" ")[0] ?? "",
+            (userCredential.user?.displayName?.split(" ").length ?? 0) > 1
+                ? userCredential.user?.displayName?.split(" ")[1] ?? ""
+                : "",
+            userCredential.user?.email ?? "",
+            "",
+            "google",
+            userCredential.user?.phoneNumber ?? "",
+            "",
+          );
+        } else {
+          Navigation.instance.goBack();
+          Fluttertoast.showToast(msg: "Failed to get user info");
+        }
       }
     } on GoogleSignInException catch (e) {
-      // Handle Google Sign-In specific exceptions
       if (e.code == GoogleSignInExceptionCode.canceled) {
-        // User cancelled - don't show error, just silently return
         debugPrint("Google Sign-In cancelled by user");
-        return;
       } else {
-        debugPrint("Google Sign-In error: ${e}");
-        Fluttertoast.showToast(
-          msg: "Google Sign In failed: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
+        debugPrint("Google Sign-In error: $e");
+        Fluttertoast.showToast(msg: "Google Sign In failed: $e");
       }
     } catch (e) {
+      // If we already showed the loader, pop it
+      try {
+        if (Navigation.instance.navigatorKey.currentState?.canPop() ?? false) {
+          Navigation.instance.goBack();
+        }
+      } catch (_) {}
+
       debugPrint("Unexpected error during Google Sign-In: $e");
-      Fluttertoast.showToast(
-        msg: "Google Sign In failed. Please try again.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-      );
+      Fluttertoast.showToast(msg: "Google Sign In failed. Please try again.");
     }
   }
 
@@ -497,59 +548,88 @@ class _LoginPageState extends State<LoginPage> {
     String mobile,
     String apple_id,
   ) async {
-    Navigation.instance.navigate("/loadingDialog");
-    final response = await ApiProvider.instance.socialLogin(
-      fname,
-      lname,
-      email,
-      password,
-      provider,
-      mobile,
-      apple_id,
-    );
-    if (response.status ?? false) {
-      Navigation.instance.goBack();
-      await Storage.instance.setUser(response.access_token ?? "");
-      fetchProfile();
-    } else {
+    try {
+      final response = await ApiProvider.instance.socialLogin(
+        fname,
+        lname,
+        email,
+        password,
+        provider,
+        mobile,
+        apple_id,
+      );
+      if (response.status ?? false) {
+        await Storage.instance.setUser(response.access_token ?? "");
+        fetchProfile();
+      } else {
+        Navigation.instance.goBack();
+        Fluttertoast.showToast(
+          msg: response.message ?? "Something went wrong",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    } catch (e) {
       Navigation.instance.goBack();
       Fluttertoast.showToast(
-        msg: response.message ?? "Something went wrong",
+        msg: "Social login failed: $e",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
       );
     }
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<void> signInWithApple() async {
     try {
-      final googleSignIn = GoogleSignIn.instance;
-      
-      // Initialize Google Sign In (required in v7.2.0)
-      await googleSignIn.initialize();
-
-      // Trigger the authentication flow
-      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
-
-      // Define scopes needed for authorization
-      const List<String> scopes = ['email', 'profile'];
-
-      // Request authorization for the scopes to get accessToken
-      final authorization = await googleUser.authorizationClient.authorizeScopes(scopes);
-
-      // Get the idToken from authentication
-      final googleAuth = googleUser.authentication;
-
-      // Create Firebase credential with both tokens
-      final credential = GoogleAuthProvider.credential(
-        accessToken: authorization.accessToken,
-        idToken: googleAuth.idToken,
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
       );
 
-      // Sign in to Firebase
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      debugPrint("--- Apple Sign In Credential ---");
+      debugPrint("userIdentifier: ${credential.userIdentifier}");
+      debugPrint("givenName: ${credential.givenName}");
+      debugPrint("familyName: ${credential.familyName}");
+      debugPrint("email: ${credential.email}");
+      debugPrint("identityToken: ${credential.identityToken}");
+      debugPrint("authorizationCode: ${credential.authorizationCode}");
+      debugPrint("--------------------------------");
+
+      if (credential.userIdentifier?.isNotEmpty ?? false) {
+        if (!mounted) return;
+
+        // Use the name and email directly from Apple's credentials
+        String firstName = credential.givenName ?? "";
+        String lastName = credential.familyName ?? "";
+        String email = credential.email ?? "";
+
+        // Apple only provides user details on the first sign-in.
+        // For subsequent sign-ins, we need fallback values to satisfy backend requirements.
+        if (firstName.isEmpty) firstName = "Apple";
+        if (lastName.isEmpty) lastName = "User";
+        if (email.isEmpty) email = "${credential.userIdentifier}@apple.com";
+
+        Navigation.instance.navigate("/loadingDialog");
+
+        // Sign in directly with the data provided by Apple
+        loginSocial(
+          firstName,
+          lastName,
+          email,
+          "",
+          "ios",
+          "",
+          credential.userIdentifier ?? "",
+        );
+      }
     } catch (e) {
-      rethrow;
+      Fluttertoast.showToast(
+        msg: "Apple Sign In failed. Please try again.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+      );
     }
   }
 }

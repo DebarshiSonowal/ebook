@@ -250,10 +250,11 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
         builder: (BuildContext context) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
                 Text(
                   'Select Library',
                   style: TextStyle(fontSize: 18.sp, color: Colors.white),
@@ -299,6 +300,7 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 Consumer<DataProvider>(builder: (context, data, _) {
                   return ListView.separated(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       var item = data.libraries[index];
                       return InkWell(
@@ -345,7 +347,8 @@ class _BottomNavBarCustomState extends State<BottomNavBarCustom> {
                 ),
               ],
             ),
-          );
+          ),
+        );
         },
       );
     } else {

@@ -1,5 +1,6 @@
-import 'dart:core';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:ebook/Model/book_chapter.dart';
 import 'package:ebook/Model/book_details.dart';
@@ -9,6 +10,7 @@ import 'package:ebook/Storage/app_storage.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:ebook/Utility/ads_popup.dart';
 import 'package:ebook/Utility/share_helper.dart';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
@@ -24,6 +26,7 @@ import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/home_banner.dart';
 import '../../../Model/reading_chapter.dart';
+import '../../../Utility/ip_utility.dart';
 class BookDetails extends StatefulWidget {
   final String input;
 
@@ -56,21 +59,29 @@ class _BookDetailsState extends State<BookDetails>
   String reviewUrl = "";
   double _counterValue = 17.sp;
 
-  final PageController pageController = PageController(initialPage: 0);
+  late PageController pageController;
   final List<WebViewController> webViewControllers = [];
 
   final GlobalKey pageKey = GlobalKey();
+  Offset fabPosition = const Offset(0, 0);
+  bool _isFirstLoad = true;
 
   @override
   void initState() {
     super.initState();
+    
+    // Load last read page
+    final parts = widget.input.split(',');
+    final bookId = int.tryParse(parts[0]) ?? 0;
+    final initialPage = Storage.instance.getReadingProgress("book", bookId);
+    
+    pageController = PageController(initialPage: initialPage);
+    
     Future.delayed(Duration.zero, fetchData);
   }
 
   @override
   void dispose() {
-    pageController.removeListener(_storedBookListener);
-    pageController.removeListener(_basicPageListener);
     pageController.dispose();
     super.dispose();
   }
@@ -96,11 +107,16 @@ class _BookDetailsState extends State<BookDetails>
     final hexTextColor = '#${textColor.value.toRadixString(16).substring(2)}';
     final hexBgColor = '#${bgColor.value.toRadixString(16).substring(2)}';
 
+    String processedContent = content
+        .replaceAll('youtube.com/embed/', 'youtube-nocookie.com/embed/')
+        .replaceAll('<iframe', '<iframe referrerpolicy="no-referrer-when-downgrade" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen');
+
     return '''
   <!DOCTYPE html>
   <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer-when-downgrade">
     <style>
       * { 
         margin: 0; 
@@ -119,12 +135,11 @@ class _BookDetailsState extends State<BookDetails>
         line-height: 1.6;
         color: $hexTextColor;
         background-color: $hexBgColor;
-        padding: 16px;
+        // padding: 16px;
         min-height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
-        overscroll-behavior-y: contain;
       }
       h1 { font-size: ${_counterValue * 2.2}px; font-weight: bold; margin: 16px 0; text-align: center; color: $hexTextColor; }
       h2 { font-size: ${_counterValue * 1.8}px; font-weight: bold; margin: 12px 0; color: $hexTextColor; }
@@ -146,7 +161,14 @@ class _BookDetailsState extends State<BookDetails>
       img:hover {
         opacity: 0.8;
       }
-      iframe, video { max-width: 100%; height: auto; margin: 12px 0; }
+      iframe, video { 
+      max-width: 100%; 
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      height: auto; 
+      margin: 12px 0; 
+      border: none;
+    }
       table { width: 100%; border-collapse: collapse; margin: 12px 0; }
       table, th, td { border: 1px solid ${hexTextColor}4D; padding: 8px; }
       blockquote { border-left: 4px solid ${hexTextColor}4D; padding-left: 16px; margin: 12px 0; font-style: italic; }
@@ -157,10 +179,23 @@ class _BookDetailsState extends State<BookDetails>
       [style*="text-align:justify"], .text-justify { text-align: justify; text-align-last: left; }
       p[style*="text-align:justify"],
       div[style*="text-align:justify"] { text-align: justify; text-align-last: left; }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: ${hexTextColor}66;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: ${hexTextColor}99;
+      }
     </style>
   </head>
   <body>
-    $content
+    $processedContent
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         const images = document.querySelectorAll('img');
@@ -192,6 +227,12 @@ class _BookDetailsState extends State<BookDetails>
     final currentPage = pageController.hasClients ? (pageController.page?.toInt() ?? 0) : 0;
     final isFirstPage = currentPage == 0;
     final isLastPage = currentPage >= reading.length - 1;
+
+    if (_isFirstLoad) {
+      final size = MediaQuery.of(context).size;
+      fabPosition = Offset(size.width - 60, size.height * 0.7);
+      _isFirstLoad = false;
+    }
 
     return Scaffold(
       appBar: isShowing
@@ -267,68 +308,37 @@ class _BookDetailsState extends State<BookDetails>
                       if (isAdPage) {
                         showAds(actualPageNumber);
                       }
+                      
+                      // Save progress
+                      final parts = widget.input.split(',');
+                      final bookId = int.tryParse(parts[0]) ?? 0;
+                      Storage.instance.saveReadingProgress("book", bookId, val);
+                      
                       setState(() {}); // Update FAB visibility
+                      
+                      if (webViewControllers.length > val) {
+                        webViewControllers[val].scrollTo(0, 0);
+                      }
                     },
                     itemBuilder: (context, index) {
-                      final content = reading[index].desc ?? '';
-
-                      while (webViewControllers.length <= index) {
-                        final idx = webViewControllers.length;
-                        final pageContent = reading[idx].desc ?? '';
-                        webViewControllers.add(createWebViewController(pageContent, idx));
+                      if (webViewControllers.length <= index) {
+                        for (int i = webViewControllers.length; i <= index; i++) {
+                          final pageContent = reading[i].desc ?? '';
+                          webViewControllers.add(createWebViewController(pageContent, i));
+                        }
                       }
 
-                      return Stack(
-                        children: [
-                          Container(
-                            width: 98.w,
-                            color: getTextColor(),
-                            child: WebViewWidget(
-                              controller: webViewControllers[index],
-                              gestureRecognizers: {
-                                Factory<VerticalDragGestureRecognizer>(
-                                      () => VerticalDragGestureRecognizer(),
-                                ),
-                              },
+                      return Container(
+                        width: 98.w,
+                        color: getTextColor(),
+                        child: WebViewWidget(
+                          controller: webViewControllers[index],
+                          gestureRecognizers: {
+                            Factory<VerticalDragGestureRecognizer>(
+                                  () => VerticalDragGestureRecognizer(),
                             ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () {
-                                setState(() {
-                                  isShowing = !isShowing;
-                                });
-                                if (isShowing) {
-                                  showBottomSlider(reading.length);
-                                }
-                              },
-                              child: Container(color: Colors.transparent),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () {
-                                setState(() {
-                                  isShowing = !isShowing;
-                                });
-                                if (isShowing) {
-                                  showBottomSlider(reading.length);
-                                }
-                              },
-                              child: Container(color: Colors.transparent),
-                            ),
-                          ),
-                        ],
+                          },
+                        ),
                       );
                     },
                   );
@@ -336,90 +346,196 @@ class _BookDetailsState extends State<BookDetails>
               ),
             ),
 
-            // Left Navigation FAB - Only show when bottom sheet is open
-            if (!isFirstPage && reading.isNotEmpty && isBottomSheetOpen)
+            // Left Navigation FAB
+            if (!isFirstPage && reading.isNotEmpty && isShowing)
               Positioned(
                 left: 3.w,
                 top: MediaQuery.of(context).size.height * 0.5 - 28,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        if (currentPage > 0) {
-                          pageController.previousPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      },
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        padding: EdgeInsets.all(2.w),
-                        child: Icon(
-                          Icons.chevron_left,
-                          color: Colors.white,
-                          size: 28.sp,
-                        ),
-                      ),
+                child: _buildNavArrow(Icons.chevron_left, () {
+                  if (currentPage > 0) {
+                    pageController.previousPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                }),
+              ),
+
+            // Right Navigation FAB
+            if (!isLastPage && reading.isNotEmpty && isShowing)
+              Positioned(
+                right: 3.w,
+                top: MediaQuery.of(context).size.height * 0.5 - 28,
+                child: _buildNavArrow(Icons.chevron_right, () {
+                  if (currentPage < reading.length - 1) {
+                    pageController.nextPage(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  }
+                }),
+              ),
+
+            // Draggable Floating Action Button
+            if (!isShowing)
+              Positioned(
+                left: fabPosition.dx,
+                top: fabPosition.dy,
+                child: GestureDetector(
+                  onPanUpdate: (details) {
+                    setState(() {
+                      fabPosition += details.delta;
+                    });
+                  },
+                  onPanEnd: (details) {
+                    final screenWidth = MediaQuery.of(context).size.width;
+                    final screenHeight = MediaQuery.of(context).size.height;
+                    setState(() {
+                      // Snap to nearest side (left or right border)
+                      if (fabPosition.dx < screenWidth / 2) {
+                        fabPosition = Offset(16, fabPosition.dy.clamp(16.0, screenHeight - 100));
+                      } else {
+                        fabPosition = Offset(screenWidth - 60, fabPosition.dy.clamp(16.0, screenHeight - 100));
+                      }
+                    });
+                  },
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        isShowing = true;
+                      });
+                    },
+                    backgroundColor: getBackGroundColor().withOpacity(0.8),
+                    elevation: 8,
+                    mini: true,
+                    child: Icon(
+                      Icons.visibility,
+                      color: getTextColor(),
+                      size: 20.sp,
                     ),
                   ),
                 ),
               ),
 
-            // Right Navigation FAB - Only show when bottom sheet is open
-            if (!isLastPage && reading.isNotEmpty && isBottomSheetOpen)
+            // Persistent Bottom Slider Overlay
+            if (isShowing)
               Positioned(
-                right: 3.w,
-                top: MediaQuery.of(context).size.height * 0.5 - 28,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 8,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        if (currentPage < reading.length - 1) {
-                          pageController.nextPage(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      },
-                      customBorder: const CircleBorder(),
-                      child: Container(
-                        padding: EdgeInsets.all(2.w),
-                        child: Icon(
-                          Icons.chevron_right,
-                          color: Colors.white,
-                          size: 28.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: _buildPersistentBottomSlider(),
               ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavArrow(IconData icon, VoidCallback onTap) {
+    return Container(
+      decoration: BoxDecoration(
+        color: getBackGroundColor().withOpacity(0.5),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 8,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: const CircleBorder(),
+          child: Container(
+            padding: EdgeInsets.all(2.w),
+            child: Icon(
+              icon,
+              color: getTextColor(),
+              size: 28.sp,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPersistentBottomSlider() {
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(17)),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          decoration: BoxDecoration(
+            color: getBackGroundColor().withOpacity(0.85),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(17)),
+            border: Border(
+              top: BorderSide(
+                color: getTextColor().withOpacity(0.1),
+                width: 0.5,
+              ),
+            ),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 4.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Page Slider",
+                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                      color: getTextColor(),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: getTextColor().withOpacity(0.6)),
+                    onPressed: () => setState(() => isShowing = false),
+                  ),
+                ],
+              ),
+              Slider(
+                inactiveColor: getTextColor().withOpacity(0.2),
+                activeColor: getTextColor(),
+                value: (pageController.hasClients ? pageController.page : 0) ?? 0,
+                onChanged: (value) {
+                  pageController.jumpToPage(value.toInt());
+                  setState(() {});
+                },
+                max: reading.isEmpty ? 0 : (reading.length - 1).toDouble(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 1.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Current: ${(pageController.hasClients ? (pageController.page?.toInt() ?? 0) : 0)}",
+                      style: TextStyle(
+                        color: getTextColor(),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    Text(
+                      "Total: ${reading.length}",
+                      style: TextStyle(
+                        color: getTextColor(),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -597,20 +713,23 @@ class _BookDetailsState extends State<BookDetails>
         final flipBookUrl = details?.flip_book_url;
 
         if (flipBookUrl?.isNotEmpty ?? false) {
+          Navigation.instance.goBack(); // Close loading dialog
           if (details?.is_bought ?? false) {
-            _launchUrl(flipBookUrl!).then((_) => Navigation.instance.goBack());
-            Navigation.instance.goBack();
+            Navigation.instance.navigateAndReplace('/flipBook', args: {
+              'url': flipBookUrl,
+              'title': details?.title ?? 'Flip Book',
+            });
           } else {
-            Navigation.instance.goBack();
-            Navigation.instance.goBack();
+            Navigation.instance.goBack(); // Go back from BookDetails screen
+            // _showPermissionDeniedDialog();
           }
-          return;
+          // return;
         }
 
         if (!(details?.is_bought ?? false)) {
-          Navigation.instance.goBack();
-          _showPermissionDeniedDialog();
-          return;
+          // Navigation.instance.goBack();
+          // _showPermissionDeniedDialog();
+          // return;
         }
 
         setState(() {
@@ -673,8 +792,8 @@ class _BookDetailsState extends State<BookDetails>
         return WillPopScope(
           onWillPop: () async => false,
           child: AlertDialog(
-            title: const Text('Permission Denied'),
-            content: const Text('You do not have permission to read this book.'),
+            title: Text('Permission Denied',style: TextStyle(color: Colors.black,fontSize: 16.sp,fontWeight: FontWeight.bold),),
+            content: Text('You do not have permission to read this book.',style: TextStyle(color: Colors.black,fontSize: 14.sp),),
             actions: [
               TextButton(
                 child: const Text('OK'),
@@ -771,7 +890,10 @@ class _BookDetailsState extends State<BookDetails>
   }
 
   Future<void> _launchUrl(String url) async {
-    debugPrint('Launching URL: $url');
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not launch $url');
+    }
   }
 
   Future<void> fetchData() async {
@@ -782,6 +904,15 @@ class _BookDetailsState extends State<BookDetails>
 
       Navigation.instance.navigate('/readingDialog', args: dialogArg);
 
+      // Call read-count API with public IP and bookId
+      IpUtility.getPublicIp().then((ip) {
+        if (ip != null) {
+          ApiProvider.instance.postBookReadCount(ip, bookId).then((response) {
+            debugPrint('Read count API response: ${response.message}');
+          });
+        }
+      });
+
       await fetchBookDetails();
 
       brightness = await systemBrightness;
@@ -789,21 +920,6 @@ class _BookDetailsState extends State<BookDetails>
       setState(() {
         Storage.instance.setReadingBook(int.parse(bookId));
       });
-
-      await Future.delayed(const Duration(seconds: 3));
-
-      final storedBookId = Storage.instance.readingBook.toString();
-      if (storedBookId == bookId) {
-        final storedPage = Storage.instance.readingBookPage;
-
-        if (storedPage > 0 && storedPage < reading.length) {
-          _showResumeReadingDialog(storedPage);
-        } else {
-          pageController.addListener(_basicPageListener);
-        }
-      } else {
-        pageController.addListener(_basicPageListener);
-      }
     } catch (e) {
       debugPrint('Error in fetchData: $e');
     }
@@ -822,22 +938,15 @@ class _BookDetailsState extends State<BookDetails>
               child: InteractiveViewer(
                 minScale: 0.5,
                 maxScale: 4.0,
-                child: Image.network(
-                  imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                            : null,
-                        color: Colors.white,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
+                  placeholder: (context, url) => Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) {
                     return Container(
                       padding: EdgeInsets.all(4.w),
                       child: Column(
@@ -878,76 +987,7 @@ class _BookDetailsState extends State<BookDetails>
     );
   }
 
-  void _showResumeReadingDialog(int lastReadPage) {
-    if (!mounted) return;
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        return AlertDialog(
-          title: Text(
-            'Resume Reading',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14.sp,
-            ),
-          ),
-          content: Text(
-            'Would you like to continue from where you left off?\n\nLast read: Page ${lastReadPage +
-                1} of ${reading.length}',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 13.sp,
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Start from Beginning'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                pageController.addListener(_basicPageListener);
-              },
-            ),
-            TextButton(
-              child: const Text('Resume'),
-              onPressed: () {
-                Navigator.of(ctx).pop();
-                try {
-                  if (lastReadPage >= 0 && lastReadPage < reading.length) {
-                    pageController.jumpToPage(lastReadPage);
-                    pageController.addListener(_storedBookListener);
-                  } else {
-                    pageController.addListener(_basicPageListener);
-                  }
-                } catch (e) {
-                  debugPrint('Error jumping to page: $e');
-                  pageController.addListener(_basicPageListener);
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _storedBookListener() {
-    setState(() {
-      page_no = pageController.page ?? 1;
-      final idx = pageController.page?.toInt() ?? 0;
-      if (idx >= 0 && idx < reading.length) {
-        reviewUrl = reading[idx].url ?? "";
-      }
-    });
-    Storage.instance.setReadingBookPage(page_no.toInt());
-  }
-
-  void _basicPageListener() {
-    setState(() {
-      page_no = pageController.page ?? 1;
-    });
-  }
 
   void showAds(int adCount) {
     if (adCount <= 0) return;
@@ -966,12 +1006,20 @@ class _BookDetailsState extends State<BookDetails>
 
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setUserAgent("Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36")
       ..setBackgroundColor(getTextColor())
       ..addJavaScriptChannel(
         'imageClicked',
         onMessageReceived: (JavaScriptMessage message) {
-          // Handle image click
-          _showImagePopup(message.message);
+          final data = message.message.split('|sep|');
+          final src = data[0];
+          final alt = data.length > 1 ? data[1] : '';
+
+          if (alt.startsWith('http')) {
+            _launchUrl(alt);
+          } else {
+            _showImagePopup(src);
+          }
         },
       )
       ..setNavigationDelegate(
@@ -984,7 +1032,7 @@ class _BookDetailsState extends State<BookDetails>
               if (e.target.tagName === 'IMG') {
                 e.preventDefault();
                 e.stopPropagation();
-                imageClicked.postMessage(e.target.src);
+                imageClicked.postMessage(e.target.src + '|sep|' + (e.target.alt || ''));
               }
             }, true);
           ''');
@@ -993,16 +1041,24 @@ class _BookDetailsState extends State<BookDetails>
           onWebResourceError: (error) =>
               debugPrint('WebView error: ${error.description}'),
           onNavigationRequest: (request) {
-            if (request.url.startsWith('http://') ||
-                request.url.startsWith('https://')) {
-              _launchUrl(request.url);
+            final url = request.url;
+            if (url.contains('youtube.com') ||
+                url.contains('youtu.be') ||
+                url.contains('googlevideo.com')) {
+              return NavigationDecision.navigate;
+            }
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+              _launchUrl(url);
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;
           },
         ),
       )
-      ..loadHtmlString(generateHtmlContent(content, index));
+      ..loadHtmlString(
+        generateHtmlContent(content, index),
+        baseUrl: 'https://www.youtube-nocookie.com',
+      );
 
     return controller;
   }
