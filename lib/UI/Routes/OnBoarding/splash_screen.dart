@@ -6,6 +6,9 @@ import 'package:ebook/Storage/common_provider.dart';
 import 'package:ebook/Storage/data_provider.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -59,8 +62,92 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    fetchFormats();
-    initiateSplash();
+    _handleInitialization();
+  }
+
+  Future<void> _handleInitialization() async {
+    bool needsUpdate = await _checkVersion();
+    if (!needsUpdate) {
+      fetchFormats();
+      initiateSplash();
+    }
+  }
+
+  Future<bool> _checkVersion() async {
+    try {
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      final String localVersion = packageInfo.version;
+      
+      final response = await ApiProvider.instance.verifyVersion();
+      
+      if (response.success && response.result != null) {
+        final String remoteVersion = response.result!.appVersion;
+        
+        if (_isVersionLower(localVersion, remoteVersion)) {
+          _showUpdateDialog(remoteVersion);
+          return true;
+        }
+      }
+    } catch (e) {
+      debugPrint("Error checking version: $e");
+    }
+    return false;
+  }
+
+  bool _isVersionLower(String local, String remote) {
+    List<int> localParts = local.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    List<int> remoteParts = remote.split('.').map((e) => int.tryParse(e) ?? 0).toList();
+    
+    for (int i = 0; i < remoteParts.length; i++) {
+      int localPart = i < localParts.length ? localParts[i] : 0;
+      if (remoteParts[i] > localPart) return true;
+      if (remoteParts[i] < localPart) return false;
+    }
+    return false;
+  }
+
+  void _showUpdateDialog(String newVersion) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: const BorderSide(color: Colors.white24, width: 1)),
+          title: const Text("Update Available",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          content: Text(
+              "A new version ($newVersion) of Tratri is available. Please update the app to continue.",
+              style: const TextStyle(color: Colors.white70)),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                final Uri url = Uri.parse("https://onelink.to/xzcqex");
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url, mode: LaunchMode.externalApplication);
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  "UPDATE NOW",
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void initiateSplash() {
@@ -69,14 +156,13 @@ class _SplashScreenState extends State<SplashScreen> {
       final hasTargetRoute = Storage.instance.targetRoute != null;
       
       if (hasTargetRoute) {
-        print("🚀 SPLASH: Deep link route detected, navigating to main");
+        print(" [DeepLinkDebug SPLASH]: Deep link route detected, navigating to main");
         // Navigate to main and let HomePage handle the deep link
         if (Storage.instance.isLoggedIn) {
           fetchProfile();
           Navigation.instance.navigateAndRemoveUntil('/main');
         } else {
-          // If not logged in, clear the target and go to login
-          Storage.instance.clearTargetRoute();
+          // Even if not logged in, we proceed to /main and let it handle the target route
           Navigation.instance.navigateAndRemoveUntil('/main');
         }
         return;
@@ -84,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen> {
       
       if (Storage.instance.isDeepLinkProcessed) {
         print(
-            "🚀 SPLASH: Deep link was processed, skipping automatic navigation to main");
+            " [DeepLinkDebug SPLASH]: Deep link was processed, skipping automatic navigation to main");
         return;
       }
 

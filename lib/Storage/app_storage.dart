@@ -83,7 +83,7 @@ class Storage {
 
   void setDeepLinkProcessed(bool value) {
     _deepLinkProcessed = value;
-    print("📍 DEEP LINK: Flag set to $value");
+    print(" [DeepLinkDebug STORAGE - DEEP LINK]: Flag set to $value");
   }
 
   bool get isDeepLinkProcessed => _deepLinkProcessed;
@@ -92,7 +92,7 @@ class Storage {
   void setTargetRoute(String route, {Object? arguments}) {
     _targetRoute = route;
     _targetArguments = arguments;
-    print(" TARGET: Stored route: $route with args: $arguments");
+    print(" [DeepLinkDebug STORAGE - TARGET]: Stored route: $route with args: $arguments");
   }
 
   String? get targetRoute => _targetRoute;
@@ -100,7 +100,7 @@ class Storage {
   Object? get targetArguments => _targetArguments;
 
   void clearTargetRoute() {
-    print(" TARGET: Clearing stored route: $_targetRoute");
+    print(" [DeepLinkDebug STORAGE - TARGET]: Clearing stored route: $_targetRoute");
     _targetRoute = null;
     _targetArguments = null;
   }

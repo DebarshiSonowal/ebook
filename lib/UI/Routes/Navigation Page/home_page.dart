@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage>
       if (Storage.instance.targetRoute != null) {
         final route = Storage.instance.targetRoute!;
         final args = Storage.instance.targetArguments;
-        print(" HOME: Found stored route: $route with args: $args");
+        print(" [DeepLinkDebug HOME]: Found stored route: $route with args: $args");
         
         // Wait for data to be loaded before navigating
         _navigateToDeepLink(route, args);
@@ -572,11 +572,11 @@ class _HomePageState extends State<HomePage>
       // Check if data is loaded
       if (!Storage.instance.isDataLoaded) {
         if (retryCount < maxRetries) {
-          print(" HOME: Data not loaded yet, retrying in ${retryDelay.inMilliseconds}ms (attempt ${retryCount + 1}/$maxRetries)");
+          print(" [DeepLinkDebug HOME]: Data not loaded yet, retrying in ${retryDelay.inMilliseconds}ms (attempt ${retryCount + 1}/$maxRetries)");
           await Future.delayed(retryDelay);
           return _navigateToDeepLink(route, args, retryCount: retryCount + 1);
         } else {
-          print(" HOME: ⚠️ Data still not loaded after $maxRetries retries, navigating anyway");
+          print(" [DeepLinkDebug HOME]: ⚠️ Data still not loaded after $maxRetries retries, navigating anyway");
         }
       }
       
@@ -584,7 +584,7 @@ class _HomePageState extends State<HomePage>
       bool isValid = _validateDeepLinkNavigation(route, args);
       
       if (!isValid) {
-        print(" HOME: ❌ Invalid deep link parameters, staying on home page");
+        print(" [DeepLinkDebug HOME]: ❌ Invalid deep link parameters, staying on home page");
         Storage.instance.clearTargetRoute();
         return;
       }
@@ -596,13 +596,13 @@ class _HomePageState extends State<HomePage>
       await Future.delayed(const Duration(milliseconds: 200));
       
       // Navigate with error handling
-      print(" HOME: ✅ Navigating to $route with args: $args");
+      print(" [DeepLinkDebug HOME]: ✅ Navigating to $route with args: $args");
       Navigation.instance.navigate(route, args: args);
-      print(" HOME: ✅ Navigation completed successfully");
+      print(" [DeepLinkDebug HOME]: ✅ Navigation completed successfully");
       
     } catch (e, stackTrace) {
-      print(" HOME: ❌ Error navigating to deep link: $e");
-      print(" HOME: Stack trace: $stackTrace");
+      print(" [DeepLinkDebug HOME]: ❌ Error navigating to deep link: $e");
+      print(" [DeepLinkDebug HOME]: Stack trace: $stackTrace");
       
       // Clear the target route to prevent infinite retry
       Storage.instance.clearTargetRoute();
@@ -616,7 +616,7 @@ class _HomePageState extends State<HomePage>
   
   // Validate deep link navigation parameters
   bool _validateDeepLinkNavigation(String route, Object? args) {
-    print(" HOME: Validating route: $route with args: $args");
+    print(" [DeepLinkDebug HOME]: Validating route: $route with args: $args");
     
     switch (route) {
       case '/bookDetails':
@@ -626,12 +626,12 @@ class _HomePageState extends State<HomePage>
           if (parts.isNotEmpty) {
             final id = int.tryParse(parts[0]);
             if (id != null && id > 0) {
-              print(" HOME: ✅ Valid bookDetails route with ID: $id");
+              print(" [DeepLinkDebug HOME]: ✅ Valid bookDetails route with ID: $id");
               return true;
             }
           }
         }
-        print(" HOME: ❌ Invalid bookDetails arguments: $args");
+        print(" [DeepLinkDebug HOME]: ❌ Invalid bookDetails arguments: $args");
         return false;
         
       case '/bookInfo':
@@ -641,30 +641,34 @@ class _HomePageState extends State<HomePage>
       case '/notificationBookList':
         // Validate numeric ID
         if (args is int && args > 0) {
-          print(" HOME: ✅ Valid $route with ID: $args");
+          print(" [DeepLinkDebug HOME]: ✅ Valid $route with ID: $args");
           return true;
         } else if (args is String) {
           final id = int.tryParse(args);
           if (id != null && id > 0) {
-            print(" HOME: ✅ Valid $route with ID: $id");
+            print(" [DeepLinkDebug HOME]: ✅ Valid $route with ID: $id");
             return true;
           }
         }
-        print(" HOME: ❌ Invalid $route arguments: $args");
+        print(" [DeepLinkDebug HOME]: ❌ Invalid $route arguments: $args");
         return false;
         
       case '/categories':
         // Validate category type
         if (args is String && args.isNotEmpty) {
-          print(" HOME: ✅ Valid categories route with type: $args");
+          print(" [DeepLinkDebug HOME]: ✅ Valid categories route with type: $args");
           return true;
         }
-        print(" HOME: ❌ Invalid categories arguments: $args");
+        print(" [DeepLinkDebug HOME]: ❌ Invalid categories arguments: $args");
         return false;
+        
+      case '/libraryHome':
+        print(" [DeepLinkDebug HOME]: ✅ Valid libraryHome route");
+        return true;
         
       default:
         // Unknown route, allow it but log warning
-        print(" HOME: ⚠️ Unknown route: $route, allowing navigation");
+        print(" [DeepLinkDebug HOME]: ⚠️ Unknown route: $route, allowing navigation");
         return true;
     }
   }

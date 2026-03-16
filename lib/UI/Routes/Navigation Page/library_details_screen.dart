@@ -1,4 +1,5 @@
 import 'package:ebook/Model/library_model.dart';
+import 'package:ebook/Model/library_plans_model.dart';
 import 'package:ebook/Model/library_reviews.dart';
 import 'package:ebook/Networking/api_provider.dart';
 import 'package:ebook/Storage/app_storage.dart';
@@ -9,11 +10,15 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:async';
+import '../../../Model/home_banner.dart' show Book;
 
+import '../../Components/ios_compliance_helper.dart';
 import '../../../Constants/constance_data.dart';
 import '../../../Helper/navigator.dart';
 import '../../../Model/library_book_details.dart';
 import '../../../Storage/data_provider.dart';
+import 'library_plans_screen.dart';
 
 class LibraryDetailsScreen extends StatefulWidget {
   const LibraryDetailsScreen({super.key, required this.id});
@@ -32,7 +37,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
   final _reviewController = TextEditingController();
   double _rating = 5.0;
   bool _isSubmittingReview = false;
-
+  
   @override
   void initState() {
     super.initState();
@@ -359,76 +364,76 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Library Collection',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigation.instance.navigate(
-                                        '/libraryBooks',
-                                        args:
-                                            data?.id?? 0);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'View All Books',
-                                        style: TextStyle(
-                                          color: Colors.blue.shade300,
-                                          fontSize: 16.sp,
-                                        ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Library Collection',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      const SizedBox(width: 4),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        size: 16.sp,
-                                        color: Colors.blue.shade300,
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigation.instance.navigate(
+                                            '/libraryBooks',
+                                            args:
+                                                data?.id?? 0);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'View All Books',
+                                            style: TextStyle(
+                                              color: Colors.blue.shade300,
+                                              fontSize: 16.sp,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Icon(
+                                            Icons.arrow_forward,
+                                            size: 16.sp,
+                                            color: Colors.blue.shade300,
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 0.5.h),
-                          _buildBookSection(
-                            context,
-                            "E-Books", 
-                            listData.library
-                                .where((e) =>
-                                    e.book_format?.toLowerCase() == "e-book")
-                                .toList(),
-                          ),
-                          _buildBookSection(
-                            context,
-                            "Magazines",
-                            listData.library
-                                .where((e) =>
-                                    e.book_format?.toLowerCase() == "magazine")
-                                .toList(),
-                          ),
-                          _buildBookSection(
-                            context,
-                            "E-Notes",
-                            listData.library
-                                .where((e) =>
-                                    e.book_format?.toLowerCase() == "e-note")
-                                .toList(),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                              ),
+                              SizedBox(height: 0.5.h),
+                              _buildBookSection(
+                                context,
+                                "E-Books", 
+                                listData.library
+                                    .where((e) =>
+                                        e.book_format?.toLowerCase() == "e-book")
+                                    .toList(),
+                              ),
+                              _buildBookSection(
+                                context,
+                                "Magazines",
+                                listData.library
+                                    .where((e) =>
+                                        e.book_format?.toLowerCase() == "magazine")
+                                    .toList(),
+                              ),
+                              _buildBookSection(
+                                context,
+                                "E-Notes",
+                                listData.library
+                                    .where((e) =>
+                                        e.book_format?.toLowerCase() == "e-note")
+                                    .toList(),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                   // Reviews Section
                   Container(
                     margin:
@@ -907,27 +912,22 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
         children: [
           Row(
             children: [
-              (data?.memberRequestUrl != null &&
-                      data?.memberRequestUrl.isNotEmpty == true &&
-                      (data?.is_member ?? 0) == 0)
-                  ? Expanded(
-                      child: _buildActionButton(
-                        icon: Icons.person_add,
-                        label: 'Become a Member',
-                        onTap: () {
-                          if (Storage.instance.isLoggedIn) {
-                            launch(Uri.parse(data!.memberRequestUrl));
-                          } else {
-                            ConstanceData.showAlertDialog(context);
-                          }
-                        },
-                        color: Colors.blue.shade700,
-                      ),
-                    )
-                  : Container(),
-              if ((data?.memberRequestUrl != null &&
-                      data?.memberRequestUrl.isNotEmpty == true &&
-                      (data?.is_member ?? 0) == 0) &&
+              if ((data?.is_member ?? 0) == 0)
+                Expanded(
+                  child: _buildActionButton(
+                    icon: Icons.person_add,
+                    label: 'Become a Member',
+                    onTap: () {
+                      if (Storage.instance.isLoggedIn) {
+                        _handleMembershipTap();
+                      } else {
+                        ConstanceData.showAlertDialog(context);
+                      }
+                    },
+                    color: Colors.blue.shade700,
+                  ),
+                ),
+              if ((data?.is_member ?? 0) == 0 &&
                   (data?.bookPublishRequestUrl != null &&
                       data!.bookPublishRequestUrl.isNotEmpty))
                 const SizedBox(width: 8),
@@ -991,6 +991,687 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _handleMembershipTap() async {
+    // Show a subtle loading indicator on the button area
+    if (!mounted) return;
+
+    // Show global loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Colors.white),
+      ),
+    );
+
+    try {
+      final response =
+          await ApiProvider.instance.getLibraryPlans(widget.id);
+
+      if (!mounted) return;
+      Navigator.of(context).pop(); // close loading
+
+      if (!response.success) {
+        _showSnackBar(response.message.isNotEmpty
+            ? response.message
+            : 'Failed to load membership info');
+        return;
+      }
+
+      final membershipApproveType = response.result.membershipApproveType;
+
+      if (membershipApproveType == 1) {
+        // Type 1 → free plan – show bottom sheet with plan details
+        _showFreePlanSheet(response.result.planList);
+      } else if (membershipApproveType == 2) {
+        // Type 2 → private library – request to join
+        _showPrivateLibrarySheet(
+          response.result.restrictedMsg,
+          response.result.planList,
+        );
+      } else {
+        // Default → show plans screen (pass pre-fetched plans)
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => LibraryPlansScreen(
+              libraryId: widget.id,
+              libraryTitle: data?.title ?? '',
+              prefetchedPlans: response.result.planList,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.of(context).pop(); // close loading
+      _showSnackBar('Something went wrong. Please try again.');
+    }
+  }
+
+  void _showFreePlanSheet(List<LibraryPlan> plans) {
+    bool isClaiming = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (ctx, setSheetState) {
+            final firstPlan = plans.isNotEmpty ? plans.first : null;
+
+            return Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFF1C1E26),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 4.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Handle bar
+                  Center(
+                    child: Container(
+                      width: 10.w,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 2.5.h),
+
+                  // Header row
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.card_giftcard_rounded,
+                          color: Colors.white,
+                          size: 20.sp,
+                        ),
+                      ),
+                      SizedBox(width: 3.w),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Free Membership',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            'Start your free access today',
+                            style: TextStyle(
+                              color: Colors.grey.shade400,
+                              fontSize: 13.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      if (IOSComplianceHelper.isIOS)
+                        IconButton(
+                          onPressed: () =>
+                              IOSComplianceHelper.showPurchaseInfoDialog(
+                                  context),
+                          icon: Icon(Icons.info_outline,
+                              color: Colors.orange.shade400, size: 20.sp),
+                        ),
+                    ],
+                  ),
+                  SizedBox(height: 2.5.h),
+
+                  // iOS Compliance Notice
+                  if (IOSComplianceHelper.isIOS)
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 2.h),
+                      padding: EdgeInsets.all(3.w),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade900.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: Colors.orange.shade800.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.info_outline,
+                              color: Colors.orange.shade300, size: 16.sp),
+                          SizedBox(width: 2.w),
+                          Expanded(
+                            child: Text(
+                              'This is a free membership. In-app purchases are not supported on iOS.',
+                              style: TextStyle(
+                                color: Colors.orange.shade100,
+                                fontSize: 13.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  if (plans.isEmpty)
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 2.h),
+                      child: Center(
+                        child: Text(
+                          'No free plans available at the moment.',
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                            fontSize: 15.sp,
+                          ),
+                        ),
+                      ),
+                    )
+                  else ...[
+                    // Plan Info (Optional: Show if you want to remind them what they are getting)
+                    // if (firstPlan != null)
+                    //   Container(
+                    //     width: double.infinity,
+                    //     padding: EdgeInsets.all(4.w),
+                    //     margin: EdgeInsets.only(bottom: 3.h),
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white.withOpacity(0.04),
+                    //       borderRadius: BorderRadius.circular(16),
+                    //       border: Border.all(
+                    //         color: Colors.white.withOpacity(0.08),
+                    //       ),
+                    //     ),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           firstPlan.title,
+                    //           style: TextStyle(
+                    //             color: Colors.white,
+                    //             fontSize: 16.sp,
+                    //             fontWeight: FontWeight.bold,
+                    //           ),
+                    //         ),
+                    //         SizedBox(height: 0.5.h),
+                    //         Text(
+                    //           'Includes full access to books and materials.',
+                    //           style: TextStyle(
+                    //             color: Colors.grey.shade400,
+                    //             fontSize: 13.sp,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+
+                    // Direct Proceed Button
+                    GestureDetector(
+                      onTap: isClaiming || firstPlan == null
+                          ? null
+                          : () async {
+                              setSheetState(() => isClaiming = true);
+                              try {
+                                final response = await ApiProvider.instance
+                                    .purchaseLibraryMembership(
+                                  libraryId: widget.id,
+                                  planId: firstPlan.id,
+                                );
+
+                                if (response.success) {
+                                  if (mounted) Navigator.of(context).pop();
+                                  _showSnackBar(
+                                    response.message.isNotEmpty
+                                        ? response.message
+                                        : 'Free membership activated successfully!',
+                                    isSuccess: true,
+                                  );
+                                  if (response.result.isRefresh == 1) {
+                                    _loadLibraryDetails();
+                                  }
+                                } else {
+                                  setSheetState(() => isClaiming = false);
+                                  _showSnackBar(
+                                    response.message.isNotEmpty
+                                        ? response.message
+                                        : 'Failed to claim plan. Please try again.',
+                                  );
+                                }
+                              } catch (e) {
+                                setSheetState(() => isClaiming = false);
+                                _showSnackBar(
+                                    'Something went wrong. Please try again.');
+                              }
+                            },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 1.8.h),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: isClaiming
+                                ? [Colors.grey.shade700, Colors.grey.shade600]
+                                : [
+                                    const Color(0xFF1565C0),
+                                    const Color(0xFF42A5F5)
+                                  ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF1565C0).withOpacity(0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: isClaiming
+                            ? const SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : Text(
+                                'Activate Free Membership',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15.sp,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showPrivateLibrarySheet([String? restrictedMsg, List<LibraryPlan>? plans]) {
+    final TextEditingController couponController = TextEditingController();
+    bool isSubmitting = false;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color(0xFF1C1E26),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 3.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Handle bar
+                    Center(
+                      child: Container(
+                        width: 10.w,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.white24,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    if (IOSComplianceHelper.isIOS)
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          onPressed: () =>
+                              IOSComplianceHelper.showPurchaseInfoDialog(
+                                  context),
+                          icon: Icon(Icons.info_outline,
+                              color: Colors.orange.shade400, size: 20.sp),
+                        ),
+                      )
+                    else
+                      SizedBox(height: 2.5.h),
+
+                    // Lock icon
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF6A1B9A), Color(0xFFAB47BC)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(Icons.lock_rounded,
+                          color: Colors.white, size: 22.sp),
+                    ),
+                    SizedBox(height: 2.h),
+
+                    // Title
+                    Text(
+                      'Private Library',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 19.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+
+                    // Description
+                    Text(
+                      restrictedMsg?.isNotEmpty == true
+                          ? restrictedMsg!
+                          : 'This is a private library. Send a membership request to get access. The library admin will review and approve your request.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 15.sp,
+                        height: 1.6,
+                      ),
+                    ),
+                    SizedBox(height: 2.5.h),
+
+                  // Membership Request Info (iOS Only)
+                  if (IOSComplianceHelper.isIOS) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(4.w),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade900.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.blue.shade800.withOpacity(0.5),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.info_outline,
+                              color: Colors.blue.shade300, size: 18.sp),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: Text(
+                              'Notice: This is a membership request, not a direct purchase. You are requesting access directly from the library owner.',
+                              style: TextStyle(
+                                color: Colors.blue.shade100,
+                                fontSize: 13.sp,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+
+                    // Coupon Disclaimer (iOS Only)
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(4.w),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.shade900.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.orange.shade800.withOpacity(0.4),
+                        ),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.warning_amber_rounded,
+                              color: Colors.orange.shade300, size: 18.sp),
+                          SizedBox(width: 3.w),
+                          Expanded(
+                            child: Text(
+                              "Disclaimer: Coupon codes are managed by the library owner. Our app doesn't facilitate coupon distribution or maintenance.",
+                              style: TextStyle(
+                                color: Colors.orange.shade100,
+                                fontSize: 13.sp,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+                  ] else if (plans != null && plans.isNotEmpty) ...[
+                    // Informational Plans List (Android Only)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Available Plans (For Information)',
+                        style: TextStyle(
+                          color: const Color(0xFF4FC3F7).withOpacity(0.8),
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 20.h),
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: plans.length,
+                        separatorBuilder: (_, __) => SizedBox(height: 1.h),
+                        itemBuilder: (context, index) {
+                          final p = plans[index];
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 3.w, vertical: 1.2.h),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.04),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.05),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.card_membership,
+                                    color: Colors.grey.shade500, size: 14.sp),
+                                SizedBox(width: 2.w),
+                                Expanded(
+                                  child: Text(
+                                    p.title,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 13.sp),
+                                  ),
+                                ),
+                                Text(
+                                  '₹${p.totalPrice.toStringAsFixed(0)}',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 2.5.h),
+                  ],
+
+                    // Coupon field
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Coupon Code (Optional)',
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 1.h),
+                    TextField(
+                      controller: couponController,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                        letterSpacing: 1.2,
+                      ),
+                      textCapitalization: TextCapitalization.characters,
+                      decoration: InputDecoration(
+                        hintText: 'Enter coupon code if you have one',
+                        hintStyle: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 14.sp,
+                          letterSpacing: 0,
+                        ),
+                        prefixIcon: Icon(Icons.local_offer_rounded,
+                            color: Colors.purple.shade300, size: 16.sp),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.06),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 4.w, vertical: 1.5.h),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: Colors.white.withOpacity(0.1)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: Colors.white.withOpacity(0.1)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: Colors.purple.shade400, width: 1.5),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+
+                    // Submit button
+                    GestureDetector(
+                      onTap: isSubmitting
+                          ? null
+                          : () async {
+                              setSheetState(() => isSubmitting = true);
+
+                              final response = await ApiProvider.instance
+                                  .purchaseLibraryMembership(
+                                libraryId: widget.id,
+                                couponCode: couponController.text,
+                              );
+
+                              if (!mounted) return;
+                              Navigator.of(context).pop(); // close sheet
+
+                              if (!response.success) {
+                                _showSnackBar(
+                                  response.message.isNotEmpty
+                                      ? response.message
+                                      : 'Failed to send request. Please try again.',
+                                );
+                                return;
+                              }
+
+                              _showSnackBar(
+                                response.message.isNotEmpty
+                                    ? response.message
+                                    : 'Request submitted! The library admin will review it.',
+                                isSuccess: true,
+                              );
+
+                              if (response.result.isRefresh == 1) {
+                                _loadLibraryDetails();
+                              }
+                            },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 1.6.h),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: isSubmitting
+                                ? [Colors.grey.shade700, Colors.grey.shade600]
+                                : [
+                                    const Color(0xFF6A1B9A),
+                                    const Color(0xFFAB47BC)
+                                  ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color:
+                                  const Color(0xFF6A1B9A).withOpacity(0.35),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: isSubmitting
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(
+                                'Send Membership Request',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -1201,3 +1882,4 @@ Discover thousands of books, magazines, and e-notes in our digital library!
     );
   }
 }
+

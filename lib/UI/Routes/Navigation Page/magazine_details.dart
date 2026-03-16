@@ -1070,6 +1070,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             controller.runJavaScript('''
             document.addEventListener('click', function(e) {
               if (e.target.tagName === 'IMG') {
+                if (!e.target.hasAttribute('alt')) return;
                 e.preventDefault();
                 e.stopPropagation();
                 imageClicked.postMessage(e.target.src + '|sep|' + (e.target.alt || ''));
@@ -1084,6 +1085,7 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
             final url = request.url;
             if (url.contains('youtube.com') ||
                 url.contains('youtu.be') ||
+                url.contains('youtube-nocookie.com') ||
                 url.contains('googlevideo.com')) {
               return NavigationDecision.navigate;
             }
@@ -1097,7 +1099,6 @@ class _MagazineDetailsPageState extends State<MagazineDetailsPage>
       )
       ..loadHtmlString(
         generateHtmlContent(content, index),
-        baseUrl: 'https://www.youtube-nocookie.com',
       );
 
     return controller;

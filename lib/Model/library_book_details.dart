@@ -108,7 +108,7 @@ class LibraryBookDetailsModel {
     //double
     average_rating = json['average_rating'] == null
         ? 0
-        : double.parse(json['average_rating']);
+        : double.parse(json['average_rating'].toString());
     total_rating = json['total_rating'] == null
         ? 0
         : double.parse(json['total_rating'].toString());
@@ -120,13 +120,16 @@ class LibraryBookDetailsModel {
         : double.parse(json['discount'].toString());
     commission_percent = json['commission_percent'] == null
         ? 0
-        : double.parse(json['commission_percent']);
-    commission =
-        json['commission'] == null ? 0 : double.parse(json['commission']);
-    writer_amount =
-        json['writer_amount'] == null ? 0 : double.parse(json['writer_amount']);
-    selling_price =
-        json['selling_price'] == null ? 0 : double.parse(json['selling_price']);
+        : double.parse(json['commission_percent'].toString());
+    commission = json['commission'] == null
+        ? 0
+        : double.parse(json['commission'].toString());
+    writer_amount = json['writer_amount'] == null
+        ? 0
+        : double.parse(json['writer_amount'].toString());
+    selling_price = json['selling_price'] == null
+        ? 0
+        : double.parse(json['selling_price'].toString());
 
     //bool
     is_free = json['is_free'] == null

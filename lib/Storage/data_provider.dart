@@ -22,6 +22,7 @@ import '../Model/home_banner.dart';
 import '../Model/notification_model.dart';
 import '../Model/profile.dart';
 import '../Model/reward_response.dart';
+import '../Model/library_home_models.dart';
 
 class DataProvider extends ChangeNotifier {
   // Book data
@@ -58,6 +59,10 @@ class DataProvider extends ChangeNotifier {
   // Advertisement
   List<Advertisement> advertisements = [];
   List<AdvertisementBanner>? advertisementBanners = [];
+
+  // Library Home
+  List<LibraryHomeBanner> libraryHomeBanners = [];
+  List<LibraryHomeSection> libraryHomeSections = [];
 
   // User
   Profile? profile;
@@ -135,8 +140,8 @@ class DataProvider extends ChangeNotifier {
   void setCupons(List<Discount> list) => _notifyChange(() => coupons = list);
 
   void setIndex(int i) => _notifyChange(() {
-        print("📍 NAVIGATION INDEX: Changing from $currentIndex to $i");
-        print("📍 STACK TRACE: ${StackTrace.current}");
+        print(" [DeepLinkDebug PROVIDER - NAVIGATION INDEX]: Changing from $currentIndex to $i");
+        print(" [DeepLinkDebug PROVIDER - STACK TRACE]: ${StackTrace.current}");
         currentIndex = i;
       });
   void setCategory(int i) => _notifyChange(() => currentCategory = i);
@@ -147,6 +152,12 @@ class DataProvider extends ChangeNotifier {
 
   void setAdBanner(List<Advertisement> list) =>
       _notifyChange(() => advertisements = list);
+
+  void setLibraryHomeBanners(List<LibraryHomeBanner> list) =>
+      _notifyChange(() => libraryHomeBanners = list);
+
+  void setLibraryHomeSections(List<LibraryHomeSection> list) =>
+      _notifyChange(() => libraryHomeSections = list);
 
   void setAdvertisementBanners(List<AdvertisementBanner> list) =>
       _notifyChange(() => advertisementBanners = list);

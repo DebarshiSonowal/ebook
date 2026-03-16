@@ -224,6 +224,36 @@ class BookPublishinDetails extends StatelessWidget {
               ),
             ],
           ),
+          if (bookDetails.total_views != null) ...[
+            SizedBox(
+              height: 1.h,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 25.w,
+                  child: Text(
+                    'VIEWS',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontSize: 2.h,
+                          color: Colors.grey.shade400,
+                        ),
+                  ),
+                ),
+                SizedBox(
+                  width: 3.h,
+                ),
+                Text(
+                  '${bookDetails.total_views}',
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontSize: 14.sp,
+                        color: Colors.grey.shade200,
+                      ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

@@ -459,37 +459,45 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
 
   Future<void> _handleGoogleSignIn() async {
     try {
-      final response = await signInWithGoogle();
+      // google_sign_in v7: use instance singleton + authenticate() (replaces signIn())
+      final GoogleSignInAccount googleUser =
+          await GoogleSignIn.instance.authenticate();
 
-      // Check if sign-in was successful
-      if (response.user != null) {
+      Navigation.instance.navigate("/loadingDialog");
+
+      // v7: authentication only exposes idToken (no accessToken)
+      final GoogleSignInAuthentication googleAuth =
+          googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
         loginSocial(
-          response.user?.displayName?.split(" ")[0] ?? "",
-          (response.user?.displayName?.split(" ").length ?? 0) > 1
-              ? response.user?.displayName?.split(" ")[1] ?? ""
+          userCredential.user?.displayName?.split(" ")[0] ?? "",
+          (userCredential.user?.displayName?.split(" ").length ?? 0) > 1
+              ? userCredential.user?.displayName?.split(" ")[1] ?? ""
               : "",
-          response.user?.email ?? "",
+          userCredential.user?.email ?? "",
           "",
           "google",
-          response.user?.phoneNumber ?? "",
+          userCredential.user?.phoneNumber ?? "",
           "",
         );
-      }
-    } on GoogleSignInException catch (e) {
-      // Handle Google Sign-In specific exceptions
-      if (e.code == GoogleSignInExceptionCode.canceled) {
-        // User cancelled - don't show error, just silently return
-        debugPrint("Google Sign-In cancelled by user");
-        return;
       } else {
-        debugPrint("Google Sign-In error: ${e}");
-        Fluttertoast.showToast(
-          msg: "Google Sign In failed: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
+        Navigation.instance.goBack();
+        Fluttertoast.showToast(msg: "Failed to get user info");
       }
     } catch (e) {
+      try {
+        if (Navigation.instance.navigatorKey.currentState?.canPop() ?? false) {
+          Navigation.instance.goBack();
+        }
+      } catch (_) {}
       debugPrint("Unexpected error during Google Sign-In: $e");
       Fluttertoast.showToast(
         msg: "Google Sign In failed. Please try again.",
@@ -606,36 +614,5 @@ class _LoginPageReturnState extends State<LoginPageReturn> {
     );
   }
 
-  Future<UserCredential> signInWithGoogle() async {
-    try {
-      final googleSignIn = GoogleSignIn.instance;
-
-      // Initialize Google Sign In (required in v7.2.0)
-      await googleSignIn.initialize();
-
-      // Trigger the authentication flow
-      final GoogleSignInAccount googleUser = await googleSignIn.authenticate();
-
-      // Define scopes needed for authorization
-      const List<String> scopes = ['email', 'profile'];
-
-      // Request authorization for the scopes to get accessToken
-      final authorization =
-          await googleUser.authorizationClient.authorizeScopes(scopes);
-
-      // Get the idToken from authentication
-      final googleAuth = googleUser.authentication;
-
-      // Create Firebase credential with both tokens
-      final credential = GoogleAuthProvider.credential(
-        accessToken: authorization.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      // Sign in to Firebase
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Note: signInWithGoogle is now inlined into _handleGoogleSignIn above.
 }

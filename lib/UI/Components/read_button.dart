@@ -29,17 +29,17 @@ class ReadButton extends StatelessWidget {
           // Navigation.instance.navigate('/bookInfo');
           // Navigation.instance.navigate('/bookDetails', args: id ?? 0);
           // Navigation.instance.navigate('/reading', args: id ?? 0);
-          if ((Platform.isAndroid) ||
-              (Platform.isIOS && Storage.instance.isLoggedIn)) {
+          // if ((Platform.isAndroid) ||
+          //     (Platform.isIOS && Storage.instance.isLoggedIn)) {
             if (format == "magazine") {
               Navigation.instance.navigate('/magazineArticles', args: id ?? 0);
             } else {
               Navigation.instance
                   .navigate('/bookDetails', args: '${id ?? 0},${profile_pic}');
             }
-          } else {
-            ConstanceData.showAlertDialog(context);
-          }
+          // } else {
+          //   ConstanceData.showAlertDialog(context);
+          // }
         },
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.black),

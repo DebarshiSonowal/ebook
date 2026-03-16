@@ -12,6 +12,8 @@ import '../../../Networking/api_provider.dart';
 import '../../../Storage/data_provider.dart';
 import '../../../Utility/share_helper.dart';
 import '../../Components/library_card_item.dart';
+import '../../../Model/library_book_details.dart';
+import 'dart:async';
 
 class SpecificLibraryPage extends StatefulWidget {
   const SpecificLibraryPage({Key? key, required this.id}) : super(key: key);
@@ -26,6 +28,15 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
   TabController? _controller;
   String? _libraryTitle;
   bool _isLoading = false;
+
+  // Search state
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
+  String _searchText = "";
+  bool _isSearching = false;
+  bool _searchLoading = false;
+  List<LibraryBookDetailsModel> _searchResults = [];
+  Timer? _debounce;
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +66,18 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
         child: Consumer<DataProvider>(builder: (cont, data, _) {
           return Column(
             children: [
-              TabBar(
-                controller: _controller,
-                labelColor: Colors.white,
-                unselectedLabelColor: Colors.white54,
-                tabs: [
-                  Tab(text: 'E-Book'),
-                  Tab(text: 'Magazine'),
-                  Tab(text: 'E-Notes'),
-                ],
-              ),
+              _buildSearchBar(),
+              if (!_isSearching)
+                TabBar(
+                  controller: _controller,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white54,
+                  tabs: [
+                    Tab(text: 'E-Book'),
+                    Tab(text: 'Magazine'),
+                    Tab(text: 'E-Notes'),
+                  ],
+                ),
               SizedBox(
                 height: 1.h,
               ),
@@ -76,120 +89,26 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
                               AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : data.specificLibraryBooks.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No books available in this library',
-                              style: TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16,
-                              ),
-                            ),
-                          )
-                        : TabBarView(
-                            controller: _controller,
-                            children: [
-                              GridView.builder(
-                                itemCount: data.specificLibraryBooks
-                                    .where((e) =>
-                                        e.book_format?.toLowerCase() ==
-                                        "e-book")
-                                    .toList()
-                                    .length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 2 / 2.5,
-                                  crossAxisSpacing: 10.w,
+                    : _isSearching
+                        ? _buildSearchResults()
+                        : data.specificLibraryBooks.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  'No books available in this library',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
+                                  ),
                                 ),
-                                itemBuilder: (context, count) {
-                                  var current = data.specificLibraryBooks
-                                      .where((e) =>
-                                          e.book_format?.toLowerCase() ==
-                                          "e-book")
-                                      .toList()[count];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      ConstanceData.showBookDetails(
-                                          context, current);
-                                    },
-                                    child: Card(
-                                      child: CachedNetworkImage(
-                                        imageUrl: current.profile_pic ?? "",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  );
-                                },
+                              )
+                            : TabBarView(
+                                controller: _controller,
+                                children: [
+                                  _buildGridView(data.specificLibraryBooks, "e-book"),
+                                  _buildGridView(data.specificLibraryBooks, "magazine"),
+                                  _buildGridView(data.specificLibraryBooks, "e-note"),
+                                ],
                               ),
-                              GridView.builder(
-                                itemCount: data.specificLibraryBooks
-                                    .where((e) =>
-                                        e.book_format?.toLowerCase() ==
-                                        "magazine")
-                                    .toList()
-                                    .length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 2 / 2.5,
-                                  crossAxisSpacing: 10.w,
-                                ),
-                                itemBuilder: (context, count) {
-                                  var current = data.specificLibraryBooks
-                                      .where((e) =>
-                                          e.book_format?.toLowerCase() ==
-                                          "magazine")
-                                      .toList()[count];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      ConstanceData.showBookDetails(
-                                          context, current);
-                                    },
-                                    child: Card(
-                                      child: CachedNetworkImage(
-                                        imageUrl: current.profile_pic ?? "",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              GridView.builder(
-                                itemCount: data.specificLibraryBooks
-                                    .where((e) =>
-                                        e.book_format?.toLowerCase() ==
-                                        "e-note")
-                                    .toList()
-                                    .length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 2 / 2.5,
-                                  crossAxisSpacing: 10.w,
-                                ),
-                                itemBuilder: (context, count) {
-                                  var current = data.specificLibraryBooks
-                                      .where((e) =>
-                                          e.book_format?.toLowerCase() ==
-                                          "e-note")
-                                      .toList()[count];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      ConstanceData.showBookDetails(
-                                          context, current);
-                                    },
-                                    child: Card(
-                                      child: CachedNetworkImage(
-                                        imageUrl: current.profile_pic ?? "",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
               ),
             ],
           );
@@ -207,26 +126,215 @@ class _SpecificLibraryPageState extends State<SpecificLibraryPage>
       vsync: this,
     );
 
-    // Clear previous specific library books data
-    Provider.of<DataProvider>(context, listen: false)
-        .setSpecificLibraryBooks([]);
-
     Future.delayed(Duration.zero, () {
       setState(() {
         _isLoading = true;
       });
+      // Clear previous specific library books data after first frame
+      Provider.of<DataProvider>(context, listen: false)
+          .setSpecificLibraryBooks([]);
       fetchData();
       _loadLibraryTitle();
     });
+
+    _searchController.addListener(_onSearchChanged);
+    _controller?.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    if (_isSearching && !_controller!.indexIsChanging) {
+      _performSearch();
+    }
+  }
+
+  DataProvider? _dataProvider;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _dataProvider = Provider.of<DataProvider>(context, listen: false);
   }
 
   @override
   void dispose() {
     _controller?.dispose();
-    // Clear specific library books data when leaving the screen
-    Provider.of<DataProvider>(context, listen: false)
-        .setSpecificLibraryBooks([]);
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    _debounce?.cancel();
+    // Clear specific library books data after the disposal cycle
+    Future.microtask(() {
+      _dataProvider?.setSpecificLibraryBooks([]);
+    });
     super.dispose();
+  }
+
+  void _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (_searchController.text != _searchText) {
+        setState(() {
+          _searchText = _searchController.text;
+          _isSearching = _searchText.isNotEmpty;
+        });
+        if (_isSearching) {
+          _performSearch();
+        }
+      }
+    });
+  }
+
+  Future<void> _performSearch() async {
+    setState(() => _searchLoading = true);
+    try {
+      String format = "";
+      if (_controller != null) {
+        if (_controller!.index == 0) {
+          format = "e-book";
+        } else if (_controller!.index == 1) {
+          format = "magazine";
+        } else if (_controller!.index == 2) {
+          format = "e-note";
+        }
+      }
+
+      final response = await ApiProvider.instance.search(
+        format, // format
+        '', // category_ids
+        '', // tag_ids
+        '', // author_ids
+        _searchText, // title
+        '', // awards
+        library_ids: widget.id.toString(),
+      );
+
+      if (response.success ?? false) {
+        setState(() {
+          _searchResults = response.books.map((book) {
+            return LibraryBookDetailsModel.fromJson(book.toJson());
+          }).toList();
+        });
+      }
+    } catch (e) {
+      debugPrint("Search error: $e");
+    } finally {
+      setState(() => _searchLoading = false);
+    }
+  }
+
+  Widget _buildSearchResults() {
+    if (_searchLoading) {
+      return const Center(
+        child: CircularProgressIndicator(color: Colors.white),
+      );
+    }
+
+    if (_searchResults.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.search_off, color: Colors.white54, size: 40.sp),
+            SizedBox(height: 1.h),
+            Text(
+              'No books found',
+              style: TextStyle(color: Colors.white70, fontSize: 16.sp),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return GridView.builder(
+      itemCount: _searchResults.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 2 / 2.5,
+        crossAxisSpacing: 10.w,
+      ),
+      itemBuilder: (context, count) {
+        var current = _searchResults[count];
+        return GestureDetector(
+          onTap: () {
+            ConstanceData.showBookDetails(context, current);
+          },
+          child: Card(
+            child: CachedNetworkImage(
+              imageUrl: current.profile_pic ?? "",
+              fit: BoxFit.fill,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 1.h),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: _searchFocusNode.hasFocus
+              ? Colors.white
+              : Colors.white.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: TextField(
+        controller: _searchController,
+        focusNode: _searchFocusNode,
+        style:  TextStyle(color: Colors.white,fontSize:14.sp),
+        decoration: InputDecoration(
+          hintText: 'Search in this library...',
+          hintStyle:  TextStyle(color: Colors.white54,fontSize: 14.sp ),
+          prefixIcon: const Icon(Icons.search, color: Colors.white54),
+          suffixIcon: _searchText.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear, color: Colors.white54),
+                  onPressed: () {
+                    _searchController.clear();
+                    _searchFocusNode.unfocus();
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 1.5.h),
+        ),
+        onTap: () {
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget _buildGridView(List<LibraryBookDetailsModel> books, String format) {
+    final filteredBooks = books
+        .where((e) => e.book_format?.toLowerCase() == format.toLowerCase())
+        .toList();
+
+    return GridView.builder(
+      itemCount: filteredBooks.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 2 / 2.5,
+        crossAxisSpacing: 10.w,
+      ),
+      itemBuilder: (context, count) {
+        var current = filteredBooks[count];
+        return GestureDetector(
+          onTap: () {
+            ConstanceData.showBookDetails(context, current);
+          },
+          child: Card(
+            child: CachedNetworkImage(
+              imageUrl: current.profile_pic ?? "",
+              fit: BoxFit.fill,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _loadLibraryTitle() {

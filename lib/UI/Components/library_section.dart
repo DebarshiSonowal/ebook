@@ -33,7 +33,7 @@ class LibrarySection extends StatelessWidget {
             ),
               GestureDetector(
                 onTap: () {
-                  Navigation.instance.navigate("/librarySearchScreen");
+                  Navigation.instance.navigate("/libraryHome");
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),

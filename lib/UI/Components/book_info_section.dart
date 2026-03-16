@@ -48,13 +48,13 @@ class BookInfoSection extends StatelessWidget {
                     height: 4.5.h,
                     child: ElevatedButton(
                         onPressed: () {
-                          if ((Platform.isAndroid) ||
-                              (Platform.isIOS && Storage.instance.isLoggedIn)) {
+                          // if ((Platform.isAndroid) ||
+                          //     (Platform.isIOS && Storage.instance.isLoggedIn)) {
                             Navigation.instance.navigate('/bookDetails',
                                 args: "${data.id ?? 0},${data.profile_pic}");
-                          } else {
-                            ConstanceData.showAlertDialog(context);
-                          }
+                          // } else {
+                          //   ConstanceData.showAlertDialog(context);
+                          // }
                         },
                         style: ButtonStyle(
                           backgroundColor:
@@ -120,13 +120,13 @@ class BookDetailsInfoSection extends StatelessWidget {
                     height: 4.5.h,
                     child: ElevatedButton(
                         onPressed: () {
-                          if ((Platform.isAndroid) ||
-                              (Platform.isIOS && Storage.instance.isLoggedIn)) {
+                          // if ((Platform.isAndroid) ||
+                          //     (Platform.isIOS && Storage.instance.isLoggedIn)) {
                             Navigation.instance.navigate('/bookDetails',
                                 args: "${data.id ?? 0},${data.profile_pic}");
-                          } else {
-                            ConstanceData.showAlertDialog(context);
-                          }
+                          // } else {
+                          //   ConstanceData.showAlertDialog(context);
+                          // }
                         },
                         style: ButtonStyle(
                           backgroundColor:
@@ -185,13 +185,13 @@ class EnoteInfoSection extends StatelessWidget {
                   height: 4.5.h,
                   child: ElevatedButton(
                       onPressed: () {
-                        if ((Platform.isAndroid) ||
-                            (Platform.isIOS && Storage.instance.isLoggedIn)) {
+                        // if ((Platform.isAndroid) ||
+                        //     (Platform.isIOS && Storage.instance.isLoggedIn)) {
                           Navigation.instance.navigate('/bookDetails',
                               args: "${data.id ?? 0},${data.profilePic}");
-                        } else {
-                          ConstanceData.showAlertDialog(context);
-                        }
+                        // } else {
+                        //   ConstanceData.showAlertDialog(context);
+                        // }
                       },
                       style: ButtonStyle(
                         backgroundColor:

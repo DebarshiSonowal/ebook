@@ -38,6 +38,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _showEmailForm = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -202,73 +204,147 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(height: 3.h),
                   ],
 
-                  // Regular Login Form
-                  Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.all(4.w),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.15),
-                        width: 1,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Sign in with Email",
-                          style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w600,
+                  // Email Login – toggle button / form
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 350),
+                    transitionBuilder: (child, animation) {
+                      final offset = Tween<Offset>(
+                        begin: const Offset(0, 0.08),
+                        end: Offset.zero,
+                      ).animate(CurvedAnimation(
+                        parent: animation,
+                        curve: Curves.easeOut,
+                      ));
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(position: offset, child: child),
+                      );
+                    },
+                    child: _showEmailForm
+                        ? Container(
+                            key: const ValueKey('email_form'),
+                            width: double.infinity,
+                            padding: EdgeInsets.all(4.w),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.15),
+                                width: 1,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Sign in with Email",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge
+                                            ?.copyWith(
+                                              color: Colors.white,
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.close,
+                                          color: Colors.white70),
+                                      onPressed: () => setState(
+                                          () => _showEmailForm = false),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 3.h),
+                                _buildTextField(
+                                  context: context,
+                                  controller: _emailController,
+                                  hintText: "Email Address",
+                                  labelText: "Enter your email",
+                                  keyboardType: TextInputType.emailAddress,
+                                  prefixIcon: Icons.email_outlined,
+                                ),
+                                SizedBox(height: 2.5.h),
+                                _buildTextField(
+                                  context: context,
+                                  controller: _passwordController,
+                                  hintText: "Password",
+                                  labelText: "Enter your password",
+                                  isObscure: _obscurePassword,
+                                  prefixIcon: Icons.lock_outline,
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      color: Colors.white.withOpacity(0.7),
+                                    ),
+                                    onPressed: () => setState(
+                                        () => _obscurePassword = !_obscurePassword),
                                   ),
-                        ),
-                        SizedBox(height: 3.h),
-                        _buildTextField(
-                          context: context,
-                          controller: _emailController,
-                          hintText: "Email Address",
-                          labelText: "Enter your email",
-                          keyboardType: TextInputType.emailAddress,
-                          prefixIcon: Icons.email_outlined,
-                        ),
-                        SizedBox(height: 2.5.h),
-                        _buildTextField(
-                          context: context,
-                          controller: _passwordController,
-                          hintText: "Password",
-                          labelText: "Enter your password",
-                          isObscure: true,
-                          prefixIcon: Icons.lock_outline,
-                        ),
-                        SizedBox(height: 3.h),
-                        _buildLoginButton(context),
-                        SizedBox(height: 2.h),
-                        Center(
-                          child: GestureDetector(
-                            onTap: () {
-                              _launchUrl(Uri.parse(
-                                  "https://tratri.in/app-forget-password"));
-                            },
-                            child: Text(
-                              "Forgot Password?",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    fontSize: 14.sp,
-                                    color: Colors.white.withOpacity(0.9),
-                                    fontWeight: FontWeight.w500,
-                                    decoration: TextDecoration.underline,
+                                ),
+                                SizedBox(height: 3.h),
+                                _buildLoginButton(context),
+                                SizedBox(height: 2.h),
+                                Center(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _launchUrl(Uri.parse(
+                                          "https://tratri.in/app-forget-password"));
+                                    },
+                                    child: Text(
+                                      "Forgot Password?",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.copyWith(
+                                            fontSize: 14.sp,
+                                            color:
+                                                Colors.white.withOpacity(0.9),
+                                            fontWeight: FontWeight.w500,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                    ),
                                   ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : SizedBox(
+                            key: const ValueKey('email_button'),
+                            width: double.infinity,
+                            height: 6.h,
+                            child: OutlinedButton.icon(
+                              onPressed: () =>
+                                  setState(() => _showEmailForm = true),
+                              icon: const Icon(Icons.email_outlined,
+                                  color: Colors.white),
+                              label: Text(
+                                'Sign in with Email',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(
+                                      fontSize: 16.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                    color: Colors.white.withOpacity(0.5),
+                                    width: 1.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
                   ),
 
                   SizedBox(height: 3.h),
@@ -318,6 +394,7 @@ class _LoginPageState extends State<LoginPage> {
     bool isObscure = false,
     TextInputType keyboardType = TextInputType.text,
     IconData? prefixIcon,
+    Widget? suffixIcon,
   }) {
     return Container(
       width: double.infinity,
@@ -343,6 +420,7 @@ class _LoginPageState extends State<LoginPage> {
           prefixIcon: prefixIcon != null
               ? Icon(prefixIcon, color: Colors.white.withOpacity(0.8))
               : null,
+          suffixIcon: suffixIcon,
           labelStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontSize: 14.sp,
                 color: Colors.white.withOpacity(0.8),
@@ -479,52 +557,37 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _handleGoogleSignIn() async {
     try {
-      final googleSignIn = GoogleSignIn.instance;
-      await googleSignIn.initialize();
-      final GoogleSignInAccount? googleUser = await googleSignIn.authenticate();
+      // google_sign_in v7: use instance singleton + authenticate() (replaces signIn())
+      final GoogleSignInAccount googleUser =
+          await GoogleSignIn.instance.authenticate();
 
-      if (googleUser != null) {
-        Navigation.instance.navigate("/loadingDialog");
+      Navigation.instance.navigate("/loadingDialog");
 
-        // Request authorization for the scopes to get accessToken
-        const List<String> scopes = ['email', 'profile'];
-        final authorization =
-            await googleUser.authorizationClient.authorizeScopes(scopes);
-        final googleAuth = await googleUser.authentication;
+      // v7: authentication only exposes idToken (no accessToken)
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-        // Create Firebase credential with both tokens
-        final credential = GoogleAuthProvider.credential(
-          accessToken: authorization.accessToken,
-          idToken: googleAuth.idToken,
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        loginSocial(
+          userCredential.user?.displayName?.split(" ")[0] ?? "",
+          (userCredential.user?.displayName?.split(" ").length ?? 0) > 1
+              ? userCredential.user?.displayName?.split(" ")[1] ?? ""
+              : "",
+          userCredential.user?.email ?? "",
+          "",
+          "google",
+          userCredential.user?.phoneNumber ?? "",
+          "",
         );
-
-        // Sign in to Firebase
-        final userCredential =
-            await FirebaseAuth.instance.signInWithCredential(credential);
-
-        if (userCredential.user != null) {
-          loginSocial(
-            userCredential.user?.displayName?.split(" ")[0] ?? "",
-            (userCredential.user?.displayName?.split(" ").length ?? 0) > 1
-                ? userCredential.user?.displayName?.split(" ")[1] ?? ""
-                : "",
-            userCredential.user?.email ?? "",
-            "",
-            "google",
-            userCredential.user?.phoneNumber ?? "",
-            "",
-          );
-        } else {
-          Navigation.instance.goBack();
-          Fluttertoast.showToast(msg: "Failed to get user info");
-        }
-      }
-    } on GoogleSignInException catch (e) {
-      if (e.code == GoogleSignInExceptionCode.canceled) {
-        debugPrint("Google Sign-In cancelled by user");
       } else {
-        debugPrint("Google Sign-In error: $e");
-        Fluttertoast.showToast(msg: "Google Sign In failed: $e");
+        Navigation.instance.goBack();
+        Fluttertoast.showToast(msg: "Failed to get user info");
       }
     } catch (e) {
       // If we already showed the loader, pop it

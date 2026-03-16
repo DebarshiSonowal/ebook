@@ -37,6 +37,8 @@ import '../Model/home_section.dart';
 import '../Model/library.dart';
 import '../Model/library_book_details.dart';
 import '../Model/library_model.dart';
+import '../Model/library_plans_model.dart';
+import '../Model/library_purchase_response.dart';
 import '../Model/library_reviews.dart';
 import '../Model/library_search_response.dart';
 import '../Model/login_response.dart';
@@ -51,7 +53,9 @@ import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
 import '../Model/reward_response.dart';
 import '../Model/search_response.dart';
+import '../Model/version_response.dart';
 import '../Model/writer.dart';
+import '../Model/library_home_models.dart';
 
 class ApiProvider {
   ApiProvider._();
@@ -608,6 +612,60 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("home-banners response: ${e.response}");
       return HomeBannerResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<HomeBannerListResponse> getLibraryHomeBanners() async {
+    var url = "${baseUrl}/libraries/home-banners";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url);
+      debugPrint("library home-banners response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return HomeBannerListResponse.fromJson(response?.data);
+      } else {
+        return HomeBannerListResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("library home-banners error: ${e.response}");
+      return HomeBannerListResponse.withError(e.message.toString());
+    }
+  }
+
+  Future<HomeSectionListResponse> getLibraryHomeSections() async {
+    var url = "${baseUrl}/libraries/home-sections";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+    try {
+      Response? response = await dio?.get(url);
+      debugPrint("library home-sections response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return HomeSectionListResponse.fromJson(response?.data);
+      } else {
+        return HomeSectionListResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("library home-sections error: ${e.response}");
+      return HomeSectionListResponse.withError(e.message.toString());
     }
   }
 
@@ -1292,7 +1350,7 @@ class ApiProvider {
   }
 
   Future<SearchResponse> search(
-      format, category_ids, tag_ids, author_ids, title, awards) async {
+      format, category_ids, tag_ids, author_ids, title, awards, {String? library_ids}) async {
     var url = "${baseUrl}/search/${format}";
     BaseOptions option = BaseOptions(
         connectTimeout: Duration(seconds: 10),
@@ -1335,6 +1393,12 @@ class ApiProvider {
     if (awards != null && awards != "") {
       var temp = {
         'award_ids': awards,
+      };
+      data.addEntries(temp.entries);
+    }
+    if (library_ids != null && library_ids != "") {
+      var temp = {
+        'library_ids': library_ids,
       };
       data.addEntries(temp.entries);
     }
@@ -2405,6 +2469,155 @@ class ApiProvider {
     }
   }
 
+  Future<LibraryPlansResponse> getLibraryPlans(int libraryId) async {
+    var url = "${baseUrl}/libraries/plan-list/$libraryId";
+    BaseOptions option = BaseOptions(
+        connectTimeout: Duration(seconds: 10),
+        receiveTimeout: Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.get(url.toString());
+      debugPrint("Library plans response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryPlansResponse.fromJson(response?.data);
+      } else {
+        debugPrint("Library plans error: ${response?.data}");
+        return LibraryPlansResponse.withError(
+            response?.data['message'] ?? "Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("Library plans response error: ${e.response}");
+      return LibraryPlansResponse.withError(
+          e.response?.data['message'] ?? e.message ?? "Network error");
+    }
+  }
+
+  /// POST /sales/libraries/apply-coupon/{libraryId}
+  /// Validates the coupon and returns updated plan list with discounted prices.
+  Future<LibraryPlansResponse> applyCoupon({
+    required int libraryId,
+    required String couponCode,
+  }) async {
+    var url = '${baseUrl}/sales/libraries/apply-coupon/$libraryId';
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+
+    final formData = FormData.fromMap({'coupon_code': couponCode.trim()});
+    debugPrint('applyCoupon url: $url  couponCode: $couponCode');
+
+    try {
+      Response? response = await dio?.post(url, data: formData);
+      debugPrint('applyCoupon response: ${response?.data}');
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryPlansResponse.fromJson(response?.data);
+      } else {
+        return LibraryPlansResponse.withError(
+            response?.data['message'] ?? 'Something Went Wrong');
+      }
+    } on DioError catch (e) {
+      debugPrint('applyCoupon error: ${e.response}');
+      return LibraryPlansResponse.withError(
+          e.response?.data['message'] ?? e.message ?? 'Network error');
+    }
+  }
+
+  /// POST /sales/libraries
+  /// [planId]     – required for paid plan purchase (library_type 0); omit for private requests.
+  /// [couponCode] – optional for both flows.
+  Future<LibraryPurchaseResponse> purchaseLibraryMembership({
+    required int libraryId,
+    int? planId,
+    String? couponCode,
+  }) async {
+    var url = "${baseUrl}/sales/libraries";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+
+    final Map<String, dynamic> fields = {'library_id': libraryId};
+    if (planId != null) fields['plan_id'] = planId;
+    if (couponCode != null && couponCode.trim().isNotEmpty) {
+      fields['coupon_code'] = couponCode.trim();
+    }
+
+    final formData = FormData.fromMap(fields);
+    debugPrint("purchaseLibraryMembership url: $url  fields: $fields");
+
+    try {
+      Response? response =
+          await dio?.post(url, data: formData);
+      debugPrint("purchaseLibraryMembership response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return LibraryPurchaseResponse.fromJson(response?.data);
+      } else {
+        return LibraryPurchaseResponse.withError(
+            response?.data['message'] ?? "Something Went Wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("purchaseLibraryMembership error: ${e.response}");
+      return LibraryPurchaseResponse.withError(
+          e.response?.data['message'] ?? e.message ?? "Network error");
+    }
+  }
+
+  /// POST /sales/libraries/verify-payment
+  /// Parameters: amount, order_id (Voucher no), razorpay_payment_id
+  Future<GenericResponse> verifyLibraryPayment({
+    required String orderId,
+    required String razorpayPaymentId,
+    required double amount,
+  }) async {
+    var url = '${baseUrl}/sales/libraries/verify-payment';
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${Storage.instance.token}',
+        });
+    dio = Dio(option);
+
+    final formData = FormData.fromMap({
+      'order_id': orderId,
+      'razorpay_payment_id': razorpayPaymentId,
+      'amount': amount,
+    });
+    debugPrint('verifyLibraryPayment url: $url  orderId: $orderId');
+
+    try {
+      Response? response = await dio?.post(url, data: formData);
+      debugPrint('verifyLibraryPayment response: ${response?.data}');
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return GenericResponse.fromJson(response?.data);
+      } else {
+        return GenericResponse.withError(
+            response?.data['message'] ?? 'Something Went Wrong');
+      }
+    } on DioError catch (e) {
+      debugPrint('verifyLibraryPayment error: ${e.response}');
+      return GenericResponse.withError(
+          e.response?.data['message'] ?? e.message ?? 'Network error');
+    }
+  }
+
 // Future download2(int id) async {
 //   var url = '${baseUrl}/sales/invoice/${id}';
 //   Navigation.instance.goBack();
@@ -2511,6 +2724,35 @@ class ApiProvider {
     } on DioError catch (e) {
       debugPrint("postBookReadCount error: ${e.response}");
       return GenericResponse.withError(e.message);
+    }
+  }
+
+
+  Future<VersionResponse> verifyVersion() async {
+    var url = "${baseUrl}/verify-version";
+    BaseOptions option = BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        });
+    dio = Dio(option);
+    debugPrint(url.toString());
+
+    try {
+      Response? response = await dio?.get(url);
+      debugPrint("verifyVersion response: ${response?.data}");
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        return VersionResponse.fromJson(response?.data);
+      } else {
+        debugPrint("verifyVersion error: ${response?.data}");
+        return VersionResponse.withError(
+            response?.data['message'] ?? "Something went wrong");
+      }
+    } on DioError catch (e) {
+      debugPrint("verifyVersion response error: ${e.response}");
+      return VersionResponse.withError(e.message.toString());
     }
   }
 }

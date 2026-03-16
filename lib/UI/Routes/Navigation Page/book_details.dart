@@ -149,12 +149,12 @@ class _BookDetailsState extends State<BookDetails>
       br { display: block; margin: 8px 0; }
       strong, b { font-weight: bold; }
       ins { text-decoration: underline; }
-      hr { margin: 12px 0; border: none; border-bottom: 1px solid ${hexTextColor}4D; }
+      hr { margin: 12px 0; border: none; border-bottom: 0px solid ${hexTextColor}4D; }
       img { 
         max-width: 100%; 
         height: auto; 
         display: block; 
-        margin: 12px auto; 
+        margin: 0px auto; 
         cursor: pointer;
         transition: opacity 0.2s;
       }
@@ -1030,6 +1030,7 @@ class _BookDetailsState extends State<BookDetails>
             controller.runJavaScript('''
             document.addEventListener('click', function(e) {
               if (e.target.tagName === 'IMG') {
+                if (!e.target.hasAttribute('alt')) return;
                 e.preventDefault();
                 e.stopPropagation();
                 imageClicked.postMessage(e.target.src + '|sep|' + (e.target.alt || ''));
@@ -1044,6 +1045,7 @@ class _BookDetailsState extends State<BookDetails>
             final url = request.url;
             if (url.contains('youtube.com') ||
                 url.contains('youtu.be') ||
+                url.contains('youtube-nocookie.com') ||
                 url.contains('googlevideo.com')) {
               return NavigationDecision.navigate;
             }
@@ -1057,7 +1059,6 @@ class _BookDetailsState extends State<BookDetails>
       )
       ..loadHtmlString(
         generateHtmlContent(content, index),
-        baseUrl: 'https://www.youtube-nocookie.com',
       );
 
     return controller;

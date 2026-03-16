@@ -19,7 +19,7 @@ import '../UI/Routes/Navigation Page/category_page.dart';
 import '../UI/Routes/Navigation Page/category_specific_page.dart';
 import '../UI/Routes/Navigation Page/coupon_page.dart';
 import '../UI/Routes/Navigation Page/library_details_screen.dart';
-import '../UI/Routes/Navigation Page/librarysearchscreen.dart';
+import '../UI/Routes/Navigation Page/library_search_screen.dart';
 import '../UI/Routes/Navigation Page/magazine_articles.dart';
 import '../UI/Routes/Navigation Page/magazine_details.dart';
 import '../UI/Routes/Navigation Page/notifications_page.dart';
@@ -28,6 +28,7 @@ import '../UI/Routes/Navigation Page/reading_page.dart';
 import '../UI/Routes/Navigation Page/search_page.dart';
 import '../UI/Routes/Navigation Page/specific_library_screen.dart';
 import '../UI/Routes/Navigation Page/subscription_buy_page.dart';
+import '../UI/Routes/Navigation Page/library_home_screen.dart';
 import '../UI/Routes/Navigation Page/writer_info.dart';
 import '../UI/Routes/OnBoarding/splash_screen.dart';
 
@@ -68,6 +69,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           page: LibraryDetailsScreen(id: settings.arguments as int));
     case '/librarySearchScreen':
       return FadeTransitionPageRouteBuilder(page: LibrarySearchScreen());
+    case '/libraryHome':
+      return FadeTransitionPageRouteBuilder(page: LibraryHomeScreen());
 
     case '/bookInfo':
       return FadeTransitionPageRouteBuilder(

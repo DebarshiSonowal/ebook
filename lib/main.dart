@@ -15,6 +15,7 @@ import 'Helper/router.dart';
 import 'Storage/app_storage.dart';
 import 'Storage/data_provider.dart';
 import 'firebase_options.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // google_sign_in v7 requires initialize() before any other calls
+  await GoogleSignIn.instance.initialize();
 
   // Enhanced deep link handling with Facebook compatibility
   final appLinks = AppLinks();
@@ -33,29 +36,29 @@ void main() async {
   // Check initial link
   try {
     final initialLink = await appLinks.getInitialLink();
-    print(" MAIN: =================================");
-    print(" MAIN: Initial link: $initialLink");
-    print(" MAIN: =================================");
+    print(" [DeepLinkDebug MAIN]: =================================");
+    print(" [DeepLinkDebug MAIN]: Initial link: $initialLink");
+    print(" [DeepLinkDebug MAIN]: =================================");
     if (initialLink != null) {
       Storage.instance.setDeepLinkProcessed(true);
-      print(" MAIN: Setting deep link processed flag BEFORE handling");
+      print(" [DeepLinkDebug MAIN]: Setting deep link processed flag BEFORE handling");
       _handleDeepLink(initialLink);
     } else {
-      print(" MAIN: No initial link found");
+      print(" [DeepLinkDebug MAIN]: No initial link found");
     }
   } catch (e) {
-    print(" MAIN: Error getting initial link: $e");
+    print(" [DeepLinkDebug MAIN]: Error getting initial link: $e");
   }
 
   // Listen to all incoming links with enhanced handling and debouncing
   appLinks.uriLinkStream.listen((uri) {
-    print(" MAIN: =================================");
-    print(" MAIN: Received deep link: $uri");
-    print(" MAIN: URI toString(): ${uri.toString()}");
-    print(" MAIN: URI host: ${uri.host}");
-    print(" MAIN: URI path: ${uri.path}");
-    print(" MAIN: URI query: ${uri.query}");
-    print(" MAIN: URI queryParameters: ${uri.queryParameters}");
+    print(" [DeepLinkDebug MAIN]: =================================");
+    print(" [DeepLinkDebug MAIN]: Received deep link: $uri");
+    print(" [DeepLinkDebug MAIN]: URI toString(): ${uri.toString()}");
+    print(" [DeepLinkDebug MAIN]: URI host: ${uri.host}");
+    print(" [DeepLinkDebug MAIN]: URI path: ${uri.path}");
+    print(" [DeepLinkDebug MAIN]: URI query: ${uri.query}");
+    print(" [DeepLinkDebug MAIN]: URI queryParameters: ${uri.queryParameters}");
 
     // Debounce mechanism to prevent duplicate processing
     final now = DateTime.now();
@@ -65,14 +68,14 @@ void main() async {
         Storage.instance.lastProcessedTime != null &&
         now.difference(Storage.instance.lastProcessedTime!) <
             Storage.debounceInterval) {
-      print(" MAIN: Debouncing duplicate link: $linkString");
-      print(" MAIN: =================================");
+      print(" [DeepLinkDebug MAIN]: Debouncing duplicate link: $linkString");
+      print(" [DeepLinkDebug MAIN]: =================================");
       return;
     }
 
     if (Storage.instance.isProcessingDeepLink) {
-      print(" MAIN: Already processing a deep link, skipping");
-      print(" MAIN: =================================");
+      print(" [DeepLinkDebug MAIN]: Already processing a deep link, skipping");
+      print(" [DeepLinkDebug MAIN]: =================================");
       return;
     }
 
@@ -81,14 +84,14 @@ void main() async {
     Storage.instance.lastProcessedLink = linkString;
     Storage.instance.lastProcessedTime = now;
 
-    print(" MAIN: Processing link (not debounced)");
+    print(" [DeepLinkDebug MAIN]: Processing link (not debounced)");
     _handleDeepLink(uri);
-    print(" MAIN: =================================");
+    print(" [DeepLinkDebug MAIN]: =================================");
   }, onError: (err) {
-    print(" MAIN: =================================");
-    print(" MAIN: Deep link error: $err");
-    print(" MAIN: Error type: ${err.runtimeType}");
-    print(" MAIN: =================================");
+    print(" [DeepLinkDebug MAIN]: =================================");
+    print(" [DeepLinkDebug MAIN]: Deep link error: $err");
+    print(" [DeepLinkDebug MAIN]: Error type: ${err.runtimeType}");
+    print(" [DeepLinkDebug MAIN]: =================================");
   });
 
   SystemChrome.setPreferredOrientations([
@@ -101,11 +104,11 @@ void main() async {
 
 // Enhanced deep link handler
 void _handleDeepLink(Uri uri) {
-  print(" HANDLER: =================================");
-  print(" HANDLER: Processing deep link: $uri");
-  print(" HANDLER: Host: '${uri.host}'");
-  print(" HANDLER: Path: '${uri.path}'");
-  print(" HANDLER: Query: '${uri.query}'");
+  print(" [DeepLinkDebug HANDLER]: =================================");
+  print(" [DeepLinkDebug HANDLER]: Processing deep link: $uri");
+  print(" [DeepLinkDebug HANDLER]: Host: '${uri.host}'");
+  print(" [DeepLinkDebug HANDLER]: Path: '${uri.path}'");
+  print(" [DeepLinkDebug HANDLER]: Query: '${uri.query}'");
   print(
       " HANDLER: Current debounce state - last: ${Storage.instance.lastProcessedLink}, time: ${Storage.instance.lastProcessedTime}");
 
@@ -113,108 +116,115 @@ void _handleDeepLink(Uri uri) {
     // Handle tratri.in domain links with proper query parameter parsing
     if ((uri.host == 'tratri.in' || uri.host == 'www.tratri.in') &&
         (uri.path == '/link' || uri.path.startsWith('/link'))) {
-      print(" HANDLER: Matching tratri.in/link pattern");
+      print(" [DeepLinkDebug HANDLER]: Matching tratri.in/link pattern");
       _handleTratriLinkWithParams(uri);
     } else if (uri.path.startsWith('/app/')) {
       // Handle Facebook fallback format (/app/something)
-      print(" HANDLER: Matching Facebook fallback format (/app/)");
+      print(" [DeepLinkDebug HANDLER]: Matching Facebook fallback format (/app/)");
       String actualPath = uri.path.replaceFirst('/app/', '/');
       Map<String, String> params = uri.queryParameters;
       _navigateToRoute(actualPath, params);
     } else if (uri.scheme == 'tratri') {
       // Handle custom scheme
-      print(" HANDLER: Matching custom scheme (tratri://)");
+      print(" [DeepLinkDebug HANDLER]: Matching custom scheme (tratri://)");
       _navigateToRoute(uri.path, uri.queryParameters);
     } else {
-      print(" HANDLER: No matching pattern found");
+      print(" [DeepLinkDebug HANDLER]: No matching pattern found");
       print(
           " HANDLER: Host: '${uri.host}', Path: '${uri.path}', Scheme: '${uri.scheme}'");
-      print(" HANDLER: Available patterns:");
-      print(" HANDLER: - tratri.in/link or www.tratri.in/link");
-      print(" HANDLER: - /app/ paths");
-      print(" HANDLER: - tratri:// scheme");
+      print(" [DeepLinkDebug HANDLER]: Available patterns:");
+      print(" [DeepLinkDebug HANDLER]: - tratri.in/link or www.tratri.in/link");
+      print(" [DeepLinkDebug HANDLER]: - /app/ paths");
+      print(" [DeepLinkDebug HANDLER]: - tratri:// scheme");
       Navigation.instance.navigateAndReplace('/main');
       _clearDebounceState();
     }
   } catch (e) {
-    print(" HANDLER: Exception occurred: $e");
-    print(" HANDLER: Stack trace: ${StackTrace.current}");
+    print(" [DeepLinkDebug HANDLER]: Exception occurred: $e");
+    print(" [DeepLinkDebug HANDLER]: Stack trace: ${StackTrace.current}");
     // Fallback to main page
     Navigation.instance.navigateAndReplace('/main');
     _clearDebounceState();
   } finally {
     Storage.instance.isProcessingDeepLink = false;
   }
-  print(" HANDLER: =================================");
+  print(" [DeepLinkDebug HANDLER]: =================================");
 }
 
 // Handle tratri.in/link with query parameters (the actual format used)
 void _handleTratriLinkWithParams(Uri uri) {
-  print(" LINK: Processing tratri.in/link with params: ${uri.queryParameters}");
+  print(" [DeepLinkDebug LINK]: Processing tratri.in/link with params: ${uri.queryParameters}");
 
   final params = uri.queryParameters;
   final format = params['format'];
   final id = params['id'];
   final details = params['details'];
 
-  print(" LINK: Format: $format, ID: $id, Details: $details");
-
-  // Validate ID parameter
-  if (id == null || id.isEmpty) {
-    print(" LINK: ❌ Missing or empty ID parameter, cannot process deep link");
-    _clearDebounceState();
-    return;
-  }
-
-  final parsedId = int.tryParse(id);
-  if (parsedId == null || parsedId <= 0) {
-    print(" LINK: ❌ Invalid ID parameter: $id");
-    _clearDebounceState();
-    return;
-  }
+  print(" [DeepLinkDebug LINK]: Format: $format, ID: $id, Details: $details");
 
   // Handle different link types based on query parameters
-  if (details == "reading") {
-    print(" LINK: Storing reading link target");
-    final image = params['image'] ?? '';
-    Storage.instance.setTargetRoute('/bookDetails',
-        arguments: "${parsedId},$image");
-    Storage.instance
-        .setReadingBookPage(int.tryParse(params['page'] ?? '0') ?? 0);
-    _setTabBasedOnFormat(format ?? 'e-book');
+  if (format == "library_home") {
+    print(" [DeepLinkDebug LINK]: Storing library home link target");
+    Storage.instance.setTargetRoute('/libraryHome');
     Storage.instance.setDeepLinkProcessed(true);
+    _setTabBasedOnFormat(format ?? '');
     _clearDebounceState();
-  } else if (details == "library" || format == "library") {
-    print(" LINK: Storing library link target");
-    Storage.instance
-        .setTargetRoute('/libraryDetails', arguments: parsedId);
-    Storage.instance.setDeepLinkProcessed(true);
+  } else if (id == null || id.isEmpty) {
+    // Other links REQUIRE an ID
+    print(" [DeepLinkDebug LINK]: ❌ Missing or empty ID parameter for format: $format, cannot process deep link");
     _clearDebounceState();
-  } else if (format == "magazine") {
-    print(" LINK: Storing magazine link target");
-    Storage.instance.setTargetRoute('/magazineDetails', arguments: id);
-    _setTabBasedOnFormat('magazine');
-    Storage.instance.setDeepLinkProcessed(true);
-    _clearDebounceState();
-  } else if (format == "e-note") {
-    print(" LINK: Storing e-note link target");
-    Storage.instance
-        .setTargetRoute('/bookInfo', arguments: parsedId);
-    _setTabBasedOnFormat('e-note');
-    Storage.instance.setDeepLinkProcessed(true);
-    _clearDebounceState();
+    return;
   } else {
-    print(" LINK: Storing default book info link target (e-book)");
-    Storage.instance
-        .setTargetRoute('/bookInfo', arguments: parsedId);
-    _setTabBasedOnFormat('e-book');
-    Storage.instance.setDeepLinkProcessed(true);
-    _clearDebounceState();
+    final parsedId = int.tryParse(id);
+    if (parsedId == null || parsedId <= 0) {
+      print(" [DeepLinkDebug LINK]: ❌ Invalid ID parameter: $id");
+      _clearDebounceState();
+      return;
+    }
+
+    if (details == "reading") {
+      print(" [DeepLinkDebug LINK]: Storing reading link target");
+      final image = params['image'] ?? '';
+      Storage.instance.setTargetRoute('/bookDetails',
+          arguments: "${parsedId},$image");
+      Storage.instance
+          .setReadingBookPage(int.tryParse(params['page'] ?? '0') ?? 0);
+      _setTabBasedOnFormat(format ?? 'e-book');
+      Storage.instance.setDeepLinkProcessed(true);
+      _clearDebounceState();
+    } else if (details == "library" || format == "library") {
+      print(" [DeepLinkDebug LINK]: Storing library link target");
+      Storage.instance
+          .setTargetRoute('/libraryDetails', arguments: parsedId);
+      Storage.instance.setDeepLinkProcessed(true);
+      _setTabBasedOnFormat(format ?? '');
+      _clearDebounceState();
+    } else if (format == "magazine") {
+      print(" [DeepLinkDebug LINK]: Storing magazine link target");
+      Storage.instance.setTargetRoute('/magazineDetails', arguments: id);
+      _setTabBasedOnFormat('magazine');
+      Storage.instance.setDeepLinkProcessed(true);
+      _clearDebounceState();
+    } else if (format == "e-note") {
+      print(" [DeepLinkDebug LINK]: Storing e-note link target");
+      Storage.instance
+          .setTargetRoute('/bookInfo', arguments: parsedId);
+      _setTabBasedOnFormat('e-note');
+      Storage.instance.setDeepLinkProcessed(true);
+      _clearDebounceState();
+    } else {
+      print(" [DeepLinkDebug LINK]: Storing default book info link target (e-book)");
+      Storage.instance
+          .setTargetRoute('/bookInfo', arguments: parsedId);
+      _setTabBasedOnFormat('e-book');
+      Storage.instance.setDeepLinkProcessed(true);
+      _clearDebounceState();
+    }
   }
 }
 
 void _handleTratriDomainLink(Uri uri) {
-  print(" DOMAIN: Handling tratri domain link: $uri");
+  print(" [DeepLinkDebug DOMAIN]: Handling tratri domain link: $uri");
 
   // Enhanced validation for different link formats
   if (uri.queryParameters['details'] != null &&
@@ -222,7 +232,7 @@ void _handleTratriDomainLink(Uri uri) {
     final details = uri.queryParameters['details']!;
     final id = uri.queryParameters['id']!;
 
-    print(" DOMAIN: Details: $details, ID: $id");
+    print(" [DeepLinkDebug DOMAIN]: Details: $details, ID: $id");
 
     // First fetch book details if needed
     if (details != "library") {
@@ -246,7 +256,7 @@ void _handleTratriDomainLink(Uri uri) {
 }
 
 void _handleReadingLink(Uri uri) {
-  print(" READING: Handling reading link");
+  print(" [DeepLinkDebug READING]: Handling reading link");
   final format = uri.queryParameters['format'] ?? 'e-book';
   final id = uri.queryParameters['id'] ?? '0';
   final page = uri.queryParameters['page'] ?? '0';
@@ -263,13 +273,13 @@ void _handleReadingLink(Uri uri) {
         // Set appropriate tab based on format
         if (format == 'e-book') {
           dataProvider.setCurrentTab(0);
-          print(" READING: Set tab to e-books (0)");
+          print(" [DeepLinkDebug READING]: Set tab to e-books (0)");
         } else if (format == 'magazine') {
           dataProvider.setCurrentTab(1);
-          print(" READING: Set tab to magazines (1)");
+          print(" [DeepLinkDebug READING]: Set tab to magazines (1)");
         } else if (format == 'e-note' || format == 'enotes') {
           dataProvider.setCurrentTab(2);
-          print(" READING: Set tab to e-notes (2)");
+          print(" [DeepLinkDebug READING]: Set tab to e-notes (2)");
         }
       }
 
@@ -286,10 +296,10 @@ void _handleReadingLink(Uri uri) {
             " READING: Navigated to bookDetails with ID: $id, image: $image, page: $page");
       } else {
         Navigation.instance.navigateAndRemoveUntil('/login');
-        print(" READING: User not logged in, navigated to login");
+        print(" [DeepLinkDebug READING]: User not logged in, navigated to login");
       }
     } catch (e) {
-      print(" READING: Error handling reading link: $e");
+      print(" [DeepLinkDebug READING]: Error handling reading link: $e");
       Navigation.instance.navigateAndRemoveUntil('/main');
       Future.delayed(const Duration(milliseconds: 100), () {
         Navigation.instance.navigate('/bookInfo', args: int.tryParse(id) ?? 0);
@@ -299,7 +309,7 @@ void _handleReadingLink(Uri uri) {
 }
 
 void _handleLibraryLink(Uri uri) {
-  print(" LIBRARY: Handling library link");
+  print(" [DeepLinkDebug LIBRARY]: Handling library link");
 
   // Handle both old format (details=library) and new format (format=library)
   final params = uri.queryParameters;
@@ -313,23 +323,23 @@ void _handleLibraryLink(Uri uri) {
   if (libraryIdString != null && libraryIdString.isNotEmpty) {
     final libraryId = int.tryParse(libraryIdString) ?? 0;
     if (libraryId > 0) {
-      print(" LIBRARY: Navigating to library details with ID: $libraryId");
+      print(" [DeepLinkDebug LIBRARY]: Navigating to library details with ID: $libraryId");
       Future.delayed(const Duration(milliseconds: 500), () {
         // Use removeUntil + navigate pattern
         Navigation.instance.navigateAndRemoveUntil('/main');
         Future.delayed(const Duration(milliseconds: 100), () {
           Navigation.instance.navigate('/libraryDetails', args: libraryId);
         });
-        print(" LIBRARY: Navigation completed");
+        print(" [DeepLinkDebug LIBRARY]: Navigation completed");
         _clearDebounceState();
       });
     } else {
-      print(" LIBRARY: Invalid library ID: $libraryIdString");
+      print(" [DeepLinkDebug LIBRARY]: Invalid library ID: $libraryIdString");
       Navigation.instance.navigateAndReplace('/main');
       _clearDebounceState();
     }
   } else {
-    print(" LIBRARY: No library ID found in link");
+    print(" [DeepLinkDebug LIBRARY]: No library ID found in link");
     Navigation.instance.navigateAndReplace('/main');
     _clearDebounceState();
   }
@@ -339,17 +349,17 @@ Future<void> _fetchBookDetailsForLink(Uri uri) async {
   try {
     final id = uri.queryParameters['id'];
     if (id != null) {
-      print(" FETCH: Fetching book details for ID: $id");
+      print(" [DeepLinkDebug FETCH]: Fetching book details for ID: $id");
       // This will be handled by the individual pages that need the book details
       // We don't need to fetch it globally here as it might not be needed immediately
     }
   } catch (e) {
-    print(" FETCH: Error fetching book details: $e");
+    print(" [DeepLinkDebug FETCH]: Error fetching book details: $e");
   }
 }
 
 void _navigateToRoute(String path, Map<String, String> params) {
-  print(" NAVIGATE: Starting navigation to path: $path with params: $params");
+  print(" [DeepLinkDebug NAVIGATE]: Starting navigation to path: $path with params: $params");
 
   // Clear any pending navigation state
   _clearPendingNavigation();
@@ -362,10 +372,10 @@ void _navigateToRoute(String path, Map<String, String> params) {
       final details = params['details']!;
       final id = params['id']!;
 
-      print(" ROUTE: Legacy format - Details: $details, ID: $id");
+      print(" [DeepLinkDebug ROUTE]: Legacy format - Details: $details, ID: $id");
 
       if (details == "reading") {
-        print(" ROUTE: Storing reading link target");
+        print(" [DeepLinkDebug ROUTE]: Storing reading link target");
         final format = params['format'] ?? 'e-book';
         final image = params['image'] ?? '';
         Storage.instance.setTargetRoute('/bookDetails',
@@ -376,11 +386,11 @@ void _navigateToRoute(String path, Map<String, String> params) {
             .setReadingBookPage(int.tryParse(params['page'] ?? '0') ?? 0);
         _setTabBasedOnFormat(format);
       } else if (details == "library") {
-        print(" ROUTE: Storing library link target");
+        print(" [DeepLinkDebug ROUTE]: Storing library link target");
         Storage.instance.setTargetRoute('/libraryDetails',
             arguments: int.tryParse(id) ?? 0);
       } else {
-        print(" ROUTE: Storing book info target");
+        print(" [DeepLinkDebug ROUTE]: Storing book info target");
         Storage.instance
             .setTargetRoute('/bookInfo', arguments: int.tryParse(id) ?? 0);
       }
@@ -391,18 +401,18 @@ void _navigateToRoute(String path, Map<String, String> params) {
     }
 
     // Handle path-based routing (new format)
-    print(" ROUTE: Path-based routing for: $path");
+    print(" [DeepLinkDebug ROUTE]: Path-based routing for: $path");
     switch (path) {
       case '/bookDetails':
         if (params['id'] != null) {
-          print(" ROUTE: Storing bookDetails target");
+          print(" [DeepLinkDebug ROUTE]: Storing bookDetails target");
           Storage.instance
               .setTargetRoute('/bookDetails', arguments: params['id']!);
         }
         break;
       case '/magazineDetails':
         if (params['id'] != null) {
-          print(" ROUTE: Storing magazineDetails target");
+          print(" [DeepLinkDebug ROUTE]: Storing magazineDetails target");
           Storage.instance
               .setTargetRoute('/magazineDetails', arguments: params['id']!);
           _setTabBasedOnFormat('magazine');
@@ -410,44 +420,44 @@ void _navigateToRoute(String path, Map<String, String> params) {
         break;
       case '/categories':
         if (params['type'] != null) {
-          print(" ROUTE: Storing categories target");
+          print(" [DeepLinkDebug ROUTE]: Storing categories target");
           Storage.instance
               .setTargetRoute('/categories', arguments: params['type']!);
         }
         break;
       case '/bookInfo':
         if (params['id'] != null) {
-          print(" ROUTE: Storing bookInfo target");
+          print(" [DeepLinkDebug ROUTE]: Storing bookInfo target");
           Storage.instance.setTargetRoute('/bookInfo',
               arguments: int.tryParse(params['id']!) ?? 0);
         }
         break;
       case '/libraryDetails':
         if (params['id'] != null) {
-          print(" ROUTE: Storing libraryDetails target");
+          print(" [DeepLinkDebug ROUTE]: Storing libraryDetails target");
           Storage.instance.setTargetRoute('/libraryDetails',
               arguments: int.tryParse(params['id']!) ?? 0);
         }
         break;
       case '/reading':
         if (params['id'] != null) {
-          print(" ROUTE: Storing reading target");
+          print(" [DeepLinkDebug ROUTE]: Storing reading target");
           Storage.instance.setTargetRoute('/reading',
               arguments: int.tryParse(params['id']!) ?? 0);
         }
         break;
       default:
-        print(" ROUTE: Unknown path, no target stored: $path");
+        print(" [DeepLinkDebug ROUTE]: Unknown path, no target stored: $path");
         break;
     }
 
     Storage.instance.setDeepLinkProcessed(true);
     _clearDebounceState();
 
-    print(" NAVIGATE: Target route stored successfully");
+    print(" [DeepLinkDebug NAVIGATE]: Target route stored successfully");
   } catch (e) {
-    print(" NAVIGATION: Error processing route: $e");
-    print(" NAVIGATION: Stack trace: ${StackTrace.current}");
+    print(" [DeepLinkDebug NAVIGATION]: Error processing route: $e");
+    print(" [DeepLinkDebug NAVIGATION]: Stack trace: ${StackTrace.current}");
     _clearDebounceState();
   }
 }
@@ -462,17 +472,20 @@ void _setTabBasedOnFormat(String format) {
 
         if (format == 'e-book') {
           dataProvider.setCurrentTab(0);
-          print(" TAB: Set to e-books (0)");
+          print(" [DeepLinkDebug TAB]: Set to e-books (0)");
         } else if (format == 'magazine') {
           dataProvider.setCurrentTab(1);
-          print(" TAB: Set to magazines (1)");
+          print(" [DeepLinkDebug TAB]: Set to magazines (1)");
         } else if (format == 'e-note' || format == 'enotes') {
           dataProvider.setCurrentTab(2);
-          print(" TAB: Set to e-notes (2)");
+          print(" [DeepLinkDebug TAB]: Set to e-notes (2)");
+        } else {
+          dataProvider.setCurrentTab(dataProvider.currentTab);
+          print(" [DeepLinkDebug TAB]: Kept current tab, triggered rebuild");
         }
       }
     } catch (e) {
-      print(" TAB: Error setting tab: $e");
+      print(" [DeepLinkDebug TAB]: Error setting tab: $e");
     }
   });
 }
@@ -481,11 +494,11 @@ void _setTabBasedOnFormat(String format) {
 void _clearPendingNavigation() {
   try {
     // This helps prevent navigation conflicts by ensuring we start with a clean state
-    print(" CLEAR: Clearing pending navigation state");
+    print(" [DeepLinkDebug CLEAR]: Clearing pending navigation state");
     print(
         " CLEAR: Processing flag is: ${Storage.instance.isProcessingDeepLink}");
   } catch (e) {
-    print(" CLEAR: Error clearing navigation state: $e");
+    print(" [DeepLinkDebug CLEAR]: Error clearing navigation state: $e");
   }
 }
 
@@ -496,7 +509,7 @@ void _clearDebounceState() {
     Storage.instance.lastProcessedTime = null;
     Storage.instance.isProcessingDeepLink = false;
     Storage.instance.setDeepLinkProcessed(false);
-    print(" DEBOUNCE: State cleared, processing flag reset");
+    print(" [DeepLinkDebug DEBOUNCE]: State cleared, processing flag reset");
   });
 }
 
