@@ -61,6 +61,7 @@ class LibraryResult {
   final int totalRating;
   final String? averageRating;
   final bool showReviewForm;
+  final String posterPic;
 
   LibraryResult({
     required this.id,
@@ -94,6 +95,7 @@ class LibraryResult {
     required this.totalRating,
     this.averageRating,
     required this.showReviewForm,
+    required this.posterPic,
   });
 
   factory LibraryResult.fromJson(Map<String, dynamic> json) {
@@ -130,6 +132,7 @@ class LibraryResult {
       totalRating: json['total_rating'] ?? 0,
       averageRating: json['average_rating'],
       showReviewForm: json['show_review_form'] ?? false,
+      posterPic: json['poster_pic'] ?? '',
     );
   }
 }

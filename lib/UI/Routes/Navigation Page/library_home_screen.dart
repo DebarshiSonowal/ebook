@@ -183,6 +183,9 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
               autoPlay: true,
               enlargeCenterPage: true,
               viewportFraction: 0.9,
+              autoPlayInterval: const Duration(seconds: 5),
+              autoPlayAnimationDuration: const Duration(milliseconds: 1500),
+              autoPlayCurve: Curves.fastOutSlowIn,
             ),
             itemBuilder: (context, index, realIndex) {
               final banner = data.libraryHomeBanners[index];
@@ -334,7 +337,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
         borderRadius: BorderRadius.circular(8),
         child: CachedNetworkImage(
           imageUrl: data.bannerPic,
-          fit: BoxFit.cover,
+          fit: BoxFit.fitWidth,
           width: double.infinity,
           height: double.infinity,
           placeholder: (context, url) => Container(color: Colors.grey[200]),
@@ -425,7 +428,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
             Stack(
               children: [
                 Container(
-                  height: 20.h,
+                  height: 22.h,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: ConstanceData.cardBookColor,
@@ -443,7 +446,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
                     borderRadius: BorderRadius.circular(16),
                     child: CachedNetworkImage(
                       imageUrl: library.profilePic,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                       width: double.infinity,
                       placeholder: (context, url) =>
                           Container(color: Colors.grey[900]),
@@ -494,7 +497,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 18.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
@@ -507,7 +510,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
                       Text(
                         library.averageRating,
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w600,
                           color: Colors.white70,
                         ),
@@ -516,7 +519,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
                       Text(
                         '${library.noOfBooks} Books',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           color: Colors.blueAccent,
                           fontWeight: FontWeight.w600,
                         ),
@@ -531,7 +534,7 @@ class _LibraryHomeScreenState extends State<LibraryHomeScreen> {
                       Text(
                         '${library.totalMembers} Members',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                           color: Colors.white60,
                           fontWeight: FontWeight.w500,
                         ),

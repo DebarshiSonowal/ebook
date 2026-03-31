@@ -98,7 +98,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
               height: 280,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(data!.profilePic),
+                  image: NetworkImage(data!.posterPic),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.2),
@@ -713,15 +713,19 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                           size: 18.sp,
                                         ),
                                         SizedBox(width: 2.w),
-                                        Text(
-                                          reviews[index].subscriber,
-                                          style: TextStyle(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                        Expanded(
+                                          child: Text(
+                                            reviews[index].subscriber,
+                                            style: TextStyle(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                        Spacer(),
+                                        SizedBox(width: 2.w),
                                         Text(
                                           DateFormat('MMM dd, yyyy').format(
                                             reviews[index].createdAt,
