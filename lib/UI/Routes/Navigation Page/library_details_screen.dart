@@ -1475,63 +1475,63 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                     SizedBox(height: 3.h),
                   ] else if (plans != null && plans.isNotEmpty) ...[
                     // Informational Plans List (Android Only)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Available Plans (For Information)',
-                        style: TextStyle(
-                          color: const Color(0xFF4FC3F7).withOpacity(0.8),
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 1.h),
-                    Container(
-                      constraints: BoxConstraints(maxHeight: 20.h),
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: plans.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 1.h),
-                        itemBuilder: (context, index) {
-                          final p = plans[index];
-                          return Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 3.w, vertical: 1.2.h),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.04),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.05),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.card_membership,
-                                    color: Colors.grey.shade500, size: 14.sp),
-                                SizedBox(width: 2.w),
-                                Expanded(
-                                  child: Text(
-                                    p.title,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 13.sp),
-                                  ),
-                                ),
-                                Text(
-                                  '₹${p.totalPrice.toStringAsFixed(0)}',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 2.5.h),
+                    // Align(
+                    //   alignment: Alignment.centerLeft,
+                    //   child: Text(
+                    //     'Available Plans (For Information)',
+                    //     style: TextStyle(
+                    //       color: const Color(0xFF4FC3F7).withOpacity(0.8),
+                    //       fontSize: 14.sp,
+                    //       fontWeight: FontWeight.w600,
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(height: 1.h),
+                    // Container(
+                    //   constraints: BoxConstraints(maxHeight: 20.h),
+                    //   child: ListView.separated(
+                    //     shrinkWrap: true,
+                    //     itemCount: plans.length,
+                    //     separatorBuilder: (_, __) => SizedBox(height: 1.h),
+                    //     itemBuilder: (context, index) {
+                    //       final p = plans[index];
+                    //       return Container(
+                    //         padding: EdgeInsets.symmetric(
+                    //             horizontal: 3.w, vertical: 1.2.h),
+                    //         decoration: BoxDecoration(
+                    //           color: Colors.white.withOpacity(0.04),
+                    //           borderRadius: BorderRadius.circular(10),
+                    //           border: Border.all(
+                    //             color: Colors.white.withOpacity(0.05),
+                    //           ),
+                    //         ),
+                    //         child: Row(
+                    //           children: [
+                    //             Icon(Icons.card_membership,
+                    //                 color: Colors.grey.shade500, size: 14.sp),
+                    //             SizedBox(width: 2.w),
+                    //             Expanded(
+                    //               child: Text(
+                    //                 p.title,
+                    //                 style: TextStyle(
+                    //                     color: Colors.white, fontSize: 13.sp),
+                    //               ),
+                    //             ),
+                    //             Text(
+                    //               '₹${p.totalPrice.toStringAsFixed(0)}',
+                    //               style: TextStyle(
+                    //                 color: Colors.white,
+                    //                 fontSize: 14.sp,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       );
+                    //     },
+                    //   ),
+                    // ),
+                    // SizedBox(height: 2.5.h),
                   ],
 
                     // Coupon field
