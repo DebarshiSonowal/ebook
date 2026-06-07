@@ -119,10 +119,10 @@ class _SplashScreenState extends State<SplashScreen> {
               side: const BorderSide(color: Colors.white24, width: 1)),
           title: const Text("Update Available",
               style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           content: Text(
               "A new version ($newVersion) of Tratri is available. Please update the app to continue.",
-              style: const TextStyle(color: Colors.white70)),
+              style: const TextStyle(color: Colors.black54)),
           actions: [
             TextButton(
               onPressed: () async {

@@ -1038,7 +1038,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
         );
       } else {
         // Default → show plans screen (pass pre-fetched plans)
-        Navigator.push(
+        final activated = await Navigator.push<bool>(
           context,
           MaterialPageRoute(
             builder: (_) => LibraryPlansScreen(
@@ -1048,6 +1048,9 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
             ),
           ),
         );
+        if (activated == true && mounted) {
+          fetchData();
+        }
       }
     } catch (e) {
       if (!mounted) return;
@@ -1248,6 +1251,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
                                   );
                                   if (response.result.isRefresh == 1) {
                                     _loadLibraryDetails();
+                                    fetchData();
                                   }
                                 } else {
                                   setSheetState(() => isClaiming = false);
@@ -1621,6 +1625,7 @@ class _LibraryDetailsScreenState extends State<LibraryDetailsScreen> {
 
                               if (response.result.isRefresh == 1) {
                                 _loadLibraryDetails();
+                                fetchData();
                               }
                             },
                       child: AnimatedContainer(

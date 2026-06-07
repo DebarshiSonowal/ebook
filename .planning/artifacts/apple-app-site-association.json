@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "BAH4BK6A87.com.xamtech.tratri",
+        "paths": [
+          "*",
+          "/link/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "BAH4BK6A87.com.xamtech.tratri"
+    ]
+  }
+}

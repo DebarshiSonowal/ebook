@@ -133,7 +133,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       fetchNotifications(),
       fetchAdvertisementBanners(),
     ]).then((_) {
-      _loadInitialData();
+      if (mounted) {
+        _loadInitialData();
+      }
     });
   }
 
@@ -151,6 +153,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     // Show current cache status
     Storage.instance.debugCacheStatus();
 
+    if (!mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -161,6 +164,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       fetchHomeSection(),
     ]);
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -169,6 +173,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _loadInitialData() async {
+    if (!mounted) return;
     setState(() {
       isLoading = true;
     });
@@ -237,6 +242,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     // Reduce delay for faster UI response
     await Future.delayed(const Duration(milliseconds: 50));
 
+    if (!mounted) return;
     setState(() {
       isLoading = false;
     });
@@ -741,12 +747,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Future<void> fetchAdvertisementBanners() async {
+    if (!mounted) return;
     setState(() {
       isLoadingAdBanners = true;
     });
 
     try {
       final response = await ApiProvider.instance.fetchAdvertisementBanners();
+      if (!mounted) return;
       if (response.success ?? false) {
         final dataProvider = Provider.of<DataProvider>(
             Navigation.instance.navigatorKey.currentContext!,
@@ -780,15 +788,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } catch (e) {
       debugPrint("Error fetching advertisement banners: $e");
     } finally {
-      setState(() {
-        isLoadingAdBanners = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoadingAdBanners = false;
+        });
+      }
     }
   }
 
   Future<void> fetchNotifications() async {
     final response = await ApiProvider.instance
         .fetchNotification(Storage.instance.isLoggedIn);
+    if (!mounted) return;
     if (response.success ?? false) {
       Provider.of<DataProvider>(context, listen: false)
           .setNotifications(response.result ?? []);

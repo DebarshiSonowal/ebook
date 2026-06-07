@@ -37,7 +37,7 @@ class _LibraryPlansScreenState extends State<LibraryPlansScreen> {
   // Coupon
   final _couponController = TextEditingController();
   String? _appliedCoupon;
-  bool _couponExpanded = false;
+  bool _couponExpanded = true;
   bool _isApplyingCoupon = false;
 
   // Razorpay
@@ -699,17 +699,25 @@ class _LibraryPlansScreenState extends State<LibraryPlansScreen> {
 
                                 final approval =
                                     response.result.libraryApproval;
+                                final grandTotal = response.result.grandTotal;
 
-                                if (approval == 0) {
+                                if (approval == 0 && grandTotal > 0) {
+                                  // Type 0: payment required — open Razorpay
                                   await _startRazorpayFlow(response.result);
-                                } else if (approval == 1) {
-                                  if (mounted) Navigator.of(context).pop();
+                                } else if (approval == 1 ||
+                                    approval == 3 ||
+                                    grandTotal == 0) {
+                                  // Type 1: free auto-approved
+                                  // Type 3: 100% discount coupon auto-approved
+                                  // grandTotal == 0: coupon zeroed the price
+                                  if (mounted) Navigator.of(context).pop(true);
                                   _showSnackBar(
                                     response.message.isNotEmpty
                                         ? response.message
                                         : 'Membership activated!',
                                   );
                                 } else {
+                                  // Type 2: permission-based — pending admin approval
                                   _showSnackBar(
                                     response.message.isNotEmpty
                                         ? response.message
@@ -1018,6 +1026,21 @@ class _LibraryPlansScreenState extends State<LibraryPlansScreen> {
                                     : 'Invalid coupon code.',
                                 isError: true,
                               );
+                              return;
+                            }
+
+                            // If coupon auto-activated the membership
+                            // (type 1 = free, type 3 = 100% discount coupon),
+                            // navigate back immediately without needing "Get Started".
+                            final approveType =
+                                response.result.membershipApproveType;
+                            if (approveType == 1 || approveType == 3) {
+                              _showSnackBar(
+                                response.message.isNotEmpty
+                                    ? response.message
+                                    : 'Membership activated!',
+                              );
+                              if (mounted) Navigator.of(context).pop(true);
                               return;
                             }
 

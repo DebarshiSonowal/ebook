@@ -211,6 +211,7 @@ class _HomePageState extends State<HomePage>
   Future<void> fetchCartItems() async {
     // Navigation.instance.navigate('/loadingDialog');
     final response = await ApiProvider.instance.fetchCart();
+    if (!mounted) return;
     if (response.status ?? false) {
       Provider.of<DataProvider>(
               Navigation.instance.navigatorKey.currentContext ?? context,
@@ -237,9 +238,11 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchDetails() async {
     await fetchCartItems();
+    if (!mounted) return;
     // getDynamicLink();
     // initUniLinks();
     final response = await ApiProvider.instance.getLibraryList();
+    if (!mounted) return;
     if (response.success ?? false) {
       Provider.of<DataProvider>(context, listen: false)
           .setLibraries(response.result ?? []);
@@ -248,6 +251,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchEnotes() async {
     final response = await ApiProvider.instance.getEnoteCategory();
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesCategories(response.result);
@@ -256,6 +260,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchEnotesBanner() async {
     final response = await ApiProvider.instance.getEnoteBanner();
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesBanner(response.result);
@@ -264,6 +269,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchEnotesList() async {
     final response = await ApiProvider.instance.getEnoteList();
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesList(response.result.bookList);
@@ -272,6 +278,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> getEnoteSection() async {
     final response = await ApiProvider.instance.getEnoteSection();
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesSection(response.result);
@@ -283,6 +290,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchEnotesChapterList(String id) async {
     final response = await ApiProvider.instance.getEnoteChapter(id);
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesChapterList(response.result.chapterList);
@@ -291,6 +299,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchEnotesDetails(String id) async {
     final response = await ApiProvider.instance.getEnoteDetails(id);
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setEnotesDetails(response.result);
@@ -302,6 +311,7 @@ class _HomePageState extends State<HomePage>
     //   loading = true;
     // });
     final response = await ApiProvider.instance.getRewards();
+    if (!mounted) return;
     if (response.success ?? false) {
       Provider.of<DataProvider>(context, listen: false)
           .setRewards(response.result!);
@@ -363,6 +373,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> fetchHomeBanner({bool forceRefresh = false}) async {
+    if (!mounted) return;
     final dataProvider = Provider.of<DataProvider>(
         Navigation.instance.navigatorKey.currentContext!,
         listen: false);
@@ -396,6 +407,8 @@ class _HomePageState extends State<HomePage>
           }
         }
 
+        if (!mounted) return;
+
         if (cachedBanners != null) {
           // Use cached data
           final bannerList =
@@ -408,6 +421,8 @@ class _HomePageState extends State<HomePage>
           final response = await ApiProvider.instance
               .fetchHomeBanner(format.productFormat ?? '');
 
+          if (!mounted) return;
+
           if (response.status ?? false) {
             // Cache the response
             final cacheData = {
@@ -417,6 +432,8 @@ class _HomePageState extends State<HomePage>
               'timestamp': DateTime.now().millisecondsSinceEpoch,
             };
             await Storage.instance.setApiCache(cacheKey, jsonEncode(cacheData));
+
+            if (!mounted) return;
 
             // Set banners at specific index to maintain order
             dataProvider.setBannerListAt(i, response.banners ?? []);
@@ -430,16 +447,20 @@ class _HomePageState extends State<HomePage>
         }
       } catch (e) {
         debugPrint("Error fetching banner for ${format.productFormat}: $e");
-        dataProvider.setBannerListAt(i, []);
+        if (mounted) {
+          dataProvider.setBannerListAt(i, []);
+        }
       }
     }
 
+    if (!mounted) return;
     final bannerCount = dataProvider.bannerList?.length ?? 0;
     debugPrint("Banner loading completed. Total banner groups: $bannerCount");
   }
 
   Future<void> fetchHomeSection({bool forceRefresh = false}) async {
     try {
+      if (!mounted) return;
       final dataProvider = Provider.of<CommonProvider>(
         context,
         listen: false,
@@ -469,6 +490,8 @@ class _HomePageState extends State<HomePage>
               }
             }
           }
+
+          if (!mounted) return;
 
           if (cachedSections != null) {
             // Use cached data
@@ -503,6 +526,8 @@ class _HomePageState extends State<HomePage>
             final response = await ApiProvider.instance
                 .fetchHomeSections(format.productFormat ?? '');
 
+            if (!mounted) return;
+
             if (response.status ?? false) {
               // Cache the raw response data
               final cacheData = {
@@ -519,6 +544,8 @@ class _HomePageState extends State<HomePage>
               };
               await Storage.instance
                   .setApiCache(cacheKey, jsonEncode(cacheData));
+
+              if (!mounted) return;
 
               switch (format.productFormat) {
                 case 'e-book':
@@ -557,6 +584,7 @@ class _HomePageState extends State<HomePage>
 
   Future<void> fetchPublicLibraries() async {
     final response = await ApiProvider.instance.getPublicLibraryList();
+    if (!mounted) return;
     if (response.success) {
       Provider.of<DataProvider>(context, listen: false)
           .setPublicLibraries(response.result ?? []);

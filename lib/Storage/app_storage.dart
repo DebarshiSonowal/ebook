@@ -64,9 +64,28 @@ class Storage {
     await sharedpreferences.setBool("isOnBoarding", true);
   }
 
+  bool _isLoggingOutInternal = false;
+
   Future<void> logout() async {
-    await sharedpreferences.clear();
-    Fluttertoast.showToast(msg: "Successfully logged out");
+    if (_isLoggingOutInternal) {
+      print("🔑 STORAGE: Logout already in progress. Skipping.");
+      return;
+    }
+    
+    final wasLoggedIn = isLoggedIn;
+    if (!wasLoggedIn) {
+      print("🔑 STORAGE: Already logged out. Clearing preferences silently.");
+      await sharedpreferences.clear();
+      return;
+    }
+
+    _isLoggingOutInternal = true;
+    try {
+      await sharedpreferences.clear();
+      Fluttertoast.showToast(msg: "Successfully logged out");
+    } finally {
+      _isLoggingOutInternal = false;
+    }
   }
 
   get isLoggedIn => sharedpreferences.getBool("isLoggedIn") ?? false;

@@ -52,6 +52,8 @@ import '../Model/profile.dart';
 import '../Model/razorpay_key.dart';
 import '../Model/review.dart';
 import '../Model/reward_response.dart';
+import 'package:provider/provider.dart';
+import 'package:ebook/Storage/data_provider.dart';
 import '../Model/search_response.dart';
 import '../Model/version_response.dart';
 import '../Model/writer.dart';
@@ -66,6 +68,53 @@ class ApiProvider {
   final String path = "/books";
 
   Dio? dio;
+
+  Dio _getDio(BaseOptions option) {
+    final dioInstance = Dio(option);
+    dioInstance.interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioError e, handler) {
+          if (e.response?.statusCode == 420 || e.response?.statusCode == 401) {
+            _handleAuthExpiredLogout();
+          }
+          return handler.next(e);
+        },
+      ),
+    );
+    return dioInstance;
+  }
+
+  bool _isLoggingOut = false;
+
+  void _handleAuthExpiredLogout() {
+    if (!Storage.instance.isLoggedIn) {
+      debugPrint("🔑 API: User is already logged out (guest mode). Ignoring auth expired error.");
+      return;
+    }
+
+    if (_isLoggingOut) {
+      debugPrint("Auth expiration logout already in progress. Skipping.");
+      return;
+    }
+    _isLoggingOut = true;
+
+    // Reset the flag after a delay to allow future logins/logouts if they occur
+    Future.delayed(const Duration(seconds: 3), () {
+      _isLoggingOut = false;
+    });
+
+    debugPrint("Auth expiration error detected (420/401). Triggering global force logout.");
+    Storage.instance.logout();
+    final context = Navigation.instance.navigatorKey.currentContext;
+    if (context != null) {
+      try {
+        Provider.of<DataProvider>(context, listen: false).clearAllData();
+      } catch (err) {
+        debugPrint("Error clearing DataProvider: $err");
+      }
+    }
+    Navigation.instance.navigateAndRemoveUntil('/main');
+  }
 
   Future<GenericResponse> addSubscriber(
       fname, lname, email, mobile, dob, password) async {
@@ -94,7 +143,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
         });
     var url = "${baseUrl}/subscribers";
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     debugPrint(jsonEncode(data));
 
@@ -145,7 +194,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
         });
     var url = "${baseUrl}/subscribers/login-new";
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     debugPrint(jsonEncode(data));
 
@@ -190,7 +239,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     debugPrint(data.toString());
 
@@ -224,7 +273,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -254,7 +303,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -285,7 +334,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -327,7 +376,7 @@ class ApiProvider {
       "mobile": mobile,
       "date_of_birth": date,
     };
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     debugPrint(data.toString());
 
@@ -362,7 +411,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -393,7 +442,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -429,7 +478,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -463,7 +512,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -497,7 +546,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -527,7 +576,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -562,7 +611,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -597,7 +646,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -625,7 +674,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url);
@@ -652,7 +701,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url);
@@ -686,7 +735,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -716,7 +765,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -748,7 +797,7 @@ class ApiProvider {
   //         // 'APP-KEY': ConstanceData.app_key
   //         'platform': Platform.isAndroid ? "android" : "ios",
   //       });
-  //   dio = Dio(option);
+  //   dio = _getDio(option);
   //   debugPrint(url.toString());
   //   try {
   //     Response? response = await dio?.get(url.toString());
@@ -778,7 +827,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -807,7 +856,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -835,7 +884,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -863,7 +912,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -892,7 +941,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -920,7 +969,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'subscriber_id': review.subscriber_id,
       'content': review.content,
@@ -954,7 +1003,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     // var data = {
     //   'book_id': id,
     // };
@@ -988,7 +1037,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     // var data = {
     //   'book_id': id,
     // };
@@ -1022,7 +1071,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'order_id': order_id,
       'razorpay_payment_id': razorpay_payment_id,
@@ -1059,7 +1108,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'id': id,
       'qty': qty,
@@ -1094,7 +1143,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1122,7 +1171,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1150,7 +1199,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'total_amount': total_amount,
       'coupon_code': coupon_code,
@@ -1184,7 +1233,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1212,7 +1261,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1240,7 +1289,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1269,7 +1318,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1299,7 +1348,7 @@ class ApiProvider {
           // 'APP-KEY': ConstanceData.app_key
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -1327,7 +1376,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'id': id,
       'qty': qty,
@@ -1361,7 +1410,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'format': format,
       'platform': Platform.isAndroid ? "android" : "ios",
@@ -1434,7 +1483,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'id': id,
       // 'qty': qty,
@@ -1468,7 +1517,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     var data = direct_buy_book_id == null
         ? {
@@ -1516,7 +1565,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     var data = {
       'order_id': id ?? 0,
@@ -1555,7 +1604,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1591,7 +1640,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1627,7 +1676,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1663,7 +1712,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1700,7 +1749,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     try {
@@ -1732,7 +1781,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1768,7 +1817,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     debugPrint('Bearer ${Storage.instance.token}');
@@ -1805,7 +1854,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1841,7 +1890,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1877,7 +1926,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1913,7 +1962,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1949,7 +1998,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint("Bearer ${Storage.instance.token}");
     debugPrint(url.toString());
     // debugPrint(data.toString());
@@ -1985,7 +2034,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'subscriber_id': review.subscriber_id,
       'content': review.content,
@@ -2019,7 +2068,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
 
     debugPrint(url.toString());
     try {
@@ -2048,7 +2097,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       "to_account": to_account,
       "tranfer_points": tranfer_points,
@@ -2082,7 +2131,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       "discount_for": discount_for,
       "request_for": request_for,
@@ -2118,7 +2167,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     debugPrint('Bearer ${Storage.instance.token}');
     try {
@@ -2150,7 +2199,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'id': id,
     };
@@ -2187,7 +2236,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           // 'APP-KEY': ConstanceData.app_key
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'id': id,
     };
@@ -2223,7 +2272,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
 
     var queryParams = {
       'page': page,
@@ -2264,7 +2313,7 @@ class ApiProvider {
   //         'Authorization': 'Bearer ${Storage.instance.token}',
   //         // 'APP-KEY': ConstanceData.app_key
   //       });
-  //   dio = Dio(option);
+  //   dio = _getDio(option);
   //   debugPrint(url.toString());
   //   try {
   //     Response? response = await dio?.get(url.toString());
@@ -2291,7 +2340,7 @@ class ApiProvider {
   //         'Authorization': 'Bearer ${Storage.instance.token}',
   //         // 'APP-KEY': ConstanceData.app_key
   //       });
-  //   dio = Dio(option);
+  //   dio = _getDio(option);
   //   debugPrint("Bearer ${Storage.instance.token}");
   //   debugPrint(url.toString());
   //   // debugPrint(data.toString());
@@ -2327,7 +2376,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -2356,7 +2405,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.get(url.toString());
@@ -2385,7 +2434,7 @@ class ApiProvider {
           'Authorization': 'Bearer ${Storage.instance.token}',
           'platform': Platform.isAndroid ? "android" : "ios",
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
     try {
       Response? response = await dio?.post(url.toString());
@@ -2414,7 +2463,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'content': content,
       'rating': rating,
@@ -2449,7 +2498,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -2479,7 +2528,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
@@ -2513,7 +2562,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
 
     final formData = FormData.fromMap({'coupon_code': couponCode.trim()});
     debugPrint('applyCoupon url: $url  couponCode: $couponCode');
@@ -2550,7 +2599,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
 
     final Map<String, dynamic> fields = {'library_id': libraryId};
     if (planId != null) fields['plan_id'] = planId;
@@ -2593,7 +2642,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
 
     final formData = FormData.fromMap({
       'order_id': orderId,
@@ -2705,7 +2754,7 @@ class ApiProvider {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${Storage.instance.token}',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     var data = {
       'ip_address': ipAddress,
       'book_id': bookId,
@@ -2737,7 +2786,7 @@ class ApiProvider {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         });
-    dio = Dio(option);
+    dio = _getDio(option);
     debugPrint(url.toString());
 
     try {
